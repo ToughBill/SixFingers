@@ -1,0 +1,240 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>WorkStationController.Core</name>
+    </assembly>
+    <members>
+        <member name="T:WorkStationController.Core.Data.Carrier">
+            <summary>
+            Data definition of Carrier installed on worktable
+            </summary>
+        </member>
+        <member name="T:WorkStationController.Core.Utility.ISerialization">
+            <summary>
+            Interface for serialization
+            </summary>
+        </member>
+        <member name="M:WorkStationController.Core.Utility.ISerialization.Serialize(System.String)">
+            <summary>
+            Serialize object to an XML file
+            </summary>
+            <param name="toXmlFile">XML file for saving object</param>
+        </member>
+        <member name="F:WorkStationController.Core.Data.Carrier.labwares">
+            <summary>
+            Labwares on the carrier
+            </summary>
+        </member>
+        <member name="M:WorkStationController.Core.Data.Carrier.#ctor">
+            <summary>
+            Default constructor
+            </summary>
+        </member>
+        <member name="M:WorkStationController.Core.Data.Carrier.AddLabware(WorkStationController.Core.Data.Labware)">
+            <summary>
+            
+            </summary>
+            <param name="labware"></param>
+        </member>
+        <member name="M:WorkStationController.Core.Data.Carrier.RemoveCarrier(WorkStationController.Core.Data.Labware)">
+            <summary>
+            Remove a labware from carrier
+            </summary>
+            <param name="labware">Instance of labware to remove</param>
+        </member>
+        <member name="M:WorkStationController.Core.Data.Carrier.RemoveLabware(System.String)">
+            <summary>
+            Remove a labware from carrier by lable
+            </summary>
+            <param name="labwareLable">Lable of labware to remove</param>
+        </member>
+        <member name="M:WorkStationController.Core.Data.Carrier.Serialize(System.String)">
+            <summary>
+            Serialize to a XML file
+            </summary>
+            <param name="toXmlFile">XML file for serialization</param>
+        </member>
+        <member name="P:WorkStationController.Core.Data.Carrier.Lable">
+            <summary>
+            Gets or sets the lable of the carrier
+            </summary>
+        </member>
+        <member name="P:WorkStationController.Core.Data.Carrier.XLength">
+            <summary>
+            Gets or sets the X-length of the carrier, in millimetre(mm.)
+            </summary>
+        </member>
+        <member name="P:WorkStationController.Core.Data.Carrier.YLength">
+            <summary>
+            Gets or sets the Y-length of the carrier, in millimetre(mm.)
+            </summary>
+        </member>
+        <member name="P:WorkStationController.Core.Data.Carrier.PositionOnWorktable">
+            <summary>
+            The offset (the position of the top-left coner) of the carrier on worktable
+            </summary>
+        </member>
+        <member name="P:WorkStationController.Core.Data.Carrier.Labwares">
+            <summary>
+            Gets the labwares on the carrier
+            </summary>
+        </member>
+        <member name="T:WorkStationController.Core.Data.LabwareShape">
+            <summary>
+            The bottom shape of labware
+            </summary>
+        </member>
+        <member name="F:WorkStationController.Core.Data.LabwareShape.Flat">
+            <summary>
+            Flat bottom of labware
+            </summary>
+        </member>
+        <member name="F:WorkStationController.Core.Data.LabwareShape.Round">
+            <summary>
+            Rould bottom of labware
+            </summary>
+        </member>
+        <member name="F:WorkStationController.Core.Data.LabwareShape.VShape">
+            <summary>
+            V-shape bottom of labware
+            </summary>
+        </member>
+        <member name="T:WorkStationController.Core.Data.Labware">
+            <summary>
+            Data definition of a labware installed on the carrier
+            </summary>
+        </member>
+        <member name="M:WorkStationController.Core.Data.Labware.#ctor">
+            <summary>
+            Default constructor
+            </summary>
+        </member>
+        <member name="M:WorkStationController.Core.Data.Labware.Creat(System.String)">
+            <summary>
+            Create an instance of Labware from a XML file
+            </summary>
+            <param name="fromXmlFile"></param>
+            <returns></returns>
+        </member>
+        <member name="M:WorkStationController.Core.Data.Labware.Serialize(System.String)">
+            <summary>
+            Serialize a labware to a XML file
+            </summary>
+            <param name="toXmlFile"></param>
+        </member>
+        <member name="P:WorkStationController.Core.Data.Labware.Lable">
+            <summary>
+            Gets or sets the name of the labware
+            </summary>
+        </member>
+        <member name="P:WorkStationController.Core.Data.Labware.XLength">
+            <summary>
+            Gets or sets the X-length of the labware, in millimetre(mm.)
+            </summary>
+        </member>
+        <member name="P:WorkStationController.Core.Data.Labware.YLength">
+            <summary>
+            Gets or sets the Y-length of the labware, in millimetre(mm.)
+            </summary>
+        </member>
+        <member name="P:WorkStationController.Core.Data.Labware.Height">
+            <summary>
+            Gets or sets the Height of the labware, in millimetre(mm.)
+            </summary>
+        </member>
+        <member name="P:WorkStationController.Core.Data.Labware.WellRadius">
+            <summary>
+            Gets or sets the radius of the well
+            </summary>
+        </member>
+        <member name="P:WorkStationController.Core.Data.Labware.NumberOfWellsX">
+            <summary>
+             Gets or sets number of wells in X-length
+            </summary>
+        </member>
+        <member name="P:WorkStationController.Core.Data.Labware.NumberOfWellsY">
+            <summary>
+             Gets or sets number of wells in Y-length
+            </summary>
+        </member>
+        <member name="P:WorkStationController.Core.Data.Labware.FirstWellPosition">
+            <summary>
+            The position of the first well (most top-left well) on labware
+            </summary>
+        </member>
+        <member name="P:WorkStationController.Core.Data.Labware.LastWellPosition">
+            <summary>
+            The position of the last well (most bottom-right well) on labware
+            </summary>
+        </member>
+        <member name="P:WorkStationController.Core.Data.Labware.ZTravel">
+            <summary>
+            Gets or sets the Z-Travel value, in 1/10 millimetre
+            </summary>
+        </member>
+        <member name="P:WorkStationController.Core.Data.Labware.ZStart">
+            <summary>
+            Gets or sets the Z-Start value, in 1/10 millimetre
+            </summary>
+        </member>
+        <member name="P:WorkStationController.Core.Data.Labware.ZDispense">
+            <summary>
+            Gets or sets the Z-Dispense value, in 1/10 millimetre
+            </summary>
+        </member>
+        <member name="P:WorkStationController.Core.Data.Labware.ZMax">
+            <summary>
+            Gets or sets the Z-Max value, in 1/10 millimetre
+            </summary>
+        </member>
+        <member name="P:WorkStationController.Core.Data.Labware.BottomShape">
+            <summary>
+            Gets or sets the bottom shape of labware
+            </summary>
+        </member>
+        <member name="P:WorkStationController.Core.Data.Labware.PositionOnCarrier">
+            <summary>
+            The offset (the position of the top-left coner) of the labware on carrier
+            </summary>
+        </member>
+        <member name="T:WorkStationController.Core.Data.Layout">
+            <summary>
+            Definition of layout
+            </summary>
+        </member>
+        <member name="F:WorkStationController.Core.Data.Layout.carriers">
+            <summary>
+            Carrier collection on layout
+            </summary>
+        </member>
+        <member name="M:WorkStationController.Core.Data.Layout.AddCarrier(WorkStationController.Core.Data.Carrier)">
+            <summary>
+            Add a Carrier
+            </summary>
+            <param name="carrier">Instance of Carrier</param>
+        </member>
+        <member name="M:WorkStationController.Core.Data.Layout.RemoveCarrier(WorkStationController.Core.Data.Carrier)">
+            <summary>
+            Remove a carrier from layout
+            </summary>
+            <param name="carrier">Instance of labware to remove</param>
+        </member>
+        <member name="M:WorkStationController.Core.Data.Layout.RemoveLabware(System.String)">
+            <summary>
+            Remove a carrier from layout by lable
+            </summary>
+            <param name="labwareLable">Lable of labware to remove</param>
+        </member>
+        <member name="M:WorkStationController.Core.Data.Layout.Serialize(System.String)">
+            <summary>
+            Serializa a layout to XML file
+            </summary>
+            <param name="toXmlFile">XML file</param>
+        </member>
+        <member name="P:WorkStationController.Core.Data.Layout.Carriers">
+            <summary>
+            Gets the labware collection on layout
+            </summary>
+        </member>
+    </members>
+</doc>
