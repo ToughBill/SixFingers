@@ -1,6 +1,0 @@
-D:\diaoe\private\TECAN\WorkstationController\WorkStationController.Core\obj\Debug\WorkstationController.Core.csprojResolveAssemblyReference.cache
-D:\diaoe\private\TECAN\WorkstationController\bin\Debug\WorkStationController.Core.xml
-D:\diaoe\private\TECAN\WorkstationController\bin\Debug\WorkStationController.Core.dll
-D:\diaoe\private\TECAN\WorkstationController\bin\Debug\WorkStationController.Core.pdb
-D:\diaoe\private\TECAN\WorkstationController\WorkStationController.Core\obj\Debug\WorkStationController.Core.dll
-D:\diaoe\private\TECAN\WorkstationController\WorkStationController.Core\obj\Debug\WorkStationController.Core.pdb
