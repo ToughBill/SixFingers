@@ -1,8 +1,11 @@
 ﻿using System;
+using System.Collections.ObjectModel;
 using System.Collections.Generic;
-using WorkStationController.Core.Utility;
+using System.IO;
+using System.Xml;
+using WorkstationController.Core.Utility;
 
-namespace WorkStationController.Core.Data
+namespace WorkstationController.Core.Data
 {
     /// <summary>
     /// Definition of layout
@@ -17,12 +20,45 @@ namespace WorkStationController.Core.Data
         /// <summary>
         /// Gets the labware collection on layout
         /// </summary>
-        public Dictionary<string, Carrier> Carriers
+        public ObservableCollection<Carrier> Carriers
         {
             get
             {
-                return this.carriers;
+                return new ObservableCollection<Carrier>(this.carriers.Values);
             }
+        }
+
+        /// <summary>
+        /// Create an instance of Layout from a XML file
+        /// </summary>
+        /// <param name="fromXmlFile"></param>
+        /// <returns></returns>
+        public static Layout Creat(string fromXmlFile)
+        {
+            if (string.IsNullOrEmpty(fromXmlFile))
+                throw new ArgumentException(@"fromXmlFile", Properties.Resources.FileNameArgumentError);
+
+            // If file already exists, delete it
+            if (!File.Exists(fromXmlFile))
+            {
+                string errorMessage = string.Format(Properties.Resources.FileNotExistsError, fromXmlFile);
+                throw new ArgumentException(errorMessage);
+            }
+
+            return new Layout();
+        }
+
+        /// <summary>
+        /// Create an instance of Layout from a XML node
+        /// </summary>
+        /// <param name="fromXmlNode"></param>
+        /// <returns></returns>
+        public static Layout Creat(XmlNode fromXmlNode)
+        {
+            if (fromXmlNode == null)
+                throw new ArgumentNullException(@"fromXmlNode", Properties.Resources.ArgumentNullError);
+
+            return new Layout();
         }
 
         /// <summary>
@@ -36,12 +72,12 @@ namespace WorkStationController.Core.Data
                 throw new ArgumentNullException("carrier", "carrier must not be null.");
             }
 
-            if(this.carriers.ContainsKey(carrier.Lable))
+            if(this.carriers.ContainsKey(carrier.Label))
             {
-                throw new ArgumentException(string.Format("Carrier - ({0}) already exists.", carrier.Lable), "carrier");
+                throw new ArgumentException(string.Format("Carrier - ({0}) already exists.", carrier.Label), "carrier");
             }
 
-            this.carriers.Add(carrier.Lable, carrier);
+            this.carriers.Add(carrier.Label, carrier);
         }
 
         /// <summary>
@@ -55,7 +91,7 @@ namespace WorkStationController.Core.Data
                 throw new ArgumentNullException("carrier", "carrier must not be null.");
             }
 
-            this.carriers.Remove(carrier.Lable);
+            this.carriers.Remove(carrier.Label);
         }
 
         /// <summary>
@@ -67,13 +103,32 @@ namespace WorkStationController.Core.Data
             this.carriers.Remove(labwareLable);
         }
 
+        #region ISerialization
+
         /// <summary>
         /// Serializa a layout to XML file
         /// </summary>
         /// <param name="toXmlFile">XML file</param>
         public void Serialize(string toXmlFile)
         {
-            throw new NotImplementedException();
+            if (string.IsNullOrEmpty(toXmlFile))
+                throw new ArgumentException(@"toXmlFile", Properties.Resources.FileNameArgumentError);
+
+            // If file already exists, delete it
+            if (File.Exists(toXmlFile))
+                File.Delete(toXmlFile);
         }
+
+        /// <summary>
+        /// Serialize object to an XML node
+        /// </summary>
+        /// <param name="toXmlNode">XML node for saving object</param>
+        public void Seialize(XmlNode toXmlNode)
+        {
+            if (toXmlNode == null)
+                throw new ArgumentNullException(@"toXmlNode", Properties.Resources.ArgumentNullError);
+        }
+
+        #endregion
     }
 }

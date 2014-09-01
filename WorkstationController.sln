@@ -9,6 +9,10 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WorkStationController.Contr
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WorkstationController.Core", "WorkStationController.Core\WorkstationController.Core.csproj", "{C3BA4CCF-E014-4E15-BE64-1675C58EF27A}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Test", "Test", "{C83DF5AE-B1F6-4D6C-B535-17796C517F9C}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WorkstationController.Core.UnitTest", "WorkstationController.Core.UnitTest\WorkstationController.Core.UnitTest.csproj", "{91612205-CB2D-4593-9DBE-DE122BEDDDEC}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -27,8 +31,15 @@ Global
 		{C3BA4CCF-E014-4E15-BE64-1675C58EF27A}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{C3BA4CCF-E014-4E15-BE64-1675C58EF27A}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{C3BA4CCF-E014-4E15-BE64-1675C58EF27A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{91612205-CB2D-4593-9DBE-DE122BEDDDEC}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{91612205-CB2D-4593-9DBE-DE122BEDDDEC}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{91612205-CB2D-4593-9DBE-DE122BEDDDEC}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{91612205-CB2D-4593-9DBE-DE122BEDDDEC}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{91612205-CB2D-4593-9DBE-DE122BEDDDEC} = {C83DF5AE-B1F6-4D6C-B535-17796C517F9C}
 	EndGlobalSection
 EndGlobal

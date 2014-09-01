@@ -6,10 +6,13 @@
 //
 
 using System;
+using System.IO;
 using System.Windows;
-using WorkStationController.Core.Utility;
+using System.Xml;
+using System.Xml.Linq;
+using WorkstationController.Core.Utility;
 
-namespace WorkStationController.Core.Data
+namespace WorkstationController.Core.Data
 {
     /// <summary>
     /// The bottom shape of labware
@@ -40,27 +43,27 @@ namespace WorkStationController.Core.Data
         /// <summary>
         /// Gets or sets the name of the labware
         /// </summary>
-        public string Lable { get; set; }
+        public string Label { get; set; }
 
         /// <summary>
         /// Gets or sets the X-length of the labware, in millimetre(mm.)
         /// </summary>
-        public double XLength { get; set; }
+        public int XLength { get; set; }
 
         /// <summary>
         /// Gets or sets the Y-length of the labware, in millimetre(mm.)
         /// </summary>
-        public double YLength { get; set; }
+        public int YLength { get; set; }
 
         /// <summary>
         /// Gets or sets the Height of the labware, in millimetre(mm.)
         /// </summary>
-        public double Height { get; set; }
+        public int Height { get; set; }
 
         /// <summary>
-        /// Gets or sets the radius of the well
+        /// Gets or sets the radius of the well, in millimetre(mm.)
         /// </summary>
-        public double WellRadius { get; set; }
+        public int WellRadius { get; set; }
 
         /// <summary>
         ///  Gets or sets number of wells in X-length
@@ -85,22 +88,22 @@ namespace WorkStationController.Core.Data
         /// <summary>
         /// Gets or sets the Z-Travel value, in 1/10 millimetre
         /// </summary>
-        int ZTravel { get; set; }
+        public int ZTravel { get; set; }
 
         /// <summary>
         /// Gets or sets the Z-Start value, in 1/10 millimetre
         /// </summary>
-        int ZStart { get; set; }
+        public int ZStart { get; set; }
 
         /// <summary>
         /// Gets or sets the Z-Dispense value, in 1/10 millimetre
         /// </summary>
-        int ZDispense { get; set; }
+        public int ZDispense { get; set; }
 
         /// <summary>
         /// Gets or sets the Z-Max value, in 1/10 millimetre
         /// </summary>
-        int ZMax { get; set; }
+        public int ZMax { get; set; }
 
         /// <summary>
         /// Gets or sets the bottom shape of labware
@@ -126,6 +129,29 @@ namespace WorkStationController.Core.Data
         /// <returns></returns>
         public static Labware Creat(string fromXmlFile)
         {
+            if (string.IsNullOrEmpty(fromXmlFile))
+                throw new ArgumentException(@"fromXmlFile", Properties.Resources.FileNameArgumentError);
+
+            // If file already exists, delete it
+            if (!File.Exists(fromXmlFile))
+            {
+                string errorMessage = string.Format(Properties.Resources.FileNotExistsError, fromXmlFile);
+                throw new ArgumentException(errorMessage);
+            }
+
+            return new Labware();
+        }
+
+        /// <summary>
+        /// Create an instance of Labware from a XML node
+        /// </summary>
+        /// <param name="fromXmlNode"></param>
+        /// <returns></returns>
+        public static Labware Creat(XmlNode fromXmlNode)
+        {
+            if (fromXmlNode == null)
+                throw new ArgumentNullException(@"fromXmlNode", Properties.Resources.ArgumentNullError);
+
             return new Labware();
         }
 
@@ -137,7 +163,43 @@ namespace WorkStationController.Core.Data
         /// <param name="toXmlFile"></param>
         public void Serialize(string toXmlFile)
         {
-            throw new NotImplementedException();
+            if (string.IsNullOrEmpty(toXmlFile))
+                throw new ArgumentException(@"toXmlFile", Properties.Resources.FileNameArgumentError);
+
+            // If file already exists, delete it
+            if (File.Exists(toXmlFile))
+                File.Delete(toXmlFile);
+
+            // Save to XML file
+            XDocument labwareXMLDoc =
+                new XDocument(
+                    new XDeclaration("1.0", "UTF-8", "yes"),
+                    new XComment("Labware XML definition"),
+                    new XElement("Labware", new XAttribute("Label", this.Label),
+                        new XElement("XLength", this.XLength.ToString()),
+                        new XElement("YLength", this.YLength.ToString()),
+                        new XElement("Height", this.Height.ToString()),
+                        new XElement("WellRadius", this.WellRadius.ToString()),
+                        new XElement("NumberOfWellsX", this.NumberOfWellsX.ToString()),
+                        new XElement("NumberOfWellsY", this.NumberOfWellsY.ToString()),
+                        new XElement("FirstWellPosition", new XElement("X", this.FirstWellPosition.X.ToString()), new XElement("Y", this.FirstWellPosition.Y.ToString())),
+                        new XElement("LastWellPosition", new XElement("X", this.LastWellPosition.X.ToString()), new XElement("Y", this.LastWellPosition.Y.ToString())),
+                        new XElement("ZTravel", this.ZTravel.ToString()),
+                        new XElement("ZStart", this.ZStart.ToString()),
+                        new XElement("ZDispense", this.ZDispense.ToString()),
+                        new XElement("ZMax", this.ZMax.ToString())));
+
+            labwareXMLDoc.Save(toXmlFile);
+        }
+
+        /// <summary>
+        /// Serialize object to an XML node
+        /// </summary>
+        /// <param name="toXmlNode">XML node for saving object</param>
+        public void Seialize(XmlNode toXmlNode)
+        {
+            if (toXmlNode == null)
+                throw new ArgumentNullException(@"toXmlNode", Properties.Resources.ArgumentNullError);
         }
 
         #endregion
