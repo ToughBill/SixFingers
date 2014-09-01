@@ -23,7 +23,7 @@ namespace WorkstationController.Core.Data
         /// <summary>
         /// Gets or sets the lable of the carrier
         /// </summary>
-        public string Label { get; set; }
+        public string Name { get; set; }
 
         /// <summary>
         /// Gets or sets the X-length of the carrier, in millimetre(mm.)
@@ -112,12 +112,12 @@ namespace WorkstationController.Core.Data
                 throw new ArgumentNullException("labware", "labware must not be null.");
             }
 
-            if (this.labwares.ContainsKey(labware.Label))
+            if (this.labwares.ContainsKey(labware.Name))
             {
-                throw new ArgumentException(string.Format("Labware - ({0}) already exists.", labware.Label), "labware");
+                throw new ArgumentException(string.Format("Labware - ({0}) already exists.", labware.Name), "labware");
             }
 
-            this.labwares.Add(labware.Label, labware);
+            this.labwares.Add(labware.Name, labware);
         }
 
         /// <summary>
@@ -131,7 +131,7 @@ namespace WorkstationController.Core.Data
                 throw new ArgumentNullException("carrier", "carrier must not be null.");
             }
 
-            this.labwares.Remove(labware.Label);
+            this.labwares.Remove(labware.Name);
         }
 
         /// <summary>
@@ -159,32 +159,10 @@ namespace WorkstationController.Core.Data
                 File.Delete(toXmlFile);
 
             // Save to XML file
-            var labwaresAsXElement = from labware in this.Labwares
-                                     select
-                                     new XElement("Labware", new XAttribute("Label", labware.Label),
-                                            new XElement("XLength", labware.XLength.ToString()),
-                                            new XElement("YLength", labware.YLength.ToString()),
-                                            new XElement("Height", labware.Height.ToString()),
-                                            new XElement("WellRadius", labware.WellRadius.ToString()),
-                                            new XElement("NumberOfWellsX", labware.NumberOfWellsX.ToString()),
-                                            new XElement("NumberOfWellsY", labware.NumberOfWellsY.ToString()),
-                                            new XElement("FirstWellPosition", new XElement("X", labware.FirstWellPosition.X.ToString()), new XElement("Y", labware.FirstWellPosition.Y.ToString())),
-                                            new XElement("LastWellPosition", new XElement("X", labware.LastWellPosition.X.ToString()), new XElement("Y", labware.LastWellPosition.Y.ToString())),
-                                            new XElement("ZTravel", labware.ZTravel.ToString()),
-                                            new XElement("ZStart", labware.ZStart.ToString()),
-                                            new XElement("ZDispense", labware.ZDispense.ToString()),
-                                            new XElement("ZMax", labware.ZMax.ToString()));
-
-            XDocument carrierXMLDoc = new XDocument(new XDeclaration("1.0", "UTF-8", "yes"), new XComment("Carrier XML definition"),
-                new XElement("Carrier", new XAttribute("Label", this.Label),
-                                        new XAttribute("XLength", this.XLength.ToString()),
-                                        new XAttribute("YLength", this.YLength.ToString()),
-                                        new XAttribute("AllowedLabwareType", this.AllowedLabwareType.ToString()),
-                                        new XAttribute("AllowedLabwareNumber", this.AllowedLabwareNumber.ToString()),
-                                        new XAttribute("PositionOnWorktableX", this.PositionOnWorktable.X.ToString()),
-                                        new XAttribute("PositionOnWorktableY", this.PositionOnWorktable.Y.ToString()),
-                                        labwaresAsXElement)
-                );
+            XDocument carrierXMLDoc = new XDocument(
+                new XDeclaration("1.0", "UTF-8", "yes"), 
+                new XComment("Carrier XML definition"),
+                this.ToXElement());
 
             carrierXMLDoc.Save(toXmlFile);
         }
@@ -197,6 +175,25 @@ namespace WorkstationController.Core.Data
         {
             if (toXmlNode == null)
                 throw new ArgumentNullException(@"toXmlNode", Properties.Resources.ArgumentNullError);
+        }
+
+        internal XElement ToXElement()
+        {
+            // Save to XML file
+            var labwaresAsXElement = from labware in this.Labwares
+                                     select
+                                     labware.ToXElement();
+
+            XElement carrierXElement = new XElement("Carrier", new XAttribute("Name", this.Name),
+                                        new XAttribute("XLength", this.XLength.ToString()),
+                                        new XAttribute("YLength", this.YLength.ToString()),
+                                        new XAttribute("AllowedLabwareType", this.AllowedLabwareType.ToString()),
+                                        new XAttribute("AllowedLabwareNumber", this.AllowedLabwareNumber.ToString()),
+                                        new XAttribute("PositionOnWorktableX", this.PositionOnWorktable.X.ToString()),
+                                        new XAttribute("PositionOnWorktableY", this.PositionOnWorktable.Y.ToString()),
+                                        labwaresAsXElement);
+
+            return carrierXElement;
         }
 
         #endregion

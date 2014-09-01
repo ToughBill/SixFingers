@@ -1,8 +1,10 @@
 ﻿using System;
 using System.Collections.ObjectModel;
 using System.Collections.Generic;
+using System.Linq;
 using System.IO;
 using System.Xml;
+using System.Xml.Linq;
 using WorkstationController.Core.Utility;
 
 namespace WorkstationController.Core.Data
@@ -12,6 +14,11 @@ namespace WorkstationController.Core.Data
     /// </summary>
     public class Layout : ISerialization
     {
+        /// <summary>
+        /// Name of the layout
+        /// </summary>
+        public string Name { get; set; }
+
         /// <summary>
         /// Carrier collection on layout
         /// </summary>
@@ -72,12 +79,12 @@ namespace WorkstationController.Core.Data
                 throw new ArgumentNullException("carrier", "carrier must not be null.");
             }
 
-            if(this.carriers.ContainsKey(carrier.Label))
+            if(this.carriers.ContainsKey(carrier.Name))
             {
-                throw new ArgumentException(string.Format("Carrier - ({0}) already exists.", carrier.Label), "carrier");
+                throw new ArgumentException(string.Format("Carrier - ({0}) already exists.", carrier.Name), "carrier");
             }
 
-            this.carriers.Add(carrier.Label, carrier);
+            this.carriers.Add(carrier.Name, carrier);
         }
 
         /// <summary>
@@ -91,7 +98,7 @@ namespace WorkstationController.Core.Data
                 throw new ArgumentNullException("carrier", "carrier must not be null.");
             }
 
-            this.carriers.Remove(carrier.Label);
+            this.carriers.Remove(carrier.Name);
         }
 
         /// <summary>
@@ -117,6 +124,14 @@ namespace WorkstationController.Core.Data
             // If file already exists, delete it
             if (File.Exists(toXmlFile))
                 File.Delete(toXmlFile);
+
+            // Save to XML file
+            XDocument layoutXMLDoc = new XDocument(
+                new XDeclaration("1.0", "UTF-8", "yes"),
+                new XComment("Layout XML definition"),
+                this.ToXElement());
+
+            layoutXMLDoc.Save(toXmlFile);
         }
 
         /// <summary>
@@ -127,6 +142,18 @@ namespace WorkstationController.Core.Data
         {
             if (toXmlNode == null)
                 throw new ArgumentNullException(@"toXmlNode", Properties.Resources.ArgumentNullError);
+        }
+
+        internal XElement ToXElement()
+        {
+            var carriersAsXElement = from carrier in this.Carriers
+                                     select
+                                     carrier.ToXElement();
+
+            XElement layoutXElement = new XElement("Layout", new XAttribute("Name", this.Name),
+                carriersAsXElement);
+
+            return layoutXElement;
         }
 
         #endregion

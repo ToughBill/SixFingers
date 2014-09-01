@@ -43,7 +43,7 @@ namespace WorkstationController.Core.Data
         /// <summary>
         /// Gets or sets the name of the labware
         /// </summary>
-        public string Label { get; set; }
+        public string Name { get; set; }
 
         /// <summary>
         /// Gets or sets the X-length of the labware, in millimetre(mm.)
@@ -175,19 +175,7 @@ namespace WorkstationController.Core.Data
                 new XDocument(
                     new XDeclaration("1.0", "UTF-8", "yes"),
                     new XComment("Labware XML definition"),
-                    new XElement("Labware", new XAttribute("Label", this.Label),
-                        new XElement("XLength", this.XLength.ToString()),
-                        new XElement("YLength", this.YLength.ToString()),
-                        new XElement("Height", this.Height.ToString()),
-                        new XElement("WellRadius", this.WellRadius.ToString()),
-                        new XElement("NumberOfWellsX", this.NumberOfWellsX.ToString()),
-                        new XElement("NumberOfWellsY", this.NumberOfWellsY.ToString()),
-                        new XElement("FirstWellPosition", new XElement("X", this.FirstWellPosition.X.ToString()), new XElement("Y", this.FirstWellPosition.Y.ToString())),
-                        new XElement("LastWellPosition", new XElement("X", this.LastWellPosition.X.ToString()), new XElement("Y", this.LastWellPosition.Y.ToString())),
-                        new XElement("ZTravel", this.ZTravel.ToString()),
-                        new XElement("ZStart", this.ZStart.ToString()),
-                        new XElement("ZDispense", this.ZDispense.ToString()),
-                        new XElement("ZMax", this.ZMax.ToString())));
+                    this.ToXElement());
 
             labwareXMLDoc.Save(toXmlFile);
         }
@@ -200,6 +188,23 @@ namespace WorkstationController.Core.Data
         {
             if (toXmlNode == null)
                 throw new ArgumentNullException(@"toXmlNode", Properties.Resources.ArgumentNullError);
+        }
+
+        internal XElement ToXElement()
+        {
+            return new XElement("Labware", new XAttribute("Name", this.Name),
+                        new XElement("XLength", this.XLength.ToString()),
+                        new XElement("YLength", this.YLength.ToString()),
+                        new XElement("Height", this.Height.ToString()),
+                        new XElement("WellRadius", this.WellRadius.ToString()),
+                        new XElement("NumberOfWellsX", this.NumberOfWellsX.ToString()),
+                        new XElement("NumberOfWellsY", this.NumberOfWellsY.ToString()),
+                        new XElement("FirstWellPosition", new XElement("X", this.FirstWellPosition.X.ToString()), new XElement("Y", this.FirstWellPosition.Y.ToString())),
+                        new XElement("LastWellPosition", new XElement("X", this.LastWellPosition.X.ToString()), new XElement("Y", this.LastWellPosition.Y.ToString())),
+                        new XElement("ZTravel", this.ZTravel.ToString()),
+                        new XElement("ZStart", this.ZStart.ToString()),
+                        new XElement("ZDispense", this.ZDispense.ToString()),
+                        new XElement("ZMax", this.ZMax.ToString()));
         }
 
         #endregion

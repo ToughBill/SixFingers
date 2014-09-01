@@ -14,7 +14,7 @@ namespace WorkstationController.Core.UnitTest
         public void LabwareSerializeToXmlFileTest()
         {
             Labware labware = new Labware();
-            labware.Label = "LabwareSerializeTest";
+            labware.Name = "LabwareSerializeTest";
             labware.XLength = 85;
             labware.YLength = 125;
             labware.Height = 45;
