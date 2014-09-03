@@ -8,7 +8,6 @@
 using System;
 using System.IO;
 using System.Windows;
-using System.Xml;
 using System.Xml.Linq;
 using WorkstationController.Core.Utility;
 
@@ -147,7 +146,7 @@ namespace WorkstationController.Core.Data
         /// </summary>
         /// <param name="fromXmlNode"></param>
         /// <returns></returns>
-        public static Labware Creat(XmlNode fromXmlNode)
+        public static Labware Creat(XElement fromXmlNode)
         {
             if (fromXmlNode == null)
                 throw new ArgumentNullException(@"fromXmlNode", Properties.Resources.ArgumentNullError);
@@ -155,7 +154,7 @@ namespace WorkstationController.Core.Data
             return new Labware();
         }
 
-        #region ISerialization
+        #region Serialization
 
         /// <summary>
         /// Serialize a labware to a XML file
@@ -181,15 +180,9 @@ namespace WorkstationController.Core.Data
         }
 
         /// <summary>
-        /// Serialize object to an XML node
+        /// Creat an XElement instance from the object
         /// </summary>
-        /// <param name="toXmlNode">XML node for saving object</param>
-        public void Seialize(XmlNode toXmlNode)
-        {
-            if (toXmlNode == null)
-                throw new ArgumentNullException(@"toXmlNode", Properties.Resources.ArgumentNullError);
-        }
-
+        /// <returns>XElement instance</returns>
         internal XElement ToXElement()
         {
             return new XElement("Labware", new XAttribute("Name", this.Name),

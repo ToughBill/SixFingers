@@ -4,7 +4,6 @@ using System.Collections.ObjectModel;
 using System.Linq;
 using System.IO;
 using System.Windows;
-using System.Xml;
 using System.Xml.Linq;
 using WorkstationController.Core.Utility;
 
@@ -93,7 +92,7 @@ namespace WorkstationController.Core.Data
         /// </summary>
         /// <param name="fromXmlNode"></param>
         /// <returns></returns>
-        public static Carrier Creat(XmlNode fromXmlNode)
+        public static Carrier Creat(XElement fromXmlNode)
         {
             if (fromXmlNode == null)
                 throw new ArgumentNullException(@"fromXmlNode", Properties.Resources.ArgumentNullError);
@@ -143,7 +142,7 @@ namespace WorkstationController.Core.Data
             this.labwares.Remove(labwareLable);
         }
 
-        #region ISerialization
+        #region Serialization
 
         /// <summary>
         /// Serialize to a XML file
@@ -168,15 +167,9 @@ namespace WorkstationController.Core.Data
         }
 
         /// <summary>
-        /// Serialize object to an XML node
+        /// Creat an XElement instance from the object
         /// </summary>
-        /// <param name="toXmlNode">XML node for saving object</param>
-        public void Seialize(XmlNode toXmlNode)
-        {
-            if (toXmlNode == null)
-                throw new ArgumentNullException(@"toXmlNode", Properties.Resources.ArgumentNullError);
-        }
-
+        /// <returns>XElement instance</returns>
         internal XElement ToXElement()
         {
             // Save to XML file
