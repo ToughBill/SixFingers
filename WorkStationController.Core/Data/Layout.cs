@@ -39,7 +39,7 @@ namespace WorkstationController.Core.Data
         /// </summary>
         /// <param name="fromXmlFile"></param>
         /// <returns></returns>
-        public static Layout Creat(string fromXmlFile)
+        public static Layout Create(string fromXmlFile)
         {
             if (string.IsNullOrEmpty(fromXmlFile))
                 throw new ArgumentException(@"fromXmlFile", Properties.Resources.FileNameArgumentError);
@@ -51,20 +51,34 @@ namespace WorkstationController.Core.Data
                 throw new ArgumentException(errorMessage);
             }
 
-            return new Layout();
+            // Load Labware XML file
+            XDocument layoutXmlDoc = XDocument.Load(fromXmlFile);
+            XElement layoutXElement = layoutXmlDoc.Descendants("Layout").First();
+
+            return Layout.Create(layoutXElement);
         }
 
         /// <summary>
         /// Create an instance of Layout from a XML node
         /// </summary>
-        /// <param name="fromXmlNode"></param>
+        /// <param name="layoutXElement"></param>
         /// <returns></returns>
-        public static Layout Creat(XElement fromXmlNode)
+        public static Layout Create(XElement layoutXElement)
         {
-            if (fromXmlNode == null)
-                throw new ArgumentNullException(@"fromXmlNode", Properties.Resources.ArgumentNullError);
+            if (layoutXElement == null)
+                throw new ArgumentNullException(@"layoutXElement", Properties.Resources.ArgumentNullError);
 
-            return new Layout();
+            Layout layout = new Layout();
+            layout.Name = layoutXElement.Attribute("Name").Value;
+
+            // Read Carrier XElements
+            foreach(XElement carrierXElement in layoutXElement.Descendants("Carrier"))
+            {
+                Carrier carrier = Carrier.Create(carrierXElement);
+                layout.AddCarrier(carrier);
+            }
+
+            return layout;
         }
 
         /// <summary>

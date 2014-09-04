@@ -72,7 +72,7 @@ namespace WorkstationController.Core.Data
         /// </summary>
         /// <param name="fromXmlFile"></param>
         /// <returns></returns>
-        public static Carrier Creat(string fromXmlFile)
+        public static Carrier Create(string fromXmlFile)
         {
             if (string.IsNullOrEmpty(fromXmlFile))
                 throw new ArgumentException(@"fromXmlFile", Properties.Resources.FileNameArgumentError);
@@ -84,20 +84,42 @@ namespace WorkstationController.Core.Data
                 throw new ArgumentException(errorMessage);
             }
 
-            return new Carrier();
+            // Load Labware XML file
+            XDocument carrierXmlDoc = XDocument.Load(fromXmlFile);
+            XElement carrierXElement = carrierXmlDoc.Descendants("Carrier").First();
+
+            return Create(carrierXElement);
         }
 
         /// <summary>
         /// Create an instance of Carrier from a XML node
         /// </summary>
-        /// <param name="fromXmlNode"></param>
+        /// <param name="carrierXElement"></param>
         /// <returns></returns>
-        public static Carrier Creat(XElement fromXmlNode)
+        internal static Carrier Create(XElement carrierXElement)
         {
-            if (fromXmlNode == null)
-                throw new ArgumentNullException(@"fromXmlNode", Properties.Resources.ArgumentNullError);
+            if (carrierXElement == null)
+                throw new ArgumentNullException(@"carrierXElement", Properties.Resources.ArgumentNullError);
 
-            return new Carrier();
+            // Read all attributes
+            Carrier carrier = new Carrier();
+            carrier.Name = carrierXElement.Attribute("Name").Value;
+            carrier.XLength = int.Parse(carrierXElement.Attribute("XLength").Value);
+            carrier.YLength = int.Parse(carrierXElement.Attribute("YLength").Value);
+            carrier.AllowedLabwareNumber = int.Parse(carrierXElement.Attribute("AllowedLabwareNumber").Value);
+            carrier.AllowedLabwareType = int.Parse(carrierXElement.Attribute("AllowedLabwareType").Value);
+            int PositionOnWorktableX = int.Parse(carrierXElement.Attribute("PositionOnWorktableX").Value);
+            int PositionOnWorktableY = int.Parse(carrierXElement.Attribute("PositionOnWorktableY").Value);
+            carrier.PositionOnWorktable = new Point(PositionOnWorktableX, PositionOnWorktableY);
+
+            // Read Labware XElements
+            foreach (XElement labwareXElement in carrierXElement.Descendants("Labware"))
+            {
+                Labware labware = Labware.Create(labwareXElement);
+                carrier.AddLabware(labware);
+            }
+
+            return carrier;
         }
 
         /// <summary>

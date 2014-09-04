@@ -5,11 +5,24 @@ using System.Windows;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using WorkstationController.Core.Data;
 
+using System.Collections.Generic;
+using System.Diagnostics;
+using System.Linq;
+using System.Xml.Linq;
+
 namespace WorkstationController.Core.UnitTest
 {
     [TestClass]
     public class LabwareTests
     {
+        private string _xmlFilePath = string.Empty;
+
+        [TestInitialize]
+        public void Initialization()
+        {
+            this._xmlFilePath = Path.Combine(UnitTestHelper.GetTestModuleDirectory(), "testresult", "LabwareSerializeTest.xml");
+        }
+
         [TestMethod]
         public void LabwareSerializeToXmlFileTest()
         {
@@ -28,10 +41,14 @@ namespace WorkstationController.Core.UnitTest
             labware.ZDispense = 3500;
             labware.ZMax = 50;
 
-            string testDllPath = Assembly.GetExecutingAssembly().Location;
-            string testDllDir = Path.GetDirectoryName(testDllPath);
-            string xmlFilePath = Path.Combine(testDllDir, "testresult", "LabwareSerializeTest.xml");
-            labware.Serialize(xmlFilePath);
+            labware.Serialize(this._xmlFilePath);
+        }
+
+        [TestMethod]
+        public void LabwareDesrializeFromXmlFileTest()
+        {
+            Labware labware = Labware.Create(this._xmlFilePath);
+            Assert.AreEqual<string>(labware.Name, "LabwareSerializeTest");
         }
     }
 }

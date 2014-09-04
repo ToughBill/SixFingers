@@ -1,8 +1,10 @@
 ﻿using System;
 using System.Diagnostics;
+using System.Linq;
 using System.IO;
 using System.Reflection;
 using System.Windows;
+using System.Xml.Linq;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using WorkstationController.Core.Data;
 
@@ -11,6 +13,16 @@ namespace WorkstationController.Core.UnitTest
     [TestClass]
     public class CarrierTests
     {
+        private string _xmlFileWithLabwarePath = string.Empty;
+        private string _xmlFileWithoutLabwarePath = string.Empty;
+
+        [TestInitialize]
+        public void Initialization()
+        {
+            this._xmlFileWithLabwarePath = Path.Combine(UnitTestHelper.GetTestModuleDirectory(), "testresult", "CarrierSerializeWithLabwareTest.xml");
+            this._xmlFileWithoutLabwarePath = Path.Combine(UnitTestHelper.GetTestModuleDirectory(), "testresult", "CarrierSerializeNoLabwareTest.xml");
+        }
+
         [TestMethod]
         public void CarrierSerializeToXmlFileWithLabwaresTest()
         {
@@ -56,10 +68,7 @@ namespace WorkstationController.Core.UnitTest
 
             Debug.Assert(carrier.Labwares.Count == 2);
 
-            string testDllPath = Assembly.GetExecutingAssembly().Location;
-            string testDllDir = Path.GetDirectoryName(testDllPath);
-            string xmlFilePath = Path.Combine(testDllDir, "testresult", "CarrierSerializeWithLabwareTest.xml");
-            carrier.Serialize(xmlFilePath);
+            carrier.Serialize(this._xmlFileWithLabwarePath);
         }
 
         [TestMethod]
@@ -73,10 +82,19 @@ namespace WorkstationController.Core.UnitTest
             carrier.AllowedLabwareType = 2;
             carrier.PositionOnWorktable = new Point(200, 120);
 
-            string testDllPath = Assembly.GetExecutingAssembly().Location;
-            string testDllDir = Path.GetDirectoryName(testDllPath);
-            string xmlFilePath = Path.Combine(testDllDir, "testresult", "CarrierSerializeNoLabwareTest.xml");
-            carrier.Serialize(xmlFilePath);
+            carrier.Serialize(this._xmlFileWithoutLabwarePath);
+        }
+
+        [TestMethod]
+        public void CarrierDeserializaFromXmlFile()
+        {
+            // Carrier with labware
+            Carrier carrierWithLabware = Carrier.Create(this._xmlFileWithLabwarePath);
+            Assert.AreEqual<int>(carrierWithLabware.Labwares.Count, 2);
+
+            // Carrier without labware
+            Carrier carrierWithoutLabware = Carrier.Create(this._xmlFileWithoutLabwarePath);
+            Assert.AreEqual<int>(carrierWithoutLabware.Labwares.Count, 0);
         }
     }
 }

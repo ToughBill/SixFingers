@@ -1,11 +1,5 @@
-﻿//
-// Todo list:
-//      1. Value checking when setting the property of a labware
-//      2. Serialization of labware data to XML
-//      3. Missing the definition of 
-//
-
-using System;
+﻿using System;
+using System.Linq;
 using System.IO;
 using System.Windows;
 using System.Xml.Linq;
@@ -126,7 +120,7 @@ namespace WorkstationController.Core.Data
         /// </summary>
         /// <param name="fromXmlFile"></param>
         /// <returns></returns>
-        public static Labware Creat(string fromXmlFile)
+        public static Labware Create(string fromXmlFile)
         {
             if (string.IsNullOrEmpty(fromXmlFile))
                 throw new ArgumentException(@"fromXmlFile", Properties.Resources.FileNameArgumentError);
@@ -138,20 +132,51 @@ namespace WorkstationController.Core.Data
                 throw new ArgumentException(errorMessage);
             }
 
-            return new Labware();
+            // Load Labware XML file
+            XDocument labwareXmlDoc = XDocument.Load(fromXmlFile);
+            XElement labwareXElement = labwareXmlDoc.Descendants("Labware").First();
+
+            return Create(labwareXElement);
         }
 
         /// <summary>
         /// Create an instance of Labware from a XML node
         /// </summary>
-        /// <param name="fromXmlNode"></param>
+        /// <param name="labwareXElement"></param>
         /// <returns></returns>
-        public static Labware Creat(XElement fromXmlNode)
+        internal static Labware Create(XElement labwareXElement)
         {
-            if (fromXmlNode == null)
-                throw new ArgumentNullException(@"fromXmlNode", Properties.Resources.ArgumentNullError);
+            if (labwareXElement == null)
+                throw new ArgumentNullException(@"labwareXElement", Properties.Resources.ArgumentNullError);
 
-            return new Labware();
+            // Create a new Labware instance
+            Labware labware = new Labware();
+
+            // Get properties' value
+            labware.Name = labwareXElement.Attribute("Name").Value;
+            labware.XLength = int.Parse(labwareXElement.Element("XLength").Value);
+            labware.YLength = int.Parse(labwareXElement.Element("YLength").Value);
+            labware.Height = int.Parse(labwareXElement.Element("Height").Value);
+            labware.WellRadius = int.Parse(labwareXElement.Element("WellRadius").Value);
+            labware.NumberOfWellsX = int.Parse(labwareXElement.Element("NumberOfWellsX").Value);
+            labware.NumberOfWellsY = int.Parse(labwareXElement.Element("NumberOfWellsY").Value);
+
+            XElement xEle_FirstWellPosition = labwareXElement.Element("FirstWellPosition");
+            int FirstWellPositionX = int.Parse(xEle_FirstWellPosition.Element("X").Value);
+            int FirstWellPositionY = int.Parse(xEle_FirstWellPosition.Element("Y").Value);
+            labware.FirstWellPosition = new Point(FirstWellPositionX, FirstWellPositionY);
+
+            XElement xEle_LastWellPosition = labwareXElement.Element("LastWellPosition");
+            int LastWellPositionX = int.Parse(xEle_LastWellPosition.Element("X").Value);
+            int LastWellPositionY = int.Parse(xEle_LastWellPosition.Element("Y").Value);
+            labware.LastWellPosition = new Point(LastWellPositionX, LastWellPositionY);
+
+            labware.ZTravel = int.Parse(labwareXElement.Element("ZTravel").Value);
+            labware.ZStart = int.Parse(labwareXElement.Element("ZStart").Value);
+            labware.ZDispense = int.Parse(labwareXElement.Element("ZDispense").Value);
+            labware.ZMax = int.Parse(labwareXElement.Element("ZMax").Value);
+
+            return labware;
         }
 
         #region Serialization
