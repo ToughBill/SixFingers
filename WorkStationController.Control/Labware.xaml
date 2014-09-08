@@ -4,8 +4,67 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              mc:Ignorable="d" 
-             d:DesignHeight="300" d:DesignWidth="300">
-    <Grid>
-            
+             d:DesignHeight="600" d:DesignWidth="800">
+    <Grid >
+        <Grid.Resources>
+            <Style TargetType="Button">
+                <Setter Property="Width" Value="60"/>
+                <Setter Property="Height" Value="24"/>
+            </Style>
+            <Style TargetType="TextBox">
+                <Setter Property="Width" Value="60"/>
+                <Setter Property="Height" Value="24"/>
+            </Style>
+        </Grid.Resources>
+
+        <StackPanel>
+            <GroupBox Header="基本属性" Height="200">
+                <Grid>
+                    <Label Content="行数：" HorizontalAlignment="Left" Margin="28,42,0,0" VerticalAlignment="Top"/>
+                    <Label Content="列数：" HorizontalAlignment="Left" Margin="28,82,0,0" VerticalAlignment="Top"/>
+                    <TextBox Name="Rows" HorizontalAlignment="Left" Margin="79,43,0,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Width="100"/>
+                    <TextBox HorizontalAlignment="Left" Height="23" Margin="79,84,0,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Width="100"/>
+                    <Label Content="孔径：" HorizontalAlignment="Left" Margin="28,122,0,0" VerticalAlignment="Top"/>
+                    <TextBox Name="radiusMM" HorizontalAlignment="Left" Margin="79,125,0,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Width="100"/>
+                    <Label Content="mm" HorizontalAlignment="Left" Margin="184,125,0,0" VerticalAlignment="Top"/>
+                </Grid>
+            </GroupBox>
+            <GroupBox Header="布局相关">
+                <Grid Height="400">
+                    <Label Name="lblWellFirst" Content="孔#:" HorizontalAlignment="Left" Margin="28,40,0,0" VerticalAlignment="Top"/>
+                    <Label Name="lblWellLast" Content="孔#:" HorizontalAlignment="Left" Margin="28,80,0,0" VerticalAlignment="Top"/>
+                    <TextBox HorizontalAlignment="Left" Margin="74,42,0,0" TextWrapping="Wrap" Text="TextBox" VerticalAlignment="Top" Width="60"/>
+                    <TextBox HorizontalAlignment="Left"  Margin="74,80,0,0" TextWrapping="Wrap" Text="TextBox" VerticalAlignment="Top" Width="60"/>
+                    <TextBox HorizontalAlignment="Left"  Margin="139,42,0,0" TextWrapping="Wrap" Text="TextBox" VerticalAlignment="Top" Width="60"/>
+                    <TextBox HorizontalAlignment="Left"  Margin="139,80,0,0" TextWrapping="Wrap" Text="TextBox" VerticalAlignment="Top" Width="60"/>
+                    <Label x:Name="lbl3" Content="X" HorizontalAlignment="Left" Margin="89,10,0,0" VerticalAlignment="Top" RenderTransformOrigin="2.387,-0.811"/>
+                    <Label x:Name="lbl4" Content="Y" HorizontalAlignment="Left" Margin="155,10,0,0" VerticalAlignment="Top" RenderTransformOrigin="4.78,-0.721"/>
+                    <Button Content="读取当前值" Name="btnReadFirstWell" HorizontalAlignment="Left" Margin="214,43,0,0" VerticalAlignment="Top" Width="75"/>
+                    <Button Content="读取当前值" Name="btnReadLastWell" HorizontalAlignment="Left" Margin="214,84,0,0" VerticalAlignment="Top" Width="75"/>
+                    <Button Content="移动到" x:Name="btnMoveToFirstWell" HorizontalAlignment="Left" Margin="294,43,0,0" VerticalAlignment="Top" Width="75"/>
+                    <Button Content="移动到" x:Name="btnMoveToLastWell" HorizontalAlignment="Left" Margin="294,84,0,0" VerticalAlignment="Top" Width="75"/>
+                    <Label x:Name="lbl5" Content="顶部高度：" HorizontalAlignment="Left" Margin="28,155,0,0" VerticalAlignment="Top"/>
+                    <Label x:Name="lbl6" Content="底部高度：" HorizontalAlignment="Left" Margin="28,197,0,0" VerticalAlignment="Top" RenderTransformOrigin="0.449,1.519"/>
+                    <TextBox HorizontalAlignment="Left"  Margin="112,155,0,0" TextWrapping="Wrap" Text="TextBox" VerticalAlignment="Top" Width="87" RenderTransformOrigin="0.51,-0.662"/>
+                    <TextBox HorizontalAlignment="Left" Margin="112,197,0,0" TextWrapping="Wrap" Text="TextBox" VerticalAlignment="Top" Width="87" RenderTransformOrigin="0.51,1.08"/>
+                    <Button Content="读取当前值" x:Name="btnReadFirstWell_Copy" HorizontalAlignment="Left" Margin="214,155,0,0" VerticalAlignment="Top" Width="75"/>
+                    <Button Content="读取当前值" x:Name="btnReadLastWell_Copy" HorizontalAlignment="Left" Margin="214,197,0,0" VerticalAlignment="Top" Width="75"/>
+                    <Button Content="移动到" x:Name="btnMoveToFirstWell_Copy" HorizontalAlignment="Left" Margin="294,155,0,0" VerticalAlignment="Top" Width="75"/>
+                    <Button Content="移动到" x:Name="btnMoveToLastWell_Copy" HorizontalAlignment="Left" Margin="294,197,0,0" VerticalAlignment="Top" Width="75"/>
+                    <Label Content="当前坐标：" HorizontalAlignment="Left" Margin="28,298,0,0" VerticalAlignment="Top" RenderTransformOrigin="-2.288,-1.756"/>
+                    <Label Content="X" HorizontalAlignment="Left" Margin="139,269,0,0" VerticalAlignment="Top"/>
+                    <Label Content="Y" HorizontalAlignment="Left" Margin="249,269,0,0" VerticalAlignment="Top" RenderTransformOrigin="4.027,0.495"/>
+                    <Label Content="Z" HorizontalAlignment="Left" Margin="322,269,0,0" VerticalAlignment="Top" RenderTransformOrigin="6.356,0.585"/>
+                    <TextBox HorizontalAlignment="Left"  Margin="112,298,0,0" TextWrapping="Wrap" Text="TextBox" VerticalAlignment="Top" Width="90"/>
+                    <TextBox HorizontalAlignment="Left"  Margin="207,298,0,0" TextWrapping="Wrap" Text="TextBox" VerticalAlignment="Top" Width="90" RenderTransformOrigin="-0.264,0.576"/>
+                    <TextBox HorizontalAlignment="Left"  Margin="302,298,0,0" TextWrapping="Wrap" Text="TextBox" VerticalAlignment="Top" Width="90"/>
+                    <Label Content="单位：0.1mm" HorizontalAlignment="Left" Margin="594,294,0,0" VerticalAlignment="Top"/>
+
+                </Grid>
+            </GroupBox>
+
+        </StackPanel>
+
+
     </Grid>
 </UserControl>
