@@ -8,7 +8,7 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace WorkStationController.Control.Properties {
+namespace WorkstationController.Control.Properties {
     
     
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]

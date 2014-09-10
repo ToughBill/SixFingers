@@ -13,14 +13,14 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 
-namespace CarvoEx2.Control
+namespace WorkstationController.Control
 {
     /// <summary>
-    /// Interaction logic for UserControl1.xaml
+    /// Interaction logic for LabwareUserControl.xaml
     /// </summary>
-    public partial class UserControl1 : UserControl
+    public partial class LabwareUserControl : UserControl
     {
-        public UserControl1()
+        public LabwareUserControl()
         {
             InitializeComponent();
         }

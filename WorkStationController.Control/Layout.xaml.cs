@@ -12,14 +12,14 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 
-namespace CarvoEx2.Control
+namespace WorkstationController.Control
 {
     /// <summary>
     /// Interaction logic for Layout.xaml
     /// </summary>
-    public partial class Layout : UserControl
+    public partial class LayoutUserControl : UserControl
     {
-        public Layout()
+        public LayoutUserControl()
         {
             InitializeComponent();
         }

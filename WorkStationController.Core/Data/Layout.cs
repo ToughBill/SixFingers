@@ -1,9 +1,9 @@
 ﻿using System;
 using System.Collections.ObjectModel;
 using System.Collections.Generic;
-using System.Linq;
 using System.IO;
 using System.Xml.Linq;
+using System.Xml.Serialization;
 using WorkstationController.Core.Utility;
 
 namespace WorkstationController.Core.Data
@@ -16,69 +16,35 @@ namespace WorkstationController.Core.Data
         /// <summary>
         /// Name of the layout
         /// </summary>
+        [XmlAttribute]
         public string Name { get; set; }
 
         /// <summary>
         /// Carrier collection on layout
         /// </summary>
-        private Dictionary<string, Carrier> carriers = new Dictionary<string, Carrier>();
+        private List<Carrier> carriers = new List<Carrier>();
 
         /// <summary>
         /// Gets the labware collection on layout
         /// </summary>
-        public ObservableCollection<Carrier> Carriers
+        [XmlArray("Carriers")]
+        [XmlArrayItem("Carrier", typeof(Carrier), IsNullable = false)]
+        public List<Carrier> Carriers
         {
             get
             {
-                return new ObservableCollection<Carrier>(this.carriers.Values);
+                return this.carriers;
             }
         }
 
         /// <summary>
         /// Create an instance of Layout from a XML file
         /// </summary>
-        /// <param name="fromXmlFile"></param>
-        /// <returns></returns>
+        /// <param name="fromXmlFile">XML file name</param>
+        /// <returns>A Layout instance</returns>
         public static Layout Create(string fromXmlFile)
         {
-            if (string.IsNullOrEmpty(fromXmlFile))
-                throw new ArgumentException(@"fromXmlFile", Properties.Resources.FileNameArgumentError);
-
-            // If file already exists, delete it
-            if (!File.Exists(fromXmlFile))
-            {
-                string errorMessage = string.Format(Properties.Resources.FileNotExistsError, fromXmlFile);
-                throw new ArgumentException(errorMessage);
-            }
-
-            // Load Labware XML file
-            XDocument layoutXmlDoc = XDocument.Load(fromXmlFile);
-            XElement layoutXElement = layoutXmlDoc.Descendants("Layout").First();
-
-            return Layout.Create(layoutXElement);
-        }
-
-        /// <summary>
-        /// Create an instance of Layout from a XML node
-        /// </summary>
-        /// <param name="layoutXElement"></param>
-        /// <returns></returns>
-        public static Layout Create(XElement layoutXElement)
-        {
-            if (layoutXElement == null)
-                throw new ArgumentNullException(@"layoutXElement", Properties.Resources.ArgumentNullError);
-
-            Layout layout = new Layout();
-            layout.Name = layoutXElement.Attribute("Name").Value;
-
-            // Read Carrier XElements
-            foreach(XElement carrierXElement in layoutXElement.Descendants("Carrier"))
-            {
-                Carrier carrier = Carrier.Create(carrierXElement);
-                layout.AddCarrier(carrier);
-            }
-
-            return layout;
+            return SerializationHelper.Deserialize<Layout>(fromXmlFile);
         }
 
         /// <summary>
@@ -92,12 +58,7 @@ namespace WorkstationController.Core.Data
                 throw new ArgumentNullException("carrier", "carrier must not be null.");
             }
 
-            if(this.carriers.ContainsKey(carrier.Name))
-            {
-                throw new ArgumentException(string.Format("Carrier - ({0}) already exists.", carrier.Name), "carrier");
-            }
-
-            this.carriers.Add(carrier.Name, carrier);
+            this.carriers.Add(carrier);
         }
 
         /// <summary>
@@ -111,16 +72,21 @@ namespace WorkstationController.Core.Data
                 throw new ArgumentNullException("carrier", "carrier must not be null.");
             }
 
-            this.carriers.Remove(carrier.Name);
+            this.carriers.Remove(carrier);
         }
 
         /// <summary>
-        /// Remove a carrier from layout by lable
+        /// Remove a carrier from layout by name
         /// </summary>
-        /// <param name="labwareLable">Lable of labware to remove</param>
-        public void RemoveLabware(string labwareLable)
+        /// <param name="carrierName">Lable of carrier to remove</param>
+        public void RemoveCarrier(string carrierName)
         {
-            this.carriers.Remove(labwareLable);
+            Carrier carrier = this.carriers.Find(c => c.Name == carrierName);
+
+            if(carrier != null)
+            {
+                this.carriers.Remove(carrier);
+            }
         }
 
         #region Serialization
@@ -131,36 +97,7 @@ namespace WorkstationController.Core.Data
         /// <param name="toXmlFile">XML file</param>
         public void Serialize(string toXmlFile)
         {
-            if (string.IsNullOrEmpty(toXmlFile))
-                throw new ArgumentException(@"toXmlFile", Properties.Resources.FileNameArgumentError);
-
-            // If file already exists, delete it
-            if (File.Exists(toXmlFile))
-                File.Delete(toXmlFile);
-
-            // Save to XML file
-            XDocument layoutXMLDoc = new XDocument(
-                new XDeclaration("1.0", "UTF-8", "yes"),
-                new XComment("Layout XML definition"),
-                this.ToXElement());
-
-            layoutXMLDoc.Save(toXmlFile);
-        }
-
-        /// <summary>
-        /// Creat an XElement instance from the object
-        /// </summary>
-        /// <returns>XElement instance</returns>
-        internal XElement ToXElement()
-        {
-            var carriersAsXElement = from carrier in this.Carriers
-                                     select
-                                     carrier.ToXElement();
-
-            XElement layoutXElement = new XElement("Layout", new XAttribute("Name", this.Name),
-                carriersAsXElement);
-
-            return layoutXElement;
+            SerializationHelper.Serialize<Layout>(toXmlFile, this);
         }
 
         #endregion
