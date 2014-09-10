@@ -8,22 +8,24 @@ using WorkstationController.Core.Utility;
 
 namespace WorkStationController.Core.Data
 {
+    [Serializable]
      public class Worktable : ISerialization
     {
-        public Size worktableSize;
+        public const double distanceMMBetweenAdjacentPins = 25.0;
+        public Size Size{ get; set; }
         
          // the size of each rows' pin, normally the first row's size is smaller
         // but the second & third are same.
-        public Size firstRowPinSize;
-        public Size secondRowPinSize;
-        public Size thirdRowPinSize; 
+        public Size FirstRowPinSize{ get; set; }
+        public Size SecondRowPinSize{ get; set; }
+        public Size ThirdRowPinSize{ get; set; } 
 
         //position of the left/top pin
-        public Point firstPinPosition;
+        public Point FirstPinPosition{ get; set; }
 
         //the pin's y position of the second row, there are 3 rows of pin
-        public double yPosRows2Pin;
-        public double yPosRows3Pin;
+        public double YPosRows2Pin{ get; set; }
+        public double YPosRows3Pin{ get; set; }
 
         private Worktable()
         {
