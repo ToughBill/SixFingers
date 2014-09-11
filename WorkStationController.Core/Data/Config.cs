@@ -7,9 +7,19 @@ using WorkstationController.Core.Data;
 
 namespace WorkStationController.Core.Data
 {
+    /// <summary>
+    /// Data definition of Configurations
+    /// </summary>
     public class Configurations
     {
-        static Configurations instance = null;
+        /// <summary>
+        /// Single instance of Configurations
+        /// </summary>
+        static private Configurations instance = null;
+
+        /// <summary>
+        /// Gets the single instance of Configurations
+        /// </summary>
         static public Configurations Instance
         {
             get
@@ -19,15 +29,25 @@ namespace WorkStationController.Core.Data
                 return instance;
             }
         }
-        private Configurations()
-        {
 
-        }
+        /// <summary>
+        /// Arms collection
+        /// </summary>
+        private List<ArmInfo> armsInfo = null;
 
-        private List<ArmInfo> armsInfo;
-        private Worktable tableSurface;
-        public int pumpComPort;
-        
+        /// <summary>
+        /// Worktable instance
+        /// </summary>
+        private Worktable tableSurface = new Worktable();
+
+        /// <summary>
+        /// Gets or sets the pump com port
+        /// </summary>
+        public int PumpComPort { get; set; }
+
+        /// <summary>
+        /// Gets or sets the arms collection
+        /// </summary>
         public List<ArmInfo> ArmsInfo
         {
             get
@@ -40,55 +60,11 @@ namespace WorkStationController.Core.Data
             }
         }
 
-    }
-
-    public class ArmInfo
-    {
-        public byte ID;
-        public byte address;
-        private List<TipType> tipsType;
-        private List<PumpInfo> pumpsInfo;
-        public int TipCount 
-        { 
-            get
-            {
-                return tipsType.Count;
-            }
-        }
-
-        public List<TipType> TipsType
-        { 
-            get
-            {
-                return tipsType;
-            }
-            set
-            {
-                tipsType = value;
-            }
-        }
-
-        public List<PumpInfo> PumpsInfo
+        /// <summary>
+        /// Private default constructor
+        /// </summary>
+        private Configurations()
         {
-            get
-            {
-                return pumpsInfo;
-            }
-            set
-            {
-                pumpsInfo = value;
-            }
         }
-    }
-    public class TipInfo
-    {
-        public TipType tipType;
-        public double DilutorCapacity;
-    }
-
-    public enum TipType
-    {
-        Fixed = 0,
-        Disposable = 1,
     }
 }

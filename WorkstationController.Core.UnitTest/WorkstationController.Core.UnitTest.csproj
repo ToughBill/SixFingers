@@ -57,6 +57,7 @@
     <Compile Include="Data\LabwareTests.cs" />
     <Compile Include="Data\LayoutTests.cs" />
     <Compile Include="Data\LiquidClassTests.cs" />
+    <Compile Include="Data\WorktableTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="UnitTestHelper.cs" />
     <Compile Include="Utility\SerializationHelperTests.cs" />

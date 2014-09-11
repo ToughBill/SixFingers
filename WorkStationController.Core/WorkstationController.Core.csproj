@@ -43,6 +43,7 @@
     <Reference Include="WindowsBase" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Data\ArmInfo.cs" />
     <Compile Include="Data\Carrier.cs" />
     <Compile Include="Data\Config.cs" />
     <Compile Include="Data\Labware.cs" />

@@ -1,10 +1,6 @@
 ﻿using System;
-using System.Diagnostics;
-using System.Linq;
 using System.IO;
-using System.Reflection;
 using System.Windows;
-using System.Xml.Linq;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using WorkstationController.Core.Data;
 
@@ -65,8 +61,6 @@ namespace WorkstationController.Core.UnitTest
             labware2.ZDispense = 3500;
             labware2.ZMax = 50;
             carrier.AddLabware(labware2);
-
-            Debug.Assert(carrier.Labwares.Count == 2);
 
             carrier.Serialize(this._xmlFileWithLabwarePath);
         }

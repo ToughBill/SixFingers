@@ -6,42 +6,84 @@ using System.Text;
 using System.Windows;
 using WorkstationController.Core.Utility;
 
-namespace WorkStationController.Core.Data
+namespace WorkstationController.Core.Data
 {
+    /// <summary>
+    /// Data definition of Worktable
+    /// </summary>
     [Serializable]
-     public class Worktable : ISerialization
+    public class Worktable : ISerialization
     {
+        /// <summary>
+        /// Distance between adjancent pins, in unit of mm
+        /// </summary>
         public const double distanceMMBetweenAdjacentPins = 25.0;
+
+        /// <summary>
+        /// Gets or sets the size of the worktable
+        /// </summary>
         public Size Size{ get; set; }
         
-         // the size of each rows' pin, normally the first row's size is smaller
+        //
+        // The size of each rows' pin, normally the first row's size is smaller
         // but the second & third are same.
+        //
+
+        /// <summary>
+        /// The size of pin in first row
+        /// </summary>
         public Size FirstRowPinSize{ get; set; }
+
+        /// <summary>
+        /// The size of pin in second row
+        /// </summary>
         public Size SecondRowPinSize{ get; set; }
+
+        /// <summary>
+        /// The size of pin in thrid row
+        /// </summary>
         public Size ThirdRowPinSize{ get; set; } 
 
-        //position of the left/top pin
+        /// <summary>
+        /// Position of the most left-top pin
+        /// </summary>
         public Point FirstPinPosition{ get; set; }
 
-        //the pin's y position of the second row, there are 3 rows of pin
+        //
+        // The pin's y position of the second row, there are 3 rows of pin
+        //
+
+        /// <summary>
+        /// The Y position of the second row
+        /// </summary>
         public double YPosRows2Pin{ get; set; }
+
+        /// <summary>
+        /// The Y position of the third row
+        /// </summary>
         public double YPosRows3Pin{ get; set; }
 
-        private Worktable()
+        /// <summary>
+        /// Default constructor
+        /// </summary>
+        internal Worktable()
         {
         }
 
-        //pin's color is defaulted to black
-        //worktable's color is default to lightGray
-        //public void Draw(System.Windows.Media.DrawingContext drawingContext, Size wholeWindow)
-        //{
-        //    throw new NotImplementedException();
-        //}
+        /// <summary>
+        /// Create an instance of Worktable from a XML file
+        /// </summary>
+        /// <param name="fromXmlFile">XML file name</param>
+        /// <returns>A Worktable instance</returns>
         public static Worktable Create(string fromXmlFile)
         {
             return SerializationHelper.Deserialize<Worktable>(fromXmlFile);
         }
 
+        /// <summary>
+        /// Serialize to a XML file
+        /// </summary>
+        /// <param name="toXmlFile">XML file for serialization</param>
         public void Serialize(string toXmlFile)
         {
             SerializationHelper.Serialize<Worktable>(toXmlFile, this);
