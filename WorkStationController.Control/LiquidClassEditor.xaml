@@ -1,0 +1,124 @@
+﻿<UserControl x:Class="WorkstationController.Control.LiquidClassEditor"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             mc:Ignorable="d" 
+             d:DesignHeight="300" d:DesignWidth="500">
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="8*"/>
+            <RowDefinition Height="1*"/>
+        </Grid.RowDefinitions>
+        <!--Liquid Class name-->
+        <StackPanel Grid.Row="0" Orientation="Horizontal" HorizontalAlignment="Left">
+            <Label Content="Liquid Class Name:" Margin="3"/>
+            <Border Margin="3" BorderThickness="1" BorderBrush="Blue">
+                <TextBlock x:Name="tb_liquidClassName" MinWidth="100"/>
+            </Border>
+        </StackPanel>
+
+        <!--Liquid Class settings-->
+        <TabControl Grid.Row="1">
+            <TabItem Header="Aspirate">
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="89.737"/>
+                        <ColumnDefinition Width="41.263"/>
+                        <ColumnDefinition Width="Auto"/>
+                        <ColumnDefinition/>
+                    </Grid.ColumnDefinitions>
+                    <Grid.RowDefinitions>
+                        <RowDefinition/>
+                        <RowDefinition/>
+                        <RowDefinition/>
+                        <RowDefinition/>
+                        <RowDefinition/>
+                        <RowDefinition/>
+                        <RowDefinition/>
+                        <RowDefinition/>
+                    </Grid.RowDefinitions>
+                    <Label Grid.Row="0" Grid.Column="2" Content="Single Pipetting"/>
+                    <Label Grid.Row="1" Grid.Column="0" Content="Aspiration Speed:" HorizontalContentAlignment="Right" Grid.ColumnSpan="2"/>
+                    <Label Grid.Row="2" Grid.Column="0" Content="Delay:" HorizontalContentAlignment="Right" Grid.ColumnSpan="2"/>
+                    <Label Grid.Row="3" Grid.Column="0" Content="System Trailing Airgap:" HorizontalContentAlignment="Right" Grid.ColumnSpan="2"/>
+                    <Label Grid.Row="4" Grid.Column="0" Content="Leading Airgap:" HorizontalContentAlignment="Right" Grid.ColumnSpan="2"/>
+                    <Label Grid.Row="5" Grid.Column="0" Content="Trailing Airgap:" HorizontalContentAlignment="Right" Grid.ColumnSpan="2"/>
+                    <Label Grid.Row="6" Grid.Column="0" Content="Excess Volume:" HorizontalContentAlignment="Right" Grid.ColumnSpan="2"/>
+                    <Label Grid.Row="7" Grid.Column="0" Content="Conditioning Volume:" HorizontalContentAlignment="Right" Grid.ColumnSpan="2"/>
+                    <StackPanel Grid.Row="1" Grid.Column="2" Orientation="Horizontal" Margin="3,0">
+                        <TextBox x:Name="tb_aspirationSpeed" MinWidth="70" Margin="2"/>
+                        <Label Content="μl / s"/>
+                    </StackPanel>
+                    <StackPanel Grid.Row="2" Grid.Column="2" Orientation="Horizontal" Margin="3,0">
+                        <TextBox x:Name="tb_aspirationDelay" MinWidth="70" Margin="2"/>
+                        <Label Content="ms"/>
+                    </StackPanel>
+                    <StackPanel Grid.Row="3" Grid.Column="2" Orientation="Horizontal" Margin="3,0">
+                        <TextBox x:Name="tb_sysTrailingAirGap" MinWidth="70" Margin="2"/>
+                        <Label Content="μl"/>
+                    </StackPanel>
+                    <StackPanel Grid.Row="4" Grid.Column="2" Orientation="Horizontal" Margin="3,0">
+                        <TextBox x:Name="tb_leadingAirGap" MinWidth="70" Margin="2"/>
+                        <Label Content="μl"/>
+                    </StackPanel>
+                    <StackPanel Grid.Row="5" Grid.Column="2" Orientation="Horizontal" Margin="3,0">
+                        <TextBox x:Name="tb_trailingAirGap" MinWidth="70" Margin="2"/>
+                        <Label Content="μl"/>
+                    </StackPanel>
+                    <StackPanel Grid.Row="6" Grid.Column="2" Orientation="Horizontal" Margin="3,0">
+                        <TextBox x:Name="tb_excessVolume" MinWidth="70" Margin="2"/>
+                        <Label Content="μl"/>
+                    </StackPanel>
+                    <StackPanel Grid.Row="7" Grid.Column="2" Orientation="Horizontal" Margin="3,0">
+                        <TextBox x:Name="tb_conditioningVolume" MinWidth="70" Margin="2"/>
+                        <Label Content="μl"/>
+                    </StackPanel>
+                    <!--Sketch picture of aspiration-->
+                    <Border Grid.Row="1" Grid.Column="3" Grid.RowSpan="7" BorderThickness="1" BorderBrush="Blue" Margin="2">
+                        <Canvas>
+                            <Label Content="Sketch picture of aspiration" Canvas.Left="40" Canvas.Top="70"/>
+                        </Canvas>
+                    </Border>
+                </Grid>
+            </TabItem>
+            <TabItem Header="Dispense">
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="120"/>
+                        <ColumnDefinition Width="Auto"/>
+                        <ColumnDefinition Width="Auto"/>
+                    </Grid.ColumnDefinitions>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                    </Grid.RowDefinitions>
+                    <Label Grid.Row="0" Grid.Column="1" Content="Single Pipetting"/>
+                    <Label Grid.Row="1" Grid.Column="0" Content="Dispense Speed:" HorizontalContentAlignment="Right"/>
+                    <Label Grid.Row="2" Grid.Column="0" Content="Delay:" HorizontalContentAlignment="Right"/>
+                    <TextBlock Grid.Row="3" Grid.Column="0" Text="Trailing Airgap after each Dispense:" TextWrapping="Wrap" TextAlignment="Right" Margin="0,0,5,0"/>
+                    <StackPanel Grid.Row="1" Grid.Column="1" Orientation="Horizontal" Margin="3,0">
+                        <TextBox x:Name="tb_dispenseSpeed" MinWidth="70" Margin="2"/>
+                        <Label Content="μl / s"/>
+                    </StackPanel>
+                    <StackPanel Grid.Row="2" Grid.Column="1" Orientation="Horizontal" Margin="3,0">
+                        <TextBox x:Name="tb_dispenseDelay" MinWidth="70" Margin="2"/>
+                        <Label Content="ms"/>
+                    </StackPanel>
+                    <StackPanel Grid.Row="3" Grid.Column="1" Orientation="Horizontal" VerticalAlignment="Center">
+                        <CheckBox x:Name="chk_trailingAirGapAfterDispense" Content="yes" Margin="5,0,0,0"/>
+                    </StackPanel>
+                </Grid>
+            </TabItem>
+        </TabControl>
+
+        <!--Buttons-->
+        <StackPanel Grid.Row="2" Orientation="Horizontal" HorizontalAlignment="Right">
+            <Button x:Name="btn_save" Content="Save" Margin="3" MinWidth="80"/>
+        </StackPanel>
+    </Grid>
+</UserControl>

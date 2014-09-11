@@ -58,7 +58,7 @@
                     <TextBox HorizontalAlignment="Left"  Margin="112,298,0,0" TextWrapping="Wrap" Text="TextBox" VerticalAlignment="Top" Width="90"/>
                     <TextBox HorizontalAlignment="Left"  Margin="207,298,0,0" TextWrapping="Wrap" Text="TextBox" VerticalAlignment="Top" Width="90" RenderTransformOrigin="-0.264,0.576"/>
                     <TextBox HorizontalAlignment="Left"  Margin="302,298,0,0" TextWrapping="Wrap" Text="TextBox" VerticalAlignment="Top" Width="90"/>
-                    <Label Content="单位：0.1mm" HorizontalAlignment="Left" Margin="594,294,0,0" VerticalAlignment="Top"/>
+                    <Label Content="单位：0.1 mm" HorizontalAlignment="Left" Margin="594,294,0,0" VerticalAlignment="Top"/>
 
                 </Grid>
             </GroupBox>
