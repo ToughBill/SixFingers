@@ -49,15 +49,15 @@
     <Reference Include="PresentationFramework" />
   </ItemGroup>
   <ItemGroup>
-    <Page Include="Labware.xaml">
+    <Page Include="LabwareEditor.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
-    <Compile Include="Labware.xaml.cs">
-      <DependentUpon>Labware.xaml</DependentUpon>
+    <Compile Include="LabwareEditor.xaml.cs">
+      <DependentUpon>LabwareEditor.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
-    <Page Include="Layout.xaml">
+    <Page Include="LayoutEditor.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -67,8 +67,8 @@
     </Page>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Layout.xaml.cs">
-      <DependentUpon>Layout.xaml</DependentUpon>
+    <Compile Include="LayoutEditor.xaml.cs">
+      <DependentUpon>LayoutEditor.xaml</DependentUpon>
     </Compile>
     <Compile Include="LiquidClassEditor.xaml.cs">
       <DependentUpon>LiquidClassEditor.xaml</DependentUpon>
