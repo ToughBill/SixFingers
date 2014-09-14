@@ -27,13 +27,13 @@ namespace WorkstationController.Core.Data
         public string Name { get; set; }
 
         /// <summary>
-        /// Gets or sets the X-length of the carrier, in millimetre(mm.)
+        /// Gets or sets the X-length of the carrier, in 0.1 millimetre(0.1 mm.)
         /// </summary>
         [XmlAttribute]
         public int XLength { get; set; }
 
         /// <summary>
-        /// Gets or sets the Y-length of the carrier, in millimetre(mm.)
+        /// Gets or sets the Y-length of the carrier, in 0.1 millimetre(0.1 mm.)
         /// </summary>
         [XmlAttribute]
         public int YLength { get; set; }
@@ -44,6 +44,8 @@ namespace WorkstationController.Core.Data
         [XmlAttribute]
         public int AllowedLabwareType { get; set; }
 
+
+        public Point Offset { get; set; }
         /// <summary>
         /// The maximum number of labware installed on the carrier
         /// </summary>
@@ -51,10 +53,10 @@ namespace WorkstationController.Core.Data
         public int AllowedLabwareNumber { get; set; }
 
         /// <summary>
-        /// The offset (the position of the top-left coner) of the carrier on worktable
+        /// Column id of the plastic pin on which the carrier sits
         /// </summary>
         [XmlElement]
-        public Point PositionOnWorktable { get; set; }
+        public int Grid { get; set; }
 
         /// <summary>
         /// Gets the labwares on the carrier
