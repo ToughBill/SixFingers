@@ -126,4 +126,7 @@
   <data name="FileNotExistsError" xml:space="preserve">
     <value>File({0}) does not exists.</value>
   </data>
+  <data name="FolderNotExistsError" xml:space="preserve">
+    <value>Directory ({0}) does not exists.</value>
+  </data>
 </root>
