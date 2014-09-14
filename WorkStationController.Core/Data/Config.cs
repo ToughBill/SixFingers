@@ -38,7 +38,7 @@ namespace WorkStationController.Core.Data
         /// <summary>
         /// Worktable instance
         /// </summary>
-        private Worktable tableSurface = new Worktable();
+        private Worktable tableSurface = null;
 
         /// <summary>
         /// Gets or sets the pump com port
