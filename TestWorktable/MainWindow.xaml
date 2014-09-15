@@ -1,9 +1,0 @@
-﻿<Window x:Class="TestWorktable.MainWindow"
-        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        xmlns:local="clr-namespace:TestWorktable"
-        Title="MainWindow" Height="500" Width="600">
-    <Grid>
-        <local:WorktableGrid x:Name="grid1" Margin="10" VerticalAlignment="Stretch" HorizontalAlignment="Stretch"/>
-    </Grid>
-</Window>
