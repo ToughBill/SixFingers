@@ -27,8 +27,9 @@ namespace WorkstationController.Core.UnitTest
             worktable.SecondRowPinSize = new Size(3, 8);
             worktable.ThirdRowPinSize = new Size(3, 8);
             worktable.FirstPinPosition = new Point(100, 80);
-            worktable.YPosRows2Pin = 400;
-            worktable.YPosRows3Pin = 800;
+
+            worktable.SecondPinYPosition = 400;
+            worktable.ThirdPinYPosition = 800;
 
             worktable.Serialize(this._xmlFileWorktablePath);
         }
@@ -40,7 +41,7 @@ namespace WorkstationController.Core.UnitTest
 
             Assert.AreEqual<Size>(worktable.Size, new Size(2000, 1000));
             Assert.AreEqual<Point>(worktable.FirstPinPosition, new Point(100, 80));
-            Assert.AreEqual<double>(worktable.YPosRows3Pin, 800);
+            Assert.AreEqual<double>(worktable.ThirdPinYPosition, 800);
         }
     }
 }

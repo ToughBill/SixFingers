@@ -6,27 +6,63 @@ using System.Text;
 using System.Windows;
 using WorkstationController.Core.Utility;
 
-namespace WorkStationController.Core.Data
+namespace WorkstationController.Core.Data
 {
+    /// <summary>
+    /// Data definition of Worktable 
+    /// </summary>
     [Serializable]
      public class Worktable : ISerialization
     {
-        public const int distanceBetweenAdjacentPins = 250;
+        /// <summary>
+        /// Distance between adjacent pins in mm.
+        /// </summary>
+        public const int DistanceBetweenAdjacentPins = 250;
+
+        /// <summary>
+        /// The size of the worktable
+        /// </summary>
         public Size Size{ get; set; }
+
+        /// <summary>
+        /// The number of grid
+        /// </summary>
         public int GridCount{get; set;}
-         // the size of each rows' pin, normally the first row's size is smaller
+
+        // The size of each rows' pin, normally the first row's size is smaller
         // but the second & third are same.
         public Size FirstRowPinSize{ get; set; }
         public Size SecondRowPinSize{ get; set; }
         public Size ThirdRowPinSize{ get; set; } 
 
-        //position of the left/top pin
+        /// <summary>
+        /// Position of the left-top pin
+        /// </summary>
         public Point FirstPinPosition{ get; set; }
 
-        //the pin's y position of the second row, there are 3 rows of pin
+        /// <summary>
+        /// The pin's Y position of the second row, there are 3 rows of pin
+        /// </summary>
         public int SecondPinYPosition{ get; set; }
         public int ThirdPinYPosition{ get; set; }
 
+        /// <summary>
+        /// Default constructor
+        /// </summary>
+        public Worktable()
+        { }
+
+        /// <summary>
+        /// Create an instance of Worktable
+        /// </summary>
+        /// <param name="sz"></param>
+        /// <param name="firstRowPinSize"></param>
+        /// <param name="secondRowPinSize"></param>
+        /// <param name="thirdRowPinSize"></param>
+        /// <param name="firstPinPos"></param>
+        /// <param name="secondPinYPos"></param>
+        /// <param name="thirdPinYPos"></param>
+        /// <param name="gridCount"></param>
         public Worktable(Size sz,
             Size firstRowPinSize,
             Size secondRowPinSize, 
@@ -46,17 +82,20 @@ namespace WorkStationController.Core.Data
             this.GridCount = gridCount;
         }
 
-        //pin's color is defaulted to black
-        //worktable's color is default to lightGray
-        //public void Draw(System.Windows.Media.DrawingContext drawingContext, Size wholeWindow)
-        //{
-        //    throw new NotImplementedException();
-        //}
+        /// <summary>
+        /// Create an instance of Worktable from a XML file
+        /// </summary>
+        /// <param name="fromXmlFile">XML file name</param>
+        /// <returns>An instance of Worktable</returns>
         public static Worktable Create(string fromXmlFile)
         {
             return SerializationHelper.Deserialize<Worktable>(fromXmlFile);
         }
 
+        /// <summary>
+        /// Serialize an instance of Worktable to XML file
+        /// </summary>
+        /// <param name="toXmlFile">XML file name</param>
         public void Serialize(string toXmlFile)
         {
             SerializationHelper.Serialize<Worktable>(toXmlFile, this);

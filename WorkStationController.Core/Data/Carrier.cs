@@ -44,8 +44,12 @@ namespace WorkstationController.Core.Data
         [XmlAttribute]
         public int AllowedLabwareType { get; set; }
 
-
+        /// <summary>
+        /// The offset of the left-top corner of carrier against the most left-top pin the carrier installed on
+        /// </summary>
+        [XmlElement]
         public Point Offset { get; set; }
+
         /// <summary>
         /// The maximum number of labware installed on the carrier
         /// </summary>

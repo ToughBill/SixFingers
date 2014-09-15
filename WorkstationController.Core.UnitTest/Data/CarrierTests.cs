@@ -28,7 +28,7 @@ namespace WorkstationController.Core.UnitTest
             carrier.YLength = 500;
             carrier.AllowedLabwareNumber = 3;
             carrier.AllowedLabwareType = 2;
-            carrier.PositionOnWorktable = new Point(200, 120);
+            carrier.Grid = 3;
 
             Labware labware1 = new Labware();
             labware1.Name = "Labware1";
@@ -74,7 +74,7 @@ namespace WorkstationController.Core.UnitTest
             carrier.YLength = 500;
             carrier.AllowedLabwareNumber = 3;
             carrier.AllowedLabwareType = 2;
-            carrier.PositionOnWorktable = new Point(200, 120);
+            carrier.Grid = 3;
 
             carrier.Serialize(this._xmlFileWithoutLabwarePath);
         }

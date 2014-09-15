@@ -43,7 +43,7 @@ namespace WorkstationController.Core.UnitTest
             carrier.YLength = 500;
             carrier.AllowedLabwareNumber = 3;
             carrier.AllowedLabwareType = 2;
-            carrier.PositionOnWorktable = new Point(200, 120);
+            carrier.Grid = 3;
 
             string xmlFileName = Path.Combine(UnitTestHelper.GetTestModuleDirectory(), "testresult", "CarrierNoLabwareSerializeTest.xml");
 
@@ -60,7 +60,7 @@ namespace WorkstationController.Core.UnitTest
             carrier.YLength = 500;
             carrier.AllowedLabwareNumber = 3;
             carrier.AllowedLabwareType = 2;
-            carrier.PositionOnWorktable = new Point(200, 120);
+            carrier.Grid = 1;
 
             #region Labware1
             Labware labware1 = new Labware();

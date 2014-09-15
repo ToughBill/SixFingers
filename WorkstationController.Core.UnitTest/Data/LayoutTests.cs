@@ -43,7 +43,7 @@ namespace WorkstationController.Core.UnitTest
             carrier1.YLength = 500;
             carrier1.AllowedLabwareNumber = 3;
             carrier1.AllowedLabwareType = 2;
-            carrier1.PositionOnWorktable = new Point(200, 120);
+            carrier1.Grid = 1;
 
             Labware labware11 = new Labware();
             labware11.Name = "Labware11";
@@ -87,7 +87,7 @@ namespace WorkstationController.Core.UnitTest
             carrier2.YLength = 500;
             carrier2.AllowedLabwareNumber = 3;
             carrier2.AllowedLabwareType = 2;
-            carrier2.PositionOnWorktable = new Point(200, 120);
+            carrier2.Grid = 4;
 
             Labware labware21 = new Labware();
             labware21.Name = "Labware21";
