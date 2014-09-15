@@ -19,7 +19,7 @@ using WorkstationController.Core.Data;
 namespace TestWorktable
 {
     /// <summary>
-    /// MainWindow.xaml 的交互逻辑
+    /// MainWindow.xaml logic
     /// </summary>
     public partial class MainWindow : Window
     {
@@ -36,16 +36,11 @@ namespace TestWorktable
                 new Size(4000, 8000),
                 new Size(20, 40), 
                 new Size(20, 60),
-                new Size(20, 60), new Point(50, 50),1500,3500,20);
+                new Size(20, 60), new Point(50, 50), 1500, 3500, 20);
             Configurations.Instance.Worktable = worktable;
             WorktableVisual worktableVisual = new WorktableVisual();
             grid1.AttachWorktableVisual(worktableVisual);
             grid1.InvalidateVisual();
         }
-
-        //private void grid1_SizeChanged(object sender, SizeChangedEventArgs e)
-        //{
-        //    Debug.WriteLine("size changed : {0} , {1}", e.NewSize.Width, e.NewSize.Height);
-        //}
     }
 }
