@@ -3,7 +3,7 @@ using System.Windows;
 using System.Windows.Media;
 using WorkstationController.Core.Data;
 
-namespace Visuals
+namespace WorkstationController.VisualElement
 {
     /// <summary>
     /// Carrier GUI element

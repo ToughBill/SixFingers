@@ -47,6 +47,9 @@
     <Reference Include="WindowsBase" />
     <Reference Include="PresentationCore" />
     <Reference Include="PresentationFramework" />
+    <Reference Include="WorkStationController.Core">
+      <HintPath>..\bin\Debug\WorkStationController.Core.dll</HintPath>
+    </Reference>
   </ItemGroup>
   <ItemGroup>
     <ApplicationDefinition Include="App.xaml">
@@ -98,10 +101,6 @@
     <ProjectReference Include="..\Visuals\Visuals.csproj">
       <Project>{add9b1b7-1bbd-4439-aa52-4a503d652867}</Project>
       <Name>Visuals</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\WorkStationController.Core\WorkstationController.Core.csproj">
-      <Project>{c3ba4ccf-e014-4e15-be64-1675c58ef27a}</Project>
-      <Name>WorkstationController.Core</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

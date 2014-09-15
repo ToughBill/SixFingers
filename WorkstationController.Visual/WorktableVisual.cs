@@ -2,7 +2,7 @@
 using System.Windows.Media;
 using WorkstationController.Core.Data;
 
-namespace Visuals
+namespace WorkstationController.VisualElement
 {
     /// <summary>
     /// Worktable drawing element

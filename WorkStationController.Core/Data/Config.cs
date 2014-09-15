@@ -5,7 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using WorkstationController.Core.Data;
 
-namespace WorkStationController.Core.Data
+namespace WorkstationController.Core.Data
 {
     /// <summary>
     /// Data definition of Configurations
