@@ -5,6 +5,7 @@ using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
 using WorkstationController.Core.Data;
+using WorkstationController.Core.Utility;
 
 namespace WorkstationController
 {
@@ -13,13 +14,21 @@ namespace WorkstationController
     /// </summary>
     public partial class MainWindow : Window
     {
-        ObservableCollection<Labware> _labwares = new ObservableCollection<Labware>();
-        ObservableCollection<Carrier> _carriers = new ObservableCollection<Carrier>();
-        ObservableCollection<Layout> _layouts = new ObservableCollection<Layout>();
-        ObservableCollection<LiquidClass> _liquidClasses = new ObservableCollection<LiquidClass>();
+        #region Private members
+        private InstrumentsManager _instrumentsManager = InstrumentsManager.Instance;
 
+        // Dynamic tab items
         private List<TabItem> _tabItems = new List<TabItem>();
         private TabItem _tabAdd = new TabItem();
+        #endregion
+
+        public InstrumentsManager InstrumentsManager
+        {
+            get
+            {
+                return this._instrumentsManager;
+            }
+        }
 
         /// <summary>
         /// Default constructor
@@ -27,6 +36,11 @@ namespace WorkstationController
         public MainWindow()
         {
             InitializeComponent();
+
+            this._instrumentsManager.Initialize();
+
+            // Set the data context of the dialog
+            this.DataContext = this;
 
             // add a tabItem with + in header 
             _tabAdd.Header = "+";

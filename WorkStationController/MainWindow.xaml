@@ -33,36 +33,29 @@
                             <TabItem.LayoutTransform>
                                 <RotateTransform Angle="90"></RotateTransform>
                             </TabItem.LayoutTransform>
-                            <StackPanel>
-                                <Expander Header="Microplates" IsExpanded="True" Margin="3">
-                                    <StackPanel>
-                                        <TextBlock Text="384 Well Plates"/>
-                                        <TextBlock Text="384 Well Plates"/>
-                                        <TextBlock Text="384 Well Plates"/>
-                                    </StackPanel>
-                                </Expander>
-
-                                <Expander Header="Tips" IsExpanded="True" Margin="3">
-                                    <StackPanel>
-                                        <TextBlock Text="384 Well Plates"/>
-                                        <TextBlock Text="384 Well Plates"/>
-                                        <TextBlock Text="384 Well Plates"/>
-                                    </StackPanel>
-                                </Expander>
-
-                                <Expander Header="Wash and Waste" IsExpanded="True" Margin="3">
-                                    <StackPanel>
-                                        <TextBlock Text="384 Well Plates"/>
-                                        <TextBlock Text="384 Well Plates"/>
-                                        <TextBlock Text="384 Well Plates"/>
-                                    </StackPanel>
-                                </Expander>
-                            </StackPanel>
+                            <DockPanel>
+                                <ListBox x:Name="lb_labwares" DockPanel.Dock="Top" ItemsSource="{Binding Path=InstrumentsManager.Labwares}">
+                                    <ListBox.ItemTemplate>
+                                        <DataTemplate>
+                                            <TextBlock Text="{Binding Path=Name}" ToolTip="{Binding Path=Name}"/>
+                                        </DataTemplate>
+                                    </ListBox.ItemTemplate>
+                                </ListBox>
+                            </DockPanel>
                         </TabItem>
                         <TabItem Header="CARRIERS" Background="Blue">
                             <TabItem.LayoutTransform>
                                 <RotateTransform Angle="90"></RotateTransform>
                             </TabItem.LayoutTransform>
+                            <DockPanel>
+                                <ListBox x:Name="lb_carriers" DockPanel.Dock="Top" ItemsSource="{Binding Path=InstrumentsManager.Carriers}">
+                                    <ListBox.ItemTemplate>
+                                        <DataTemplate>
+                                            <TextBlock Text="{Binding Path=Name}" ToolTip="{Binding Path=Name}"/>
+                                        </DataTemplate>
+                                    </ListBox.ItemTemplate>
+                                </ListBox>
+                            </DockPanel>
                         </TabItem>
                         <TabItem Header="RECIPES" Background="Coral">
                             <TabItem.LayoutTransform>
@@ -73,6 +66,15 @@
                             <TabItem.LayoutTransform>
                                 <RotateTransform Angle="90"></RotateTransform>
                             </TabItem.LayoutTransform>
+                            <DockPanel>
+                                <ListBox x:Name="lb_liquidclass" DockPanel.Dock="Top" ItemsSource="{Binding Path=InstrumentsManager.LiquidClasses}">
+                                    <ListBox.ItemTemplate>
+                                        <DataTemplate>
+                                            <TextBlock Text="{Binding Path=Name}" ToolTip="{Binding Path=Name}"/>
+                                        </DataTemplate>
+                                    </ListBox.ItemTemplate>
+                                </ListBox>
+                            </DockPanel>
                         </TabItem>
                     </TabControl>
                 </DockPanel>

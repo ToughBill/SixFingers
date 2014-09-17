@@ -16,7 +16,7 @@ namespace WorkstationController.Core.Utility
     {
         #region Private members
         // Single instance of InstrumentsManager
-        private InstrumentsManager _singleInstance = null;
+        private static InstrumentsManager _singleInstance = null;
 
         // Paths for each instruments folder
         private string _labwareDirectory = string.Empty;
@@ -45,16 +45,16 @@ namespace WorkstationController.Core.Utility
         /// <summary>
         /// Gets the single insntace of InstrumentsManager
         /// </summary>
-        public InstrumentsManager Instance
+        public static InstrumentsManager Instance
         {
             get
             {
-                if(this._singleInstance == null)
+                if(_singleInstance == null)
                 {
-                    this._singleInstance = new InstrumentsManager();
+                    _singleInstance = new InstrumentsManager();
                 }
 
-                return this._singleInstance;
+                return _singleInstance;
             }
         }
 
@@ -115,7 +115,7 @@ namespace WorkstationController.Core.Utility
         public void Initialize()
         {
             #region Check directory for each instrument
-            string currentDirectory = Assembly.GetExecutingAssembly().Location;
+            string currentDirectory = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
 
             // If any of the instrument directory not exists, the initialization process abort.
             this._labwareDirectory = Path.Combine(currentDirectory, "Labwares");
@@ -156,7 +156,7 @@ namespace WorkstationController.Core.Utility
         /// <summary>
         /// Initialize the file system watches for instruments XML files.
         /// </summary>
-        public void InitalizeFileSystemWatches()
+        internal void InitalizeFileSystemWatches()
         {
             string extFilter = "*.xml";
 
@@ -199,7 +199,8 @@ namespace WorkstationController.Core.Utility
         private void OnLabwareXmlFileCreated(object sender, FileSystemEventArgs e)
         {
             Labware labware = SerializationHelper.Deserialize<Labware>(e.FullPath);
-            
+            this._labwares.Add(e.FullPath, labware);
+            this.PropertyChanged(this, new PropertyChangedEventArgs("Labwares"));
         }
 
         private void OnLabwareXmlFileDeleted(object sender, FileSystemEventArgs e)
