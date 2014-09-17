@@ -4,6 +4,7 @@ using System.Collections.ObjectModel;
 using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
+using WorkstationController.Control;
 using WorkstationController.Core.Data;
 using WorkstationController.Core.Utility;
 
@@ -22,6 +23,9 @@ namespace WorkstationController
         private TabItem _tabAdd = new TabItem();
         #endregion
 
+        /// <summary>
+        /// Reference the InstrumentManager single instance
+        /// </summary>
         public InstrumentsManager InstrumentsManager
         {
             get
@@ -41,67 +45,44 @@ namespace WorkstationController
 
             // Set the data context of the dialog
             this.DataContext = this;
-
-            // add a tabItem with + in header 
-            _tabAdd.Header = "+";
-            _tabItems.Add(_tabAdd);
-            this.tabDynamic.DataContext = _tabItems;
         }
 
         #region Dynamic TabItem
-        private TabItem AddTabItem()
+        private TabItem AddTabItem(UserControl control)
         {
-            int count = _tabItems.Count;
+            if (control == null)
+                return null;
 
             // create new tab item
             TabItem tab = new TabItem();
-
-            tab.Header = string.Format("Tab {0}", count);
-            tab.Name = string.Format("tab{0}", count);
+            tab.Header = "New Tab";
+            tab.Tag = Guid.NewGuid();
             tab.HeaderTemplate = tabDynamic.FindResource("TabHeader") as DataTemplate;
 
-            // add controls to tab item, this case I added just a textbox
-            TextBox txt = new TextBox();
-            txt.Name = "txt";
+            StackPanel stackpanel = new StackPanel();
+            stackpanel.HorizontalAlignment = System.Windows.HorizontalAlignment.Left;
+            stackpanel.Children.Add(control);
+            tab.Content = stackpanel;
 
-            tab.Content = txt;
+            // insert tab at most left position
+            _tabItems.Insert(0, tab);
 
-            // insert tab item right before the last (+) tab item
-            _tabItems.Insert(count - 1, tab);
+            tabDynamic.DataContext = null;
+            tabDynamic.DataContext = _tabItems;
+            tabDynamic.SelectedItem = tab;
 
             return tab;
         }
 
         private void tabDynamic_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            TabItem tab = tabDynamic.SelectedItem as TabItem;
-            if (tab == null) return;
-
-            // Click "+" tab to add a new tab
-            if (tab.Equals(_tabAdd))
-            {
-                // clear tab control binding
-                tabDynamic.DataContext = null;
-
-                TabItem newTab = this.AddTabItem();
-
-                // bind tab control
-                tabDynamic.DataContext = _tabItems;
-
-                // select newly added tab item
-                tabDynamic.SelectedItem = newTab;
-            }
-            else
-            {
-                // your code here...
-            }
         }
 
         private void btnDelete_Click(object sender, RoutedEventArgs e)
         {
-            string tabName = (sender as Button).CommandParameter.ToString();
+            Guid tabName = (Guid)(sender as Button).CommandParameter;
 
-            var item = tabDynamic.Items.Cast<TabItem>().Where(i => i.Name.Equals(tabName)).SingleOrDefault();
+            var item = tabDynamic.Items.Cast<TabItem>().Where(i => i.Tag.Equals(tabName)).SingleOrDefault();
 
             TabItem tab = item as TabItem;
 
@@ -119,7 +100,7 @@ namespace WorkstationController
                 tabDynamic.DataContext = _tabItems;
 
                 // select previously selected tab. if that is removed then select first tab
-                if (selectedTab == null || selectedTab.Equals(tab))
+                if ((selectedTab == null || selectedTab.Equals(tab)) && _tabItems.Count > 0)
                 {
                     selectedTab = _tabItems[0];
                 }
@@ -127,5 +108,11 @@ namespace WorkstationController
             }
         }
         #endregion
+
+        private void OnLiquidClassEditMenuItemClick(object sender, RoutedEventArgs e)
+        {
+            LiquidClassEditor editor = new LiquidClassEditor();
+            this.AddTabItem(editor);
+        }
     }
 }

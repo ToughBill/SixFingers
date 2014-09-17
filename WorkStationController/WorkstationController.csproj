@@ -96,6 +96,10 @@
     <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\WorkStationController.Control\WorkStationController.Control.csproj">
+      <Project>{789bb44f-d2c3-4a2a-8262-34214d65d9d0}</Project>
+      <Name>WorkStationController.Control</Name>
+    </ProjectReference>
     <ProjectReference Include="..\WorkStationController.Core\WorkstationController.Core.csproj">
       <Project>{c3ba4ccf-e014-4e15-be64-1675c58ef27a}</Project>
       <Name>WorkstationController.Core</Name>
