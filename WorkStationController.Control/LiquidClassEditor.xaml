@@ -4,7 +4,7 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              mc:Ignorable="d" 
-             d:DesignHeight="300" d:DesignWidth="500">
+             d:DesignHeight="400" d:DesignWidth="500">
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"/>
@@ -14,8 +14,8 @@
         <!--Liquid Class name-->
         <StackPanel Grid.Row="0" Orientation="Horizontal" HorizontalAlignment="Left">
             <Label Content="Liquid Class Name:" Margin="3"/>
-            <Border Margin="3" BorderThickness="1" BorderBrush="Blue">
-                <TextBlock x:Name="tb_liquidClassName" MinWidth="100"/>
+            <Border Margin="3" BorderThickness="1" BorderBrush="Black">
+                <TextBox x:Name="tb_liquidClassName" MinWidth="100"/>
             </Border>
         </StackPanel>
 
@@ -30,15 +30,20 @@
                         <ColumnDefinition/>
                     </Grid.ColumnDefinitions>
                     <Grid.RowDefinitions>
-                        <RowDefinition/>
-                        <RowDefinition/>
-                        <RowDefinition/>
-                        <RowDefinition/>
-                        <RowDefinition/>
-                        <RowDefinition/>
-                        <RowDefinition/>
-                        <RowDefinition/>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
                     </Grid.RowDefinitions>
+                    <Grid.Resources>
+                        <Style x:Name="LabelStype" TargetType="Label">
+                            <Setter Property="VerticalContentAlignment" Value="Center"/>
+                        </Style>
+                    </Grid.Resources>
                     <Label Grid.Row="0" Grid.Column="2" Content="Single Pipetting"/>
                     <Label Grid.Row="1" Grid.Column="0" Content="Aspiration Speed:" HorizontalContentAlignment="Right" Grid.ColumnSpan="2"/>
                     <Label Grid.Row="2" Grid.Column="0" Content="Delay:" HorizontalContentAlignment="Right" Grid.ColumnSpan="2"/>
@@ -47,7 +52,7 @@
                     <Label Grid.Row="5" Grid.Column="0" Content="Trailing Airgap:" HorizontalContentAlignment="Right" Grid.ColumnSpan="2"/>
                     <Label Grid.Row="6" Grid.Column="0" Content="Excess Volume:" HorizontalContentAlignment="Right" Grid.ColumnSpan="2"/>
                     <Label Grid.Row="7" Grid.Column="0" Content="Conditioning Volume:" HorizontalContentAlignment="Right" Grid.ColumnSpan="2"/>
-                    <StackPanel Grid.Row="1" Grid.Column="2" Orientation="Horizontal" Margin="3,0">
+                    <StackPanel Grid.Row="1" Grid.Column="2" Orientation="Horizontal" Margin="3">
                         <TextBox x:Name="tb_aspirationSpeed" MinWidth="70" Margin="2"/>
                         <Label Content="μl / s"/>
                     </StackPanel>
@@ -76,10 +81,11 @@
                         <Label Content="μl"/>
                     </StackPanel>
                     <!--Sketch picture of aspiration-->
-                    <Border Grid.Row="1" Grid.Column="3" Grid.RowSpan="7" BorderThickness="1" BorderBrush="Blue" Margin="2">
-                        <Canvas>
-                            <Label Content="Sketch picture of aspiration" Canvas.Left="40" Canvas.Top="70"/>
-                        </Canvas>
+                    <Border Grid.Row="1" Grid.Column="3" Grid.RowSpan="7" BorderThickness="1" Margin="2">
+                        <StackPanel VerticalAlignment="Center" HorizontalAlignment="Center">
+                            <!--<Label Content="Sketch picture of aspiration" Canvas.Left="40" Canvas.Top="70"/>-->
+                            <Image Source="liquidclass.png" Stretch="None"/>
+                        </StackPanel>
                     </Border>
                 </Grid>
             </TabItem>
