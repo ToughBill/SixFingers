@@ -100,6 +100,12 @@
   <ItemGroup>
     <Resource Include="liquidclass.png" />
   </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\WorkStationController.Core\WorkstationController.Core.csproj">
+      <Project>{c3ba4ccf-e014-4e15-be64-1675c58ef27a}</Project>
+      <Name>WorkstationController.Core</Name>
+    </ProjectReference>
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

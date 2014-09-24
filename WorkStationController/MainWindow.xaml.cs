@@ -4,6 +4,7 @@ using System.Collections.ObjectModel;
 using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Data;
 using WorkstationController.Control;
 using WorkstationController.Core.Data;
 using WorkstationController.Core.Utility;
@@ -55,7 +56,6 @@ namespace WorkstationController
 
             // create new tab item
             TabItem tab = new TabItem();
-            tab.Header = "New Tab";
             tab.Tag = Guid.NewGuid();
             tab.HeaderTemplate = tabDynamic.FindResource("TabHeader") as DataTemplate;
 
@@ -109,10 +109,38 @@ namespace WorkstationController
         }
         #endregion
 
+        #region LiquidClass context menu
         private void OnLiquidClassEditMenuItemClick(object sender, RoutedEventArgs e)
         {
             LiquidClassEditor editor = new LiquidClassEditor();
+            LiquidClass selectedLC = (LiquidClass)this.lb_liquidclass.SelectedItem;
+            editor.DataContext = selectedLC;
             this.AddTabItem(editor);
         }
+
+        private void OnLiquidClassNewMenuItemClick(object sender, RoutedEventArgs e)
+        {
+            LiquidClass liquidClass = new LiquidClass();
+            LiquidClassEditor editor = new LiquidClassEditor();
+            editor.DataContext = liquidClass;
+            InstrumentsManager.Instance.CreatedInstrument.Push(liquidClass);
+            this.AddTabItem(editor);
+        }
+
+        private void OnLiquidClassDuplicateMenuItemClick(object sender, RoutedEventArgs e)
+        {
+            LiquidClass liquidClass = ((LiquidClass)this.lb_liquidclass.SelectedItem).Clone() as LiquidClass;
+            LiquidClassEditor editor = new LiquidClassEditor();
+            editor.DataContext = liquidClass;
+            InstrumentsManager.Instance.CreatedInstrument.Push(liquidClass);
+            this.AddTabItem(editor);
+        }
+
+        private void OnLiquidClassDeleteMenuItemClick(object sender, RoutedEventArgs e)
+        {
+            LiquidClass selectedLC = (LiquidClass)this.lb_liquidclass.SelectedItem;
+            InstrumentsManager.Instance.DeleteInstrument<LiquidClass>(selectedLC.ID);
+        }
+        #endregion
     }
 }

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.IO;
+using System.Linq;
 using System.Reflection;
 using WorkstationController.Core.Data;
 
@@ -18,13 +19,16 @@ namespace WorkstationController.Core.Utility
         // Single instance of InstrumentsManager
         private static InstrumentsManager _singleInstance = null;
 
+        // Newly created instrument have to be added to this stack
+        private Stack<object> _newlyCreatedInstrument = new Stack<object>();
+
         // Paths for each instruments folder
         private string _labwareDirectory = string.Empty;
         private string _carrierDirectory = string.Empty;
         private string _layoutDirectory = string.Empty;
         private string _liquidClassDirectory = string.Empty;
 
-        // ObservableCollection<T> is for binding
+        // Dictionary<string, T> is for binding, Key (string) is the XML file path of the instrument
         private Dictionary<string, Labware> _labwares = new Dictionary<string, Labware>();
         private Dictionary<string, Carrier> _carriers = new Dictionary<string, Carrier>();
         private Dictionary<string, Layout> _layouts = new Dictionary<string, Layout>();
@@ -103,6 +107,14 @@ namespace WorkstationController.Core.Utility
         }
 
         /// <summary>
+        /// Newly created instrument have to be added to this stack
+        /// </summary>
+        public Stack<object> CreatedInstrument
+        {
+            get { return this._newlyCreatedInstrument; }
+        }
+
+        /// <summary>
         /// Internal default constructor
         /// </summary>
         internal InstrumentsManager()
@@ -154,6 +166,100 @@ namespace WorkstationController.Core.Utility
         }
 
         /// <summary>
+        /// Check if an instance a type of instrument had been serialized.
+        /// </summary>
+        /// <typeparam name="T">Type of the instrument</typeparam>
+        /// <param name="id">ID of the instrument instance</param>
+        /// <param name="xmlFilePath">The XML file path of the instrument</param>
+        /// <returns>If the instrument had been serialized, return true, otherwise return false</returns>
+        public bool FindInstrument<T>(Guid id, out string xmlFilePath)
+        {
+            if (id == null || id == Guid.Empty)
+                throw new ArgumentException("id could not be null of empty GUID", "id");
+
+            bool bFound = false;
+            xmlFilePath = string.Empty;
+
+            if(typeof(T) == typeof(Labware))
+            {
+
+            }
+            else if (typeof(T) == typeof(Carrier))
+            {
+
+            }
+            else if (typeof(T) == typeof(Layout))
+            {
+
+            }
+            else if (typeof(T) == typeof(LiquidClass))
+            {
+                try
+                {
+                    KeyValuePair<string, LiquidClass> lc_kvp = this._liquidClasses.First(kvp => kvp.Value.ID == id);
+                    xmlFilePath = lc_kvp.Key;
+                    bFound = true;
+                }
+                catch(Exception)
+                {
+                    // If no matching, exception thrown and we catch it.
+                }
+            }
+            else
+            {
+                throw new ArgumentOutOfRangeException("T", typeof(T), "T must be Labware/Carrier/Layout/LiquidClass");
+            }
+           
+
+            return bFound;
+        }
+
+        /// <summary>
+        /// Save instrument to its proper directory according to its type
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="instrument"></param>
+        public void SaveInstrument<T>(T instrument)
+        {
+            if (typeof(T) == typeof(Labware))
+            {
+
+            }
+            else if (typeof(T) == typeof(Carrier))
+            {
+
+            }
+            else if (typeof(T) == typeof(Layout))
+            {
+
+            }
+            else if (typeof(T) == typeof(LiquidClass))
+            {
+                LiquidClass liquidClass = instrument as LiquidClass;
+                string path = Path.Combine(this._liquidClassDirectory, liquidClass.ID.ToString() + ".xml");
+                liquidClass.Serialize(path);
+            }
+            else
+            {
+                throw new ArgumentOutOfRangeException("T", typeof(T), "T must be Labware/Carrier/Layout/LiquidClass");
+            }
+        }
+
+        /// <summary>
+        /// Delete an instrument by its type and ID
+        /// </summary>
+        /// <typeparam name="T">The type of the instrument</typeparam>
+        /// <param name="id">The ID of the instrument</param>
+        public void DeleteInstrument<T>(Guid id)
+        {
+           string xmlFilePath = string.Empty;
+           if(FindInstrument<T>(id, out xmlFilePath))
+           {
+               File.Delete(xmlFilePath);
+           }
+        }
+
+        /// <summary>
         /// Initialize the file system watches for instruments XML files.
         /// </summary>
         internal void InitalizeFileSystemWatches()
@@ -183,7 +289,7 @@ namespace WorkstationController.Core.Utility
 
             // LiquidClass XML files watcher
             this._fsw_liquidclass = new FileSystemWatcher();
-            this._fsw_liquidclass.Path = this._layoutDirectory;
+            this._fsw_liquidclass.Path = this._liquidClassDirectory;
             this._fsw_liquidclass.Filter = extFilter;
             this._fsw_liquidclass.Created += OnLiquidClassXmlFileCreated;
             this._fsw_liquidclass.Deleted += OnLiquidClassXmlFileDeleted;
@@ -237,7 +343,10 @@ namespace WorkstationController.Core.Utility
 
         private void OnLiquidClassXmlFileCreated(object sender, FileSystemEventArgs e)
         {
-            LiquidClass liquidClass = SerializationHelper.Deserialize<LiquidClass>(e.FullPath);
+            LiquidClass liquidClass = this.CreatedInstrument.Pop() as LiquidClass;
+            if (liquidClass == null)
+                throw new InvalidOperationException("LiquidClass instance was supposed to be existing.");
+
             this._liquidClasses.Add(e.FullPath, liquidClass);
             this.PropertyChanged(this, new PropertyChangedEventArgs("LiquidClasses"));
         }

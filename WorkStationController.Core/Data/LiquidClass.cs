@@ -24,6 +24,16 @@ namespace WorkstationController.Core.Data
         public event PropertyChangedEventHandler PropertyChanged = delegate { };
 
         /// <summary>
+        /// Unique ID of the LiquidClass
+        /// </summary>
+        [XmlElement]
+        public Guid ID
+        {
+            get;
+            set;
+        }
+
+        /// <summary>
         /// Gets or sets the name of liquid class
         /// </summary>
         [XmlAttribute]
@@ -67,7 +77,9 @@ namespace WorkstationController.Core.Data
         /// Default constructor
         /// </summary>
         public LiquidClass()
-        { }
+        {
+            this.ID = Guid.NewGuid();
+        }
 
         /// <summary>
         /// Create an instance of LiquidClass from a XML file
