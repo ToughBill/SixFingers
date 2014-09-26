@@ -111,8 +111,8 @@ namespace WorkstationController.VisualElement
         {
             DrawingContext drawingContext = drawingVisual.RenderOpen();
             //carrier.YLength
-            int xPos = (int)(_worktable.FirstPinPosition.X + _carrier.Grid * Worktable.DistanceBetweenAdjacentPins - _carrier.Offset.X);
-            int yPos = (int)(_worktable.FirstPinPosition.Y - _carrier.Offset.X);
+            int xPos = (int)(_worktable.FirstPinPosition.X + _carrier.Grid * Worktable.DistanceBetweenAdjacentPins - _carrier.XOffset);
+            int yPos = (int)(_worktable.FirstPinPosition.Y - _carrier.XOffset);
             Size sz = new Size(_carrier.XLength, _carrier.YLength);
             VisualCommon.DrawRect(xPos, yPos, sz, drawingContext, Colors.Black);
             drawingContext.Close();

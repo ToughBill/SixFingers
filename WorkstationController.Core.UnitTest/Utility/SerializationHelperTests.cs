@@ -41,7 +41,6 @@ namespace WorkstationController.Core.UnitTest
             carrier.Name = "CarrierSerializeTest";
             carrier.XLength = 40;
             carrier.YLength = 500;
-            carrier.AllowedLabwareNumber = 3;
             carrier.AllowedLabwareType = 2;
             carrier.Grid = 3;
 
@@ -58,7 +57,6 @@ namespace WorkstationController.Core.UnitTest
             carrier.Name = "CarrierSerializeTest";
             carrier.XLength = 40;
             carrier.YLength = 500;
-            carrier.AllowedLabwareNumber = 3;
             carrier.AllowedLabwareType = 2;
             carrier.Grid = 1;
 

@@ -221,6 +221,10 @@ namespace WorkstationController.Core.Utility
         /// <param name="instrument"></param>
         public void SaveInstrument<T>(T instrument)
         {
+            // Push the in air instrument to InstrumentManager and this instrument will be pop when
+            // corresponding XML file created.
+            InstrumentsManager.Instance.CreatedInstrument.Push(instrument);
+
             if (typeof(T) == typeof(Labware))
             {
 

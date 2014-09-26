@@ -123,7 +123,6 @@ namespace WorkstationController
             LiquidClass liquidClass = new LiquidClass();
             LiquidClassEditor editor = new LiquidClassEditor();
             editor.DataContext = liquidClass;
-            InstrumentsManager.Instance.CreatedInstrument.Push(liquidClass);
             this.AddTabItem(editor);
         }
 
@@ -132,7 +131,6 @@ namespace WorkstationController
             LiquidClass liquidClass = ((LiquidClass)this.lb_liquidclass.SelectedItem).Clone() as LiquidClass;
             LiquidClassEditor editor = new LiquidClassEditor();
             editor.DataContext = liquidClass;
-            InstrumentsManager.Instance.CreatedInstrument.Push(liquidClass);
             this.AddTabItem(editor);
         }
 

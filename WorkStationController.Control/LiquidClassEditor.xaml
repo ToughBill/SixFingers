@@ -87,7 +87,7 @@
                     <Border Grid.Row="1" Grid.Column="3" Grid.RowSpan="7" BorderThickness="1" Margin="2">
                         <StackPanel VerticalAlignment="Center" HorizontalAlignment="Center">
                             <!--<Label Content="Sketch picture of aspiration" Canvas.Left="40" Canvas.Top="70"/>-->
-                            <Image Source="liquidclass.png" Stretch="None"/>
+                            <Image Source="Resources/liquidclass.png" Stretch="None"/>
                         </StackPanel>
                     </Border>
                 </Grid>

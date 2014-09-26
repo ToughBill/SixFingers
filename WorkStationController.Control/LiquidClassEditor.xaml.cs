@@ -22,6 +22,9 @@ namespace WorkstationController.Control
     /// </summary>
     public partial class LiquidClassEditor : UserControl
     {
+        /// <summary>
+        /// Default constructor
+        /// </summary>
         public LiquidClassEditor()
         {
             InitializeComponent();

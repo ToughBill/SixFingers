@@ -41,7 +41,6 @@ namespace WorkstationController.Core.UnitTest
             carrier1.Name = "Carrier1";
             carrier1.XLength = 40;
             carrier1.YLength = 500;
-            carrier1.AllowedLabwareNumber = 3;
             carrier1.AllowedLabwareType = 2;
             carrier1.Grid = 1;
 
@@ -85,8 +84,6 @@ namespace WorkstationController.Core.UnitTest
             carrier2.Name = "Carrier2";
             carrier2.XLength = 40;
             carrier2.YLength = 500;
-            carrier2.AllowedLabwareNumber = 3;
-            carrier2.AllowedLabwareType = 2;
             carrier2.Grid = 4;
 
             Labware labware21 = new Labware();

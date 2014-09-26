@@ -37,6 +37,8 @@
   <ItemGroup>
     <Reference Include="System" />
     <Reference Include="System.Data" />
+    <Reference Include="System.Drawing" />
+    <Reference Include="System.Windows.Forms" />
     <Reference Include="System.Xml" />
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="System.Core" />
@@ -50,10 +52,17 @@
     <Reference Include="PresentationFramework" />
   </ItemGroup>
   <ItemGroup>
+    <Page Include="CarrierEditor.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="LabwareEditor.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
+    <Compile Include="CarrierEditor.xaml.cs">
+      <DependentUpon>CarrierEditor.xaml</DependentUpon>
+    </Compile>
     <Compile Include="LabwareEditor.xaml.cs">
       <DependentUpon>LabwareEditor.xaml</DependentUpon>
       <SubType>Code</SubType>
@@ -98,7 +107,7 @@
     <AppDesigner Include="Properties\" />
   </ItemGroup>
   <ItemGroup>
-    <Resource Include="liquidclass.png" />
+    <Resource Include="Resources\liquidclass.png" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\WorkStationController.Core\WorkstationController.Core.csproj">
