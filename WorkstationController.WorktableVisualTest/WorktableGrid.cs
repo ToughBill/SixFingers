@@ -23,10 +23,11 @@ namespace WorkstationController.WorktableVisualTest
             if (worktableVisual == null)
                 return;
 
+
+            UpdateContainerSize(e.NewSize);
             foreach (CarrierUIElement carrierUI in carrierUIElements)
                 carrierUI.Update();
 
-            UpdateContainerSize(e.NewSize);
             this.InvalidateVisual();
         }
 

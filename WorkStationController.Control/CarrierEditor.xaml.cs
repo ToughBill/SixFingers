@@ -17,9 +17,9 @@ namespace WorkstationController.Control
     /// <summary>
     /// Interaction logic for CarrierEditor.xaml
     /// </summary>
-    public partial class CarrierEditor : UserControl
+    public partial class CarrierEditorUserControl : UserControl
     {
-        public CarrierEditor()
+        public CarrierEditorUserControl()
         {
             InitializeComponent();
         }

@@ -12,6 +12,7 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
+using WorkstationController.Core.Data;
 
 namespace WorkstationController.Control
 {
@@ -23,6 +24,12 @@ namespace WorkstationController.Control
         public LabwareUserControl()
         {
             InitializeComponent();
+            this.Loaded += LabwareUserControl_Loaded;
+        }
+
+        void LabwareUserControl_Loaded(object sender, RoutedEventArgs e)
+        {
+            cmbItemType.ItemsSource = Enum.GetValues(typeof(LabwareType)).Cast<LabwareType>();
         }
     }
 }

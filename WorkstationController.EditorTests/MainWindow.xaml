@@ -1,0 +1,23 @@
+﻿<Window x:Class="WorkstationController.EditorTests.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="MainWindow" Height="650" Width="800">
+    <Grid>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition/>
+            <ColumnDefinition Width="0*"/>
+        </Grid.ColumnDefinitions>
+        <Grid.RowDefinitions>
+            <RowDefinition Height ="*"/>
+            <RowDefinition Height="50"/>
+        </Grid.RowDefinitions>
+        <Grid Name="EditorContainer" Grid.Row="0">
+            
+
+        </Grid>
+        <Grid Name="Selection" Grid.Row="1">
+            <ComboBox Name="UserControlNames" HorizontalAlignment="Left" Margin="600,20,0,0" VerticalAlignment="Top" Width="120" SelectionChanged="UserControlNames_SelectionChanged"/>
+        </Grid>
+
+    </Grid>
+</Window>

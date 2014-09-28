@@ -20,14 +20,13 @@ namespace WorkstationController.Core.Data
 
         #region Private Members
         private List<Labware> _labwares = new List<Labware>();  // Labwares on the carrier
-        private List<LabwarePositionOnCarrier> _labwarePositions = new List<LabwarePositionOnCarrier>(); // Labware position information list
+        private List<Site> _sites = new List<Site>(); // sites for mounting labwares
 
         private string _name = string.Empty;
         private int _xlength = default(int);
         private int _ylength = default(int);
-        private int _allowedLabwareType = 0;
-        private double _xoffset = default(double);
-        private double _yoffset = default(double);
+        private int _xoffset = default(int);
+        private int _yoffset = default(int);
         private int _grid = 0;
         #endregion
 
@@ -47,6 +46,7 @@ namespace WorkstationController.Core.Data
             get { return this._name; }
             set { PropertyChangedNotifyHelper.NotifyPropertyChanged<string>(ref this._name, value, this, "Name", this.PropertyChanged); }
         }
+
 
         /// <summary>
         /// Gets or sets the X-length of the carrier, in 0.1 millimetre(0.1 mm.)
@@ -70,34 +70,23 @@ namespace WorkstationController.Core.Data
 
 
         /// <summary>
-        /// Allowed type of labware 
-        /// </summary>
-        [XmlAttribute]
-        public int AllowedLabwareType
-        {
-            get { return this._allowedLabwareType; }
-            set { PropertyChangedNotifyHelper.NotifyPropertyChanged<int>(ref this._allowedLabwareType, value, this, "AllowedLabwareType", this.PropertyChanged); }
-        }
-
-
-        /// <summary>
         /// The X offset of the left-top corner of carrier against the most left-top pin the carrier installed on
         /// </summary>
         [XmlElement]
-        public double XOffset
+        public int XOffset
         {
             get { return this._xoffset; }
-            set { PropertyChangedNotifyHelper.NotifyPropertyChanged<double>(ref this._xoffset, value, this, "XOffset", this.PropertyChanged); }
+            set { PropertyChangedNotifyHelper.NotifyPropertyChanged<int>(ref this._xoffset, value, this, "XOffset", this.PropertyChanged); }
         }
 
         /// <summary>
         /// The Y offset of the left-top corner of carrier against the most left-top pin the carrier installed on
         /// </summary>
         [XmlElement]
-        public double YOffset
+        public int YOffset
         {
             get { return this._yoffset; }
-            set { PropertyChangedNotifyHelper.NotifyPropertyChanged<double>(ref this._yoffset, value, this, "YOffset", this.PropertyChanged); }
+            set { PropertyChangedNotifyHelper.NotifyPropertyChanged<int>(ref this._yoffset, value, this, "YOffset", this.PropertyChanged); }
         }
 
         /// <summary>
@@ -123,27 +112,15 @@ namespace WorkstationController.Core.Data
             }
         }
 
-        /// <summary>
-        /// Gets the labware position information collection on the carrier
-        /// </summary>
-        [XmlArray("LabwarePositions")]
-        [XmlArrayItem("LabwarePosition", typeof(LabwarePositionOnCarrier), IsNullable = false)]
-        public List<LabwarePositionOnCarrier> LabwarePositions
+        [XmlArray("Sites")]
+        [XmlArrayItem("Labware", typeof(Site), IsNullable = false)]
+        public List<Site> Sites
         {
             get
             {
-                return this._labwarePositions;
+                return this._sites;
             }
         }
-
-        /// <summary>
-        /// The maximum number of labware installed on the carrier
-        /// </summary>
-        public int AllowedLabwareNumber
-        {
-            get { return this._labwarePositions.Count; }
-        }
-
         /// <summary>
         /// Default constructor
         /// </summary>
@@ -227,71 +204,79 @@ namespace WorkstationController.Core.Data
     /// The definition of labware on carrier position information
     /// </summary>
     [Serializable]
-    public class LabwarePositionOnCarrier : INotifyPropertyChanged
+    public class Site
     {
-        #region Private members
-        private int _site = 0;
-        private double _xoffset = default(double);
-        private double _yoffset = default(double);
-        private double _zoffset = default(double);
-        private double _xsize = default(double);
-        private double _ysize = default(double);
-        #endregion
-
-        // Notify property changed event handler
-        public event PropertyChangedEventHandler PropertyChanged = delegate { };
-
-        /// <summary>
-        /// Gets or sets the Site of labware on carrier
-        /// </summary>
-        public int Site
-        {
-            get { return this._site; }
-            set { PropertyChangedNotifyHelper.NotifyPropertyChanged<int>(ref this._site, value, this, "Site", this.PropertyChanged); }
-        }
-
-        /// <summary>
-        /// Gets or sets the X-Offiset of labware on carrier
-        /// </summary>
-        public double XOffset
-        {
-            get { return this._xoffset; }
-            set { PropertyChangedNotifyHelper.NotifyPropertyChanged<double>(ref this._xoffset, value, this, "XOffset", this.PropertyChanged); }
-        }
-
-        /// <summary>
-        /// Gets or sets the Y-Offiset of labware on carrier
-        /// </summary>
-        public double YOffset
-        {
-            get { return this._yoffset; }
-            set { PropertyChangedNotifyHelper.NotifyPropertyChanged<double>(ref this._yoffset, value, this, "YOffset", this.PropertyChanged); }
-        }
-
-        /// <summary>
-        /// Gets or sets the Z-Offiset of labware on carrier
-        /// </summary>
-        public double ZOffset
-        {
-            get { return this._zoffset; }
-            set { PropertyChangedNotifyHelper.NotifyPropertyChanged<double>(ref this._zoffset, value, this, "ZOffset", this.PropertyChanged); }
-        }
-
-        /// <summary>
-        /// Gets or sets the X-Size of labware on carrier
-        /// </summary>
-        public double XSize
-        {
-            get { return this._xsize; }
-            set { PropertyChangedNotifyHelper.NotifyPropertyChanged<double>(ref this._xsize, value, this, "XSize", this.PropertyChanged); }
-        }
-        /// <summary>
-        /// Gets or sets the Y-Size of labware on carrier
-        /// </summary>
-        public double YSize
-        {
-            get { return this._ysize; }
-            set { PropertyChangedNotifyHelper.NotifyPropertyChanged<double>(ref this._ysize, value, this, "YSize", this.PropertyChanged); }
-        }
+        public Point Position { get; set; }
+        public Size Size { get; set; }
+        public List<LabwareType> AllowedLabwareTypes { get; set; }
     }
+
+    //[Serializable]
+    //public class LabwarePositionOnCarrier : INotifyPropertyChanged
+    //{
+    //    #region Private members
+    //    private int _site = 0;
+    //    private double _xoffset = default(double);
+    //    private double _yoffset = default(double);
+    //    private double _zoffset = default(double);
+    //    private double _xsize = default(double);
+    //    private double _ysize = default(double);
+    //    #endregion
+
+    //    // Notify property changed event handler
+    //    public event PropertyChangedEventHandler PropertyChanged = delegate { };
+
+    //    /// <summary>
+    //    /// Gets or sets the Site of labware on carrier
+    //    /// </summary>
+    //    public int Site
+    //    {
+    //        get { return this._site; }
+    //        set { PropertyChangedNotifyHelper.NotifyPropertyChanged<int>(ref this._site, value, this, "Site", this.PropertyChanged); }
+    //    }
+
+    //    /// <summary>
+    //    /// Gets or sets the X-Offiset of labware on carrier
+    //    /// </summary>
+    //    public double XOffset
+    //    {
+    //        get { return this._xoffset; }
+    //        set { PropertyChangedNotifyHelper.NotifyPropertyChanged<double>(ref this._xoffset, value, this, "XOffset", this.PropertyChanged); }
+    //    }
+
+    //    /// <summary>
+    //    /// Gets or sets the Y-Offiset of labware on carrier
+    //    /// </summary>
+    //    public double YOffset
+    //    {
+    //        get { return this._yoffset; }
+    //        set { PropertyChangedNotifyHelper.NotifyPropertyChanged<double>(ref this._yoffset, value, this, "YOffset", this.PropertyChanged); }
+    //    }
+
+    //    /// <summary>
+    //    /// Gets or sets the Z-Offiset of labware on carrier
+    //    /// </summary>
+    //    public double ZOffset
+    //    {
+    //        get { return this._zoffset; }
+    //        set { PropertyChangedNotifyHelper.NotifyPropertyChanged<double>(ref this._zoffset, value, this, "ZOffset", this.PropertyChanged); }
+    //    }
+
+    //    /// <summary>
+    //    /// Gets or sets the X-Size of labware on carrier
+    //    /// </summary>
+    //    public double XSize
+    //    {
+    //        get { return this._xsize; }
+    //        set { PropertyChangedNotifyHelper.NotifyPropertyChanged<double>(ref this._xsize, value, this, "XSize", this.PropertyChanged); }
+    //    }
+    //    /// <summary>
+    //    /// Gets or sets the Y-Size of labware on carrier
+    //    /// </summary>
+    //    public double YSize
+    //    {
+    //        get { return this._ysize; }
+    //        set { PropertyChangedNotifyHelper.NotifyPropertyChanged<double>(ref this._ysize, value, this, "YSize", this.PropertyChanged); }
+    //    }
+    //}
 }

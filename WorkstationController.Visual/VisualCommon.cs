@@ -9,48 +9,36 @@ namespace WorkstationController.VisualElement
     /// </summary>
     public class VisualCommon
     {
-        /// <summary>
-        /// The container size
-        /// </summary>
         public static Size containerSize;
+        private static double Convert2PixelXUnit(double x)
+        {
+            return x / Configurations.Instance.Worktable.Size.Width * containerSize.Width;
+        }
+        private static double Convert2PixelYUnit(double y)
+        {
+            return y / Configurations.Instance.Worktable.Size.Height * containerSize.Height;
+        }
 
-        /// <summary>
-        /// Draw a rectangle at specified position
-        /// </summary>
-        /// <param name="x"></param>
-        /// <param name="y"></param>
-        /// <param name="size"></param>
-        /// <param name="drawingContext"></param>
-        /// <param name="color"></param>
         public static void DrawRect(int x, int y, Size size, DrawingContext drawingContext, Color color)
         {
             double pinXPosPixel = VisualCommon.Convert2PixelXUnit(x);
-            double pinYPospixel = VisualCommon.Convert2PixelXUnit(y);
+            double pinYPospixel = VisualCommon.Convert2PixelYUnit(y);
             double pinWidthPixel = VisualCommon.Convert2PixelXUnit(size.Width);
-            double pinHeightpixel = VisualCommon.Convert2PixelXUnit(size.Height);
+            double pinHeightpixel = VisualCommon.Convert2PixelYUnit(size.Height);
             Brush brush = new SolidColorBrush(color);
             drawingContext.DrawRectangle(brush, new Pen(new SolidColorBrush(color), 1),
                 new Rect(new Point(pinXPosPixel, pinYPospixel), new Size(pinWidthPixel, pinHeightpixel)));
         }
 
-        /// <summary>
-        /// Convert the X coordination on worktable to the corresponding X position on container
-        /// </summary>
-        /// <param name="x"></param>
-        /// <returns></returns>
-        private static double Convert2PixelXUnit(double x)
-        {
-            return x / Configurations.Instance.Worktable.Size.Width * containerSize.Width;
-        }
 
-        /// <summary>
-        /// Convert the Y coordination on worktable to the corresponding Y position on container
-        /// </summary>
-        /// <param name="y"></param>
-        /// <returns></returns>
-        private static double Convert2PixelYUnit(double y)
+        internal static void DrawCircle(Point position, int radius, DrawingContext drawingContext, Color color)
         {
-            return y / Configurations.Instance.Worktable.Size.Height * containerSize.Height;
+            double xPixel = VisualCommon.Convert2PixelXUnit(position.X);
+            double yPixel = VisualCommon.Convert2PixelYUnit(position.Y);
+            double rXPixel = VisualCommon.Convert2PixelXUnit(radius);
+            double rYPixel = VisualCommon.Convert2PixelYUnit(radius);
+            Brush brush = new SolidColorBrush(color);
+            drawingContext.DrawEllipse(brush, new Pen(new SolidColorBrush(color), 1), new Point(xPixel, yPixel), rXPixel, rYPixel);
         }
     }
 }

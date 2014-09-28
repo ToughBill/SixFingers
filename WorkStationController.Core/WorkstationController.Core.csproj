@@ -33,6 +33,7 @@
     <DocumentationFile>..\bin\Release\WorkstationController.Core.xml</DocumentationFile>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="PresentationCore" />
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Xml.Linq" />
@@ -46,6 +47,7 @@
     <Compile Include="Data\ArmInfo.cs" />
     <Compile Include="Data\Carrier.cs" />
     <Compile Include="Data\Config.cs" />
+    <Compile Include="Data\DitiBox.cs" />
     <Compile Include="Data\Labware.cs" />
     <Compile Include="Data\Layout.cs" />
     <Compile Include="Data\LiquidClass.cs" />
