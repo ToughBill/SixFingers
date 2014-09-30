@@ -10,24 +10,40 @@ namespace WorkstationController.VisualElement
     public class VisualCommon
     {
         public static Size containerSize;
-        private static double Convert2PixelXUnit(double x)
+
+        public static double Convert2PixelXUnit(double x)
         {
             return x / Configurations.Instance.Worktable.Size.Width * containerSize.Width;
         }
-        private static double Convert2PixelYUnit(double y)
+        public static double Convert2PixelYUnit(double y)
         {
             return y / Configurations.Instance.Worktable.Size.Height * containerSize.Height;
         }
 
+
+        public static T FindParent<T>(DependencyObject from)
+where T : class
+        {
+            T result = null;
+            DependencyObject parent = VisualTreeHelper.GetParent(from);
+
+            if (parent is T)
+                result = parent as T;
+            else if (parent != null)
+                result = FindParent<T>(parent);
+            return result;
+        }
+
+
         public static void DrawRect(int x, int y, Size size, DrawingContext drawingContext, Color color)
         {
-            double pinXPosPixel = VisualCommon.Convert2PixelXUnit(x);
-            double pinYPospixel = VisualCommon.Convert2PixelYUnit(y);
-            double pinWidthPixel = VisualCommon.Convert2PixelXUnit(size.Width);
-            double pinHeightpixel = VisualCommon.Convert2PixelYUnit(size.Height);
+            double xPixel = VisualCommon.Convert2PixelXUnit(x);
+            double yPixel = VisualCommon.Convert2PixelYUnit(y);
+            double wPixel = VisualCommon.Convert2PixelXUnit(size.Width);
+            double hPixel = VisualCommon.Convert2PixelYUnit(size.Height);
             Brush brush = new SolidColorBrush(color);
             drawingContext.DrawRectangle(brush, new Pen(new SolidColorBrush(color), 1),
-                new Rect(new Point(pinXPosPixel, pinYPospixel), new Size(pinWidthPixel, pinHeightpixel)));
+                new Rect(new Point(xPixel, yPixel), new Size(wPixel, hPixel)));
         }
 
 

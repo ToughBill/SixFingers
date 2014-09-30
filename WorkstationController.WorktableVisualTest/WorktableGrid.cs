@@ -3,15 +3,17 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows;
 using System.Windows.Controls;
 using WorkstationController.VisualElement;
+
 
 namespace WorkstationController.WorktableVisualTest
 {
     class WorktableGrid : Grid
     {
         WorktableVisual worktableVisual = null;
-        List<CarrierUIElement> carrierUIElements = new List<CarrierUIElement>();
+        List<UIElement> uiElements = new List<UIElement>();
         public void AttachWorktableVisual(WorktableVisual worktableVisual)
         {
             this.worktableVisual = worktableVisual;
@@ -25,9 +27,11 @@ namespace WorkstationController.WorktableVisualTest
 
 
             UpdateContainerSize(e.NewSize);
-            foreach (CarrierUIElement carrierUI in carrierUIElements)
-                carrierUI.Update();
-
+            foreach (UIElement uiElement in uiElements)
+            {
+                ((IRenderableWares)uiElement).Update();
+            }
+            
             this.InvalidateVisual();
         }
 

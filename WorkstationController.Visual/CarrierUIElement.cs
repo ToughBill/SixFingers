@@ -8,7 +8,7 @@ namespace WorkstationController.VisualElement
     /// <summary>
     /// Carrier GUI element
     /// </summary>
-    public class CarrierUIElement : UIElement
+    public class CarrierUIElement : UIElement, IRenderableWares
     {
         /// <summary>
         /// Carrier data
@@ -116,6 +116,19 @@ namespace WorkstationController.VisualElement
             Size sz = new Size(_carrier.XLength, _carrier.YLength);
             VisualCommon.DrawRect(xPos, yPos, sz, drawingContext, Colors.Black);
             drawingContext.Close();
+        }
+
+
+        public Point RenderOffset
+        {
+            get
+            {
+                throw new NotImplementedException();
+            }
+            set
+            {
+                throw new NotImplementedException();
+            }
         }
     }
 }

@@ -32,7 +32,6 @@ namespace WorkstationController.Core.UnitTest
             labware1.Name = "Labware1";
             labware1.Dimension.XLength = 85;
             labware1.Dimension.YLength = 125;
-            labware1.Dimension.Height = 45;
             labware1.WellsInfo.WellRadius = 4;
             labware1.WellsInfo.NumberOfWellsX = 8;
             labware1.WellsInfo.NumberOfWellsY = 12;
@@ -48,7 +47,6 @@ namespace WorkstationController.Core.UnitTest
             labware2.Name = "Labware2";
             labware2.Dimension.XLength = 85;
             labware2.Dimension.YLength = 125;
-            labware2.Dimension.Height = 45;
             labware2.WellsInfo.WellRadius = 4;
             labware2.WellsInfo.NumberOfWellsX = 8;
             labware2.WellsInfo.NumberOfWellsY = 12;

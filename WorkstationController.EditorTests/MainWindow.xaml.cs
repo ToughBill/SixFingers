@@ -26,6 +26,7 @@ namespace WorkstationController.EditorTests
         const string CarrierEditor = "CarrierEditor";
         UserControl labwareEditorUserControl;
         UserControl carrierEditorUserControl;
+        Labware labware = new Labware();
 
         public MainWindow()
         {
@@ -40,13 +41,17 @@ namespace WorkstationController.EditorTests
             strs.Add(CarrierEditor);
             labwareEditorUserControl = new LabwareUserControl();
             carrierEditorUserControl = new CarrierEditorUserControl();
-            Labware labware = new Labware();
+          
             labware.ZValues = new ZValues(360, 625, 665, 1610);
             labware.Dimension = new Dimension(0, 2700);
             labware.Name = "lab1";
             labware.SiteID = 1;
             labware.Type = LabwareType.Microplates;
             labware.WellsInfo = new WellsInfo(new Point(0, -32), new Point(0, 2788), 1, 16, BottomShape.Flat, 50);
+            labware.Type = LabwareType.Tubes;
+            labware.BackGroundColor = Color.FromArgb(255, 255, 0, 0);
+            labware.CarrierLabel = "";
+
             this.DataContext = labware;
             UserControlNames.ItemsSource = strs;
         }
@@ -67,6 +72,11 @@ namespace WorkstationController.EditorTests
                 default:
                     break;
             }
+        }
+
+        private void btnSave2Xml_Click(object sender, RoutedEventArgs e)
+        {
+            labware.Serialize("d:\\test.xml");
         }
     }
 }
