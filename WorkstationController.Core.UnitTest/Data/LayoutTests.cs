@@ -44,7 +44,7 @@ namespace WorkstationController.Core.UnitTest
             carrier1.Grid = 1;
 
             Labware labware11 = new Labware();
-            labware11.Name = "Labware11";
+            labware11.TypeName = "Labware11";
             labware11.Dimension.XLength = 800;
             labware11.Dimension.YLength = 125;
             labware11.WellsInfo.WellRadius = 4;
@@ -60,7 +60,7 @@ namespace WorkstationController.Core.UnitTest
             carrier1.AddLabware(labware11);
 
             Labware labware12 = new Labware();
-            labware11.Name = "Labware12";
+            labware11.TypeName = "Labware12";
             labware11.Dimension.XLength = 800;
             labware11.Dimension.YLength = 125;
             labware11.WellsInfo.WellRadius = 4;
@@ -86,7 +86,7 @@ namespace WorkstationController.Core.UnitTest
             carrier2.Grid = 4;
 
             Labware labware21 = new Labware();
-            labware21.Name = "Labware21";
+            labware21.TypeName = "Labware21";
             labware21.Dimension.XLength = 800;
             labware21.Dimension.YLength = 125;
             labware21.WellsInfo.WellRadius = 4;
@@ -102,7 +102,7 @@ namespace WorkstationController.Core.UnitTest
             carrier2.AddLabware(labware21);
 
             Labware labware22 = new Labware();
-            labware22.Name = "labware22";
+            labware22.TypeName = "labware22";
             labware22.Dimension.XLength = 800;
             labware22.Dimension.YLength = 125;
             labware22.WellsInfo.WellRadius = 4;

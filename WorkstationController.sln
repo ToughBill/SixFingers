@@ -15,9 +15,9 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WorkstationController.Core.
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WorkstationController.Visual", "WorkstationController.Visual\WorkstationController.Visual.csproj", "{575166A6-3F77-4C58-925F-441D7A1F5E87}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WorkstationController.WorktableVisualTest", "WorkstationController.WorktableVisualTest\WorkstationController.WorktableVisualTest.csproj", "{88FC3037-8D83-440A-B955-A09E2855B91D}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WorkstationController.VisualTests", "WorkstationController.WorktableVisualTest\WorkstationController.VisualTests.csproj", "{88FC3037-8D83-440A-B955-A09E2855B91D}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WorkstationController.EditorTests", "WorkstationController.EditorTests\WorkstationController.EditorTests.csproj", "{C100F7E9-C835-401E-B24B-D542ED3401A7}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WorkstationController.UserControlTests", "WorkstationController.EditorTests\WorkstationController.UserControlTests.csproj", "{C100F7E9-C835-401E-B24B-D542ED3401A7}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

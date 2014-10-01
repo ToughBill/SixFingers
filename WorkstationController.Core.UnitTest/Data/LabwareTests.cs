@@ -27,7 +27,7 @@ namespace WorkstationController.Core.UnitTest
         public void LabwareSerializeToXmlFileTest()
         {
             Labware labware = new Labware();
-            labware.Name = "LabwareSerializeTest";
+            labware.TypeName = "LabwareSerializeTest";
             labware.Dimension.XLength = 800;
             labware.Dimension.YLength = 125;
             labware.WellsInfo.WellRadius = 4;
@@ -48,7 +48,7 @@ namespace WorkstationController.Core.UnitTest
         public void LabwareDesrializeFromXmlFileTest()
         {
             Labware labware = Labware.Create(this._xmlFilePath);
-            Assert.AreEqual<string>(labware.Name, "LabwareSerializeTest");
+            Assert.AreEqual<string>(labware.TypeName, "LabwareSerializeTest");
         }
     }
 }

@@ -2,8 +2,10 @@
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:local="clr-namespace:WorkstationController.WorktableVisualTest"
-        Title="MainWindow" Height="500" Width="600">
-    <Grid>
-        <local:WorktableGrid x:Name="grid1" Margin="10" VerticalAlignment="Stretch" HorizontalAlignment="Stretch"/>
+        Title="MainWindow" Height="540.23" Width="621.839">
+    <Grid Name="Container">
+       
+        <local:WorktableGrid x:Name="grid1" Grid.Row="0" Margin="10" VerticalAlignment="Stretch" HorizontalAlignment="Stretch"/>
+        
     </Grid>
 </Window>

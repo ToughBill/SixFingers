@@ -12,43 +12,57 @@ using System.Windows.Documents;
 
 namespace WorkstationController.VisualElement
 {
-    class MovementsController : INotifyPropertyChanged
+    /// <summary>
+    /// response to user's actions and control the render of UI
+    /// </summary>
+    public class UIMovementsController : INotifyPropertyChanged
     {
         private bool isDragging = false;
         private System.Windows.Controls.Grid myCanvas;
         private Point ptStartDrag;
-        private UIElement _selectedElement;
-        private UIElement _newLabwareElement;
+        private UIElement _selectedUIElement;
+        private UIElement _newUIElement;
 
-
-        public UIElement NewLabwareElement
+        /// <summary>
+        /// new UI element introduced from somewhere, nomarlly from listbox
+        /// </summary>
+        public UIElement NewUIElement
         {
             get
             {
-                return _newLabwareElement;
+                return _newUIElement;
             }
             set
             {
-                _newLabwareElement = value;
+                _newUIElement = value;
             }
         }
         
         private bool enableMouseMove = true;
+
+        /// <summary>
+        /// nothing to say
+        /// </summary>
         public event PropertyChangedEventHandler PropertyChanged;
-        private string selName;
+        
 
-
+        /// <summary>
+        /// selected UI element
+        /// </summary>
         public UIElement SelectedElement
         {
-            get { return _selectedElement; }
+            get { return _selectedUIElement; }
             set
             {
-                _selectedElement = value;
+                _selectedUIElement = value;
                 OnPropertyChanged("SelectedElement");
             }
         }
 
-        // Create the OnPropertyChanged method to raise the event 
+        /// <summary>
+        /// Create the OnPropertyChanged method to raise the event 
+        /// </summary>
+        /// <param name="name"></param>
         protected void OnPropertyChanged(string name)
         {
             PropertyChangedEventHandler handler = PropertyChanged;
@@ -58,20 +72,98 @@ namespace WorkstationController.VisualElement
             }
         }
 
-
-        public MovementsController(System.Windows.Controls.Grid grid)
+        /// <summary>
+        /// ctor, control the grid
+        /// </summary>
+        /// <param name="grid"></param>
+        public UIMovementsController(System.Windows.Controls.Grid grid)
         {
             // TODO: Complete member initialization
             this.myCanvas = grid;
+            myCanvas.MouseLeftButtonDown += myCanvas_MouseLeftButtonDown;
+            myCanvas.MouseLeftButtonUp += myCanvas_MouseLeftButtonUp;
+            myCanvas.MouseMove += myCanvas_MouseMove;
         }
 
+        void myCanvas_MouseMove(object sender, MouseEventArgs e)
+        {
+            if (e.LeftButton == MouseButtonState.Released)
+                return;
+            if (!enableMouseMove)
+                return;
+            Point ptClick = e.GetPosition(myCanvas);
+            if (ptClick.X < 0 || ptClick.X > myCanvas.ActualWidth)
+                return;
 
+            if (ptClick.Y < 0 || ptClick.Y > myCanvas.ActualHeight)
+                return;
+
+            //double actualWidth = 0;
+            //double actualHeight = 0;
+            UIElement workingElement = NewUIElement == null ? SelectedElement : NewUIElement;
+            if (workingElement == null)
+                return;
+            ptClick.Offset(-ptStartDrag.X, -ptStartDrag.Y);
+
+
+            //double actualWidth = workingElement.RenderSize.Width;
+            //double actualHeight = workingElement.RenderSize.Height;
+            //if (ptClick.X < 0)
+            //    ptClick.X = 0;
+            //if (ptClick.X + actualWidth > myCanvas.ActualWidth)
+            //    ptClick.X = myCanvas.ActualWidth - actualWidth;
+            //if (ptClick.Y < 0)
+            //    ptClick.Y = 0;
+            //if (ptClick.Y + actualHeight > myCanvas.ActualHeight)
+            //    ptClick.Y = myCanvas.ActualHeight - actualHeight;
+
+            if (NewUIElement != null)
+            {
+                myCanvas.Children.Add(NewUIElement);
+                myCanvas.InvalidateVisual();
+                SelectedElement = NewUIElement;
+                NewUIElement = null;
+                return;
+            }
+
+            if (SelectedElement == null)
+                return;
+
+            ((LabwareUIElement)SelectedElement).Update();
+            SelectedElement.RenderTransform = new TranslateTransform(ptClick.X, ptClick.Y);
+            
+        }
+
+        void myCanvas_MouseLeftButtonUp(object sender, MouseButtonEventArgs e)
+        {
+            myCanvas.ReleaseMouseCapture();
+            
+        }
+
+        void myCanvas_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
+        {
+            PreventMouseMove();
+            _selectedUIElement = FindSelectedUIElement(e.GetPosition(myCanvas));
+            if (_selectedUIElement != null)
+            {
+                myCanvas.CaptureMouse();
+            }
+            AllowMouseMove();
+        }
+
+        void myCanvas_MouseDown(object sender, MouseButtonEventArgs e)
+        {
+            myCanvas.ReleaseMouseCapture();
+        }
+
+        /// <summary>
+        /// whether we are dragging the UI element from the listbox
+        /// </summary>
         public bool IsDragging
         {
             set
             {
                 isDragging = value;
-                RemoveSelectionAdorner();
                 if (isDragging)
                 {
                     Mouse.OverrideCursor = Cursors.Hand;
@@ -84,24 +176,8 @@ namespace WorkstationController.VisualElement
             }
         }
 
-        internal void CanvasLeftButtonUp(MouseButtonEventArgs e)
-        {
-            myCanvas.ReleaseMouseCapture();
-        }
- 
-        internal void CanvasLeftButtonDown(MouseButtonEventArgs e)
-        {
-            PreventMouseMove();
-            _selectedElement = FindSelectedUIElement(e.GetPosition(myCanvas));
-            if(_selectedElement != null)
-            {
-                myCanvas.CaptureMouse();
-                AddSelectionAdorner(_selectedElement);
-            }
-            AllowMouseMove();
 
-        }
-
+        //only find LabwareUIElement & CarrierUIElement
         private UIElement FindSelectedUIElement(Point pt)
         {
             HitTestResult result = VisualTreeHelper.HitTest(myCanvas, pt);
@@ -110,7 +186,10 @@ namespace WorkstationController.VisualElement
                 return null;
             }
             ptStartDrag = pt;
-            return VisualCommon.FindParent<UIElement>(result.VisualHit);
+            var uiElement = VisualCommon.FindParent<LabwareUIElement>(result.VisualHit);
+            if (uiElement != null)
+                return uiElement;
+            return VisualCommon.FindParent<CarrierUIElement>(result.VisualHit);
         }
 
 
@@ -122,82 +201,6 @@ namespace WorkstationController.VisualElement
         private void PreventMouseMove()
         {
             enableMouseMove = false;
-        }
-
-        private void RemoveSelectionAdorner()
-        {
-            if (SelectedElement == null)
-                return;
-
-            AdornerLayer adornerLayer = AdornerLayer.GetAdornerLayer(SelectedElement);
-            Adorner[] toRemoveArray = adornerLayer.GetAdorners(SelectedElement);
-            Adorner toRemove;
-            if (toRemoveArray != null)
-            {
-                toRemove = toRemoveArray[0];
-                adornerLayer.Remove(toRemove);
-            }
-
-        }
-        private void AddSelectionAdorner(UIElement uiElement)
-        {
-            RemoveSelectionAdorner();
-            AdornerLayer adornerLayer = AdornerLayer.GetAdornerLayer(uiElement);
-            adornerLayer.Add(new BorderAdorner(uiElement));
-        }
-
-        internal void MoveMouse(MouseEventArgs e)
-        {
-            if (e.LeftButton == MouseButtonState.Released)
-                return;
-            if (!enableMouseMove)
-                return;
-
-            Point ptClick = e.GetPosition(myCanvas);
-            if (ptClick.X < 0 || ptClick.X > myCanvas.ActualWidth)
-                return;
-
-            if (ptClick.Y < 0 || ptClick.Y > myCanvas.ActualHeight)
-                return;
-
-            double actualWidth = 0;
-            double actualHeight = 0;
-            UIElement workingElement = NewLabwareElement == null ? SelectedElement : NewLabwareElement;
-            if (workingElement == null)
-                return;
-            ptClick.Offset(-ptStartDrag.X, -ptStartDrag.Y);
-            
-            Rect rc;// = workingElement.Labware.labBase.Rectangle;
-            if(workingElement is LabwareUIElement)
-            {
-//                rc.Width = ((LabwareUIElement)workingElement)
-            }
-            //actualWidth = rc.Width;
-            //actualHeight = rc.Height;
-
-            //if (ptClick.X < 0)
-            //    ptClick.X = 0;
-            //if (ptClick.X + actualWidth > myCanvas.ActualWidth)
-            //    ptClick.X = myCanvas.ActualWidth - actualWidth;
-            //if (ptClick.Y < 0)
-            //    ptClick.Y = 0;
-            //if (ptClick.Y + actualHeight > myCanvas.ActualHeight)
-            //    ptClick.Y = myCanvas.ActualHeight - actualHeight;
-
-
-            if (NewLabwareElement != null)
-            {
-                myCanvas.Children.Add(NewLabwareElement);
-                myCanvas.InvalidateVisual();
-                SelectedElement = NewLabwareElement;
-                NewLabwareElement = null;
-                return;
-            }
-
-            if (SelectedElement == null)
-                return;
-
-            SelectedElement.RenderTransform = new TranslateTransform(ptClick.X, ptClick.Y);
         }
 
         //public bool MoveSelectedElementTo(string sXOffSet, string sYOffSet, ref string sErrMsg)

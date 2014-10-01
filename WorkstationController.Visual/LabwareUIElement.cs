@@ -9,13 +9,20 @@ using WorkstationController.Core.Data;
 
 namespace WorkstationController.VisualElement
 {
-    class LabwareUIElement : UIElement, IRenderableWares
+    /// <summary>
+    /// labware on carrier
+    /// </summary>
+    public class LabwareUIElement : UIElement, IRenderableWares
     {
         Labware _labware;
         private VisualCollection _children;
         private Worktable   _worktable = null;
-        private Point       _topLeft;
+        private bool _isSelected = false;
 
+        /// <summary>
+        /// ctor
+        /// </summary>
+        /// <param name="labware"></param>
         public LabwareUIElement(Labware labware)
         {
             this._labware = labware;
@@ -24,13 +31,28 @@ namespace WorkstationController.VisualElement
             _children.Add(CreateViusal());
         }
 
+        /// <summary>
+        /// whether the item is selected
+        /// </summary>
+        public bool Selected 
+        { 
+            get
+            {
+                return _isSelected;
+            }
+            set
+            {
+                _isSelected = true;
+            }
+        }
+
         private Visual CreateViusal()
         {
             DrawingVisual drawingVisual = new DrawingVisual();
             Render(drawingVisual);
             return drawingVisual;
         }
-
+        
         private void Render(DrawingVisual drawingVisual)
         {
             DrawingContext drawingContext = drawingVisual.RenderOpen();
@@ -49,7 +71,8 @@ namespace WorkstationController.VisualElement
                 yPos += (int)site.Position.Y;
             }
             Size sz = new Size(_labware.Dimension.XLength, _labware.Dimension.YLength);
-            VisualCommon.DrawRect(xPos, yPos, sz, drawingContext, Colors.Black);
+            Color border = _isSelected ? Colors.Blue : Colors.Black;
+            VisualCommon.DrawRect(xPos, yPos, sz, drawingContext, border);
             
             int cols = _labware.WellsInfo.NumberOfWellsX;
             int rows = _labware.WellsInfo.NumberOfWellsY;
@@ -77,51 +100,61 @@ namespace WorkstationController.VisualElement
             double y = (1 + row) * eachYUnit;
             return new Point(x, y);
         }
+
+        /// <summary>
+        /// unique name of the UI　element
+        /// </summary>
         public string Label
         {
             get
             {
-                return _labware.Name;
+                return _labware.Label;
             }
             set
             {
-                _labware.Name = value;
-            }
-        }
-        public VisualCollection Visuals
-        {
-            get
-            {
-                return _children;
+                _labware.Label = value;
             }
         }
 
+        //public VisualCollection Visuals
+        //{
+        //    get
+        //    {
+        //        return _children;
+        //    }
+        //}
+
+        /// <summary>
+        /// must override this
+        /// </summary>
+        /// <param name="index"></param>
+        /// <returns></returns>
+        protected override Visual GetVisualChild(int index)
+        {
+            if (index < 0 || index >= _children.Count)
+            {
+                throw new ArgumentOutOfRangeException();
+            }
+
+            return _children[index];
+        }
+
+        /// <summary>
+        /// must override this
+        /// </summary>
+        protected override int VisualChildrenCount
+        {
+            get { return _children.Count; }
+        }
+
+        /// <summary>
+        /// IRenderableWares implements, redraw the UI
+        /// </summary>
         public void Update()
         {
             if (_children.Count > 0)
                 Render((DrawingVisual)_children[0]);
         }
-
-
-        public Point RenderOffset
-        {
-            set
-            {
-                throw new NotImplementedException();
-            }
-        }
-
-
-        Point IRenderableWares.RenderOffset
-        {
-            get
-            {
-                throw new NotImplementedException();
-            }
-            set
-            {
-                throw new NotImplementedException();
-            }
-        }
+   
     }
 }

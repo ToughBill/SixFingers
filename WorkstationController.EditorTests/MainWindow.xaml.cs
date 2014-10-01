@@ -44,11 +44,11 @@ namespace WorkstationController.EditorTests
           
             labware.ZValues = new ZValues(360, 625, 665, 1610);
             labware.Dimension = new Dimension(0, 2700);
-            labware.Name = "lab1";
+            labware.TypeName = "lab1";
             labware.SiteID = 1;
-            labware.Type = LabwareType.Microplates;
+            labware.LabwareType = LabwareType.Microplates;
             labware.WellsInfo = new WellsInfo(new Point(0, -32), new Point(0, 2788), 1, 16, BottomShape.Flat, 50);
-            labware.Type = LabwareType.Tubes;
+            labware.LabwareType = LabwareType.Tubes;
             labware.BackGroundColor = Color.FromArgb(255, 255, 0, 0);
             labware.CarrierLabel = "";
 
@@ -62,11 +62,11 @@ namespace WorkstationController.EditorTests
             switch(sUserCOntrolName)
             {
                 case LabwareEditor:
-                    EditorContainer.Children.Clear();
-                    EditorContainer.Children.Add(labwareEditorUserControl);
+                    UserControlContainer.Children.Clear();
+                    UserControlContainer.Children.Add(labwareEditorUserControl);
                     break;
                 case CarrierEditor:
-                    EditorContainer.Children.Clear();
+                    UserControlContainer.Children.Clear();
                     //EditorContainer.Children.Add(carrierEditorUserControl);
                     break;
                 default:

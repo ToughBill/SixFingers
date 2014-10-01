@@ -15,9 +15,9 @@ namespace WorkstationController.Core.Data
     /// Data definition of a labware installed on the carrier
     /// </summary>
     [Serializable]
-    public class Labware : ISerialization
+    public class Labware : WareBase,ISerialization
     {
-        private string      _name;
+        
         private Color       _backGroundColor;
         private int         _siteID;
         private LabwareType _labwareType;
@@ -31,7 +31,10 @@ namespace WorkstationController.Core.Data
         {
         }
 
-        public LabwareType Type
+        /// <summary>
+        /// labware type, there can be several labwares with same typename in one layout
+        /// </summary>
+        public LabwareType LabwareType
         {
             get
             {
@@ -40,20 +43,6 @@ namespace WorkstationController.Core.Data
             set
             {
                 _labwareType = value;
-            }
-        }
-        /// <summary>
-        /// Gets or sets the name of the labware
-        /// </summary>
-        public string Name
-        {
-            get
-            {
-                return _name;
-            }
-            set
-            {
-                _name = value;
             }
         }
 
@@ -107,6 +96,9 @@ namespace WorkstationController.Core.Data
         private Dimension _dimension;
         private ZValues _zValues;
 
+        /// <summary>
+        /// the info of the wells on the ware
+        /// </summary>
         public WellsInfo WellsInfo
         {
             get
@@ -118,6 +110,10 @@ namespace WorkstationController.Core.Data
                 _wellsInfo = value;
             }
         }
+
+        /// <summary>
+        /// the width and height
+        /// </summary>
         public Dimension Dimension
         {
             get
@@ -129,6 +125,9 @@ namespace WorkstationController.Core.Data
                 _dimension = value;
             }
         }
+        /// <summary>
+        /// liquid class related
+        /// </summary>
         public ZValues ZValues
         {
             get
@@ -167,15 +166,44 @@ namespace WorkstationController.Core.Data
 
 
 
-
+    /// <summary>
+    /// labware's type
+    /// </summary>
     public enum LabwareType
     {
+        /// <summary>
+        /// diti
+        /// </summary>
         Tips = 0,
+
+        /// <summary>
+        /// plate
+        /// </summary>
         Microplates = 1,
+
+        /// <summary>
+        /// wash
+        /// </summary>
         Wash = 2,
+
+        /// <summary>
+        /// waste
+        /// </summary>
         Waste = 3,
+
+        /// <summary>
+        /// normally a rectangle container
+        /// </summary>
         Trough = 4,
+
+        /// <summary>
+        /// tube is widely used in hospital
+        /// </summary>
         Tubes = 5,
+
+        /// <summary>
+        /// misc wares
+        /// </summary>
         Misc = 6,
     }
     /// <summary>
@@ -199,6 +227,9 @@ namespace WorkstationController.Core.Data
         VShape
     }
 
+    /// <summary>
+    /// see before
+    /// </summary>
     public class Dimension : INotifyPropertyChanged
     {
         private int _xLength;
@@ -245,7 +276,11 @@ namespace WorkstationController.Core.Data
                     (ref this._yLength, value, this, "YLength", this.PropertyChanged);
             }
         }
-
+        /// <summary>
+        /// ctor
+        /// </summary>
+        /// <param name="x"></param>
+        /// <param name="y"></param>
         public Dimension(int x, int y)
         {
             XLength = x;
@@ -253,8 +288,14 @@ namespace WorkstationController.Core.Data
         }
     }
 
+    /// <summary>
+    /// four z-heights used in pipetting
+    /// </summary>
     public class ZValues : INotifyPropertyChanged
     {
+        /// <summary>
+        /// nothing to say
+        /// </summary>
         public event PropertyChangedEventHandler PropertyChanged = delegate { };
         private int _zTravel;
         private int _zStart;
@@ -334,7 +375,13 @@ namespace WorkstationController.Core.Data
                        (ref this._zMax, value, this, "ZMax", this.PropertyChanged);   
             }
         }
-
+        /// <summary>
+        /// ctor
+        /// </summary>
+        /// <param name="travel"></param>
+        /// <param name="start"></param>
+        /// <param name="zDispense"></param>
+        /// <param name="zMax"></param>
         public ZValues(int travel, int start, int zDispense, int zMax)
         {
             _zTravel = travel;
@@ -344,9 +391,14 @@ namespace WorkstationController.Core.Data
         }
     }
 
-
+    /// <summary>
+    /// the well information on the labware
+    /// </summary>
     public class WellsInfo : INotifyPropertyChanged
     {
+        /// <summary>
+        /// nothing to say
+        /// </summary>
         public event PropertyChangedEventHandler PropertyChanged = delegate { };
         private int _wellRadius;
         private int _numberOfWellsX;

@@ -31,8 +31,20 @@ namespace WorkstationController.Core.Data
 
         // The size of each rows' pin, normally the first row's size is smaller
         // but the second & third are same.
+
+        /// <summary>
+        /// first row pin, a little smaller
+        /// </summary>
         public Size FirstRowPinSize{ get; set; }
+
+        /// <summary>
+        /// second, normally equal to the third.
+        /// </summary>
         public Size SecondRowPinSize{ get; set; }
+
+        /// <summary>
+        /// third row, 
+        /// </summary>
         public Size ThirdRowPinSize{ get; set; } 
 
         /// <summary>

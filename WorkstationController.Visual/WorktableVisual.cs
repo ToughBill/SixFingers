@@ -32,6 +32,12 @@ namespace WorkstationController.VisualElement
             {
                 DrawPinsSameGrid(i, drawingContext);
             }
+            DrawBorder(worktable.Size,drawingContext);
+        }
+
+        private void DrawBorder(Size size, DrawingContext drawingContext)
+        {
+            VisualCommon.DrawRect(0, 0, size, drawingContext, Colors.Black);
         }
 
         /// <summary>
@@ -65,7 +71,7 @@ namespace WorkstationController.VisualElement
         /// <param name="drawingContext"></param>
         private void DrawPin(int pinX, int pinY, Size size, DrawingContext drawingContext)
         {
-            VisualCommon.DrawRect(pinX, pinY, size, drawingContext, Colors.Black);
+            VisualCommon.DrawSolidRect(pinX, pinY, size, drawingContext, Colors.Black);
         }
     }
 }

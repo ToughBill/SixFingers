@@ -7,7 +7,10 @@ namespace WorkstationController.VisualElement
 
     public class BorderAdorner : Adorner
     {
-        // Be sure to call the base class constructor. 
+        /// <summary>
+        /// ctor
+        /// </summary>
+        /// <param name="adornedElement"></param>
         public BorderAdorner(UIElement adornedElement)
             : base(adornedElement)
         {

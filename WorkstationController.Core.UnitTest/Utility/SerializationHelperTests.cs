@@ -13,7 +13,7 @@ namespace WorkstationController.Core.UnitTest
         public void LabwareSerializationTest()
         {
             Labware labware = new Labware();
-            labware.Name = "LabwareSerializeTest";
+            labware.TypeName = "LabwareSerializeTest";
             //labware.XLength = 85;
             //labware.YLength = 125;
             //labware.Height = 45;

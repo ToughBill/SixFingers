@@ -13,7 +13,6 @@ namespace WorkstationController.WorktableVisualTest
     class WorktableGrid : Grid
     {
         WorktableVisual worktableVisual = null;
-        List<UIElement> uiElements = new List<UIElement>();
         public void AttachWorktableVisual(WorktableVisual worktableVisual)
         {
             this.worktableVisual = worktableVisual;
@@ -27,11 +26,6 @@ namespace WorkstationController.WorktableVisualTest
 
 
             UpdateContainerSize(e.NewSize);
-            foreach (UIElement uiElement in uiElements)
-            {
-                ((IRenderableWares)uiElement).Update();
-            }
-            
             this.InvalidateVisual();
         }
 

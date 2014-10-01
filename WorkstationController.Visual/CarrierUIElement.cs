@@ -25,6 +25,8 @@ namespace WorkstationController.VisualElement
         /// </summary>
         private Worktable _worktable = null;
 
+        private bool _selected = false;
+
         /// <summary>
         /// Constructor
         /// </summary>
@@ -84,6 +86,21 @@ namespace WorkstationController.VisualElement
         }
 
         /// <summary>
+        /// whether the UIElement is selected
+        /// </summary>
+        public bool Selected 
+        {
+            get
+            {
+                return _selected;
+            }
+            set
+            {
+                _selected = value;
+            }
+        }
+
+        /// <summary>
         /// Rerender the carrier
         /// </summary>
         public void Update()
@@ -114,21 +131,9 @@ namespace WorkstationController.VisualElement
             int xPos = (int)(_worktable.FirstPinPosition.X + _carrier.Grid * Worktable.DistanceBetweenAdjacentPins - _carrier.XOffset);
             int yPos = (int)(_worktable.FirstPinPosition.Y - _carrier.XOffset);
             Size sz = new Size(_carrier.XLength, _carrier.YLength);
-            VisualCommon.DrawRect(xPos, yPos, sz, drawingContext, Colors.Black);
+            Color border = _selected ? Colors.Blue : Colors.Black;
+            VisualCommon.DrawRect(xPos, yPos, sz, drawingContext, border);
             drawingContext.Close();
-        }
-
-
-        public Point RenderOffset
-        {
-            get
-            {
-                throw new NotImplementedException();
-            }
-            set
-            {
-                throw new NotImplementedException();
-            }
         }
     }
 }

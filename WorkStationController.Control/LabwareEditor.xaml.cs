@@ -21,6 +21,9 @@ namespace WorkstationController.Control
     /// </summary>
     public partial class LabwareUserControl : UserControl
     {
+        /// <summary>
+        /// ctor
+        /// </summary>
         public LabwareUserControl()
         {
             InitializeComponent();

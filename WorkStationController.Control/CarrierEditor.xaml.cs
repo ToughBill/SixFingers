@@ -19,6 +19,9 @@ namespace WorkstationController.Control
     /// </summary>
     public partial class CarrierEditorUserControl : UserControl
     {
+        /// <summary>
+        /// ctor
+        /// </summary>
         public CarrierEditorUserControl()
         {
             InitializeComponent();
