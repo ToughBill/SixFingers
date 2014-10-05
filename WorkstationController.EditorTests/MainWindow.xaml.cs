@@ -46,9 +46,8 @@ namespace WorkstationController.EditorTests
             labware.Dimension = new Dimension(0, 2700);
             labware.TypeName = "lab1";
             labware.SiteID = 1;
-            labware.LabwareType = LabwareType.Microplates;
+            labware.TypeName = LabwareBuildInType.Plate96.ToString();//LabwareType.Microplates;
             labware.WellsInfo = new WellsInfo(new Point(0, -32), new Point(0, 2788), 1, 16, BottomShape.Flat, 50);
-            labware.LabwareType = LabwareType.Tubes;
             labware.BackGroundColor = Color.FromArgb(255, 255, 0, 0);
             labware.CarrierLabel = "";
 

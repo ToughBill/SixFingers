@@ -38,10 +38,11 @@ namespace WorkstationController.WorktableVisualTest
                 new Size(20, 120),
                 new Size(20, 120), new Point(500, 1000), 1800, 3000, 16);
             Configurations.Instance.Worktable = worktable;
+
             Container.SizeChanged += Container_SizeChanged;
-            WorktableVisual worktableVisual = new WorktableVisual();
-            grid1.AttachWorktableVisual(worktableVisual);
-            grid1.InvalidateVisual();
+            //WorktableVisual worktableVisual = new WorktableVisual();
+            //grid1.AttachWorktableVisual(worktableVisual);
+            //grid1.InvalidateVisual();
             //Labware labware = new Labware();
             //labware.ZValues = new ZValues(360, 625, 665, 1610);
             //labware.Dimension = new Dimension(250, 2800);
@@ -53,8 +54,21 @@ namespace WorkstationController.WorktableVisualTest
             //labware.BackGroundColor = Color.FromArgb(255, 120, 0, 0);
             //labware.CarrierLabel = "";
             //Container.Children.Add(new LabwareUIElement(labware));
-            //Container.RenderSize = new Size(600, 800);
-            //VisualCommon.UpdateVisuals(Container.Children);
+            
+            
+            Labware labware1 = new Labware();
+            labware1.ZValues = new ZValues(360, 625, 665, 1610);
+            labware1.Dimension = new Dimension(250, 2700);
+            labware1.TypeName = "16Pos Tubes";
+            labware1.Label = "lab1";
+            labware1.SiteID = 1;
+            labware1.WellsInfo = new WellsInfo(new Point(0, -32), new Point(0, 2788), 1, 16, BottomShape.Flat, 50);
+            labware1.TypeName = "Tubes 16Pos 100mm";
+            labware1.BackGroundColor = Color.FromArgb(255, 255, 0, 0);
+            labware1.CarrierLabel = "";
+            Container.Children.Add(new LabwareUIElement(labware1));
+            Container.RenderSize = new Size(600, 800);
+            VisualCommon.UpdateVisuals(Container.Children);
         }
 
       
@@ -62,7 +76,7 @@ namespace WorkstationController.WorktableVisualTest
         void Container_SizeChanged(object sender, SizeChangedEventArgs e)
         {
             VisualCommon.UpdateContainerSize(e.NewSize);
-            //VisualCommon.UpdateVisuals(Container.Children);
+            VisualCommon.UpdateVisuals(Container.Children);
         }
 
         private void btnNewLabware_Click(object sender, RoutedEventArgs e)

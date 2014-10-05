@@ -12,48 +12,21 @@ namespace WorkstationController.VisualElement
     /// <summary>
     /// labware on carrier
     /// </summary>
-    public class LabwareUIElement : UIElement, IRenderableWares
+    public class LabwareUIElement : BasewareUIElement
     {
         Labware _labware;
-        private VisualCollection _children;
-        private Worktable   _worktable = null;
-        private bool _isSelected = false;
-
         /// <summary>
         /// ctor
         /// </summary>
         /// <param name="labware"></param>
-        public LabwareUIElement(Labware labware)
+        public LabwareUIElement(Labware labware):base((WareBase)labware)
         {
             this._labware = labware;
-            _worktable = Configurations.Instance.Worktable;
-            _children = new VisualCollection(this);
             _children.Add(CreateViusal());
         }
 
-        /// <summary>
-        /// whether the item is selected
-        /// </summary>
-        public bool Selected 
-        { 
-            get
-            {
-                return _isSelected;
-            }
-            set
-            {
-                _isSelected = true;
-            }
-        }
-
-        private Visual CreateViusal()
-        {
-            DrawingVisual drawingVisual = new DrawingVisual();
-            Render(drawingVisual);
-            return drawingVisual;
-        }
         
-        private void Render(DrawingVisual drawingVisual)
+        protected override void Render(DrawingVisual drawingVisual)
         {
             DrawingContext drawingContext = drawingVisual.RenderOpen();
             string carrierLabel = _labware.CarrierLabel;
@@ -101,60 +74,7 @@ namespace WorkstationController.VisualElement
             return new Point(x, y);
         }
 
-        /// <summary>
-        /// unique name of the UI　element
-        /// </summary>
-        public string Label
-        {
-            get
-            {
-                return _labware.Label;
-            }
-            set
-            {
-                _labware.Label = value;
-            }
-        }
 
-        //public VisualCollection Visuals
-        //{
-        //    get
-        //    {
-        //        return _children;
-        //    }
-        //}
-
-        /// <summary>
-        /// must override this
-        /// </summary>
-        /// <param name="index"></param>
-        /// <returns></returns>
-        protected override Visual GetVisualChild(int index)
-        {
-            if (index < 0 || index >= _children.Count)
-            {
-                throw new ArgumentOutOfRangeException();
-            }
-
-            return _children[index];
-        }
-
-        /// <summary>
-        /// must override this
-        /// </summary>
-        protected override int VisualChildrenCount
-        {
-            get { return _children.Count; }
-        }
-
-        /// <summary>
-        /// IRenderableWares implements, redraw the UI
-        /// </summary>
-        public void Update()
-        {
-            if (_children.Count > 0)
-                Render((DrawingVisual)_children[0]);
-        }
    
     }
 }

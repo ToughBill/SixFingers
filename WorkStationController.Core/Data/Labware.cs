@@ -15,35 +15,29 @@ namespace WorkstationController.Core.Data
     /// Data definition of a labware installed on the carrier
     /// </summary>
     [Serializable]
-    public class Labware : WareBase,ISerialization
+    public class Labware : WareBase,ISerialization,INotifyPropertyChanged
     {
         
         private Color       _backGroundColor;
         private int         _siteID;
-        private LabwareType _labwareType;
+        private string      _labwareType;
         private string      _carrierLabel;
 
+        public event PropertyChangedEventHandler PropertyChanged;
+        protected void OnPropertyChanged(string name)
+        {
+            PropertyChangedEventHandler handler = PropertyChanged;
+            if (handler != null)
+            {
+                handler(this, new PropertyChangedEventArgs(name));
+            }
+        }
         
         /// <summary>
         /// Default constructor
         /// </summary>
         public Labware()
         {
-        }
-
-        /// <summary>
-        /// labware type, there can be several labwares with same typename in one layout
-        /// </summary>
-        public LabwareType LabwareType
-        {
-            get
-            {
-                return _labwareType;
-            }
-            set
-            {
-                _labwareType = value;
-            }
         }
 
         /// <summary>
@@ -58,6 +52,7 @@ namespace WorkstationController.Core.Data
             set
             {
                 _backGroundColor = value;
+                OnPropertyChanged("BackGroundColor");
             }
         }
 
@@ -73,6 +68,7 @@ namespace WorkstationController.Core.Data
             set
             {
                 _siteID = value;
+                OnPropertyChanged("SiteID");
             }
 
         }
@@ -89,6 +85,7 @@ namespace WorkstationController.Core.Data
             set
             {
                 _carrierLabel = value;
+                OnPropertyChanged("CarrierLabel");
             }
         }
 
@@ -108,6 +105,7 @@ namespace WorkstationController.Core.Data
             set
             {
                 _wellsInfo = value;
+                OnPropertyChanged("WellsInfo");
             }
         }
 
@@ -123,6 +121,7 @@ namespace WorkstationController.Core.Data
             set
             {
                 _dimension = value;
+                OnPropertyChanged("Dimension");
             }
         }
         /// <summary>
@@ -137,6 +136,7 @@ namespace WorkstationController.Core.Data
             set
             {
                 _zValues = value;
+                OnPropertyChanged("_zValues");
             }
         }
 
@@ -165,47 +165,12 @@ namespace WorkstationController.Core.Data
     }
 
 
-
-    /// <summary>
-    /// labware's type
-    /// </summary>
-    public enum LabwareType
+    public enum LabwareBuildInType
     {
-        /// <summary>
-        /// diti
-        /// </summary>
-        Tips = 0,
-
-        /// <summary>
-        /// plate
-        /// </summary>
-        Microplates = 1,
-
-        /// <summary>
-        /// wash
-        /// </summary>
-        Wash = 2,
-
-        /// <summary>
-        /// waste
-        /// </summary>
-        Waste = 3,
-
-        /// <summary>
-        /// normally a rectangle container
-        /// </summary>
-        Trough = 4,
-
-        /// <summary>
-        /// tube is widely used in hospital
-        /// </summary>
-        Tubes = 5,
-
-        /// <summary>
-        /// misc wares
-        /// </summary>
-        Misc = 6,
+        Tubes16Pos13_100MM = 0,
+        Plate96 = 1
     }
+
     /// <summary>
     /// The bottom shape of labware
     /// </summary>
@@ -235,7 +200,15 @@ namespace WorkstationController.Core.Data
         private int _xLength;
         private int _yLength;
 
-        public event PropertyChangedEventHandler PropertyChanged = delegate { };
+        public event PropertyChangedEventHandler PropertyChanged;
+        protected void OnPropertyChanged(string name)
+        {
+            PropertyChangedEventHandler handler = PropertyChanged;
+            if (handler != null)
+            {
+                handler(this, new PropertyChangedEventArgs(name));
+            }
+        }
 
         /// <summary>
         /// make the xml serializer happy
@@ -255,8 +228,8 @@ namespace WorkstationController.Core.Data
             }
             set
             {
-                PropertyChangedNotifyHelper.NotifyPropertyChanged<int>
-                    (ref this._xLength, value, this, "XLength", this.PropertyChanged);
+                _xLength = value;
+                OnPropertyChanged("XLength");
                 
             }
         }
@@ -272,8 +245,8 @@ namespace WorkstationController.Core.Data
             }
             set
             {
-                PropertyChangedNotifyHelper.NotifyPropertyChanged<int>
-                    (ref this._yLength, value, this, "YLength", this.PropertyChanged);
+                _yLength = value;
+                OnPropertyChanged("YLength");
             }
         }
         /// <summary>

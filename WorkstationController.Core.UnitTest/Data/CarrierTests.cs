@@ -23,13 +23,13 @@ namespace WorkstationController.Core.UnitTest
         public void CarrierSerializeToXmlFileWithLabwaresTest()
         {
             Carrier carrier = new Carrier();
-            carrier.Name = "CarrierSerializeTest";
+            carrier.Label = "CarrierSerializeTest";
             carrier.XLength = 40;
             carrier.YLength = 500;
             carrier.Grid = 3;
 
             Labware labware1 = new Labware();
-            labware1.TypeName = "Labware1";
+            labware1.Label = "Labware1";
             labware1.Dimension.XLength = 85;
             labware1.Dimension.YLength = 125;
             labware1.WellsInfo.WellRadius = 4;
@@ -44,7 +44,7 @@ namespace WorkstationController.Core.UnitTest
             carrier.AddLabware(labware1);
 
             Labware labware2 = new Labware();
-            labware2.TypeName = "Labware2";
+            labware2.Label = "Labware2";
             labware2.Dimension.XLength = 85;
             labware2.Dimension.YLength = 125;
             labware2.WellsInfo.WellRadius = 4;
@@ -65,7 +65,7 @@ namespace WorkstationController.Core.UnitTest
         public void CarrierSerializeToXmlFileNoLabwaresTest()
         {
             Carrier carrier = new Carrier();
-            carrier.Name = "CarrierSerializeTest";
+            carrier.Label = "CarrierSerializeTest";
             carrier.XLength = 40;
             carrier.YLength = 500;
             carrier.Grid = 3;

@@ -9,6 +9,7 @@ using System.ComponentModel;
 using System.Windows;
 using System.Windows.Input;
 using System.Windows.Documents;
+using System.Diagnostics;
 
 namespace WorkstationController.VisualElement
 {
@@ -17,39 +18,37 @@ namespace WorkstationController.VisualElement
     /// </summary>
     public class UIMovementsController : INotifyPropertyChanged
     {
-        private bool isDragging = false;
-        private System.Windows.Controls.Grid myCanvas;
-        private Point ptStartDrag;
-        private UIElement _selectedUIElement;
-        private UIElement _newUIElement;
-
-        /// <summary>
-        /// new UI element introduced from somewhere, nomarlly from listbox
-        /// </summary>
-        public UIElement NewUIElement
-        {
-            get
-            {
-                return _newUIElement;
-            }
-            set
-            {
-                _newUIElement = value;
-            }
-        }
-        
+        //private bool isDragging = false;
+        private System.Windows.Controls.Grid _myCanvas;
+        private Point _ptClick;
+        private BasewareUIElement _selectedUIElement;
+        private BasewareUIElement _uiElementCandidate;
         private bool enableMouseMove = true;
 
         /// <summary>
         /// nothing to say
         /// </summary>
         public event PropertyChangedEventHandler PropertyChanged;
-        
-
+      
+        /// <summary>
+        /// new UI element introduced from somewhere, nomarlly from listbox
+        /// </summary>
+        public BasewareUIElement UIElementCandidate
+        {
+            get
+            {
+                return _uiElementCandidate;
+            }
+            set
+            {
+                _uiElementCandidate = value;
+                OnPropertyChanged("BasewareUIElement");
+            }
+        }
         /// <summary>
         /// selected UI element
         /// </summary>
-        public UIElement SelectedElement
+        public BasewareUIElement SelectedElement
         {
             get { return _selectedUIElement; }
             set
@@ -58,6 +57,9 @@ namespace WorkstationController.VisualElement
                 OnPropertyChanged("SelectedElement");
             }
         }
+          
+
+  
 
         /// <summary>
         /// Create the OnPropertyChanged method to raise the event 
@@ -79,10 +81,47 @@ namespace WorkstationController.VisualElement
         public UIMovementsController(System.Windows.Controls.Grid grid)
         {
             // TODO: Complete member initialization
-            this.myCanvas = grid;
-            myCanvas.MouseLeftButtonDown += myCanvas_MouseLeftButtonDown;
-            myCanvas.MouseLeftButtonUp += myCanvas_MouseLeftButtonUp;
-            myCanvas.MouseMove += myCanvas_MouseMove;
+            this._myCanvas = grid;
+            _myCanvas.PreviewMouseLeftButtonDown += myCanvas_PreviewMouseLeftButtonDown;
+            _myCanvas.PreviewMouseLeftButtonUp += myCanvas_PreviewMouseLeftButtonUp;
+            _myCanvas.MouseMove += myCanvas_MouseMove;
+        }
+
+        void myCanvas_PreviewMouseLeftButtonUp(object sender, MouseButtonEventArgs e)
+        {
+
+            _myCanvas.ReleaseMouseCapture();
+            Mouse.OverrideCursor = Cursors.Arrow;
+            //clear select flag
+            Debug.WriteLine("Clear selection");
+            if (_selectedUIElement == null)
+                return;
+
+            _selectedUIElement.RenderTransform = new TranslateTransform(0, 0);
+            _selectedUIElement = null;
+        }
+
+        /// <summary>
+        /// let mycanvas owns the mouse event
+        /// </summary>
+        public void CaptureMouse()
+        {
+            _myCanvas.CaptureMouse();
+        }
+
+
+        void myCanvas_PreviewMouseLeftButtonDown(object sender, MouseButtonEventArgs e)
+        {
+            //PreventMouseMove();
+            Point ptClick = e.GetPosition(_myCanvas);
+            _selectedUIElement = FindSelectedUIElement(ptClick);
+            if (_selectedUIElement != null)
+            {
+                _ptClick = ptClick;
+                Mouse.OverrideCursor = Cursors.Hand;
+                _myCanvas.CaptureMouse();
+            }
+           // AllowMouseMove();
         }
 
         void myCanvas_MouseMove(object sender, MouseEventArgs e)
@@ -91,21 +130,20 @@ namespace WorkstationController.VisualElement
                 return;
             if (!enableMouseMove)
                 return;
+            
+            /*
             Point ptClick = e.GetPosition(myCanvas);
             if (ptClick.X < 0 || ptClick.X > myCanvas.ActualWidth)
                 return;
 
             if (ptClick.Y < 0 || ptClick.Y > myCanvas.ActualHeight)
                 return;
-
-            //double actualWidth = 0;
-            //double actualHeight = 0;
-            UIElement workingElement = NewUIElement == null ? SelectedElement : NewUIElement;
-            if (workingElement == null)
+            
+            bool hasUIElement2Operate = _uiElementCandidate != null || _selectedUIElement != null;
+            if (!hasUIElement2Operate)
                 return;
-            ptClick.Offset(-ptStartDrag.X, -ptStartDrag.Y);
-
-
+            */
+            Point ptClick = new Point(200, 200);//for test
             //double actualWidth = workingElement.RenderSize.Width;
             //double actualHeight = workingElement.RenderSize.Height;
             //if (ptClick.X < 0)
@@ -116,92 +154,50 @@ namespace WorkstationController.VisualElement
             //    ptClick.Y = 0;
             //if (ptClick.Y + actualHeight > myCanvas.ActualHeight)
             //    ptClick.Y = myCanvas.ActualHeight - actualHeight;
+            ElectCandidate();
+            UpdateSelectedElement(ptClick);
+            
+        }
 
-            if (NewUIElement != null)
-            {
-                myCanvas.Children.Add(NewUIElement);
-                myCanvas.InvalidateVisual();
-                SelectedElement = NewUIElement;
-                NewUIElement = null;
-                return;
-            }
-
-            if (SelectedElement == null)
-                return;
-
-            ((LabwareUIElement)SelectedElement).Update();
+        private void UpdateSelectedElement(Point ptClick)
+        {
+            ptClick.Offset(-_ptClick.X, -_ptClick.Y);
+            ((BasewareUIElement)SelectedElement).Update();
             SelectedElement.RenderTransform = new TranslateTransform(ptClick.X, ptClick.Y);
-            
         }
 
-        void myCanvas_MouseLeftButtonUp(object sender, MouseButtonEventArgs e)
+        private void ElectCandidate()
         {
-            myCanvas.ReleaseMouseCapture();
-            
+            if (_uiElementCandidate == null)
+                return;
+            Debug.WriteLine("ElectCandidate");
+            SelectedElement = UIElementCandidate;
+            _myCanvas.Children.Add(UIElementCandidate);
+            _myCanvas.InvalidateVisual();
+            UIElementCandidate = null;
         }
-
-        void myCanvas_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
-        {
-            PreventMouseMove();
-            _selectedUIElement = FindSelectedUIElement(e.GetPosition(myCanvas));
-            if (_selectedUIElement != null)
-            {
-                myCanvas.CaptureMouse();
-            }
-            AllowMouseMove();
-        }
-
-        void myCanvas_MouseDown(object sender, MouseButtonEventArgs e)
-        {
-            myCanvas.ReleaseMouseCapture();
-        }
-
-        /// <summary>
-        /// whether we are dragging the UI element from the listbox
-        /// </summary>
-        public bool IsDragging
-        {
-            set
-            {
-                isDragging = value;
-                if (isDragging)
-                {
-                    Mouse.OverrideCursor = Cursors.Hand;
-                }
-                else
-                {
-                    Mouse.OverrideCursor = null;
-                    SelectedElement = null;
-                }
-            }
-        }
-
 
         //only find LabwareUIElement & CarrierUIElement
-        private UIElement FindSelectedUIElement(Point pt)
+        private BasewareUIElement FindSelectedUIElement(Point pt)
         {
-            HitTestResult result = VisualTreeHelper.HitTest(myCanvas, pt);
+            HitTestResult result = VisualTreeHelper.HitTest(_myCanvas, pt);
             if (result == null)
-            {
                 return null;
-            }
-            ptStartDrag = pt;
-            var uiElement = VisualCommon.FindParent<LabwareUIElement>(result.VisualHit);
-            if (uiElement != null)
-                return uiElement;
-            return VisualCommon.FindParent<CarrierUIElement>(result.VisualHit);
+            return VisualCommon.FindParent<BasewareUIElement>(result.VisualHit); 
         }
 
 
-        private void AllowMouseMove()
-        {
-            enableMouseMove = true;
-        }
+        //private void AllowMouseMove()
+        //{
+        //    Debug.WriteLine("Allow mouse move!");
+        //    enableMouseMove = true;
+        //}
 
-        private void PreventMouseMove()
-        {
-            enableMouseMove = false;
-        }
+        //private void PreventMouseMove()
+        //{
+        //    Debug.WriteLine("Prevent mouse move!");
+        //    enableMouseMove = false;
+        //}
 
         //public bool MoveSelectedElementTo(string sXOffSet, string sYOffSet, ref string sErrMsg)
         //{
@@ -242,5 +238,7 @@ namespace WorkstationController.VisualElement
         //    }
         //    return true;
         //}
+
+
     }
 }

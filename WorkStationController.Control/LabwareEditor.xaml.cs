@@ -32,7 +32,7 @@ namespace WorkstationController.Control
 
         void LabwareUserControl_Loaded(object sender, RoutedEventArgs e)
         {
-            cmbItemType.ItemsSource = Enum.GetValues(typeof(LabwareType)).Cast<LabwareType>();
+            //cmbItemType.ItemsSource = Enum.GetValues(typeof(LabwareType)).Cast<LabwareType>();
         }
     }
 }

@@ -13,7 +13,7 @@ namespace WorkstationController.Core.UnitTest
         public void LabwareSerializationTest()
         {
             Labware labware = new Labware();
-            labware.TypeName = "LabwareSerializeTest";
+            labware.Label = "LabwareSerializeTest";
             //labware.XLength = 85;
             //labware.YLength = 125;
             //labware.Height = 45;
@@ -38,7 +38,7 @@ namespace WorkstationController.Core.UnitTest
         public void CarrierNoLabwareSerializationTest()
         {
             Carrier carrier = new Carrier();
-            carrier.Name = "CarrierSerializeTest";
+            carrier.Label = "CarrierSerializeTest";
             carrier.XLength = 40;
             carrier.YLength = 500;
             //carrier.AllowedLabwareType = 2;
@@ -54,7 +54,7 @@ namespace WorkstationController.Core.UnitTest
         public void CarrierWithLabwaresSerializationTest()
         {
             Carrier carrier = new Carrier();
-            carrier.Name = "CarrierSerializeTest";
+            carrier.Label = "CarrierSerializeTest";
             carrier.XLength = 40;
             carrier.YLength = 500;
             //carrier.AllowedLabwareType = 2;

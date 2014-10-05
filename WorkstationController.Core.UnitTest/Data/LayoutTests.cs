@@ -38,7 +38,7 @@ namespace WorkstationController.Core.UnitTest
 
             #region Add Carrier1
             Carrier carrier1 = new Carrier();
-            carrier1.Name = "Carrier1";
+            carrier1.Label = "Carrier1";
             carrier1.XLength = 40;
             carrier1.YLength = 500;
             carrier1.Grid = 1;
@@ -80,7 +80,7 @@ namespace WorkstationController.Core.UnitTest
 
             #region Add Carrier2
             Carrier carrier2 = new Carrier();
-            carrier2.Name = "Carrier2";
+            carrier2.Label = "Carrier2";
             carrier2.XLength = 40;
             carrier2.YLength = 500;
             carrier2.Grid = 4;
@@ -116,7 +116,7 @@ namespace WorkstationController.Core.UnitTest
             labware22.ZValues.ZDispense = 1000;
             labware22.ZValues.ZMax = 1600;
             carrier2.AddLabware(labware22);
-
+            
             layout.AddCarrier(carrier2);
             #endregion
 
@@ -131,8 +131,8 @@ namespace WorkstationController.Core.UnitTest
             // With Carrier
             Layout layoutWithCarrier = Layout.Create(this._xmlFileWithCarrierPath);
             Assert.AreEqual<int>(layoutWithCarrier.Carriers.Count, 2);
-            Assert.AreEqual<string>(layoutWithCarrier.Carriers[0].Name, "Carrier1");
-            Assert.AreEqual<string>(layoutWithCarrier.Carriers[1].Name, "Carrier2");
+            Assert.AreEqual<string>(layoutWithCarrier.Carriers[0].Label, "Carrier1");
+            Assert.AreEqual<string>(layoutWithCarrier.Carriers[1].Label, "Carrier2");
 
             // Without Carrier
             Layout layoutWihtoutCarrier = Layout.Create(this._xmlFileWithoutCarrierPath);

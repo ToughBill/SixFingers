@@ -78,10 +78,10 @@ namespace WorkstationController.Core.Data
         /// <summary>
         /// Remove a carrier from layout by name
         /// </summary>
-        /// <param name="carrierName">Lable of carrier to remove</param>
-        public void RemoveCarrier(string carrierName)
+        /// <param name="carrierLabel">Lable of carrier to remove</param>
+        public void RemoveCarrier(string carrierLabel)
         {
-            Carrier carrier = this.carriers.Find(c => c.Name == carrierName);
+            Carrier carrier = this.carriers.Find(c => c.Label == carrierLabel);
 
             if(carrier != null)
             {

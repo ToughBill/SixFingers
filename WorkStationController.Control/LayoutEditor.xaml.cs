@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Windows;
@@ -63,13 +64,15 @@ namespace WorkstationController.Control
             VisualCommon.UpdateVisuals(uiContainer.Children);
         }
         /// <summary>
-        /// for test
+        /// suggest candidate
         /// </summary>
         /// <param name="uiElement"></param>
-        public void AddNewElement(UIElement uiElement)
+        public void AddCandidate(BasewareUIElement uiElement)
         {
-            uiController.NewUIElement = uiElement;
-            
+            Debug.WriteLine("Add candidate");
+            uiController.UIElementCandidate = uiElement;
+            Mouse.OverrideCursor = Cursors.Hand;
+            uiController.CaptureMouse();
         }
 
         /// <summary>

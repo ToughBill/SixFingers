@@ -16,6 +16,7 @@ namespace WorkstationController.Core.Data
     [Serializable]
     public class Carrier :WareBase, ISerialization, INotifyPropertyChanged, ICloneable
     {
+        public const int undefinedGrid = 0;
         /// <summary>
         /// nothing to say
         /// </summary>
@@ -41,17 +42,6 @@ namespace WorkstationController.Core.Data
             get;
             set;
         }
-
-        /// <summary>
-        /// Gets or sets the lable of the carrier
-        /// </summary>
-        [XmlAttribute]
-        public string Name 
-        {
-            get { return this._name; }
-            set { PropertyChangedNotifyHelper.NotifyPropertyChanged<string>(ref this._name, value, this, "Name", this.PropertyChanged); }
-        }
-
 
         /// <summary>
         /// Gets or sets the X-length of the carrier, in 0.1 millimetre(0.1 mm.)
@@ -136,7 +126,7 @@ namespace WorkstationController.Core.Data
         {
             this.ID = Guid.NewGuid();
         }
-
+        
         /// <summary>
         /// Create an instance of Carrier from a XML file
         /// </summary>
@@ -210,6 +200,35 @@ namespace WorkstationController.Core.Data
         {
             throw new NotImplementedException();
         }
+
+        public Carrier(BuildInCarrierType buildinType)
+        {
+            switch(buildinType)
+            {
+                case BuildInCarrierType.MP_3POS:
+                    CreateMP_3POS();
+                    break;
+                default:
+                    break;
+            }
+        }
+
+        private void CreateMP_3POS() //will be replaced by xml
+        {
+            _xlength = 1490;
+            _ylength = 3160;
+            _xoffset = 120;
+            _yoffset = 247;
+            _grid = undefinedGrid;
+            TypeName = BuildInCarrierType.MP_3POS.ToString();
+        }
+    }
+
+    public enum BuildInCarrierType
+    {
+        MP_3POS = 0,
+        Tube13mm_16POS = 1,
+        WashStation = 2
     }
 
     /// <summary>

@@ -84,9 +84,11 @@ where T : class
         {
             foreach (UIElement uiElement in uIElementCollection)
             {
-                IRenderableWares iRenderable = (IRenderableWares)uiElement;
-                if (iRenderable != null)
-                    iRenderable.Update();
+                if (!(uiElement is BasewareUIElement))
+                    continue;
+                BasewareUIElement basewareUIElement = (BasewareUIElement)uiElement;
+                if(basewareUIElement != null)
+                    basewareUIElement.Update();
             }
         }
 

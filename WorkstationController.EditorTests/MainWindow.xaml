@@ -12,8 +12,6 @@
             <RowDefinition Height="50"/>
         </Grid.RowDefinitions>
         <Grid Name="UserControlContainer" Grid.Row="0">
-
-
         </Grid>
         <Grid Name="Selection" Grid.Row="1">
             <ComboBox Name="UserControlNames" HorizontalAlignment="Left" Margin="600,20,0,0" VerticalAlignment="Top" Width="120" SelectionChanged="UserControlNames_SelectionChanged"/>
