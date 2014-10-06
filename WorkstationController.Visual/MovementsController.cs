@@ -162,7 +162,7 @@ namespace WorkstationController.VisualElement
         private void UpdateSelectedElement(Point ptClick)
         {
             ptClick.Offset(-_ptClick.X, -_ptClick.Y);
-            ((BasewareUIElement)SelectedElement).Update();
+            SelectedElement.InvalidateVisual();
             SelectedElement.RenderTransform = new TranslateTransform(ptClick.X, ptClick.Y);
         }
 

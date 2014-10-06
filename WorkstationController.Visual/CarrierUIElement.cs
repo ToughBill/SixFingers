@@ -41,7 +41,7 @@ namespace WorkstationController.VisualElement
             set
             {
                 _carrier.Grid = value;
-                Update();
+                InvalidateVisual();
             }
         }
 
