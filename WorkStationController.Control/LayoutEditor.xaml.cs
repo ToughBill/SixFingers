@@ -40,10 +40,10 @@ namespace WorkstationController.Control
         {
             //to do, replace it by load the worktable from a xml
             Worktable worktable = new Worktable(
-                                         new Size(8000, 3000),
+                                         new Size(6000, 3000),
                                          new Size(5, 30),
                                          new Size(5, 50),
-                                         new Size(5, 50), new Point(500, 500), 1500, 2500, 28);
+                                         new Size(5, 50), new Point(500, 500), 1500, 2500, 20);
 
             Configurations.Instance.Worktable = worktable;
             uiContainer.AttachWorktableVisual();
