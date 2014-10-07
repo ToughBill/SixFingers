@@ -49,7 +49,7 @@ namespace WorkstationController.EditorTests
             labware.TypeName = LabwareBuildInType.Plate96.ToString();//LabwareType.Microplates;
             labware.WellsInfo = new WellsInfo(new Point(0, -32), new Point(0, 2788), 1, 16, BottomShape.Flat, 50);
             labware.BackGroundColor = Color.FromArgb(255, 255, 0, 0);
-            labware.CarrierLabel = "";
+            labware.CarrierGrid = 1;
 
             this.DataContext = labware;
             UserControlNames.ItemsSource = strs;
