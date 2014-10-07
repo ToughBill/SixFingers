@@ -18,6 +18,15 @@ namespace WorkstationController.Core.Data
         /// nothing to say
         /// </summary>
         public event PropertyChangedEventHandler PropertyChanged = delegate { };
+
+        protected void OnPropertyChanged(string name)
+        {
+            PropertyChangedEventHandler handler = PropertyChanged;
+            if (handler != null)
+            {
+                handler(this, new PropertyChangedEventArgs(name));
+            }
+        }
         /// <summary>
         /// Gets or sets the typeName of the labware
         /// </summary>
@@ -31,9 +40,17 @@ namespace WorkstationController.Core.Data
             {
 
                 _typeName = value;
-                PropertyChangedNotifyHelper.NotifyPropertyChanged<string>(ref this._typeName,
-                    value, this, "TypeName", this.PropertyChanged);
+                OnPropertyChanged("TypeName");
             }
+        }
+
+        /// <summary>
+        /// make binding happy
+        /// </summary>
+        /// <returns></returns>
+        public override string ToString()
+        {
+            return _typeName;
         }
     }
 }
