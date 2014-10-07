@@ -57,9 +57,6 @@ namespace WorkstationController.VisualElement
                 OnPropertyChanged("SelectedElement");
             }
         }
-          
-
-  
 
         /// <summary>
         /// Create the OnPropertyChanged method to raise the event 
@@ -87,20 +84,6 @@ namespace WorkstationController.VisualElement
             _myCanvas.MouseMove += myCanvas_MouseMove;
         }
 
-        void myCanvas_PreviewMouseLeftButtonUp(object sender, MouseButtonEventArgs e)
-        {
-
-            _myCanvas.ReleaseMouseCapture();
-            Mouse.OverrideCursor = Cursors.Arrow;
-            //clear select flag
-            Debug.WriteLine("Clear selection");
-            if (_selectedUIElement == null)
-                return;
-
-            _selectedUIElement.RenderTransform = new TranslateTransform(0, 0);
-            _selectedUIElement = null;
-        }
-
         /// <summary>
         /// let mycanvas owns the mouse event
         /// </summary>
@@ -117,11 +100,36 @@ namespace WorkstationController.VisualElement
             _selectedUIElement = FindSelectedUIElement(ptClick);
             if (_selectedUIElement != null)
             {
+                _selectedUIElement.Selected = true;
                 _ptClick = ptClick;
                 Mouse.OverrideCursor = Cursors.Hand;
                 _myCanvas.CaptureMouse();
             }
            // AllowMouseMove();
+        }
+
+        void myCanvas_PreviewMouseLeftButtonUp(object sender, MouseButtonEventArgs e)
+        {
+            _myCanvas.ReleaseMouseCapture();
+            Mouse.OverrideCursor = Cursors.Arrow;
+            //clear select flag
+            Debug.WriteLine("Clear selection");
+            if (_selectedUIElement == null)
+                return;
+
+            if(_selectedUIElement is CarrierUIElement)
+            {
+                MountTheCarrier((CarrierUIElement)_selectedUIElement,e.GetPosition(_myCanvas));
+            }
+            //_selectedUIElement.RenderTransform = new TranslateTransform(0, 0);
+            _selectedUIElement = null;
+        }
+
+        private void MountTheCarrier(CarrierUIElement _selectedUIElement,Point position)
+        {
+            int grid = VisualCommon.FindCorrespondingGrid(position.X);
+            _selectedUIElement.Selected = false;
+            _selectedUIElement.Grid = grid;
         }
 
         void myCanvas_MouseMove(object sender, MouseEventArgs e)
@@ -131,19 +139,19 @@ namespace WorkstationController.VisualElement
             if (!enableMouseMove)
                 return;
             
-            /*
-            Point ptClick = e.GetPosition(myCanvas);
-            if (ptClick.X < 0 || ptClick.X > myCanvas.ActualWidth)
+            
+            Point ptClick = e.GetPosition(_myCanvas);
+            if (ptClick.X < 0 || ptClick.X > _myCanvas.ActualWidth)
                 return;
 
-            if (ptClick.Y < 0 || ptClick.Y > myCanvas.ActualHeight)
+            if (ptClick.Y < 0 || ptClick.Y > _myCanvas.ActualHeight)
                 return;
             
             bool hasUIElement2Operate = _uiElementCandidate != null || _selectedUIElement != null;
             if (!hasUIElement2Operate)
                 return;
-            */
-            Point ptClick = new Point(200, 200);//for test
+            
+            
             //double actualWidth = workingElement.RenderSize.Width;
             //double actualHeight = workingElement.RenderSize.Height;
             //if (ptClick.X < 0)
@@ -159,11 +167,20 @@ namespace WorkstationController.VisualElement
             
         }
 
-        private void UpdateSelectedElement(Point ptClick)
+        //public void RemoveCurrentSelectFlag()
+        //{
+        //    for( int i = 0; i< _myCanvas.Children.Count; i++)
+        //    {
+        //        var baseUIElement = (BasewareUIElement)_myCanvas.Children[i];
+        //        baseUIElement.Selected = false;
+        //    }
+        //}
+
+        private void UpdateSelectedElement(Point ptCurrent)
         {
-            ptClick.Offset(-_ptClick.X, -_ptClick.Y);
-            SelectedElement.InvalidateVisual();
-            SelectedElement.RenderTransform = new TranslateTransform(ptClick.X, ptClick.Y);
+            _selectedUIElement.SetDragPosition(ptCurrent);
+            _selectedUIElement.InvalidateVisual();
+            //SelectedElement.RenderTransform = new TranslateTransform(ptStart.X, ptStart.Y);
         }
 
         private void ElectCandidate()

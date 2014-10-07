@@ -20,7 +20,8 @@ namespace WorkstationController.VisualElement
         /// </summary>
         protected Worktable _worktable = null;
         protected bool _isSelected = false;
-        private WareBase _ware = null;
+        protected WareBase _ware = null;
+        protected Point _ptDragPosition;
 
         public BasewareUIElement(WareBase ware)
         {
@@ -51,15 +52,6 @@ namespace WorkstationController.VisualElement
                 InvalidateVisual();
             }
         }
-
-        ///// <summary>
-        ///// Rerender the carrier, template method.
-        ///// </summary>
-        //public void Update()
-        //{
-        //    if (_children.Count > 0)
-        //        Render((DrawingVisual)_children[0]);
-        //}
 
         protected override void OnRender(DrawingContext drawingContext)
         {
@@ -135,5 +127,10 @@ namespace WorkstationController.VisualElement
             return _children[index];
         }
         #endregion
+
+        internal void SetDragPosition(Point ptCurrent)
+        {
+            _ptDragPosition = ptCurrent;
+        }
     }
 }

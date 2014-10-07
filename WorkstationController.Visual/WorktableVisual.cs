@@ -1,4 +1,7 @@
-﻿using System.Windows;
+﻿using System;
+using System.Windows;
+using System.Windows.Controls;
+using System.Windows.Input;
 using System.Windows.Media;
 using WorkstationController.Core.Data;
 
@@ -19,6 +22,8 @@ namespace WorkstationController.VisualElement
         /// </summary>
         public WorktableVisual()
         {
+            if (Configurations.Instance.Worktable == null)
+                throw new Exception("Worktable cannot be null");
             this.worktable = Configurations.Instance.Worktable; 
         }
 
@@ -60,6 +65,7 @@ namespace WorkstationController.VisualElement
             int thirdPinX = firstPinX;
             int thirdPinY = worktable.ThirdPinYPosition;
             DrawPin(thirdPinX, thirdPinY, worktable.ThirdRowPinSize, drawingContext);
+            VisualCommon.DrawGridNumber(grid,firstPinX,drawingContext);
         }
 
         /// <summary>
@@ -73,5 +79,6 @@ namespace WorkstationController.VisualElement
         {
             VisualCommon.DrawSolidRect(pinX, pinY, size, drawingContext, Colors.Black);
         }
+
     }
 }

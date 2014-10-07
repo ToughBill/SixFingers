@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Globalization;
 using System.Linq;
 using System.Text;
 using System.Windows;
@@ -23,8 +24,6 @@ namespace WorkstationController.Control
     public partial class LayoutEditor : UserControl
     {
         UIMovementsController uiController;
-        WorktableVisual wktblVisual;
-       
         /// <summary>
         /// c'tor
         /// </summary>
@@ -41,15 +40,22 @@ namespace WorkstationController.Control
         {
             //to do, replace it by load the worktable from a xml
             Worktable worktable = new Worktable(
-                                         new Size(4000, 8000),
-                                         new Size(20, 40),
-                                         new Size(20, 60),
-                                         new Size(20, 60), new Point(50, 50), 1500, 3500, 20);
+                                         new Size(8000, 3000),
+                                         new Size(5, 30),
+                                         new Size(5, 50),
+                                         new Size(5, 50), new Point(500, 500), 1500, 2500, 28);
 
             Configurations.Instance.Worktable = worktable;
-            wktblVisual = new WorktableVisual();
+            uiContainer.AttachWorktableVisual();
+            uiContainer.MouseMove += uiContainer_MouseMove;
             OnContainerSizeChanged(new Size(800, 600));
         }
+
+        void uiContainer_MouseMove(object sender, MouseEventArgs e)
+        {
+            uiContainer.InvalidateVisual();
+        }
+
 
         void uiContainer_SizeChanged(object sender, SizeChangedEventArgs e)
         {
@@ -58,11 +64,14 @@ namespace WorkstationController.Control
 
         private void OnContainerSizeChanged(Size newSize)
         {
-            if (wktblVisual == null)
+            if (Configurations.Instance.Worktable == null)
                 return;
+            
             VisualCommon.UpdateContainerSize(newSize);
+            uiContainer.InvalidateVisual();
             VisualCommon.UpdateVisuals(uiContainer.Children);
         }
+        
         /// <summary>
         /// suggest candidate
         /// </summary>
@@ -70,24 +79,35 @@ namespace WorkstationController.Control
         public void AddCandidate(BasewareUIElement uiElement)
         {
             Debug.WriteLine("Add candidate");
+            //uiController.RemoveCurrentSelectFlag();
             uiController.UIElementCandidate = uiElement;
             Mouse.OverrideCursor = Cursors.Hand;
             uiController.CaptureMouse();
         }
-
-        /// <summary>
-        /// overwrite OnRender to update our uiElements automatically
-        /// </summary>
-        /// <param name="drawingContext"></param>
-        protected override void OnRender(DrawingContext drawingContext)
-        {
-            base.OnRender(drawingContext);
-            if (wktblVisual != null)
-                wktblVisual.Draw(drawingContext);
-            VisualCommon.UpdateVisuals(uiContainer.Children);
-        }
+       
     }
 
+    public class WorktableGrid : Grid
+    {
+        WorktableVisual worktableVisual = null;
+        public void AttachWorktableVisual()
+        {
+            this.worktableVisual = new WorktableVisual();
+        }
+        protected override void OnRender(System.Windows.Media.DrawingContext dc)
+        {
+            base.OnRender(dc);
+            if (worktableVisual != null)
+                worktableVisual.Draw(dc);
 
+            double x = Mouse.GetPosition(this).X;
+            dc.DrawText(new FormattedText(x.ToString(),
+                       CultureInfo.GetCultureInfo("en-us"),
+                       FlowDirection.LeftToRight,
+                       new Typeface("Verdana"),
+                       20, System.Windows.Media.Brushes.DarkBlue),
+                       new System.Windows.Point(ActualWidth-100, ActualHeight-100));
 
+        }
+    }
 }

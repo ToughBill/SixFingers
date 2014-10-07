@@ -1,6 +1,9 @@
-﻿using System.Windows;
+﻿using System;
+using System.Globalization;
+using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
+using System.Windows.Shapes;
 using WorkstationController.Core.Data;
 
 namespace WorkstationController.VisualElement
@@ -25,6 +28,12 @@ namespace WorkstationController.VisualElement
         {
             double percent = x / Configurations.Instance.Worktable.Size.Width;
             return worktableOccupiesRatio * percent * containerSize.Width;
+        }
+        private static Size GetWholeTable()
+        {
+            double width = worktableOccupiesRatio * containerSize.Width;
+            double height = worktableOccupiesRatio * containerSize.Height;
+            return new Size(width, height);
         }
 
         /// <summary>
@@ -88,7 +97,7 @@ where T : class
                     continue;
                 BasewareUIElement basewareUIElement = (BasewareUIElement)uiElement;
                 if(basewareUIElement != null)
-                    basewareUIElement.Update();
+                    basewareUIElement.InvalidateVisual();
             }
         }
 
@@ -113,6 +122,20 @@ where T : class
                 brush = Brushes.Transparent;
             drawingContext.DrawRectangle(brush, new Pen(new SolidColorBrush(color), 1),
                 new Rect(new Point(xPixel, yPixel), new Size(wPixel, hPixel)));
+        }
+
+        public static RectangleGeometry CreateRect(int x, int y, Size size)
+        {
+            double xPixel = VisualCommon.Convert2PixelXUnit(x);
+            double yPixel = VisualCommon.Convert2PixelYUnit(y);
+            xPixel += GetXShift();
+            yPixel += GetYShift();
+            double wPixel = VisualCommon.Convert2PixelXUnit(size.Width);
+            double hPixel = VisualCommon.Convert2PixelYUnit(size.Height);
+            Brush blackBrush = Brushes.Black;
+            var rcGeo = new RectangleGeometry();
+            rcGeo.Rect = new Rect(new Point(xPixel, yPixel), new Size(wPixel, hPixel));
+            return rcGeo;
         }
 
         /// <summary>
@@ -155,6 +178,44 @@ where T : class
         private static double GetYShift()
         {
             return 0.1 * containerSize.Height;
+        }
+
+     
+        internal static Rectangle CreateWorktableRect()
+        {
+            Rectangle aRectangle = new Rectangle();
+            Size sz = VisualCommon.GetWholeTable();
+            aRectangle.Width = sz.Width;
+            aRectangle.Height = sz.Height;
+            aRectangle.Stroke = Brushes.Black;
+            aRectangle.StrokeThickness = 1.0;
+            return aRectangle;
+        }
+
+        internal static void DrawGridNumber(int grid, int firstPinX, DrawingContext dc)
+        {
+            double xPixel = VisualCommon.Convert2PixelXUnit(firstPinX) + GetXShift()*0.95;
+            //when height is 400 use font 10
+            
+            double yPixel = containerSize.Height *0.81;
+             dc.DrawText( new FormattedText((grid + 1).ToString(),
+                          CultureInfo.GetCultureInfo("en-us"),
+                          FlowDirection.LeftToRight,
+                          new Typeface("Verdana"),
+                          10 * containerSize.Height / 400, System.Windows.Media.Brushes.DarkBlue),
+                          new System.Windows.Point(xPixel, yPixel));
+        }
+
+        internal static int FindCorrespondingGrid(double xPixelOnCanvas)
+        {
+            double unitXPixels = VisualCommon.Convert2PixelXUnit(Worktable.DistanceBetweenAdjacentPins);
+            double startXmm = Configurations.Instance.Worktable.FirstPinPosition.X;
+            double xPixelsOffset = VisualCommon.Convert2PixelXUnit(startXmm);
+            int mapGrid =  (int)((xPixelOnCanvas - GetXShift() - xPixelsOffset) / unitXPixels);
+            mapGrid = Math.Max(mapGrid, 1);
+            mapGrid = Math.Min(mapGrid, Configurations.Instance.Worktable.GridCount);
+            return mapGrid;
+
         }
     }
 }

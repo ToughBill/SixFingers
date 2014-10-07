@@ -40,8 +40,8 @@ namespace WorkstationController.WorktableVisualTest
             Configurations.Instance.Worktable = worktable;
 
             Container.SizeChanged += Container_SizeChanged;
-            //WorktableVisual worktableVisual = new WorktableVisual();
-            //grid1.AttachWorktableVisual(worktableVisual);
+            WorktableVisual worktableVisual = new WorktableVisual();
+            grid1.AttachWorktableVisual(worktableVisual);
             //grid1.InvalidateVisual();
             //Labware labware = new Labware();
             //labware.ZValues = new ZValues(360, 625, 665, 1610);
@@ -56,17 +56,22 @@ namespace WorkstationController.WorktableVisualTest
             //Container.Children.Add(new LabwareUIElement(labware));
             
             
-            Labware labware1 = new Labware();
-            labware1.ZValues = new ZValues(360, 625, 665, 1610);
-            labware1.Dimension = new Dimension(250, 2700);
-            labware1.TypeName = "16Pos Tubes";
-            labware1.Label = "lab1";
-            labware1.SiteID = 1;
-            labware1.WellsInfo = new WellsInfo(new Point(0, -32), new Point(0, 2788), 1, 16, BottomShape.Flat, 50);
-            labware1.TypeName = "Tubes 16Pos 100mm";
-            labware1.BackGroundColor = Color.FromArgb(255, 255, 0, 0);
-            labware1.CarrierLabel = "";
-            Container.Children.Add(new LabwareUIElement(labware1));
+            //Labware labware1 = new Labware();
+            //labware1.ZValues = new ZValues(360, 625, 665, 1610);
+            //labware1.Dimension = new Dimension(250, 2700);
+            //labware1.TypeName = "16Pos Tubes";
+            //labware1.Label = "lab1";
+            //labware1.SiteID = 1;
+            //labware1.WellsInfo = new WellsInfo(new Point(0, -32), new Point(0, 2788), 1, 16, BottomShape.Flat, 50);
+            //labware1.TypeName = "Tubes 16Pos 100mm";
+            //labware1.BackGroundColor = Color.FromArgb(255, 255, 0, 0);
+            //labware1.CarrierLabel = "";
+            Carrier carrier1 = new Carrier(BuildInCarrierType.MP_3POS);
+            carrier1.Label = "Carrier1";
+            var carrierUIElement = new CarrierUIElement(carrier1);
+            carrierUIElement.Selected = true;
+
+            Container.Children.Add(carrierUIElement);
             Container.RenderSize = new Size(600, 800);
             VisualCommon.UpdateVisuals(Container.Children);
         }

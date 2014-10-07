@@ -56,8 +56,13 @@ namespace WorkstationController.VisualElement
             if (!_isSelected && Grid == Carrier.undefinedGrid)
                 return;
 
+            int mapGrid = _carrier.Grid;
+            if(_isSelected)
+            {
+                mapGrid = VisualCommon.FindCorrespondingGrid(_ptDragPosition.X);
+            }
             //carrier.YLength
-            int xPos = (int)(_worktable.FirstPinPosition.X + _carrier.Grid * Worktable.DistanceBetweenAdjacentPins - _carrier.XOffset);
+            int xPos = (int)(_worktable.FirstPinPosition.X + (mapGrid-1) * Worktable.DistanceBetweenAdjacentPins - _carrier.XOffset);
             int yPos = (int)(_worktable.FirstPinPosition.Y - _carrier.XOffset);
             Size sz = new Size(_carrier.XLength, _carrier.YLength);
             Color border = _isSelected ? Colors.Blue : Colors.Black;

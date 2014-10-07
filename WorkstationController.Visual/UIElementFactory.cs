@@ -20,11 +20,18 @@ namespace WorkstationController.VisualElement
         /// <returns></returns>
         public static BasewareUIElement CreateUIElement(WareBase wareBase)
         {
-            if(wareBase is Labware)
-                return new LabwareUIElement((Labware)wareBase);
+            BasewareUIElement newUIElement;
+            if (wareBase is Labware)
+            {
+                newUIElement = new LabwareUIElement((Labware)wareBase);
+                
+            }
             else
-                return new CarrierUIElement((Carrier)wareBase);
-            
+            {
+                newUIElement = new CarrierUIElement((Carrier)wareBase);
+            }
+            newUIElement.Selected = true;
+            return newUIElement;
         }
     }
 }

@@ -39,7 +39,7 @@ namespace WorkstationController.Core.Data
         /// Worktable instance
         /// </summary>
         public Worktable Worktable { get; set; }
-
+        
         /// <summary>
         /// Gets or sets the pump com port
         /// </summary>
