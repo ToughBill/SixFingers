@@ -21,18 +21,9 @@ namespace WorkstationController.Core.Data
         private Color       _backGroundColor;
         private int         _siteID;
         private int         _grid = Carrier.undefinedGrid;
-        private string      _labwareType;
         private string      _label;
 
-        public event PropertyChangedEventHandler PropertyChanged;
-        protected void OnPropertyChanged(string name)
-        {
-            PropertyChangedEventHandler handler = PropertyChanged;
-            if (handler != null)
-            {
-                handler(this, new PropertyChangedEventArgs(name));
-            }
-        }
+   
         
         /// <summary>
         /// Default constructor
