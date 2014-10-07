@@ -10,6 +10,7 @@ using System.Windows;
 using System.Windows.Input;
 using System.Windows.Documents;
 using System.Diagnostics;
+using WorkstationController.Core.Data;
 
 namespace WorkstationController.VisualElement
 {
@@ -121,8 +122,22 @@ namespace WorkstationController.VisualElement
             {
                 MountTheCarrier((CarrierUIElement)_selectedUIElement,e.GetPosition(_myCanvas));
             }
+            else
+            {
+                MountTheLabware((LabwareUIElement)_selectedUIElement, e.GetPosition(_myCanvas));
+            }
             //_selectedUIElement.RenderTransform = new TranslateTransform(0, 0);
             _selectedUIElement = null;
+        }
+
+        //mount labware & carrier need to be rewrite for simple.
+        private void MountTheLabware(LabwareUIElement labwareUIElement, Point position)
+        {
+            int grid = VisualCommon.FindCorrespondingGrid(position.X);
+            //bool suitableCarrier = Configurations.Instance.L
+
+            _selectedUIElement.Selected = false;
+            
         }
 
         private void MountTheCarrier(CarrierUIElement _selectedUIElement,Point position)

@@ -124,20 +124,7 @@ where T : class
                 new Rect(new Point(xPixel, yPixel), new Size(wPixel, hPixel)));
         }
 
-        public static RectangleGeometry CreateRect(int x, int y, Size size)
-        {
-            double xPixel = VisualCommon.Convert2PixelXUnit(x);
-            double yPixel = VisualCommon.Convert2PixelYUnit(y);
-            xPixel += GetXShift();
-            yPixel += GetYShift();
-            double wPixel = VisualCommon.Convert2PixelXUnit(size.Width);
-            double hPixel = VisualCommon.Convert2PixelYUnit(size.Height);
-            Brush blackBrush = Brushes.Black;
-            var rcGeo = new RectangleGeometry();
-            rcGeo.Rect = new Rect(new Point(xPixel, yPixel), new Size(wPixel, hPixel));
-            return rcGeo;
-        }
-
+        
         /// <summary>
         /// draw solid rect
         /// </summary>
@@ -211,9 +198,7 @@ where T : class
             double unitXPixels = VisualCommon.Convert2PixelXUnit(Worktable.DistanceBetweenAdjacentPins);
             double startXmm = Configurations.Instance.Worktable.FirstPinPosition.X;
             double xPixelsOffset = VisualCommon.Convert2PixelXUnit(startXmm);
-            int mapGrid =  (int)((xPixelOnCanvas - GetXShift() - xPixelsOffset) / unitXPixels);
-            mapGrid = Math.Max(mapGrid, 1);
-            mapGrid = Math.Min(mapGrid, Configurations.Instance.Worktable.GridCount);
+            int mapGrid =  (int)(Math.Ceiling((xPixelOnCanvas - GetXShift() - xPixelsOffset) / unitXPixels + 0.5));
             return mapGrid;
 
         }
