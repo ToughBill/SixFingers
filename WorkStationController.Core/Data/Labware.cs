@@ -20,8 +20,9 @@ namespace WorkstationController.Core.Data
         
         private Color       _backGroundColor;
         private int         _siteID;
+        private int         _grid = Carrier.undefinedGrid;
         private string      _labwareType;
-        private string      _carrierLabel;
+        private string      _label;
 
         public event PropertyChangedEventHandler PropertyChanged;
         protected void OnPropertyChanged(string name)
@@ -76,16 +77,32 @@ namespace WorkstationController.Core.Data
         /// <summary>
         /// on which carrier the labware mounts, can be empty.
         /// </summary>
-        public string CarrierLabel
+        public int CarrierGrid
         {
             get
             {
-                return _carrierLabel;
+                return _grid;
             }
             set
             {
-                _carrierLabel = value;
-                OnPropertyChanged("CarrierLabel");
+                _grid = value;
+                OnPropertyChanged("CarrierGrid");
+            }
+        }
+
+        /// <summary>
+        /// each ware must have a unique label
+        /// </summary>
+        public string Label
+        {
+            get
+            {
+                return _label;
+            }
+            set
+            {
+                _label = value;
+                OnPropertyChanged("Label");
             }
         }
 

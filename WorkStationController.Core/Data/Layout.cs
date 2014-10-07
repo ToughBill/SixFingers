@@ -75,19 +75,7 @@ namespace WorkstationController.Core.Data
             this.carriers.Remove(carrier);
         }
 
-        /// <summary>
-        /// Remove a carrier from layout by name
-        /// </summary>
-        /// <param name="carrierLabel">Lable of carrier to remove</param>
-        public void RemoveCarrier(string carrierLabel)
-        {
-            Carrier carrier = this.carriers.Find(c => c.Label == carrierLabel);
-
-            if(carrier != null)
-            {
-                this.carriers.Remove(carrier);
-            }
-        }
+        
 
         #region Serialization
 
