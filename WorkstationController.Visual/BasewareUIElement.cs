@@ -37,21 +37,6 @@ namespace WorkstationController.VisualElement
             InvalidateVisual();
         }
 
-            /// <summary>
-        /// Gets or sets the label of the ware
-        /// </summary>
-        public string Label
-        {
-            get
-            {
-                return _ware.Label;
-            }
-            set
-            {
-                _ware.Label = value;
-                InvalidateVisual();
-            }
-        }
 
         protected override void OnRender(DrawingContext drawingContext)
         {

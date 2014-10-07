@@ -25,35 +25,69 @@ namespace WorkstationController.VisualElement
             _children.Add(CreateViusal());
         }
 
-        
+        /// <summary>
+        /// Gets or sets the label of the ware
+        /// </summary>
+        public string Label
+        {
+            get
+            {
+                return _labware.Label;
+            }
+            set
+            {
+                _labware.Label = value;
+                InvalidateVisual();
+            }
+        }
+
+        /// <summary>
+        /// redraw
+        /// </summary>
+        /// <param name="drawingVisual"></param>
         protected override void Render(DrawingVisual drawingVisual)
         {
             DrawingContext drawingContext = drawingVisual.RenderOpen();
-            string carrierLabel = _labware.CarrierLabel;
             Carrier carrier = null;
+            if (!_isSelected && _labware.CarrierGrid == Carrier.undefinedGrid)
+                return;
 
-            int xPos = 0;
-            int yPos = 0;
+            int mapGrid = _labware.CarrierGrid;
+            if (_isSelected)
+            {
+                mapGrid = VisualCommon.FindCorrespondingGrid(_ptDragPosition.X);
+            }
+
+
+            int xPos = (mapGrid - 1) * Worktable.DistanceBetweenAdjacentPins + (int)_worktable.FirstPinPosition.X;
+            int yPos = (int)_worktable.FirstPinPosition.Y;
             if (carrier != null)
             {
-                xPos = (int)(_worktable.FirstPinPosition.X + carrier.Grid * Worktable.DistanceBetweenAdjacentPins - carrier.XOffset);
-                yPos = (int)(_worktable.FirstPinPosition.Y - carrier.YOffset);
+                xPos = xPos + carrier.XOffset;
+                yPos += carrier.YOffset;
                 int siteIndex = _labware.SiteID;
                 var site = carrier.Sites[siteIndex];
                 xPos += (int)site.Position.X;
                 yPos += (int)site.Position.Y;
             }
+            else
+            {
+                xPos -= _labware.Dimension.XLength / 2;
+                yPos -= 137;
+            }
+            
             Size sz = new Size(_labware.Dimension.XLength, _labware.Dimension.YLength);
             Color border = _isSelected ? Colors.Blue : Colors.Black;
             VisualCommon.DrawRect(xPos, yPos, sz, drawingContext, border);
             
             int cols = _labware.WellsInfo.NumberOfWellsX;
             int rows = _labware.WellsInfo.NumberOfWellsY;
+            Vector vector = new Vector(xPos, yPos);
             for (int row = 0; row < rows; row++)
             {
                 for (int col = 0; col < cols; col++)
                 {
-                    var position = GetPosition(row, col) + new Vector(xPos, yPos);
+                    var position = GetPosition(row, col) + vector;
                     VisualCommon.DrawCircle(position, _labware.WellsInfo.WellRadius, drawingContext, _labware.BackGroundColor);
                 }
             }
@@ -62,14 +96,14 @@ namespace WorkstationController.VisualElement
 
         private Point GetPosition(int row, int col)
         {
-            int xs = (int)_labware.WellsInfo.FirstWellPosition.X;
-            int xe = (int)_labware.WellsInfo.LastWellPosition.X;
-            double eachXUnit = (xe - xs) / _labware.WellsInfo.NumberOfWellsX;
+            int xs = 0;
+            int xe = (int)_labware.Dimension.XLength;
+            double eachXUnit = (xe - xs) / (1 + _labware.WellsInfo.NumberOfWellsX);
             double x = (1 + col) * eachXUnit;
 
             int ys = (int)_labware.WellsInfo.FirstWellPosition.Y;
             int ye = (int)_labware.WellsInfo.LastWellPosition.Y;
-            double eachYUnit = (ye - ys) / _labware.WellsInfo.NumberOfWellsY;
+            double eachYUnit = (ye - ys) / (1+_labware.WellsInfo.NumberOfWellsY);
             double y = (1 + row) * eachYUnit;
             return new Point(x, y);
         }
