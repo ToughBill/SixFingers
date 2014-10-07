@@ -1,0 +1,20 @@
+﻿<Window x:Class="WorkstationController.EditorTests.LayoutEditorTestharness"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="LayoutEditorTestharness" Height="600" Width="800">
+    <Grid>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition/>
+            <ColumnDefinition Width="0*"/>
+        </Grid.ColumnDefinitions>
+        <Grid.RowDefinitions>
+            <RowDefinition Height ="10*"/>
+            <RowDefinition Height="3*"/>
+        </Grid.RowDefinitions>
+        <Grid Name="UserControlContainer" Grid.Row="0">
+        </Grid>
+        <StackPanel Grid.Row="1" Orientation="Horizontal">
+            <ListBox BorderThickness="0" VerticalAlignment="Stretch" Width="200" Name="lstboxLabwares" ItemsSource="{Binding}" SelectionMode="Single" PreviewMouseLeftButtonDown="lstboxLabwares_PreviewMouseLeftButtonDown"></ListBox>
+        </StackPanel>
+    </Grid>
+</Window>
