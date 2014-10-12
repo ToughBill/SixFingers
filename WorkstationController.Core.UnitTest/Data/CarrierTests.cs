@@ -23,8 +23,8 @@ namespace WorkstationController.Core.UnitTest
         public void CarrierSerializeToXmlFileWithLabwaresTest()
         {
             Carrier carrier = new Carrier();
-            carrier.XLength = 40;
-            carrier.YLength = 500;
+            carrier.Dimension.XLength = 40;
+            carrier.Dimension.YLength = 500;
             carrier.Grid = 3;
 
             Labware labware1 = new Labware();
@@ -64,8 +64,8 @@ namespace WorkstationController.Core.UnitTest
         public void CarrierSerializeToXmlFileNoLabwaresTest()
         {
             Carrier carrier = new Carrier();
-            carrier.XLength = 40;
-            carrier.YLength = 500;
+            carrier.Dimension.XLength = 40;
+            carrier.Dimension.YLength = 500;
             carrier.Grid = 3;
 
             carrier.Serialize(this._xmlFileWithoutLabwarePath);

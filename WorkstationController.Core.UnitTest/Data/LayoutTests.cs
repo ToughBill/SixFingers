@@ -38,8 +38,8 @@ namespace WorkstationController.Core.UnitTest
 
             #region Add Carrier1
             Carrier carrier1 = new Carrier();
-            carrier1.XLength = 40;
-            carrier1.YLength = 500;
+            carrier1.Dimension.XLength = 40;
+            carrier1.Dimension.YLength = 500;
             carrier1.Grid = 1;
 
             Labware labware11 = new Labware();
@@ -79,8 +79,8 @@ namespace WorkstationController.Core.UnitTest
 
             #region Add Carrier2
             Carrier carrier2 = new Carrier();
-            carrier2.XLength = 40;
-            carrier2.YLength = 500;
+            carrier2.Dimension.XLength = 40;
+            carrier2.Dimension.YLength = 500;
             carrier2.Grid = 4;
 
             Labware labware21 = new Labware();
