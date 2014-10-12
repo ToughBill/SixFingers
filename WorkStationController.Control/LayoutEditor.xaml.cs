@@ -15,6 +15,7 @@ using System.Windows.Navigation;
 using System.Windows.Shapes;
 using WorkstationController.Core.Data;
 using WorkstationController.VisualElement;
+using WorkstationController.VisualElement.Uitility;
 
 namespace WorkstationController.Control
 {
@@ -101,12 +102,13 @@ namespace WorkstationController.Control
                 worktableVisual.Draw(dc);
 
             double x = Mouse.GetPosition(this).X;
-            dc.DrawText(new FormattedText(x.ToString(),
+            double y = Mouse.GetPosition(this).Y;
+            dc.DrawText(new FormattedText(string.Format("x:{0} y:{1}",x,y),
                        CultureInfo.GetCultureInfo("en-us"),
                        FlowDirection.LeftToRight,
                        new Typeface("Verdana"),
-                       20, System.Windows.Media.Brushes.DarkBlue),
-                       new System.Windows.Point(ActualWidth-100, ActualHeight-100));
+                       15, System.Windows.Media.Brushes.DarkBlue),
+                       new System.Windows.Point(ActualWidth-150, ActualHeight-100));
 
         }
     }
