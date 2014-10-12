@@ -29,7 +29,13 @@ namespace WorkstationController.VisualElement
             _children = new VisualCollection(this);
             this._worktable = Configurations.Instance.Worktable;
             ware.PropertyChanged += ware_PropertyChanged;
-            
+        }
+
+        public WareBase Ware { 
+            get
+            {
+                return _ware;
+            } 
         }
 
         void ware_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
