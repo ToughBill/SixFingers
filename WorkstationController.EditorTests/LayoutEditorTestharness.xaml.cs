@@ -6,6 +6,7 @@ using System.Windows.Media;
 using WorkstationController.Control;
 using WorkstationController.Core.Data;
 using WorkstationController.VisualElement;
+using WorkstationController.VisualElement.Uitility;
 
 namespace WorkstationController.EditorTests
 {
@@ -50,24 +51,15 @@ namespace WorkstationController.EditorTests
             labware1.Label = "lab1";
             labware1.SiteID = 1;
             labware1.WellsInfo = new WellsInfo(new Point(0, -32), new Point(0, 2788), 1, 16, BottomShape.Flat, 50);
-            labware1.TypeName = "Tubes 16Pos 100mm";
+            labware1.TypeName = LabwareBuildInType.Tubes16Pos13_100MM.ToString();
             labware1.BackGroundColor = Color.FromArgb(255, 255, 0, 0);
             labware1.CarrierGrid = 0;
 
             Carrier carrier1 = new Carrier(BuildInCarrierType.MP_3POS);
-            carrier1.Grid = 2;
-            //Labware labware2 = new Labware();
-            //labware2.ZValues = new ZValues(360, 625, 665, 1610);
-            //labware2.Dimension = new Dimension(250, 2700);
-            //labware2.TypeName = "16Pos Tubes";
-            //labware2.Label = "lab2";
-            //labware2.SiteID = 1;
-            //labware2.WellsInfo = new WellsInfo(new Point(0, -32), new Point(0, 2788), 1, 4, BottomShape.Flat, 50);
-            //labware2.LabwareType = LabwareType.Tubes;
-            //labware2.BackGroundColor = Color.FromArgb(255, 255, 0, 0);
-            //labware2.CarrierLabel = "";
+            Carrier carrier2 = new Carrier(BuildInCarrierType.Tube13mm_16POS);
             wares.Add(labware1);
             wares.Add(carrier1);
+            wares.Add(carrier2);
             lstboxLabwares.ItemsSource = wares;
         }
 
