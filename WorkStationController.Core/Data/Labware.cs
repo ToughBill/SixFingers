@@ -98,7 +98,7 @@ namespace WorkstationController.Core.Data
         }
 
         private WellsInfo _wellsInfo;
-        private Dimension _dimension;
+        
         private ZValues _zValues;
 
         /// <summary>
@@ -117,21 +117,7 @@ namespace WorkstationController.Core.Data
             }
         }
 
-        /// <summary>
-        /// the width and height
-        /// </summary>
-        public Dimension Dimension
-        {
-            get
-            {
-                return _dimension;
-            }
-            set
-            {
-                _dimension = value;
-                OnPropertyChanged("Dimension");
-            }
-        }
+       
         /// <summary>
         /// liquid class related
         /// </summary>
@@ -172,11 +158,13 @@ namespace WorkstationController.Core.Data
         #endregion
     }
 
-
+    /// <summary>
+    /// builded in labware types
+    /// </summary>
     public enum LabwareBuildInType
     {
         Tubes16Pos13_100MM = 0,
-        Plate96 = 1
+        Plate96_05ML = 1
     }
 
     /// <summary>
@@ -200,74 +188,7 @@ namespace WorkstationController.Core.Data
         VShape
     }
 
-    /// <summary>
-    /// see before
-    /// </summary>
-    public class Dimension : INotifyPropertyChanged
-    {
-        private int _xLength;
-        private int _yLength;
 
-        public event PropertyChangedEventHandler PropertyChanged;
-        protected void OnPropertyChanged(string name)
-        {
-            PropertyChangedEventHandler handler = PropertyChanged;
-            if (handler != null)
-            {
-                handler(this, new PropertyChangedEventArgs(name));
-            }
-        }
-
-        /// <summary>
-        /// make the xml serializer happy
-        /// </summary>
-        public Dimension()
-        {
-
-        }
-        /// <summary>
-        /// Gets or sets the X-length of the labware, in 1/10 millimetre(mm.)
-        /// </summary>
-        public int XLength
-        {
-            get
-            {
-                return _xLength;
-            }
-            set
-            {
-                _xLength = value;
-                OnPropertyChanged("XLength");
-                
-            }
-        }
-
-        /// <summary>
-        /// Gets or sets the Y-length of the labware, in 1/10 millimetre(mm.)
-        /// </summary>
-        public int YLength 
-        { 
-            get
-            {
-                return _yLength;
-            }
-            set
-            {
-                _yLength = value;
-                OnPropertyChanged("YLength");
-            }
-        }
-        /// <summary>
-        /// ctor
-        /// </summary>
-        /// <param name="x"></param>
-        /// <param name="y"></param>
-        public Dimension(int x, int y)
-        {
-            XLength = x;
-            YLength = y;
-        }
-    }
 
     /// <summary>
     /// four z-heights used in pipetting

@@ -24,13 +24,12 @@ namespace WorkstationController.Core.Data
         #region Private Members
         private List<Labware> _labwares = new List<Labware>();  // Labwares on the carrier
         private List<Site> _sites = new List<Site>(); // sites for mounting labwares
-
+        
         private string _name = string.Empty;
-        private int _xlength = default(int);
-        private int _ylength = default(int);
         private int _xoffset = default(int);
         private int _yoffset = default(int);
         private int _grid = 0;
+        
         #endregion
 
         /// <summary>
@@ -42,27 +41,6 @@ namespace WorkstationController.Core.Data
             get;
             set;
         }
-
-        /// <summary>
-        /// Gets or sets the X-length of the carrier, in 0.1 millimetre(0.1 mm.)
-        /// </summary>
-        [XmlAttribute]
-        public int XLength 
-        {
-            get { return this._xlength; }
-            set { PropertyChangedNotifyHelper.NotifyPropertyChanged<int>(ref this._xlength, value, this, "XLength", this.PropertyChanged); } 
-        }
-
-        /// <summary>
-        /// Gets or sets the Y-length of the carrier, in 0.1 millimetre(0.1 mm.)
-        /// </summary>
-        [XmlAttribute]
-        public int YLength
-        {
-            get { return this._ylength; }
-            set { PropertyChangedNotifyHelper.NotifyPropertyChanged<int>(ref this._ylength, value, this, "YLength", this.PropertyChanged); }
-        }
-
 
         /// <summary>
         /// The X offset of the left-top corner of carrier against the most left-top pin the carrier installed on
@@ -208,22 +186,49 @@ namespace WorkstationController.Core.Data
                 case BuildInCarrierType.MP_3POS:
                     CreateMP_3POS();
                     break;
+                case BuildInCarrierType.Tube13mm_16POS:
+                    CreateTube13mm_16Pos();
+                    break;
                 default:
                     break;
             }
         }
 
-        private void CreateMP_3POS() //will be replaced by xml
+        private void CreateTube13mm_16Pos()
         {
-            _xlength = 1490;
-            _ylength = 3160;
+            //_xlength = 240;
+            //_ylength = 3160;
+            
             _xoffset = 120;
             _yoffset = 247;
+            Site site1 = new Site(new Point(0, 110), new Size(240, 3050), new List<string> { LabwareBuildInType.Tubes16Pos13_100MM.ToString() });
+             _sites.Add(site1);
+            _grid = undefinedGrid;
+            TypeName = BuildInCarrierType.Tube13mm_16POS.ToString();
+        }
+
+        private void CreateMP_3POS() //will be replaced by xml
+        {
+            
+            //_xlength = 1490;
+            //_ylength = 3160;
+            _xoffset = 120;
+            _yoffset = 247;
+            Site site1 = new Site(new Point(55, 250), new Size(1270, 850), new List<string> { LabwareBuildInType.Plate96_05ML.ToString()});
+            Site site2 = new Site(new Point(55, 1210), new Size(1270, 850), new List<string> { LabwareBuildInType.Plate96_05ML.ToString() });
+            Site site3 = new Site(new Point(55, 2170), new Size(1270, 850), new List<string> { LabwareBuildInType.Plate96_05ML.ToString() });
+            _sites.Add(site1);
+            _sites.Add(site2);
+            _sites.Add(site3);
+
             _grid = undefinedGrid;
             TypeName = BuildInCarrierType.MP_3POS.ToString();
         }
     }
 
+    /// <summary>
+    /// carrier builded in types
+    /// </summary>
     public enum BuildInCarrierType
     {
         MP_3POS = 0,
@@ -244,7 +249,13 @@ namespace WorkstationController.Core.Data
         private Point _position;
         private Size _sz;
         private ObservableCollection<string> _allowedLabwareTypeNames;
-
+        
+        public Site(Point position, Size sz, List<string> allowedLabwareTypeNames)
+        {
+            _position = position;
+            _sz = sz;
+            _allowedLabwareTypeNames = new ObservableCollection<string>(allowedLabwareTypeNames);
+        }
         /// <summary>
         /// position
         /// </summary>
@@ -261,6 +272,8 @@ namespace WorkstationController.Core.Data
             }
         }
 
+
+   
         /// <summary>
         /// size
         /// </summary>

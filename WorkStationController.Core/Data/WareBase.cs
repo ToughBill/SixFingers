@@ -12,8 +12,10 @@ namespace WorkstationController.Core.Data
     /// </summary>
     public class WareBase
     {
-        private string _typeName;
-        private string _label;
+        protected string _typeName;
+        protected string _label;
+        protected Dimension _dimension;
+
         /// <summary>
         /// nothing to say
         /// </summary>
@@ -27,6 +29,7 @@ namespace WorkstationController.Core.Data
                 handler(this, new PropertyChangedEventArgs(name));
             }
         }
+
         /// <summary>
         /// Gets or sets the typeName of the labware
         /// </summary>
@@ -45,12 +48,98 @@ namespace WorkstationController.Core.Data
         }
 
         /// <summary>
+        /// the width and height
+        /// </summary>
+        public Dimension Dimension
+        {
+            get
+            {
+                return _dimension;
+            }
+            set
+            {
+                _dimension = value;
+                OnPropertyChanged("Dimension");
+            }
+        }
+
+   
+        /// <summary>
         /// make binding happy
         /// </summary>
         /// <returns></returns>
         public override string ToString()
         {
             return _typeName;
+        }
+    }
+
+    /// <summary>
+    /// see before
+    /// </summary>
+    public class Dimension : INotifyPropertyChanged
+    {
+        private int _xLength;
+        private int _yLength;
+
+        public event PropertyChangedEventHandler PropertyChanged;
+        protected void OnPropertyChanged(string name)
+        {
+            PropertyChangedEventHandler handler = PropertyChanged;
+            if (handler != null)
+            {
+                handler(this, new PropertyChangedEventArgs(name));
+            }
+        }
+
+        /// <summary>
+        /// make the xml serializer happy
+        /// </summary>
+        public Dimension()
+        {
+
+        }
+        /// <summary>
+        /// Gets or sets the X-length of the labware, in 1/10 millimetre(mm.)
+        /// </summary>
+        public int XLength
+        {
+            get
+            {
+                return _xLength;
+            }
+            set
+            {
+                _xLength = value;
+                OnPropertyChanged("XLength");
+
+            }
+        }
+
+        /// <summary>
+        /// Gets or sets the Y-length of the labware, in 1/10 millimetre(mm.)
+        /// </summary>
+        public int YLength
+        {
+            get
+            {
+                return _yLength;
+            }
+            set
+            {
+                _yLength = value;
+                OnPropertyChanged("YLength");
+            }
+        }
+        /// <summary>
+        /// ctor
+        /// </summary>
+        /// <param name="x"></param>
+        /// <param name="y"></param>
+        public Dimension(int x, int y)
+        {
+            XLength = x;
+            YLength = y;
         }
     }
 }
