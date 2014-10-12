@@ -38,8 +38,8 @@ namespace WorkstationController.Core.UnitTest
         public void CarrierNoLabwareSerializationTest()
         {
             Carrier carrier = new Carrier();
-            carrier.XLength = 40;
-            carrier.YLength = 500;
+            carrier.Dimension.XLength = 40;
+            carrier.Dimension.YLength = 500;
             //carrier.AllowedLabwareType = 2;
             carrier.Grid = 3;
 
@@ -53,8 +53,8 @@ namespace WorkstationController.Core.UnitTest
         public void CarrierWithLabwaresSerializationTest()
         {
             Carrier carrier = new Carrier();
-            carrier.XLength = 40;
-            carrier.YLength = 500;
+            carrier.Dimension.XLength = 40;
+            carrier.Dimension.YLength = 500;
             //carrier.AllowedLabwareType = 2;
             carrier.Grid = 1;
 
