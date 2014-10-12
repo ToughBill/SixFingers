@@ -6,7 +6,7 @@ using System.Windows;
 using WorkstationController.Core.Data;
 using WorkstationController.VisualElement;
 
-namespace WorkstationController.VisualElement
+namespace WorkstationController.VisualElement.Uitility
 {
     /// <summary>
     /// factory produce UIElement from ware

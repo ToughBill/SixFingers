@@ -6,7 +6,7 @@ using System.Windows.Media;
 using System.Windows.Shapes;
 using WorkstationController.Core.Data;
 
-namespace WorkstationController.VisualElement
+namespace WorkstationController.VisualElement.Uitility
 {
     /// <summary>
     /// render related
@@ -101,6 +101,17 @@ where T : class
             }
         }
 
+        public static Rect Physic2Visual(int x, int y, Size size)
+        {
+            double xPixel = VisualCommon.Convert2PixelXUnit(x);
+            double yPixel = VisualCommon.Convert2PixelYUnit(y);
+            xPixel += GetXShift();
+            yPixel += GetYShift();
+            double wPixel = VisualCommon.Convert2PixelXUnit(size.Width);
+            double hPixel = VisualCommon.Convert2PixelYUnit(size.Height);
+            return new Rect(new Point(xPixel, yPixel), new Size(wPixel, hPixel));
+        }
+
         /// <summary>
         /// draw rect
         /// </summary>
@@ -112,19 +123,22 @@ where T : class
         /// <param name="brush"></param>
         public static void DrawRect(int x, int y, Size size, DrawingContext drawingContext, Color color, Brush brush = null)
         {
-            double xPixel = VisualCommon.Convert2PixelXUnit(x);
-            double yPixel = VisualCommon.Convert2PixelYUnit(y);
-            xPixel += GetXShift();
-            yPixel += GetYShift();
-            double wPixel = VisualCommon.Convert2PixelXUnit(size.Width);
-            double hPixel = VisualCommon.Convert2PixelYUnit(size.Height);
+            Rect rc = Physic2Visual(x,y,size);
             if (brush == null)
                 brush = Brushes.Transparent;
-            drawingContext.DrawRectangle(brush, new Pen(new SolidColorBrush(color), 1),
-                new Rect(new Point(xPixel, yPixel), new Size(wPixel, hPixel)));
+            drawingContext.DrawRectangle(brush, new Pen(new SolidColorBrush(color), 1), rc);
         }
 
-        
+        /// <summary>
+        /// helper method for get carrier's width
+        /// </summary>
+        /// <param name="carrierUIElement"></param>
+        /// <returns></returns>
+        public static int GetCarrierLength(CarrierUIElement carrierUIElement)
+        {
+            Carrier carrier = carrierUIElement.Ware as Carrier;
+            return carrier.Dimension.XLength;
+        }
         /// <summary>
         /// draw solid rect
         /// </summary>
@@ -167,18 +181,6 @@ where T : class
             return 0.1 * containerSize.Height;
         }
 
-     
-        internal static Rectangle CreateWorktableRect()
-        {
-            Rectangle aRectangle = new Rectangle();
-            Size sz = VisualCommon.GetWholeTable();
-            aRectangle.Width = sz.Width;
-            aRectangle.Height = sz.Height;
-            aRectangle.Stroke = Brushes.Black;
-            aRectangle.StrokeThickness = 1.0;
-            return aRectangle;
-        }
-
         internal static void DrawGridNumber(int grid, int firstPinX, DrawingContext dc)
         {
             double xPixel = VisualCommon.Convert2PixelXUnit(firstPinX) + GetXShift()*0.95;
@@ -201,6 +203,22 @@ where T : class
             int mapGrid =  (int)(Math.Ceiling((xPixelOnCanvas - GetXShift() - xPixelsOffset) / unitXPixels + 0.5));
             return mapGrid;
 
+        }
+
+        internal static void DrawText(Point pt, 
+                                      string text,
+                                      DrawingContext drawingContext)
+                                      
+        {
+            double xPixel = VisualCommon.Convert2PixelXUnit(pt.X) + GetXShift();
+            double yPixel = VisualCommon.Convert2PixelYUnit(pt.Y) + GetYShift();
+            Point ptVisual = new Point(xPixel, yPixel);
+            drawingContext.DrawText(new FormattedText(text,
+                         CultureInfo.GetCultureInfo("en-us"),
+                         FlowDirection.LeftToRight,
+                         new Typeface("Verdana"),
+                         10 * containerSize.Height / 400, System.Windows.Media.Brushes.DarkBlue),
+                         ptVisual);
         }
     }
 }

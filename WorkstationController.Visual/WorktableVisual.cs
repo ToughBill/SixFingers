@@ -4,6 +4,7 @@ using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Media;
 using WorkstationController.Core.Data;
+using WorkstationController.VisualElement.Uitility;
 
 namespace WorkstationController.VisualElement
 {

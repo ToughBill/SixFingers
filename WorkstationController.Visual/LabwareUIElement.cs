@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Media;
 using WorkstationController.Core.Data;
+using WorkstationController.VisualElement.Uitility;
 
 namespace WorkstationController.VisualElement
 {
@@ -79,7 +80,7 @@ namespace WorkstationController.VisualElement
             Size sz = new Size(_labware.Dimension.XLength, _labware.Dimension.YLength);
             Color border = _isSelected ? Colors.Blue : Colors.Black;
             VisualCommon.DrawRect(xPos, yPos, sz, drawingContext, border);
-            
+            VisualCommon.DrawText( new Point( xPos, yPos+sz.Height), _labware.Label,drawingContext);
             int cols = _labware.WellsInfo.NumberOfWellsX;
             int rows = _labware.WellsInfo.NumberOfWellsY;
             Vector vector = new Vector(xPos, yPos);

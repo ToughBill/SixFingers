@@ -52,9 +52,10 @@
     <Compile Include="CarrierUIElement.cs" />
     <Compile Include="LabwareUIElement.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="MovementsController.cs" />
-    <Compile Include="UIElementFactory.cs" />
-    <Compile Include="VisualCommon.cs" />
+    <Compile Include="Uitility\WareInstaller.cs" />
+    <Compile Include="Uitility\MovementsController.cs" />
+    <Compile Include="Uitility\UIElementFactory.cs" />
+    <Compile Include="Uitility\VisualCommon.cs" />
     <Compile Include="WorktableVisual.cs" />
   </ItemGroup>
   <ItemGroup>
