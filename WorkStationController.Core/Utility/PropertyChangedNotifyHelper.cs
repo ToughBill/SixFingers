@@ -21,8 +21,9 @@ namespace WorkstationController.Core.Utility
                 propertyName, oldValue, setValue);
             Trace.WriteLine(debug_message);
 #endif
-
-            handler(sender, new PropertyChangedEventArgs(propertyName));
+            PropertyChangedEventHandler handler_ref = handler;
+            if(handler_ref != null)
+                handler_ref(sender, new PropertyChangedEventArgs(propertyName));
         }
     }
 }

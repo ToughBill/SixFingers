@@ -8,97 +8,88 @@ using WorkstationController.Core.Utility;
 namespace WorkstationController.Core.Data
 {
     /// <summary>
-    /// carrier|labware's common base
+    /// Carrier|Labware's common base
     /// </summary>
-    public class WareBase
+    [Serializable]
+    public abstract class WareBase : INotifyPropertyChanged
     {
-        protected string _typeName;
-        protected string _label;
+        protected Guid      _id = Guid.Empty;
+        protected string    _typeName;
+        protected string    _label;
         protected Dimension _dimension;
 
-        /// <summary>
-        /// nothing to say
-        /// </summary>
         public event PropertyChangedEventHandler PropertyChanged = delegate { };
 
-        protected void OnPropertyChanged(string name)
+        // Utility property changed notify method
+        protected void OnPropertyChanged<T>(ref T oldValue, T setValue, string propertyName)
         {
-            PropertyChangedEventHandler handler = PropertyChanged;
-            if (handler != null)
-            {
-                handler(this, new PropertyChangedEventArgs(name));
-            }
+            PropertyChangedNotifyHelper.NotifyPropertyChanged<T>(ref oldValue, setValue, this, propertyName, this.PropertyChanged);
         }
 
         /// <summary>
-        /// Gets or sets the typeName of the labware
+        /// UID of the ware
+        /// </summary>
+        public Guid ID
+        {
+            get { return this._id; }
+            set { this._id = value; }
+        }
+
+        /// <summary>
+        /// Gets or sets the typeName of the ware
         /// </summary>
         public string TypeName
         {
-            get
-            {
-                return _typeName;
-            }
-            set
-            {
-
-                _typeName = value;
-                OnPropertyChanged("TypeName");
-            }
+            get{ return _typeName; }
+            set{ PropertyChangedNotifyHelper.NotifyPropertyChanged<string>(ref this._typeName, value, this, "TypeName", this.PropertyChanged); }
         }
 
         /// <summary>
-        /// the width and height
+        /// Gets or sets the label of the ware
+        /// </summary>
+        public string Label
+        {
+            get { return this._label; }
+            set { PropertyChangedNotifyHelper.NotifyPropertyChanged<string>(ref this._label, value, this, "Label", this.PropertyChanged); }
+        }
+
+        /// <summary>
+        /// Gets or sets the width and height of the ware
         /// </summary>
         public Dimension Dimension
         {
-            get
-            {
-                return _dimension;
-            }
-            set
-            {
-                _dimension = value;
-                OnPropertyChanged("Dimension");
-            }
+            get{ return _dimension; }
+            set{ PropertyChangedNotifyHelper.NotifyPropertyChanged<Dimension>(ref this._dimension, value, this, "Dimension", this.PropertyChanged); }
         }
 
-   
+        /// <summary>
+        /// Default constructor
+        /// </summary>
+        public WareBase()
+        {
+            this._id = Guid.NewGuid();
+        }
+
         /// <summary>
         /// make binding happy
         /// </summary>
         /// <returns></returns>
         public override string ToString()
         {
-            return _typeName;
+            return this._typeName;
         }
     }
 
     /// <summary>
     /// see before
     /// </summary>
-    public class Dimension : INotifyPropertyChanged
+    public class Dimension : INotifyPropertyChanged, ICloneable
     {
         private int _xLength;
         private int _yLength;
 
-        public event PropertyChangedEventHandler PropertyChanged;
-        protected void OnPropertyChanged(string name)
-        {
-            PropertyChangedEventHandler handler = PropertyChanged;
-            if (handler != null)
-            {
-                handler(this, new PropertyChangedEventArgs(name));
-            }
-        }
-
-        /// <summary>
-        /// make the xml serializer happy
-        /// </summary>
-        public Dimension()
-        {
-
-        }
+        public event PropertyChangedEventHandler PropertyChanged = delegate { };
+        
         /// <summary>
         /// Gets or sets the X-length of the labware, in 1/10 millimetre(mm.)
         /// </summary>
@@ -110,9 +101,7 @@ namespace WorkstationController.Core.Data
             }
             set
             {
-                _xLength = value;
-                OnPropertyChanged("XLength");
-
+                PropertyChangedNotifyHelper.NotifyPropertyChanged<int>(ref this._xLength, value, this, "XLength", this.PropertyChanged);
             }
         }
 
@@ -127,19 +116,35 @@ namespace WorkstationController.Core.Data
             }
             set
             {
-                _yLength = value;
-                OnPropertyChanged("YLength");
+                PropertyChangedNotifyHelper.NotifyPropertyChanged<int>(ref this._yLength, value, this, "YLength", this.PropertyChanged);
             }
         }
+
         /// <summary>
-        /// ctor
+        /// Default constructor
+        /// </summary>
+        public Dimension()
+        {
+        }
+
+        /// <summary>
+        /// Constructor
         /// </summary>
         /// <param name="x"></param>
         /// <param name="y"></param>
         public Dimension(int x, int y)
         {
-            XLength = x;
-            YLength = y;
+            this._xLength = x;
+            this._yLength = y;
+        }
+
+        /// <summary>
+        /// Clone the Dimension instance
+        /// </summary>
+        /// <returns></returns>
+        public object Clone()
+        {
+            return new Dimension(this._xLength, this._yLength);
         }
     }
 }

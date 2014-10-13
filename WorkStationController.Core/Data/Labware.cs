@@ -9,157 +9,8 @@ using System.ComponentModel;
 
 namespace WorkstationController.Core.Data
 {
-
-
     /// <summary>
-    /// Data definition of a labware installed on the carrier
-    /// </summary>
-    [Serializable]
-    public class Labware : WareBase,ISerialization,INotifyPropertyChanged
-    {
-        
-        private Color       _backGroundColor;
-        private int         _siteID;
-        private int         _grid = Carrier.undefinedGrid;
-        private string      _label;
-
-   
-        
-        /// <summary>
-        /// Default constructor
-        /// </summary>
-        public Labware()
-        {
-        }
-
-        /// <summary>
-        /// back ground color
-        /// </summary>
-        public Color BackGroundColor
-        {
-            get
-            {
-                return _backGroundColor;
-            }
-            set
-            {
-                _backGroundColor = value;
-                OnPropertyChanged("BackGroundColor");
-            }
-        }
-
-        /// <summary>
-        /// The site on which the labware installed on the carrier
-        /// </summary>
-        public int SiteID
-        {
-            get
-            {
-                return _siteID;
-            }
-            set
-            {
-                _siteID = value;
-                OnPropertyChanged("SiteID");
-            }
-
-        }
-
-        /// <summary>
-        /// on which carrier the labware mounts, can be empty.
-        /// </summary>
-        public int CarrierGrid
-        {
-            get
-            {
-                return _grid;
-            }
-            set
-            {
-                _grid = value;
-                OnPropertyChanged("CarrierGrid");
-            }
-        }
-
-        /// <summary>
-        /// each ware must have a unique label
-        /// </summary>
-        public string Label
-        {
-            get
-            {
-                return _label;
-            }
-            set
-            {
-                _label = value;
-                OnPropertyChanged("Label");
-            }
-        }
-
-        private WellsInfo _wellsInfo;
-        
-        private ZValues _zValues;
-
-        /// <summary>
-        /// the info of the wells on the ware
-        /// </summary>
-        public WellsInfo WellsInfo
-        {
-            get
-            {
-                return _wellsInfo;
-            }
-            set
-            {
-                _wellsInfo = value;
-                OnPropertyChanged("WellsInfo");
-            }
-        }
-
-       
-        /// <summary>
-        /// liquid class related
-        /// </summary>
-        public ZValues ZValues
-        {
-            get
-            {
-                return _zValues;
-            }
-            set
-            {
-                _zValues = value;
-                OnPropertyChanged("_zValues");
-            }
-        }
-
-        /// <summary>
-        /// Create an instance of Labware from a XML file
-        /// </summary>
-        /// <param name="fromXmlFile">XML file name</param>
-        /// <returns>A Labware instance</returns>
-        public static Labware Create(string fromXmlFile)
-        {
-            return SerializationHelper.Deserialize<Labware>(fromXmlFile);
-        }
-        
-        #region Serialization
-
-        /// <summary>
-        /// Serialize a labware to a XML file
-        /// </summary>
-        /// <param name="toXmlFile"></param>
-        public void Serialize(string toXmlFile)
-        {
-            SerializationHelper.Serialize<Labware>(toXmlFile, this);
-        }
-
-        #endregion
-    }
-
-    /// <summary>
-    /// builded in labware types
+    /// Build-in labware types
     /// </summary>
     public enum LabwareBuildInType
     {
@@ -188,29 +39,154 @@ namespace WorkstationController.Core.Data
         VShape
     }
 
+    /// <summary>
+    /// Data definition of a labware installed on the carrier
+    /// </summary>
+    [Serializable]
+    public class Labware : WareBase, ISerialization, INotifyPropertyChanged, ICloneable
+    {
+        private Color       _backgroundColor;
+        private int         _siteID;
+        private int         _grid = Carrier.undefinedGrid;
+        private WellsInfo   _wellsInfo;
+        private ZValues     _zValues;
 
+        /// <summary>
+        /// back ground color
+        /// </summary>
+        public Color BackgroundColor
+        {
+            get
+            {
+                return _backgroundColor;
+            }
+            set
+            {
+                this.OnPropertyChanged<Color>(ref this._backgroundColor, value, "BackgroundColor");
+            }
+        }
+
+        /// <summary>
+        /// The site on which the labware installed on the carrier
+        /// </summary>
+        public int SiteID
+        {
+            get
+            {
+                return _siteID;
+            }
+            set
+            {
+                this.OnPropertyChanged<int>(ref this._siteID, value, "SiteID");
+            }
+        }
+
+        /// <summary>
+        /// On which carrier the labware mounts, can be empty.
+        /// </summary>
+        public int CarrierGrid
+        {
+            get
+            {
+                return _grid;
+            }
+            set
+            {
+                this.OnPropertyChanged<int>(ref this._grid, value, "CarrierGrid");
+            }
+        }
+
+        /// <summary>
+        /// The info of the wells on the ware
+        /// </summary>
+        public WellsInfo WellsInfo
+        {
+            get
+            {
+                return _wellsInfo;
+            }
+            set
+            {
+                this.OnPropertyChanged<WellsInfo>(ref this._wellsInfo, value, "WellsInfo");
+            }
+        }
+
+        /// <summary>
+        /// Liquid class related
+        /// </summary>
+        public ZValues ZValues
+        {
+            get
+            {
+                return _zValues;
+            }
+            set
+            {
+                this.OnPropertyChanged<ZValues>(ref this._zValues, value, "ZValues");
+            }
+        }
+
+        /// <summary>
+        /// Default constructor
+        /// </summary>
+        public Labware()
+        {
+        }
+
+        /// <summary>
+        /// Create an instance of Labware from a XML file
+        /// </summary>
+        /// <param name="fromXmlFile">XML file name</param>
+        /// <returns>A Labware instance</returns>
+        public static Labware Create(string fromXmlFile)
+        {
+            return SerializationHelper.Deserialize<Labware>(fromXmlFile);
+        }
+        
+        #region Serialization
+
+        /// <summary>
+        /// Serialize a labware to a XML file
+        /// </summary>
+        /// <param name="toXmlFile"></param>
+        public void Serialize(string toXmlFile)
+        {
+            SerializationHelper.Serialize<Labware>(toXmlFile, this);
+        }
+
+        #endregion
+
+        public object Clone()
+        {
+            Labware copy = new Labware();
+
+            copy._label = "<Need a label>";
+            copy._typeName = this._typeName;
+            copy._dimension = (Dimension)this.Dimension.Clone();
+            copy._backgroundColor = this._backgroundColor;
+            copy._grid = this._grid;
+            copy._siteID = this._siteID;
+            copy._wellsInfo = (WellsInfo)this._wellsInfo.Clone();
+            copy._zValues = (ZValues)this._zValues.Clone();
+
+            return copy;
+        }
+    }
 
     /// <summary>
     /// four z-heights used in pipetting
     /// </summary>
-    public class ZValues : INotifyPropertyChanged
+    public class ZValues : INotifyPropertyChanged, ICloneable
     {
         /// <summary>
-        /// nothing to say
+        /// PropertyChanged event
         /// </summary>
         public event PropertyChangedEventHandler PropertyChanged = delegate { };
+
         private int _zTravel;
         private int _zStart;
-        public int _zMax;
+        private int _zMax;
         private int _zDispense;
-
-        /// <summary>
-        /// make the serializer happy
-        /// </summary>
-        public ZValues()
-        {
-
-        }
 
         /// <summary>
         /// Gets or sets the Z-Travel value, in 1/10 millimetre
@@ -224,8 +200,7 @@ namespace WorkstationController.Core.Data
             }
             set
             {
-                PropertyChangedNotifyHelper.NotifyPropertyChanged<int>
-                    (ref this._zTravel, value, this, "ZTravel", this.PropertyChanged);
+                PropertyChangedNotifyHelper.NotifyPropertyChanged<int>(ref this._zTravel, value, this, "ZTravel", this.PropertyChanged);
             }
         }
 
@@ -241,14 +216,14 @@ namespace WorkstationController.Core.Data
             }
             set
             {
-                PropertyChangedNotifyHelper.NotifyPropertyChanged<int>
-                    (ref this._zStart, value, this, "ZStart", this.PropertyChanged);
+                PropertyChangedNotifyHelper.NotifyPropertyChanged<int>(ref this._zStart, value, this, "ZStart", this.PropertyChanged);
             }
         }
 
         /// <summary>
         /// Gets or sets the Z-Dispense value, in 1/10 millimetre
         /// </summary>
+        [XmlElement]
         public int ZDispense
         {
             get
@@ -257,14 +232,14 @@ namespace WorkstationController.Core.Data
             }
             set
             {
-                PropertyChangedNotifyHelper.NotifyPropertyChanged<int>
-                       (ref this._zStart, value, this, "ZStart", this.PropertyChanged);   
+                PropertyChangedNotifyHelper.NotifyPropertyChanged<int>(ref this._zStart, value, this, "ZStart", this.PropertyChanged);   
             }
         }
 
         /// <summary>
         /// Gets or sets the Z-Max value, in 1/10 millimetre
         /// </summary>
+        [XmlElement]
         public int ZMax
         {
             get
@@ -273,10 +248,17 @@ namespace WorkstationController.Core.Data
             }
             set
             {
-                PropertyChangedNotifyHelper.NotifyPropertyChanged<int>
-                       (ref this._zMax, value, this, "ZMax", this.PropertyChanged);   
+                PropertyChangedNotifyHelper.NotifyPropertyChanged<int>(ref this._zMax, value, this, "ZMax", this.PropertyChanged);   
             }
         }
+
+        /// <summary>
+        /// Default constructor
+        /// </summary>
+        public ZValues()
+        {
+        }
+
         /// <summary>
         /// ctor
         /// </summary>
@@ -291,31 +273,28 @@ namespace WorkstationController.Core.Data
             _zDispense = zDispense;
             _zMax = zMax;
         }
+
+        public object Clone()
+        {
+            return new ZValues(this._zTravel, this._zStart, this._zDispense, this._zMax);
+        }
     }
 
     /// <summary>
-    /// the well information on the labware
+    /// The well information on the labware
     /// </summary>
-    public class WellsInfo : INotifyPropertyChanged
+    [Serializable]
+    public class WellsInfo : INotifyPropertyChanged, ICloneable
     {
-        /// <summary>
-        /// nothing to say
-        /// </summary>
         public event PropertyChangedEventHandler PropertyChanged = delegate { };
-        private int _wellRadius;
-        private int _numberOfWellsX;
-        private int _numberOfWellsY;
-        private Point _firstWellPosition;
-        private Point _lastWellPosition;
+
+        private int         _wellRadius;
+        private int         _numberOfWellsX;
+        private int         _numberOfWellsY;
+        private Point       _firstWellPosition;
+        private Point       _lastWellPosition;
         private BottomShape _bottomShape;
 
-        /// <summary>
-        /// make the xml serializer happy
-        /// </summary>
-        public WellsInfo()
-        {
-
-        }
         /// <summary>
         /// Gets or sets the radius of the well, in 1/10 millimetre(mm.)
         /// </summary>
@@ -327,8 +306,7 @@ namespace WorkstationController.Core.Data
             }
             set
             {
-                PropertyChangedNotifyHelper.NotifyPropertyChanged<int>
-                       (ref this._wellRadius, value, this, "WellRadius", this.PropertyChanged);   
+                PropertyChangedNotifyHelper.NotifyPropertyChanged<int>(ref this._wellRadius, value, this, "WellRadius", this.PropertyChanged);   
             }
         }
 
@@ -343,8 +321,7 @@ namespace WorkstationController.Core.Data
             }
             set
             {
-                PropertyChangedNotifyHelper.NotifyPropertyChanged<int>
-                       (ref this._numberOfWellsX, value, this, "NumberOfWellsX", this.PropertyChanged);   
+                PropertyChangedNotifyHelper.NotifyPropertyChanged<int>(ref this._numberOfWellsX, value, this, "NumberOfWellsX", this.PropertyChanged);   
             }
         }
 
@@ -359,8 +336,7 @@ namespace WorkstationController.Core.Data
             }
             set
             {
-                PropertyChangedNotifyHelper.NotifyPropertyChanged<int>
-                       (ref this._numberOfWellsY, value, this, "NumberOfWellsY", this.PropertyChanged); 
+                PropertyChangedNotifyHelper.NotifyPropertyChanged<int>(ref this._numberOfWellsY, value, this, "NumberOfWellsY", this.PropertyChanged); 
             }
         }
 
@@ -375,8 +351,7 @@ namespace WorkstationController.Core.Data
             }
             set
             {
-                PropertyChangedNotifyHelper.NotifyPropertyChanged<Point>
-                      (ref this._firstWellPosition, value, this, "FirstWellPosition", this.PropertyChanged); 
+                PropertyChangedNotifyHelper.NotifyPropertyChanged<Point>(ref this._firstWellPosition, value, this, "FirstWellPosition", this.PropertyChanged); 
             }
         }
 
@@ -391,8 +366,7 @@ namespace WorkstationController.Core.Data
             }
             set
             {
-                PropertyChangedNotifyHelper.NotifyPropertyChanged<Point>
-                      (ref this._lastWellPosition, value, this, "LastWellPosition", this.PropertyChanged); 
+                PropertyChangedNotifyHelper.NotifyPropertyChanged<Point>(ref this._lastWellPosition, value, this, "LastWellPosition", this.PropertyChanged); 
             }
         }
 
@@ -407,13 +381,19 @@ namespace WorkstationController.Core.Data
             }
             set
             {
-                PropertyChangedNotifyHelper.NotifyPropertyChanged<BottomShape>
-                     (ref this._bottomShape, value, this, "BottomShape", this.PropertyChanged); 
+                PropertyChangedNotifyHelper.NotifyPropertyChanged<BottomShape>(ref this._bottomShape, value, this, "BottomShape", this.PropertyChanged); 
             }
         }
 
         /// <summary>
-        /// ctor
+        /// Default constructor
+        /// </summary>
+        public WellsInfo()
+        {
+        }
+
+        /// <summary>
+        /// Constructor
         /// </summary>
         public WellsInfo(Point first, Point last, int xNum, int yNum, BottomShape shape, int r)
         {
@@ -423,6 +403,11 @@ namespace WorkstationController.Core.Data
             FirstWellPosition = first;
             LastWellPosition = last;
             BottomShape = shape;
+        }
+
+        public object Clone()
+        {
+            return new WellsInfo(this._firstWellPosition, this._lastWellPosition, this._numberOfWellsX, this._numberOfWellsY, this._bottomShape, _wellRadius);
         }
     }
 }

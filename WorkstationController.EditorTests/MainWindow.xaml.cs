@@ -48,7 +48,7 @@ namespace WorkstationController.EditorTests
             labware.SiteID = 1;
             labware.TypeName = LabwareBuildInType.Tubes16Pos13_100MM.ToString();
             labware.WellsInfo = new WellsInfo(new Point(0, -32), new Point(0, 2788), 1, 16, BottomShape.Flat, 50);
-            labware.BackGroundColor = Color.FromArgb(255, 255, 0, 0);
+            labware.BackgroundColor = Color.FromArgb(255, 255, 0, 0);
             labware.CarrierGrid = 1;
 
             this.DataContext = labware;

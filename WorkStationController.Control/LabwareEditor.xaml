@@ -4,141 +4,104 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              mc:Ignorable="d" 
-             d:DesignHeight="600" d:DesignWidth="800">
-    <Grid >
+             d:DesignHeight="350" d:DesignWidth="600">
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="Auto"/>
+            <ColumnDefinition Width="Auto"/>
+            <ColumnDefinition/>
+            <ColumnDefinition Width="Auto"/>
+            <ColumnDefinition/>
+            <ColumnDefinition/>
+            <ColumnDefinition/>
+        </Grid.ColumnDefinitions>
         <Grid.Resources>
-            <Style TargetType="Button">
-                <Setter Property="Width" Value="60"/>
-                <Setter Property="Height" Value="30"/>
+            <Style x:Name="LabelStyle" TargetType="Label">
+                <Setter Property="VerticalContentAlignment" Value="Center"/>
             </Style>
-            <Style TargetType="TextBox">
-                <Setter Property="Width" Value="60"/>
-                <Setter Property="Height" Value="30"/>
+            <Style x:Name="ButtonStyoe" TargetType="Button">
+                <Setter Property="Margin" Value="3"/>
+            </Style>
+            <Style x:Name="TextboxStyoe" TargetType="TextBox">
+                <Setter Property="Margin" Value="5,2,5,2"/>
             </Style>
         </Grid.Resources>
-
-        <StackPanel>
-            <GroupBox Header="基本属性" Height="Auto">
-                <Grid>
-                    <Label Content="行数：" HorizontalAlignment="Left" Margin="246,15,0,0" VerticalAlignment="Top"/>
-                    <Label Content="列数：" HorizontalAlignment="Left" Margin="246,55,0,0" VerticalAlignment="Top"/>
-                    <TextBox Name="Rows" HorizontalAlignment="Left" Margin="297,15,0,0" TextWrapping="Wrap" Text="{Binding Path=WellsInfo.NumberOfWellsX}" VerticalAlignment="Top" Width="100"/>
-                    <TextBox HorizontalAlignment="Left" Margin="297,55,0,0" TextWrapping="Wrap" Text="{Binding Path=WellsInfo.NumberOfWellsY}" VerticalAlignment="Top" Width="100"/>
-                    <Label Content="器件类型：" HorizontalAlignment="Left" Margin="419,15,0,0" VerticalAlignment="Top"/>
-                    <ComboBox Name="cmbItemType" HorizontalAlignment="Left" Margin="494,15,0,0" Text="{Binding Type}"  VerticalAlignment="Top" Width="120"/>
-                    <Label Content="长：" HorizontalAlignment="Left" Margin="36,15,0,0" VerticalAlignment="Top" RenderTransformOrigin="-4.174,0.24"/>
-                    <Label Content="宽：" HorizontalAlignment="Left" Margin="36,55,0,0" VerticalAlignment="Top" RenderTransformOrigin="-4.174,0.24"/>
-                    <TextBox x:Name="txtXLength" Text="{Binding Path=Dimension.XLength}" HorizontalAlignment="Left" Margin="87,15,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="100"/>
-                    <TextBox x:Name="txtYLength" Text="{Binding Path=Dimension.YLength}" HorizontalAlignment="Left"  Margin="87,57,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="100"/>
-                </Grid>
-            </GroupBox>
-            <GroupBox Header="位置相关">
-                
-                <Grid Height="Auto">
-                    <Grid.RowDefinitions>
-                        <RowDefinition Height="1*"/>
-                    </Grid.RowDefinitions>
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="1*"/>
-                        <ColumnDefinition Width="1*"/>
-                    </Grid.ColumnDefinitions>
-                    <Grid Name="WellsInfo" Grid.Column="0">
-                        <Grid.RowDefinitions>
-                            <RowDefinition Height="1*"/>
-                            <RowDefinition Height="1*"/>
-                            <RowDefinition Height="1*"/>
-                            <RowDefinition Height="1*"/>
-                            <RowDefinition Height="1*"/>
-                        </Grid.RowDefinitions>
-                        <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="1*"/>
-                            <ColumnDefinition Width="1*"/>
-                            <ColumnDefinition Width="1*"/>
-                            <ColumnDefinition Width="1*"/>
-                        </Grid.ColumnDefinitions>
-
-                        <Label x:Name="lbl3" Content="X" Grid.Row="0" Grid.Column="1" HorizontalAlignment="Left" VerticalAlignment="Top"/>
-                        <Label x:Name="lbl4" Content="Y" Grid.Row="0" Grid.Column="2" HorizontalAlignment="Left" VerticalAlignment="Top"/>
-
-                        <Label x:Name="lblWellFirst" Grid.Row="1" Grid.Column="0" Content="孔#:" HorizontalAlignment="Left"  VerticalAlignment="Top"/>
-                        <TextBox HorizontalAlignment="Left" Grid.Row="1" Grid.Column="1"  TextWrapping="Wrap" Text="{Binding WellsInfo.FirstWellPosition.X}" VerticalAlignment="Top"/>
-                        <TextBox HorizontalAlignment="Left" Grid.Row="1" Grid.Column="2"    TextWrapping="Wrap" Text="{Binding WellsInfo.FirstWellPosition.Y}" VerticalAlignment="Top"/>
-                        <Button Content="读取当前值" Grid.Row="1" Grid.Column="3"  x:Name="btnReadFirstWell" HorizontalAlignment="Left" VerticalAlignment="Top" Width="75"/>
-                        <Button Content="移动到" Grid.Row="1" Grid.Column="4" x:Name="btnMoveToFirstWell" HorizontalAlignment="Left" VerticalAlignment="Top" Width="75"/>
-                        
-                        <Label x:Name="lblWellLast" Grid.Row="2" Grid.Column="0" Content="孔#:" HorizontalAlignment="Left"  VerticalAlignment="Top"/>
-                        <TextBox HorizontalAlignment="Left" Grid.Row="2" Grid.Column="1"   TextWrapping="Wrap" Text="{Binding WellsInfo.LastWellPosition.X}" VerticalAlignment="Top"/>
-                        <TextBox HorizontalAlignment="Left" Grid.Row="2" Grid.Column="2"   TextWrapping="Wrap" Text="{Binding WellsInfo.LastWellPosition.Y}" VerticalAlignment="Top"/>
-
-                        <Button Content="读取当前值" Grid.Row="2" Grid.Column="3" x:Name="btnReadLastWell" HorizontalAlignment="Left"  VerticalAlignment="Top" Width="75"/>
-                        <Button Content="移动到" Grid.Row="2" Grid.Column="4" x:Name="btnMoveToLastWell" HorizontalAlignment="Left"  VerticalAlignment="Top" Width="75"/>
-                    </Grid>
-                    <Grid Name="ZValues" Grid.Column="1">
-                        <Grid.RowDefinitions>
-                            <RowDefinition Height="1*"/>
-                            <RowDefinition Height="1*"/>
-                            <RowDefinition Height="1*"/>
-                            <RowDefinition Height="1*"/>
-                        </Grid.RowDefinitions>
-                        <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="1*"/>
-                            <ColumnDefinition Width="1*"/>
-                            <ColumnDefinition Width="1*"/>
-                            <ColumnDefinition Width="1*"/>
-                        </Grid.ColumnDefinitions>
-
-                        <Label x:Name="lbl5" Grid.Row="0" Grid.Column="0" Content="Z-Travel：" HorizontalAlignment="Left" VerticalAlignment="Top" />
-                        <TextBox HorizontalAlignment="Left" Grid.Row="0" Grid.Column="1"   TextWrapping="Wrap" Text="{Binding ZValues.ZTravel}" VerticalAlignment="Top" Width="87" />
-                        <Button Content="读取当前值" Grid.Row="0" Grid.Column="2" x:Name="btnReadZTravel" HorizontalAlignment="Left" VerticalAlignment="Top" Width="75" />
-                        <Button Content="移动到" Grid.Row="0" Grid.Column="3" x:Name="btnMove2ZTravel" HorizontalAlignment="Left" VerticalAlignment="Top" Width="75" />
-
-                        <Label x:Name="lbl6" Grid.Row="1" Grid.Column="0" Content="Z-Start：" HorizontalAlignment="Left"  VerticalAlignment="Top" RenderTransformOrigin="0.449,1.519"/>
-                        <TextBox HorizontalAlignment="Left" Grid.Row="1" Grid.Column="1"  TextWrapping="Wrap" Text="{Binding ZValues.ZStart}" VerticalAlignment="Top" Width="87" RenderTransformOrigin="0.51,1.08"/>
-                        <Button Content="读取当前值" Grid.Row="1" Grid.Column="2" x:Name="btnReadZStart" HorizontalAlignment="Left" VerticalAlignment="Top" Width="75"/>
-                        <Button Content="移动到" Grid.Row="1" Grid.Column="3" x:Name="btnMove2ZStart" HorizontalAlignment="Left" VerticalAlignment="Top" Width="75"/>
-
-
-                        <Label x:Name="lbl6_Copy"  Grid.Row="2" Grid.Column="0" Content="Z-Dispense：" HorizontalAlignment="Left"  VerticalAlignment="Top" RenderTransformOrigin="0.449,1.519"/>
-                        <TextBox HorizontalAlignment="Left"  Grid.Row="2" Grid.Column="1" TextWrapping="Wrap" Text="{Binding ZValues.ZDispense}" VerticalAlignment="Top" Width="87"/>
-                        <Button Content="读取当前值"  Grid.Row="2" Grid.Column="2" x:Name="btnReadZDispense" HorizontalAlignment="Left"  VerticalAlignment="Top" Width="75"/>
-                        <Button Content="移动到"  Grid.Row="2" Grid.Column="3" x:Name="btnMove2ZDispense" HorizontalAlignment="Left"  VerticalAlignment="Top" Width="75"/>
-
-                        <Label x:Name="lbl6_Copy1"  Grid.Row="3" Grid.Column="0" Content="Z-Bottom：" HorizontalAlignment="Left"  VerticalAlignment="Top" RenderTransformOrigin="0.449,1.519"/>
-                        <TextBox HorizontalAlignment="Left" Grid.Row="3" Grid.Column="1" TextWrapping="Wrap" Text="{Binding ZValues.ZMax}" VerticalAlignment="Top" Width="87"/>
-                        <Button Content="读取当前值" Grid.Row="3" Grid.Column="2" x:Name="btnReadZBottom" HorizontalAlignment="Left" VerticalAlignment="Top" Width="75"/>
-                        <Button Content="移动到" Grid.Row="3" Grid.Column="3" x:Name="btnMove2ZBottom" HorizontalAlignment="Left"  VerticalAlignment="Top" Width="75"/>
-
-                    </Grid>
-
-                </Grid>
-            </GroupBox>
-            <GroupBox Header="当前坐标">
-                <Grid>
-                    <Grid.RowDefinitions>
-                        <RowDefinition Height="Auto"/>
-                    </Grid.RowDefinitions>
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="0.2*"/>
-                        <ColumnDefinition Width="1*"/>
-                        <ColumnDefinition Width="0.2*"/>
-                        <ColumnDefinition Width="1*"/>
-                        <ColumnDefinition Width="0.2*"/>
-                        <ColumnDefinition Width="1*"/>
-                        <ColumnDefinition Width="2*"/>
-                    </Grid.ColumnDefinitions>
-                    <Label Content="X" HorizontalAlignment="Left" Grid.Row="0" Grid.Column="0" VerticalAlignment="Top"/>
-                    <Label Content="Y" HorizontalAlignment="Left" Grid.Row="0" Grid.Column="2" VerticalAlignment="Top"/>
-                    <Label Content="Z" HorizontalAlignment="Left" Grid.Row="0" Grid.Column="4" VerticalAlignment="Top"/>
-
-                    <TextBox Grid.Row="0" Grid.Column="1" TextWrapping="Wrap" Text="{Binding CalibPos.X}" VerticalAlignment="Stretch" HorizontalAlignment="Stretch" Width="Auto"/>
-                    <TextBox Grid.Row="0" Grid.Column="3" TextWrapping="Wrap" Text="{Binding CalibPos.Y}" VerticalAlignment="Stretch" HorizontalAlignment="Stretch" Width="Auto"/>
-                    <TextBox Grid.Row="0" Grid.Column="5" TextWrapping="Wrap" Text="{Binding CalibPos.Z}" VerticalAlignment="Stretch" HorizontalAlignment="Stretch" Width="Auto"/>
-                    <Label Content="单位：0.1mm"  Grid.Row="0" Grid.Column="6" HorizontalAlignment="Left"  VerticalAlignment="Top"/>
-                </Grid>
-
-
-            </GroupBox>
-
+        <StackPanel Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="4" Orientation="Horizontal" HorizontalAlignment="Left">
+            <Label Content="Labware Name:"/>
+            <TextBox MinWidth="100" Height="30" Margin="3,2,0,2"/>
+        </StackPanel>
+        <!--Dimension-->
+        <TextBlock Grid.Row="1" Grid.Column="2" Text="X" VerticalAlignment="Bottom" HorizontalAlignment="Center"/>
+        <TextBlock Grid.Row="1" Grid.Column="4" Text="Y" VerticalAlignment="Bottom" HorizontalAlignment="Center"/>
+        <Label Grid.Row="2" Grid.Column="0" Content="Dimension:"/>
+        <Label Grid.Row="2" Grid.Column="5" Content="(mm)"/>
+        <TextBox Grid.Row="2" Grid.Column="2"/>
+        <TextBox Grid.Row="2" Grid.Column="4"/>
+        <!--Wells number-->
+        <Label Grid.Row="3" Grid.Column="0" Content="Wells:"/>
+        <Label Grid.Row="3" Grid.Column="1" Content="(X)"/>
+        <Label Grid.Row="3" Grid.Column="3" Content="(Y)"/>
+        <Label Grid.Row="3" Grid.Column="5" Content="Type:"/>
+        <ComboBox Grid.Row="3" Grid.Column="6" Margin="3"/>
+        <TextBox Grid.Row="3" Grid.Column="2"/>
+        <TextBox Grid.Row="3" Grid.Column="4"/>
+        <!--Wells information-->
+        <TextBlock Grid.Row="4" Grid.Column="2" Text="X" VerticalAlignment="Bottom" HorizontalAlignment="Center"/>
+        <TextBlock Grid.Row="4" Grid.Column="4" Text="Y" VerticalAlignment="Bottom" HorizontalAlignment="Center"/>
+        <Label Grid.Row="5" Grid.Column="0" Content="(Well #1)"/>
+        <Label Grid.Row="6" Grid.Column="0" Content="(Well #N)"/>
+        <Button Grid.Row="5" Grid.Column="5" Content="transfer"/>
+        <Button Grid.Row="5" Grid.Column="6" Content="move to"/>
+        <Button Grid.Row="6" Grid.Column="5" Content="transfer"/>
+        <Button Grid.Row="6" Grid.Column="6" Content="move to"/>
+        <TextBox Grid.Row="5" Grid.Column="2"/>
+        <TextBox Grid.Row="5" Grid.Column="4"/>
+        <TextBox Grid.Row="6" Grid.Column="2"/>
+        <TextBox Grid.Row="6" Grid.Column="4"/>
+        <!--ZValues-->
+        <TextBlock Grid.Row="7" Grid.Column="4" Text="Z" VerticalAlignment="Bottom" HorizontalAlignment="Center"/>
+        <Label Grid.Row="8" Grid.Column="0" Content="Z-Travel" Grid.ColumnSpan="2" HorizontalContentAlignment="Right"/>
+        <Label Grid.Row="9" Grid.Column="0" Content="Z-Start" Grid.ColumnSpan="2" HorizontalContentAlignment="Right"/>
+        <Label Grid.Row="10" Grid.Column="0" Content="Z-Dispense" Grid.ColumnSpan="2" HorizontalContentAlignment="Right"/>
+        <Label Grid.Row="11" Grid.Column="0" Content="Z-Max" Grid.ColumnSpan="2" HorizontalContentAlignment="Right"/>
+        <Image Grid.Row="8" Grid.RowSpan="4" Grid.Column="1" Grid.ColumnSpan="3" Source="Resources/zvalues.png" Stretch="None"/>
+        <TextBox Grid.Row="8" Grid.Column="4"/>
+        <TextBox Grid.Row="9" Grid.Column="4"/>
+        <TextBox Grid.Row="10" Grid.Column="4"/>
+        <TextBox Grid.Row="11" Grid.Column="4"/>
+        <Button Grid.Row="8" Grid.Column="5" Content="transfer"/>
+        <Button Grid.Row="8" Grid.Column="6" Content="move to"/>
+        <Button Grid.Row="9" Grid.Column="5" Content="transfer"/>
+        <Button Grid.Row="9" Grid.Column="6" Content="move to"/>
+        <Button Grid.Row="10" Grid.Column="5" Content="transfer"/>
+        <Button Grid.Row="10" Grid.Column="6" Content="move to"/>
+        <Button Grid.Row="11" Grid.Column="5" Content="transfer"/>
+        <Button Grid.Row="11" Grid.Column="6" Content="move to"/>
+        <!--Current position-->
+        <StackPanel Grid.Row="12" Grid.Column="0" Grid.ColumnSpan="7" Orientation="Horizontal" HorizontalAlignment="Left">
+            <Label Content="Current Position:"/>
+            <Label Content="X:"/>
+            <TextBox MinWidth="100" Margin="5"/>
+            <Label Content="Y:"/>
+            <TextBox MinWidth="100" Margin="5"/>
+            <Label Content="Z:"/>
+            <TextBox MinWidth="100" Margin="5"/>
+            <Label Content="(1/10 mm)"/>
         </StackPanel>
     </Grid>
 </UserControl>

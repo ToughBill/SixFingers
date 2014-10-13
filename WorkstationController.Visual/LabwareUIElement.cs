@@ -89,7 +89,7 @@ namespace WorkstationController.VisualElement
                 for (int col = 0; col < cols; col++)
                 {
                     var position = GetPosition(row, col) + vector;
-                    VisualCommon.DrawCircle(position, _labware.WellsInfo.WellRadius, drawingContext, _labware.BackGroundColor);
+                    VisualCommon.DrawCircle(position, _labware.WellsInfo.WellRadius, drawingContext, _labware.BackgroundColor);
                 }
             }
             drawingContext.Close();

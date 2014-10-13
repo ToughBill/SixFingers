@@ -21,7 +21,7 @@
 
         <!--Liquid Class settings-->
         <TabControl Grid.Row="1">
-            <TabItem Header="Aspirate">
+            <TabItem Header="Aspirate" Height="23" VerticalAlignment="Top">
                 <Grid>
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="89.737"/>
@@ -40,11 +40,14 @@
                         <RowDefinition Height="Auto"/>
                     </Grid.RowDefinitions>
                     <Grid.Resources>
-                        <Style x:Name="LabelStype" TargetType="Label">
+                        <Style x:Name="LabelStyle" TargetType="Label">
                             <Setter Property="VerticalContentAlignment" Value="Center"/>
                         </Style>
-                        <Style x:Name="TextBoxStype" TargetType="TextBox">
+                        <Style x:Name="TextBoxStyle" TargetType="TextBox">
                             <Setter Property="VerticalContentAlignment" Value="Center"/>
+                            <Setter Property="Height" Value="25"/>
+                            <Setter Property="MinWidth" Value="80"/>
+                            <Setter Property="Margin" Value="2"/>
                         </Style>
                     </Grid.Resources>
                     <Label Grid.Row="0" Grid.Column="2" Content="Single Pipetting"/>
@@ -56,31 +59,31 @@
                     <Label Grid.Row="6" Grid.Column="0" Content="Excess Volume:" HorizontalContentAlignment="Right" Grid.ColumnSpan="2"/>
                     <Label Grid.Row="7" Grid.Column="0" Content="Conditioning Volume:" HorizontalContentAlignment="Right" Grid.ColumnSpan="2"/>
                     <StackPanel Grid.Row="1" Grid.Column="2" Orientation="Horizontal" Margin="3">
-                        <TextBox x:Name="tb_aspirationSpeed" Text="{Binding Path=AspirationSinglePipetting.AspirationSpeed}"  MinWidth="70" Margin="2"/>
+                        <TextBox x:Name="tb_aspirationSpeed" Text="{Binding Path=AspirationSinglePipetting.AspirationSpeed}"/>
                         <Label Content="μl / s"/>
                     </StackPanel>
                     <StackPanel Grid.Row="2" Grid.Column="2" Orientation="Horizontal" Margin="3,0">
-                        <TextBox x:Name="tb_aspirationDelay" Text="{Binding Path=AspirationSinglePipetting.Delay}" MinWidth="70" Margin="2"/>
+                        <TextBox x:Name="tb_aspirationDelay" Text="{Binding Path=AspirationSinglePipetting.Delay}"/>
                         <Label Content="ms"/>
                     </StackPanel>
                     <StackPanel Grid.Row="3" Grid.Column="2" Orientation="Horizontal" Margin="3,0">
-                        <TextBox x:Name="tb_sysTrailingAirGap" Text="{Binding Path=AspirationSinglePipetting.SystemTrailingAirgap}" MinWidth="70" Margin="2"/>
+                        <TextBox x:Name="tb_sysTrailingAirGap" Text="{Binding Path=AspirationSinglePipetting.SystemTrailingAirgap}"/>
                         <Label Content="μl"/>
                     </StackPanel>
                     <StackPanel Grid.Row="4" Grid.Column="2" Orientation="Horizontal" Margin="3,0">
-                        <TextBox x:Name="tb_leadingAirGap" Text="{Binding Path=AspirationSinglePipetting.LeadingAirgap}" MinWidth="70" Margin="2"/>
+                        <TextBox x:Name="tb_leadingAirGap" Text="{Binding Path=AspirationSinglePipetting.LeadingAirgap}"/>
                         <Label Content="μl"/>
                     </StackPanel>
                     <StackPanel Grid.Row="5" Grid.Column="2" Orientation="Horizontal" Margin="3,0">
-                        <TextBox x:Name="tb_trailingAirGap" Text="{Binding Path=AspirationSinglePipetting.TrailingAirgap}" MinWidth="70" Margin="2"/>
+                        <TextBox x:Name="tb_trailingAirGap" Text="{Binding Path=AspirationSinglePipetting.TrailingAirgap}"/>
                         <Label Content="μl"/>
                     </StackPanel>
                     <StackPanel Grid.Row="6" Grid.Column="2" Orientation="Horizontal" Margin="3,0">
-                        <TextBox x:Name="tb_excessVolume" Text="{Binding Path=AspirationSinglePipetting.ExcessVolume}" MinWidth="70" Margin="2"/>
+                        <TextBox x:Name="tb_excessVolume" Text="{Binding Path=AspirationSinglePipetting.ExcessVolume}"/>
                         <Label Content="μl"/>
                     </StackPanel>
                     <StackPanel Grid.Row="7" Grid.Column="2" Orientation="Horizontal" Margin="3,0">
-                        <TextBox x:Name="tb_conditioningVolume" Text="{Binding Path=AspirationSinglePipetting.ConditioningVolume}" MinWidth="70" Margin="2"/>
+                        <TextBox x:Name="tb_conditioningVolume" Text="{Binding Path=AspirationSinglePipetting.ConditioningVolume}"/>
                         <Label Content="μl"/>
                     </StackPanel>
                     <!--Sketch picture of aspiration-->
@@ -127,7 +130,7 @@
 
         <!--Buttons-->
         <StackPanel Grid.Row="2" Orientation="Horizontal" HorizontalAlignment="Right">
-            <Button x:Name="btn_save" Content="Save" Click="OnBtnSaveClick" Margin="3" MinWidth="80"/>
+            <Button x:Name="btn_save" Content="Save" Click="OnBtnSaveClick" Margin="5" MinWidth="100"/>
         </StackPanel>
     </Grid>
 </UserControl>

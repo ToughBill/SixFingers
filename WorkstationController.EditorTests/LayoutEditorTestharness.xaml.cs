@@ -52,7 +52,7 @@ namespace WorkstationController.EditorTests
             labware1.SiteID = 1;
             labware1.WellsInfo = new WellsInfo(new Point(0, -32), new Point(0, 2788), 1, 16, BottomShape.Flat, 50);
             labware1.TypeName = LabwareBuildInType.Tubes16Pos13_100MM.ToString();
-            labware1.BackGroundColor = Color.FromArgb(255, 255, 0, 0);
+            labware1.BackgroundColor = Color.FromArgb(255, 255, 0, 0);
             labware1.CarrierGrid = 0;
 
             Carrier carrier1 = new Carrier(BuildInCarrierType.MP_3POS);
@@ -72,7 +72,7 @@ namespace WorkstationController.EditorTests
             labware.SiteID = 1;
             labware.WellsInfo = new WellsInfo(new Point(0, -32), new Point(0, 2788), 1, 16, BottomShape.Flat, 50);
             labware.TypeName = LabwareBuildInType.Tubes16Pos13_100MM.ToString();
-            labware.BackGroundColor = Color.FromArgb(255, 255, 0, 0);
+            labware.BackgroundColor = Color.FromArgb(255, 255, 0, 0);
             labware.CarrierGrid = 1;
             //layoutEditor.AddCandidate(new LabwareUIElement(labware));
             UserControlContainer.InvalidateVisual();
