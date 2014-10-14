@@ -144,12 +144,6 @@ namespace WorkstationController.Core.Data
         /// <returns></returns>
         public object Clone()
         {
-            return new Dimension(_xLength, _yLength);
-        }        /// Clone the Dimension instance
-        /// </summary>
-        /// <returns></returns>
-        public object Clone()
-        {
             return new Dimension(this._xLength, this._yLength);
         }
     }
