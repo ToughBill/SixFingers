@@ -100,9 +100,9 @@ namespace WorkstationController.VisualElement.Uitility
                 return;
             WareInstaller.MountThis(_selectedUIElement,e.GetPosition(_myCanvas),_myCanvas);
             DeHighlightAllSite();
+            _selectedUIElement.Selected = false;
             _selectedUIElement = null;
         }
-
 
         void myCanvas_MouseMove(object sender, MouseEventArgs e)
         {
@@ -111,7 +111,6 @@ namespace WorkstationController.VisualElement.Uitility
                 return;
             if (!enableMouseMove)
                 return;
-            
             
             if (ptMouse.X < 0 || ptMouse.X > _myCanvas.ActualWidth)
                 return;
@@ -127,17 +126,6 @@ namespace WorkstationController.VisualElement.Uitility
             {
                 HighlightSiteInShadow(ptMouse, _selectedUIElement.Ware.TypeName);
             }
-            
-            //double actualWidth = workingElement.RenderSize.Width;
-            //double actualHeight = workingElement.RenderSize.Height;
-            //if (ptClick.X < 0)
-            //    ptClick.X = 0;
-            //if (ptClick.X + actualWidth > myCanvas.ActualWidth)
-            //    ptClick.X = myCanvas.ActualWidth - actualWidth;
-            //if (ptClick.Y < 0)
-            //    ptClick.Y = 0;
-            //if (ptClick.Y + actualHeight > myCanvas.ActualHeight)
-            //    ptClick.Y = myCanvas.ActualHeight - actualHeight;
             ElectCandidate();
             UpdateSelectedElement(ptMouse);
             
@@ -172,10 +160,10 @@ namespace WorkstationController.VisualElement.Uitility
             if (_uiElementCandidate == null)
                 return;
             Debug.WriteLine("ElectCandidate");
-            SelectedElement = UIElementCandidate;
-            _myCanvas.Children.Add(UIElementCandidate);
+            _selectedUIElement = _uiElementCandidate;
+            _myCanvas.Children.Add(_uiElementCandidate);
             _myCanvas.InvalidateVisual();
-            UIElementCandidate = null;
+            _uiElementCandidate = null;
         }
 
         //only find LabwareUIElement & CarrierUIElement

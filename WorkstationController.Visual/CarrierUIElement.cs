@@ -43,11 +43,28 @@ namespace WorkstationController.VisualElement
             set
             {
                 _carrier.Grid = value;
-                InvalidateVisual();
+                base.InvalidateVisual();
             }
         }
 
+        /// <summary>
+        /// carrier
+        /// </summary>
+        public Carrier Carrier
+        {
+            get
+            {
+                return _carrier;
+            }
+        }
 
+        public Dimension Dimension
+        {
+            get
+            {
+                return _carrier.Dimension;
+            }
+        }
         /// <summary>
         /// Draw the carrier
         /// </summary>
@@ -76,7 +93,7 @@ namespace WorkstationController.VisualElement
             {
                 int xSite = (int)(site.Position.X + xPos);
                 int ySite = (int)(site.Position.Y + yPos);
-                border = _isSelected ? Colors.Blue : Colors.LightGray;
+                border = _isSelected ? Colors.Blue : Colors.Brown;
                 bool bNeedHighLight = site == _siteNeedHighLight;
                 
                 Size tmpSZ = new Size(site.Size.Width,site.Size.Height);
@@ -131,29 +148,41 @@ namespace WorkstationController.VisualElement
             //if not from mousemove, we need to remove all the highLight flag.
             if (!bMouseMove) 
                 return;
+            _siteNeedHighLight = FindSiteForLabware(ptInCanvas, labwareTypeName);
+        }
 
-            if (Grid != Carrier.undefinedGrid)
+
+        /// <summary>
+        /// find a site which can accept the labware
+        /// </summary>
+        /// <param name="ptInCanvas"></param>
+        /// <param name="labwareTypeName"></param>
+        /// <returns></returns>
+        public Site FindSiteForLabware(Point ptInCanvas, string labwareTypeName)
+        {
+            if (Grid == Carrier.undefinedGrid)
+                return null;
+            int xPos = GetBoundingRectXStart(Grid);//
+            int yPos = GetBoundingRectYStart();
+            Rect rc = VisualCommon.Physic2Visual(xPos, yPos, new Size(_carrier.Dimension.XLength, _carrier.Dimension.YLength));
+            if (!rc.Contains(ptInCanvas))
+                return null;
+            Site siteExpected = null;
+            foreach (Site site in _carrier.Sites)
             {
-                int xPos = GetBoundingRectXStart(Grid);//
-                int yPos = GetBoundingRectYStart();
-                Rect rc = VisualCommon.Physic2Visual(xPos, yPos, new Size(_carrier.Dimension.XLength, _carrier.Dimension.YLength));
-                if (!rc.Contains(ptInCanvas))
-                    return;
-                foreach (Site site in _carrier.Sites)
-                {
-                    if (!site.AllowedLabwareTypeNames.Contains(labwareTypeName))
-                        continue;
+                if (!site.AllowedLabwareTypeNames.Contains(labwareTypeName))
+                    continue;
 
-                    int xSite = (int)(site.Position.X + xPos);
-                    int ySite = (int)(site.Position.Y + yPos);
-                    rc = VisualCommon.Physic2Visual(xSite, ySite, site.Size);
-                    if (rc.Contains(ptInCanvas))
-                    {
-                        _siteNeedHighLight = site;
-                        break;
-                    }
+                int xSite = (int)(site.Position.X + xPos);
+                int ySite = (int)(site.Position.Y + yPos);
+                rc = VisualCommon.Physic2Visual(xSite, ySite, site.Size);
+                if (rc.Contains(ptInCanvas))
+                {
+                    siteExpected = site;
+                    break;
                 }
             }
+            return siteExpected;
         }
 
     }

@@ -23,12 +23,13 @@ namespace WorkstationController.VisualElement.Uitility
             BasewareUIElement newUIElement;
             if (wareBase is Labware)
             {
+                //Labware labware = ((Labware)wareBase).Clone();
                 newUIElement = new LabwareUIElement((Labware)wareBase);
-                
             }
             else
             {
-                newUIElement = new CarrierUIElement((Carrier)wareBase);
+                Carrier carrier = ((Carrier)wareBase).Clone() as Carrier;
+                newUIElement = new CarrierUIElement((Carrier)carrier);
             }
             newUIElement.Selected = true;
             return newUIElement;

@@ -35,6 +35,8 @@ namespace WorkstationController.EditorTests
             Point pt = e.GetPosition(lstboxLabwares);
             HitTestResult result = VisualTreeHelper.HitTest(lstboxLabwares, pt);
             ListBoxItem lbi = VisualCommon.FindParent<ListBoxItem>(result.VisualHit);
+            if (lbi == null)
+                return;
             int index = lstboxLabwares.ItemContainerGenerator.IndexFromContainer(lbi);
             if (index == -1)
                 return;

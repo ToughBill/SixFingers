@@ -12,56 +12,112 @@ namespace WorkstationController.VisualElement.Uitility
     {
         public static void MountThis(BasewareUIElement baseUIElement, Point position, Grid container)
         {
-            int grid = VisualCommon.FindCorrespondingGrid(position.X);
-            int totalGrid = Configurations.Instance.Worktable.GridCount;
-
-            //1 moves out of worktable
-            if(grid < 1 || grid > totalGrid)
+            bool bValid = IsValid(baseUIElement, position, container);
+            if (!bValid)
             {
                 container.Children.Remove(baseUIElement);
+                return;
             }
 
-            //2 if is Carrier, see whether there are enough grids for it
-            if( baseUIElement is CarrierUIElement)
+            int grid = VisualCommon.FindCorrespondingGrid(position.X);
+            if (baseUIElement is CarrierUIElement)
             {
                 CarrierUIElement carrierUIElement = (CarrierUIElement)baseUIElement;
-                bool outOfRange = IsOutofRange(grid,carrierUIElement);
                 carrierUIElement.Grid = grid;
             }
 
-            //3 if is labware, see whether there are suitable carrier for mounting onto
-            if( baseUIElement is LabwareUIElement)
+            if(baseUIElement is LabwareUIElement)
             {
-                //bool hasSuitableSite2Mount = HasSuitableSite(baseUIElement.Ware.TypeName)
+                LabwareUIElement labwareUIElement = (LabwareUIElement)baseUIElement;
+                Labware labware = labwareUIElement.Ware as Labware;
+                CarrierUIElement carrierUIElement = FindSuitableCarrier(position, labware.TypeName, container);
+                carrierUIElement.Carrier.AddLabware(labware);
+            }
+            
+        }
+
+        private static bool IsValid(BasewareUIElement baseUIElement, Point position, Grid container)
+        {
+            int gridPos = VisualCommon.FindCorrespondingGrid(position.X);
+            int totalGrid = Configurations.Instance.Worktable.GridCount;
+
+            //1 moves out of worktable
+            if (gridPos < 1 || gridPos > totalGrid)
+                return false;
+
+            //2 if is Carrier, see whether there are enough grids for it
+            if (baseUIElement is CarrierUIElement)
+            {
+                CarrierUIElement carrierUIElement = (CarrierUIElement)baseUIElement;
+                bool outOfRange = IsOutofRange(gridPos, carrierUIElement);
+                if (outOfRange)
+                    return false;
+
+                bool overLapped = OverlapChecker.IsOverlapped(container, carrierUIElement, gridPos);
+                if (overLapped)
+                    return false;
+                
             }
 
-            baseUIElement.Selected = false;
-            //baseUIElement.Grid = grid;
+            //3 if is labware, see whether there are suitable carrier for mounting onto
+            if (baseUIElement is LabwareUIElement)
+            {
+                bool hasSuitableSite2Mount = HasSuitableSite(position,baseUIElement.Ware.TypeName,container);
+                if (!hasSuitableSite2Mount)
+                    return false;
+            }
+
+            //baseUIElement.Selected = false;
+            return true;
+        }
+
+        private static CarrierUIElement FindSuitableCarrier(Point pt, string labwareTypeName,Grid container)
+        {
+            foreach (UIElement uiElement in container.Children)
+            {
+                if (!(uiElement is CarrierUIElement))
+                    continue;
+                CarrierUIElement carrierUIElement = uiElement as CarrierUIElement;
+                if (carrierUIElement.FindSiteForLabware(pt, labwareTypeName) != null)
+                {
+                    return carrierUIElement;
+                }
+            }
+            return null;
+        }
+
+        private static bool HasSuitableSite(Point pt, string labwareTypeName,Grid container)
+        {
+            return FindSuitableCarrier(pt, labwareTypeName, container) != null;
         }
 
         private static bool IsOutofRange(int grid, CarrierUIElement carrierUIElement)
         {
-
-
-            return true;
+            int length = carrierUIElement.Dimension.XLength;
+            int gridsNeed =  (int)(Math.Ceiling(length / (double)Worktable.DistanceBetweenAdjacentPins));
+            return  grid + gridsNeed - 1 > Configurations.Instance.Worktable.GridCount;
         }
     }
 
     class OverlapChecker
     {
-        public static bool IsOverlapped(Grid grid, CarrierUIElement newCarrierUI,int newUICurGrid)
+        public static bool IsOverlapped(Grid uiContainer, CarrierUIElement newCarrierUI,int newUICurGrid)
         {
             bool bOverlapped = false;
-            int newCarrierXStart = newCarrierUI.GetBoundingRectXStart();
-            int newCarrierXEnd = newCarrierXStart +  VisualCommon.GetCarrierLength(newCarrierUI);
+            int newCarrierXStart = newCarrierUI.GetBoundingRectXStart(newUICurGrid);
+            int newCarrierXEnd = newCarrierXStart +  newCarrierUI.Dimension.XLength;
 
-            foreach(UIElement uiElement in grid.Children)
+            foreach (UIElement uiElement in uiContainer.Children)
             {
+                //jump self
                 if (!(uiElement is CarrierUIElement))
                     continue;
                 CarrierUIElement carrierUIElement = uiElement as CarrierUIElement;
+                if (carrierUIElement == newCarrierUI)
+                    continue;
+                
                 int oldCarrierXStart = carrierUIElement.GetBoundingRectXStart();
-                int oldCarrierXEnd = oldCarrierXStart + VisualCommon.GetCarrierLength(carrierUIElement);
+                int oldCarrierXEnd = oldCarrierXStart + carrierUIElement.Dimension.XLength;
                 bOverlapped = IsOverlapped(newCarrierXStart, newCarrierXEnd, oldCarrierXStart, oldCarrierXEnd);
                 if (bOverlapped)
                     break;

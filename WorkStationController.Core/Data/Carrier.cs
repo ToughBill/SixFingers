@@ -96,6 +96,10 @@ namespace WorkstationController.Core.Data
             {
                 return this._sites;
             }
+            set
+            {
+                _sites = new List<Site>();
+            }
         }
         /// <summary>
         /// Default constructor
@@ -125,7 +129,8 @@ namespace WorkstationController.Core.Data
             {
                 throw new ArgumentNullException("labware", "labware must not be null.");
             }
-
+            if (_labwares.Contains(labware))
+                return;
             this._labwares.Add(labware);
         }
 
@@ -176,7 +181,18 @@ namespace WorkstationController.Core.Data
         /// <returns></returns>
         public object Clone()
         {
-            throw new NotImplementedException();
+            //if(this.TypeName )
+            Carrier newCarrier = new Carrier();
+            newCarrier.TypeName = this.TypeName;
+            newCarrier.XOffset = this.XOffset;
+            newCarrier.YOffset = this.YOffset;
+            //newCarrier.Sites = new List<Site>(_sites);
+            newCarrier.Sites = new List<Site>();
+            foreach (Site site in _sites)
+                newCarrier.Sites.Add(site.Clone() as Site);
+            newCarrier.Dimension = _dimension.Clone() as Dimension;
+            newCarrier.Grid = undefinedGrid;
+            return newCarrier;
         }
 
         public Carrier(BuildInCarrierType buildinType)
@@ -196,9 +212,7 @@ namespace WorkstationController.Core.Data
 
         private void CreateTube13mm_16Pos()
         {
-            //_xlength = 240;
-            //_ylength = 3160;
-            
+            _dimension = new Data.Dimension(240, 3160);
             _xoffset = 120;
             _yoffset = 247;
             Site site1 = new Site(new Point(0, 110), new Size(240, 3050), new List<string> { LabwareBuildInType.Tubes16Pos13_100MM.ToString() });
@@ -209,9 +223,7 @@ namespace WorkstationController.Core.Data
 
         private void CreateMP_3POS() //will be replaced by xml
         {
-            
-            //_xlength = 1490;
-            //_ylength = 3160;
+            _dimension = new Data.Dimension(1490, 3160);
             _xoffset = 120;
             _yoffset = 247;
             Site site1 = new Site(new Point(55, 250), new Size(1270, 850), new List<string> { LabwareBuildInType.Plate96_05ML.ToString()});
@@ -240,7 +252,7 @@ namespace WorkstationController.Core.Data
     /// The definition of labware on carrier position information
     /// </summary>
     [Serializable]
-    public class Site : INotifyPropertyChanged
+    public class Site : INotifyPropertyChanged,ICloneable
     {
         /// <summary>
         /// nothing to say
@@ -302,6 +314,12 @@ namespace WorkstationController.Core.Data
             {
                 _allowedLabwareTypeNames = value;
             }
+        }
+
+        public object Clone()
+        {
+            Site site = new Site(_position, _sz, new List<string>(_allowedLabwareTypeNames));
+            return site;
         }
     }
 }

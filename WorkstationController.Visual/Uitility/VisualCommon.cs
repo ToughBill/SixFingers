@@ -129,16 +129,7 @@ where T : class
             drawingContext.DrawRectangle(brush, new Pen(new SolidColorBrush(color), 1), rc);
         }
 
-        /// <summary>
-        /// helper method for get carrier's width
-        /// </summary>
-        /// <param name="carrierUIElement"></param>
-        /// <returns></returns>
-        public static int GetCarrierLength(CarrierUIElement carrierUIElement)
-        {
-            Carrier carrier = carrierUIElement.Ware as Carrier;
-            return carrier.Dimension.XLength;
-        }
+     
         /// <summary>
         /// draw solid rect
         /// </summary>
