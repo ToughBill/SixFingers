@@ -42,7 +42,13 @@ namespace WorkstationController.VisualElement
             }
         }
 
-        /// <summary>
+		public Labware Labware
+        {
+            get
+            {
+                return _labware;
+            }
+        }        /// <summary>
         /// redraw
         /// </summary>
         /// <param name="drawingVisual"></param>
