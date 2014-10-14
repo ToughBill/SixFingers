@@ -139,7 +139,13 @@ namespace WorkstationController.Core.Data
         }
 
         /// <summary>
-        /// Clone the Dimension instance
+        /// as name means
+        /// </summary>
+        /// <returns></returns>
+        public object Clone()
+        {
+            return new Dimension(_xLength, _yLength);
+        }        /// Clone the Dimension instance
         /// </summary>
         /// <returns></returns>
         public object Clone()
