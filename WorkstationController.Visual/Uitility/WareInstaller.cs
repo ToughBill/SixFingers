@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Windows;
@@ -16,6 +17,11 @@ namespace WorkstationController.VisualElement.Uitility
             if (!bValid)
             {
                 container.Children.Remove(baseUIElement);
+                if(baseUIElement is CarrierUIElement)
+                {
+                    RemoveUIElementsOnCarrier(container,baseUIElement as CarrierUIElement);
+                }
+                baseUIElement = null;
                 return;
             }
 
@@ -29,12 +35,40 @@ namespace WorkstationController.VisualElement.Uitility
             if(baseUIElement is LabwareUIElement)
             {
                 LabwareUIElement labwareUIElement = (LabwareUIElement)baseUIElement;
-                Labware labware = labwareUIElement.Ware as Labware;
+                Labware labware = labwareUIElement.Labware;
                 CarrierUIElement carrierUIElement = FindSuitableCarrier(position, labware.TypeName, container);
                 carrierUIElement.Carrier.AddLabware(labware);
             }
             
         }
+
+        private static void RemoveUIElementsOnCarrier(Grid container, CarrierUIElement carrierUIElement)
+        {
+            Carrier carrier = carrierUIElement.Carrier;
+            for (int i = 0; i < container.Children.Count; i++)
+            {
+                if(container.Children[i] is LabwareUIElement)
+                {
+                    LabwareUIElement labwareUIElement = container.Children[i] as LabwareUIElement;
+                    RemoveLostLabwareUIElement(container,labwareUIElement, carrier);
+                }
+            }
+            carrier.Labwares.Clear();
+           
+        }
+
+        private static void RemoveLostLabwareUIElement(Grid container, LabwareUIElement labwareUIElement, Carrier carrier)
+        {
+            for (int j = 0; j < carrier.Labwares.Count; j++)
+            {
+                if (labwareUIElement.Labware.Equals(carrier.Labwares[j]))
+                {
+                    container.Children.Remove(labwareUIElement);
+                }
+            }
+        }
+
+      
 
         private static bool IsValid(BasewareUIElement baseUIElement, Point position, Grid container)
         {

@@ -25,7 +25,8 @@ namespace WorkstationController.VisualElement.Uitility
         private BasewareUIElement _selectedUIElement;
         private BasewareUIElement _uiElementCandidate;
         private bool enableMouseMove = true;
-
+        private DateTime lastClickTime = DateTime.MinValue;
+        public event EventHandler onLabelPreviewChanged;
      
         /// <summary>
         /// new UI element introduced from somewhere, nomarlly from listbox
@@ -64,6 +65,7 @@ namespace WorkstationController.VisualElement.Uitility
             _myCanvas.PreviewMouseLeftButtonDown += myCanvas_PreviewMouseLeftButtonDown;
             _myCanvas.PreviewMouseLeftButtonUp += myCanvas_PreviewMouseLeftButtonUp;
             _myCanvas.MouseMove += myCanvas_MouseMove;
+            
         }
 
         /// <summary>
@@ -77,17 +79,29 @@ namespace WorkstationController.VisualElement.Uitility
 
         void myCanvas_PreviewMouseLeftButtonDown(object sender, MouseButtonEventArgs e)
         {
-            //PreventMouseMove();
+            DateTime now = DateTime.Now;
+            bool isDoubleClick = now.Subtract(lastClickTime).TotalSeconds < 0.5;
+            lastClickTime = now;
             Point ptClick = e.GetPosition(_myCanvas);
             _selectedUIElement = FindSelectedUIElement(ptClick);
             if (_selectedUIElement != null)
             {
                 _selectedUIElement.Selected = true;
                 _ptClick = ptClick;
+                if(_selectedUIElement is LabwareUIElement)
+                {
+                    LabwareUIElement labwareUIElement = _selectedUIElement as LabwareUIElement;
+                    if (isDoubleClick)
+                    {
+                        onLabelPreviewChanged(this, new LabelChangeEventArgs(labwareUIElement));
+                        _selectedUIElement.Selected = false;
+                        _selectedUIElement = null;
+                        return;
+                    }
+                }
                 Mouse.OverrideCursor = Cursors.Hand;
                 _myCanvas.CaptureMouse();
             }
-           // AllowMouseMove();
         }
 
         void myCanvas_PreviewMouseLeftButtonUp(object sender, MouseButtonEventArgs e)
@@ -126,10 +140,10 @@ namespace WorkstationController.VisualElement.Uitility
             {
                 HighlightSiteInShadow(ptMouse, _selectedUIElement.Ware.TypeName);
             }
-            ElectCandidate();
+            ElectCandidate(); //we put the election here to avoid drawing wares out of worktable
             UpdateSelectedElement(ptMouse);
-            
         }
+
 
         #region highlight site
         private void HighlightSiteInShadow(Point ptInCanvase,string labwareTypeName, bool bMouseMove = true)
@@ -152,7 +166,25 @@ namespace WorkstationController.VisualElement.Uitility
         private void UpdateSelectedElement(Point ptCurrent)
         {
             _selectedUIElement.SetDragPosition(ptCurrent);
-            _selectedUIElement.InvalidateVisual();
+            UpdateLabwareUIElements(_selectedUIElement,ptCurrent);
+        }
+
+        private void UpdateLabwareUIElements(BasewareUIElement _selectedUIElement,Point ptCurrent)
+        {
+            if (!(_selectedUIElement is CarrierUIElement))
+                return;
+            CarrierUIElement carrierUIElement = _selectedUIElement as CarrierUIElement;
+            Carrier carrier = carrierUIElement.Carrier;
+            if (carrier.Labwares.Count == 0)
+                return;
+
+            foreach(Labware labware in carrier.Labwares)
+            {
+                int orgGrid = labware.CarrierGrid;
+                labware.CarrierGrid = VisualCommon.FindCorrespondingGrid(ptCurrent.X);
+                if( orgGrid != labware.CarrierGrid)
+                    Debug.WriteLine("{0} labware hash:{1}",DateTime.Now.ToShortTimeString(),labware.GetHashCode());
+            }
         }
 
         private void ElectCandidate()

@@ -52,6 +52,7 @@
     <Compile Include="CarrierUIElement.cs" />
     <Compile Include="LabwareUIElement.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Uitility\LabelChangeEventArgs.cs" />
     <Compile Include="Uitility\WareInstaller.cs" />
     <Compile Include="Uitility\MovementsController.cs" />
     <Compile Include="Uitility\UIElementFactory.cs" />

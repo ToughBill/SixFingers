@@ -87,7 +87,7 @@ namespace WorkstationController.VisualElement
             Size sz = new Size(_carrier.Dimension.XLength, _carrier.Dimension.YLength);
             Color border = _isSelected ? Colors.Blue : Colors.Black;
             VisualCommon.DrawRect(xPos, yPos, sz, drawingContext, border);
-
+            //VisualCommon.DrawLine()
             //2 each site
             foreach(Site site in _carrier.Sites)
             {

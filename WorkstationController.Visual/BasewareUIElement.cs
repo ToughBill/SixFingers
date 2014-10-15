@@ -122,6 +122,7 @@ namespace WorkstationController.VisualElement
         internal void SetDragPosition(Point ptCurrent)
         {
             _ptDragPosition = ptCurrent;
+            InvalidateVisual();
         }
     }
 }
