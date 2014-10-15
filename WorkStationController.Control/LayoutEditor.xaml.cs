@@ -31,9 +31,18 @@ namespace WorkstationController.Control
         public LayoutEditor()
         {
             InitializeComponent();
-            uiController = new UIMovementsController(uiContainer);
+            
             uiContainer.SizeChanged += uiContainer_SizeChanged;
+            uiController = new UIMovementsController(uiContainer);
+            uiController.onLabelPreviewChanged += uiController_onLabelPreviewChanged; ;
             this.Loaded += LayoutUserControl_Loaded;
+        }
+
+        void uiController_onLabelPreviewChanged(object sender, EventArgs e)
+        {
+            LabwareUIElement labwareUIElement = (e as LabelChangeEventArgs).LabwareUIElement;
+            QueryNewLabelForm queryNewLabelForm = new QueryNewLabelForm(uiContainer.Children, labwareUIElement);
+            queryNewLabelForm.ShowDialog();
         }
 
 
@@ -77,9 +86,9 @@ namespace WorkstationController.Control
         /// suggest candidate
         /// </summary>
         /// <param name="uiElement"></param>
-        public void AddCandidate(BasewareUIElement uiElement)
+        public void SuggestCandidate(BasewareUIElement uiElement)
         {
-            Debug.WriteLine("Add candidate");
+            Debug.WriteLine("suggest candidate");
             //uiController.RemoveCurrentSelectFlag();
             uiController.UIElementCandidate = uiElement;
             Mouse.OverrideCursor = Cursors.Hand;
