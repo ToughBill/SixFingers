@@ -72,7 +72,7 @@ namespace WorkstationController.Core.Data
         /// carrier can have one or more sites
         /// </summary>
         [XmlArray("Sites")]
-        [XmlArrayItem("Labware", typeof(Site), IsNullable = false)]
+        [XmlArrayItem("Site", typeof(Site), IsNullable = false)]
         public List<Site> Sites
         {
             get
@@ -239,16 +239,9 @@ namespace WorkstationController.Core.Data
     {
         public event PropertyChangedEventHandler PropertyChanged = delegate { };
 
-        private Point                        _position;
-        private Size                         _sz;
-        private ObservableCollection<string> _allowedLabwareTypeNames;
-        
-        public Site(Point position, Size sz, List<string> allowedLabwareTypeNames)
-        {
-            _position = position;
-            _sz = sz;
-            _allowedLabwareTypeNames = new ObservableCollection<string>(allowedLabwareTypeNames);
-        }
+        private Point                        _position = new Point(0, 0);
+        private Size                         _sz = new Size(0, 0);
+        private ObservableCollection<string> _allowedLabwareTypeNames = new ObservableCollection<string>();
        
         public Point Position 
         {
@@ -277,6 +270,8 @@ namespace WorkstationController.Core.Data
         /// <summary>
         /// The labwares that are acceptable.
         /// </summary>
+        [XmlArray("AllowedLabwareTypeNames")]
+        [XmlArrayItem("AllowedLabwareTypeName", typeof(string), IsNullable = false)]
         public ObservableCollection<string> AllowedLabwareTypeNames
         {
             get
@@ -287,6 +282,19 @@ namespace WorkstationController.Core.Data
             {
                 _allowedLabwareTypeNames = value;
             }
+        }
+
+        /// <summary>
+        /// Default constructor
+        /// </summary>
+        public Site()
+        { }
+
+        public Site(Point position, Size sz, List<string> allowedLabwareTypeNames)
+        {
+            _position = position;
+            _sz = sz;
+            _allowedLabwareTypeNames = new ObservableCollection<string>(allowedLabwareTypeNames);
         }
 
         public object Clone()

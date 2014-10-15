@@ -27,6 +27,7 @@ namespace WorkstationController.Core.UnitTest
         public void LabwareSerializeToXmlFileTest()
         {
             Labware labware = new Labware();
+
             labware.TypeName = "LabwareSerializeTest";
             labware.Dimension.XLength = 800;
             labware.Dimension.YLength = 125;
@@ -35,7 +36,7 @@ namespace WorkstationController.Core.UnitTest
             labware.WellsInfo.NumberOfWellsY = 12;
             labware.WellsInfo.FirstWellPosition = new Point(8, 10);
             labware.WellsInfo.LastWellPosition = new Point(78, 118);
-            //value bigger => lower
+
             labware.ZValues.ZTravel = 300;
             labware.ZValues.ZStart = 600;
             labware.ZValues.ZDispense = 1000;

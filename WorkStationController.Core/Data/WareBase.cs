@@ -14,9 +14,9 @@ namespace WorkstationController.Core.Data
     public abstract class WareBase : INotifyPropertyChanged
     {
         protected Guid      _id = Guid.Empty;
-        protected string    _typeName;
-        protected string    _label;
-        protected Dimension _dimension;
+        protected string    _typeName = string.Empty;
+        protected string    _label = string.Empty;
+        protected Dimension _dimension = new Dimension();
 
         public event PropertyChangedEventHandler PropertyChanged = delegate { };
 
@@ -85,8 +85,8 @@ namespace WorkstationController.Core.Data
     /// </summary>
     public class Dimension : INotifyPropertyChanged, ICloneable
     {
-        private int _xLength;
-        private int _yLength;
+        private int _xLength = 0;
+        private int _yLength = 0;
 
         public event PropertyChangedEventHandler PropertyChanged = delegate { };
         

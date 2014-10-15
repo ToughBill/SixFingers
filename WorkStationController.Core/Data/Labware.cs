@@ -46,10 +46,10 @@ namespace WorkstationController.Core.Data
     public class Labware : WareBase, ISerialization, INotifyPropertyChanged, ICloneable
     {
         private Color       _backgroundColor;
-        private int         _siteID;
+        private int         _siteID = 0;
         private int         _grid = Carrier.undefinedGrid;
-        private WellsInfo   _wellsInfo;
-        private ZValues     _zValues;
+        private WellsInfo   _wellsInfo = new WellsInfo();
+        private ZValues     _zValues = new ZValues();
 
         /// <summary>
         /// back ground color
