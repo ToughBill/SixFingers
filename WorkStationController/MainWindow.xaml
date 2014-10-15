@@ -45,23 +45,23 @@
                                         <ContextMenu>
                                             <MenuItem Header="Edit..." Click="OnLabwareEditMenuItemClick">
                                                 <MenuItem.Icon>
-                                                    <Image Source="/Resources/edit.png" Height="24" Width="24"/>
+                                                    <Image Source="/Resources/edit.png" Height="20" Width="20"/>
                                                 </MenuItem.Icon>
                                             </MenuItem>
                                             <MenuItem Header="New..." Click="OnLabwareNewMenuItemClick">
                                                 <MenuItem.Icon>
-                                                    <Image Source="/Resources/add.png" Height="24" Width="24"/>
+                                                    <Image Source="/Resources/add.png" Height="20" Width="20"/>
                                                 </MenuItem.Icon>
                                             </MenuItem>
                                             <MenuItem Header="Duplicate..." Click="OnLabwareDuplicateMenuItemClick">
                                                 <MenuItem.Icon>
-                                                    <Image Source="/Resources/duplicate.png" Height="24" Width="24"/>
+                                                    <Image Source="/Resources/duplicate.png" Height="20" Width="20"/>
                                                 </MenuItem.Icon>
                                             </MenuItem>
                                             <Separator/>
                                             <MenuItem Header="Delete" Click="OnLabwareDeleteMenuItemClick">
                                                 <MenuItem.Icon>
-                                                    <Image Source="/Resources/delete.png" Height="24" Width="24"/>
+                                                    <Image Source="/Resources/delete.png" Height="20" Width="20"/>
                                                 </MenuItem.Icon>
                                             </MenuItem>
                                         </ContextMenu>
@@ -103,23 +103,23 @@
                                         <ContextMenu>
                                             <MenuItem Header="Edit..." Click="OnLiquidClassEditMenuItemClick">
                                                 <MenuItem.Icon>
-                                                    <Image Source="/Resources/edit.png" Height="24" Width="24"/>
+                                                    <Image Source="/Resources/edit.png" Height="20" Width="20"/>
                                                 </MenuItem.Icon>
                                             </MenuItem>
                                             <MenuItem Header="New..." Click="OnLiquidClassNewMenuItemClick">
                                                 <MenuItem.Icon>
-                                                    <Image Source="/Resources/add.png" Height="24" Width="24"/>
+                                                    <Image Source="/Resources/add.png" Height="20" Width="20"/>
                                                 </MenuItem.Icon>
                                             </MenuItem>
                                             <MenuItem Header="Duplicate..." Click="OnLiquidClassDuplicateMenuItemClick">
                                                 <MenuItem.Icon>
-                                                    <Image Source="/Resources/duplicate.png" Height="24" Width="24"/>
+                                                    <Image Source="/Resources/duplicate.png" Height="20" Width="20"/>
                                                 </MenuItem.Icon>
                                             </MenuItem>
                                             <Separator/>
                                             <MenuItem Header="Delete" Click="OnLiquidClassDeleteMenuItemClick">
                                                 <MenuItem.Icon>
-                                                    <Image Source="/Resources/delete.png" Height="24" Width="24"/>
+                                                    <Image Source="/Resources/delete.png" Height="20" Width="20"/>
                                                 </MenuItem.Icon>
                                             </MenuItem>
                                         </ContextMenu>
