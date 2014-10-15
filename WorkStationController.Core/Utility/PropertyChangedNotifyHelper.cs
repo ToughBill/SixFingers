@@ -10,9 +10,8 @@ namespace WorkstationController.Core.Utility
     {
         public static void NotifyPropertyChanged<T>(ref T oldValue, T setValue, object sender, string propertyName, PropertyChangedEventHandler handler)
         {
-            if (oldValue.Equals(setValue))
+            if (setValue.Equals(oldValue))
                 return;
-
             oldValue = setValue;
 
 #if DEBUG
