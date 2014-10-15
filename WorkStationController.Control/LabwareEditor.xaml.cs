@@ -19,12 +19,12 @@ namespace WorkstationController.Control
     /// <summary>
     /// Interaction logic for LabwareUserControl.xaml
     /// </summary>
-    public partial class LabwareUserControl : UserControl
+    public partial class LabwareEditor : UserControl
     {
         /// <summary>
         /// ctor
         /// </summary>
-        public LabwareUserControl()
+        public LabwareEditor()
         {
             InitializeComponent();
             this.Loaded += LabwareUserControl_Loaded;

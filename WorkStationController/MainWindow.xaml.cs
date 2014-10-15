@@ -109,6 +109,29 @@ namespace WorkstationController
         }
         #endregion
 
+        #region Labware context menu
+        private void OnLabwareEditMenuItemClick(object sender, RoutedEventArgs e)
+        {
+            LabwareEditor editor = new LabwareEditor();
+            Labware selectedLW = (Labware)this.lb_labwares.SelectedItem;
+            editor.DataContext = selectedLW;
+            this.AddTabItem(editor);
+        }
+
+        private void OnLabwareNewMenuItemClick(object sender, RoutedEventArgs e)
+        {
+        }
+
+        private void OnLabwareDuplicateMenuItemClick(object sender, RoutedEventArgs e)
+        {
+           
+        }
+
+        private void OnLabwareDeleteMenuItemClick(object sender, RoutedEventArgs e)
+        {
+        }
+        #endregion
+
         #region LiquidClass context menu
         private void OnLiquidClassEditMenuItemClick(object sender, RoutedEventArgs e)
         {

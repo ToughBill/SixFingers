@@ -19,7 +19,7 @@ namespace WorkstationController.Core.UnitTest
         public void LiquidClassSerializeTest()
         {
             LiquidClass liquidClass = new LiquidClass();
-            liquidClass.Name = "LiquidClass Serialization Test";
+            liquidClass.TypeName = "LiquidClass Serialization Test";
 
             liquidClass.AspirationSinglePipetting.AspirationSpeed = 400;
             liquidClass.AspirationSinglePipetting.ConditioningVolume = 100;

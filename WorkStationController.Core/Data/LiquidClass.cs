@@ -13,7 +13,7 @@ namespace WorkstationController.Core.Data
     public class LiquidClass : ISerialization, INotifyPropertyChanged, ICloneable
     {
         #region private members for properties
-        private string _name = "<Need a name>";      
+        private string _typename = "<Need a name>";      
         private AspirationPipetting _aspirationSinglePipetting = new AspirationPipetting();
         private DispensePipetting _dispenseSinglePipetting = new DispensePipetting();
         #endregion
@@ -37,10 +37,10 @@ namespace WorkstationController.Core.Data
         /// Gets or sets the name of liquid class
         /// </summary>
         [XmlAttribute]
-        public string Name 
+        public string TypeName 
         {
-            get { return this._name; }
-            set { PropertyChangedNotifyHelper.NotifyPropertyChanged<string>(ref this._name, value, this, "Name", this.PropertyChanged); }
+            get { return this._typename; }
+            set { PropertyChangedNotifyHelper.NotifyPropertyChanged<string>(ref this._typename, value, this, "Name", this.PropertyChanged); }
         }
 
         /// <summary>

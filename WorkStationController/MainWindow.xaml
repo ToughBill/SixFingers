@@ -38,10 +38,34 @@
                                 <ListBox x:Name="lb_labwares" DockPanel.Dock="Top" ItemsSource="{Binding Path=InstrumentsManager.Labwares}">
                                     <ListBox.ItemTemplate>
                                         <DataTemplate>
-                                            <TextBlock Text="{Binding Path=Name}" ToolTip="{Binding Path=Name}"/>
+                                            <TextBlock Text="{Binding Path=TypeName}" ToolTip="{Binding Path=TypeName}"/>
                                         </DataTemplate>
                                     </ListBox.ItemTemplate>
-                                    
+                                    <ListBox.ContextMenu>
+                                        <ContextMenu>
+                                            <MenuItem Header="Edit..." Click="OnLabwareEditMenuItemClick">
+                                                <MenuItem.Icon>
+                                                    <Image Source="/Resources/edit.png" Height="24" Width="24"/>
+                                                </MenuItem.Icon>
+                                            </MenuItem>
+                                            <MenuItem Header="New..." Click="OnLabwareNewMenuItemClick">
+                                                <MenuItem.Icon>
+                                                    <Image Source="/Resources/add.png" Height="24" Width="24"/>
+                                                </MenuItem.Icon>
+                                            </MenuItem>
+                                            <MenuItem Header="Duplicate..." Click="OnLabwareDuplicateMenuItemClick">
+                                                <MenuItem.Icon>
+                                                    <Image Source="/Resources/duplicate.png" Height="24" Width="24"/>
+                                                </MenuItem.Icon>
+                                            </MenuItem>
+                                            <Separator/>
+                                            <MenuItem Header="Delete" Click="OnLabwareDeleteMenuItemClick">
+                                                <MenuItem.Icon>
+                                                    <Image Source="/Resources/delete.png" Height="24" Width="24"/>
+                                                </MenuItem.Icon>
+                                            </MenuItem>
+                                        </ContextMenu>
+                                    </ListBox.ContextMenu>
                                 </ListBox>
                             </DockPanel>
                         </TabItem>
@@ -53,7 +77,7 @@
                                 <ListBox x:Name="lb_carriers" DockPanel.Dock="Top" ItemsSource="{Binding Path=InstrumentsManager.Carriers}">
                                     <ListBox.ItemTemplate>
                                         <DataTemplate>
-                                            <TextBlock Text="{Binding Path=Name}" ToolTip="{Binding Path=Name}"/>
+                                            <TextBlock Text="{Binding Path=TypeName}" ToolTip="{Binding Path=TypeName}"/>
                                         </DataTemplate>
                                     </ListBox.ItemTemplate>
                                 </ListBox>
@@ -72,7 +96,7 @@
                                 <ListBox x:Name="lb_liquidclass" DockPanel.Dock="Top" ItemsSource="{Binding Path=InstrumentsManager.LiquidClasses}">
                                     <ListBox.ItemTemplate>
                                         <DataTemplate>
-                                            <TextBlock Text="{Binding Path=Name}" ToolTip="{Binding Path=Name}"/>
+                                            <TextBlock Text="{Binding Path=TypeName}" ToolTip="{Binding Path=TypeName}"/>
                                         </DataTemplate>
                                     </ListBox.ItemTemplate>
                                     <ListBox.ContextMenu>
@@ -118,7 +142,7 @@
                                         CommandParameter="{Binding RelativeSource={RelativeSource AncestorType={x:Type TabItem}}, Path=Tag}">
                                         <Image Source="/Resources/delete.gif" Height="11" Width="11"></Image>
                                     </Button>
-                                    <TextBlock Text="{Binding RelativeSource={RelativeSource AncestorType=TabItem}, Path=Content.Children[0].DataContext.Name}" />
+                                    <TextBlock Text="{Binding RelativeSource={RelativeSource AncestorType=TabItem}, Path=Content.Children[0].DataContext.TypeName}" />
                                 </DockPanel>
                             </DataTemplate>
                             <Style TargetType="TextBox">

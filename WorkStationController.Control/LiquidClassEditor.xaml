@@ -15,7 +15,7 @@
         <StackPanel Grid.Row="0" Orientation="Horizontal" HorizontalAlignment="Left">
             <Label Content="Liquid Class Name:" Margin="3"/>
             <Border Margin="3" BorderThickness="1" BorderBrush="Black">
-                <TextBox x:Name="tb_liquidClassName" Text="{Binding Path=Name}"  MinWidth="100"/>
+                <TextBox x:Name="tb_liquidClassName" Text="{Binding Path=TypeName}"  MinWidth="100"/>
             </Border>
         </StackPanel>
 
@@ -130,7 +130,7 @@
 
         <!--Buttons-->
         <StackPanel Grid.Row="2" Orientation="Horizontal" HorizontalAlignment="Right">
-            <Button x:Name="btn_save" Content="Save" Click="OnBtnSaveClick" Margin="5" MinWidth="100"/>
+            <Button x:Name="btn_save" Content="Save" Click="OnBtnSaveClick" Margin="5" MinWidth="150"/>
         </StackPanel>
     </Grid>
 </UserControl>
