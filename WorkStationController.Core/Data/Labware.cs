@@ -92,6 +92,8 @@ namespace WorkstationController.Core.Data
             }
             set
             {
+                if (_grid == value)
+                    return;
                 this.OnPropertyChanged<int>(ref this._grid, value, "CarrierGrid");
             }
         }
@@ -131,6 +133,10 @@ namespace WorkstationController.Core.Data
         /// </summary>
         public Labware()
         {
+            _zValues = new ZValues();
+            _dimension = new Dimension();
+            _wellsInfo = new WellsInfo();
+
         }
 
         /// <summary>

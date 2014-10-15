@@ -57,7 +57,8 @@ namespace WorkstationController.Core.Data
             {
                 throw new ArgumentNullException("carrier", "carrier must not be null.");
             }
-
+            if (carriers.Contains(carrier))
+                return;
             this.carriers.Add(carrier);
         }
 

@@ -133,7 +133,7 @@ namespace WorkstationController.Core.Data
 
             if (_labwares.Contains(labware))
                 return;
-
+            labware.CarrierGrid = _grid;
             this._labwares.Add(labware);
         }
 
