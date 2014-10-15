@@ -14,33 +14,16 @@ namespace WorkstationController.Core.Data
     /// Data definition of Carrier installed on worktable
     /// </summary>
     [Serializable]
-    public class Carrier :WareBase, ISerialization, INotifyPropertyChanged, ICloneable
+    public class Carrier : WareBase, ISerialization, INotifyPropertyChanged, ICloneable
     {
         public const int undefinedGrid = 0;
-        /// <summary>
-        /// nothing to say
-        /// </summary>
-        public new event PropertyChangedEventHandler PropertyChanged = delegate { };
-        #region Private Members
-        private List<Labware> _labwares = new List<Labware>();  // Labwares on the carrier
-        private List<Site> _sites = new List<Site>(); // sites for mounting labwares
         
-        private string _name = string.Empty;
+        private List<Labware> _labwares = new List<Labware>();  // Labwares on the carrier
+        private List<Site> _sites = new List<Site>();           // sites for mounting labwares
+        
         private int _xoffset = default(int);
         private int _yoffset = default(int);
         private int _grid = 0;
-        
-        #endregion
-
-        /// <summary>
-        /// guid, do we really need this?
-        /// </summary>
-        [XmlElement]
-        public Guid ID
-        {
-            get;
-            set;
-        }
 
         /// <summary>
         /// The X offset of the left-top corner of carrier against the most left-top pin the carrier installed on
@@ -49,7 +32,7 @@ namespace WorkstationController.Core.Data
         public int XOffset
         {
             get { return this._xoffset; }
-            set { PropertyChangedNotifyHelper.NotifyPropertyChanged<int>(ref this._xoffset, value, this, "XOffset", this.PropertyChanged); }
+            set { this.OnPropertyChanged<int>(ref this._xoffset, value, "XOffset"); }
         }
 
         /// <summary>
@@ -59,7 +42,7 @@ namespace WorkstationController.Core.Data
         public int YOffset
         {
             get { return this._yoffset; }
-            set { PropertyChangedNotifyHelper.NotifyPropertyChanged<int>(ref this._yoffset, value, this, "YOffset", this.PropertyChanged); }
+            set { this.OnPropertyChanged<int>(ref this._yoffset, value, "YOffset"); }
         }
 
         /// <summary>
@@ -69,7 +52,7 @@ namespace WorkstationController.Core.Data
         public int Grid
         {
             get { return this._grid; }
-            set { PropertyChangedNotifyHelper.NotifyPropertyChanged<int>(ref this._grid, value, this, "Grid", this.PropertyChanged); }
+            set { this.OnPropertyChanged<int>(ref this._grid, value, "Grid"); }
         }
 
         /// <summary>
@@ -106,7 +89,25 @@ namespace WorkstationController.Core.Data
         /// </summary>
         public Carrier()
         {
-            this.ID = Guid.NewGuid();
+        }
+
+        /// <summary>
+        /// Constructor
+        /// </summary>
+        /// <param name="buildinType"></param>
+        public Carrier(BuildInCarrierType buildinType)
+        {
+            switch (buildinType)
+            {
+                case BuildInCarrierType.MP_3POS:
+                    CreateMP_3POS();
+                    break;
+                case BuildInCarrierType.Tube13mm_16POS:
+                    CreateTube13mm_16Pos();
+                    break;
+                default:
+                    break;
+            }
         }
         
         /// <summary>
@@ -129,8 +130,10 @@ namespace WorkstationController.Core.Data
             {
                 throw new ArgumentNullException("labware", "labware must not be null.");
             }
+
             if (_labwares.Contains(labware))
                 return;
+
             this._labwares.Add(labware);
         }
 
@@ -175,18 +178,12 @@ namespace WorkstationController.Core.Data
 
         #endregion
 
-        /// <summary>
-        /// as name mean
-        /// </summary>
-        /// <returns></returns>
         public object Clone()
         {
-            //if(this.TypeName )
             Carrier newCarrier = new Carrier();
             newCarrier.TypeName = this.TypeName;
             newCarrier.XOffset = this.XOffset;
             newCarrier.YOffset = this.YOffset;
-            //newCarrier.Sites = new List<Site>(_sites);
             newCarrier.Sites = new List<Site>();
             foreach (Site site in _sites)
                 newCarrier.Sites.Add(site.Clone() as Site);
@@ -195,34 +192,20 @@ namespace WorkstationController.Core.Data
             return newCarrier;
         }
 
-        public Carrier(BuildInCarrierType buildinType)
-        {
-            switch(buildinType)
-            {
-                case BuildInCarrierType.MP_3POS:
-                    CreateMP_3POS();
-                    break;
-                case BuildInCarrierType.Tube13mm_16POS:
-                    CreateTube13mm_16Pos();
-                    break;
-                default:
-                    break;
-            }
-        }
-
         private void CreateTube13mm_16Pos()
         {
             _dimension = new Data.Dimension(240, 3160);
             _xoffset = 120;
             _yoffset = 247;
             Site site1 = new Site(new Point(0, 110), new Size(240, 3050), new List<string> { LabwareBuildInType.Tubes16Pos13_100MM.ToString() });
-             _sites.Add(site1);
+            _sites.Add(site1);
             _grid = undefinedGrid;
             TypeName = BuildInCarrierType.Tube13mm_16POS.ToString();
         }
 
-        private void CreateMP_3POS() //will be replaced by xml
-        {
+        // Will be replaced by xml
+        private void CreateMP_3POS() 
+        {            
             _dimension = new Data.Dimension(1490, 3160);
             _xoffset = 120;
             _yoffset = 247;
@@ -239,7 +222,7 @@ namespace WorkstationController.Core.Data
     }
 
     /// <summary>
-    /// carrier builded in types
+    /// Carrier build-in types
     /// </summary>
     public enum BuildInCarrierType
     {
@@ -252,14 +235,12 @@ namespace WorkstationController.Core.Data
     /// The definition of labware on carrier position information
     /// </summary>
     [Serializable]
-    public class Site : INotifyPropertyChanged,ICloneable
+    public class Site : INotifyPropertyChanged, ICloneable
     {
-        /// <summary>
-        /// nothing to say
-        /// </summary>
         public event PropertyChangedEventHandler PropertyChanged = delegate { };
-        private Point _position;
-        private Size _sz;
+
+        private Point                        _position;
+        private Size                         _sz;
         private ObservableCollection<string> _allowedLabwareTypeNames;
         
         public Site(Point position, Size sz, List<string> allowedLabwareTypeNames)
@@ -268,9 +249,7 @@ namespace WorkstationController.Core.Data
             _sz = sz;
             _allowedLabwareTypeNames = new ObservableCollection<string>(allowedLabwareTypeNames);
         }
-        /// <summary>
-        /// position
-        /// </summary>
+       
         public Point Position 
         {
             get
@@ -279,16 +258,10 @@ namespace WorkstationController.Core.Data
             }
             set
             {
-                PropertyChangedNotifyHelper.NotifyPropertyChanged<Point>
-                    (ref this._position, value, this, "Position", this.PropertyChanged);
+                PropertyChangedNotifyHelper.NotifyPropertyChanged<Point>(ref this._position, value, this, "Position", this.PropertyChanged);
             }
         }
-
-
    
-        /// <summary>
-        /// size
-        /// </summary>
         public Size Size 
         { 
             get
@@ -297,12 +270,12 @@ namespace WorkstationController.Core.Data
             }
             set
             {
-                PropertyChangedNotifyHelper.NotifyPropertyChanged<Size>
-                    (ref this._sz, value, this, "Size", this.PropertyChanged);
+                PropertyChangedNotifyHelper.NotifyPropertyChanged<Size>(ref this._sz, value, this, "Size", this.PropertyChanged);
             }
         }
+
         /// <summary>
-        /// the labwares that are acceptable.
+        /// The labwares that are acceptable.
         /// </summary>
         public ObservableCollection<string> AllowedLabwareTypeNames
         {
