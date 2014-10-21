@@ -162,7 +162,7 @@ namespace WorkstationController.Core.Data
             else
             {
                 double eachXUnit = (xe - xs) / (WellsInfo.NumberOfWellsX - 1);
-                x = (1 + col) * eachXUnit;
+                x =  xs + col * eachXUnit;
             }
 
             int ys = (int)WellsInfo.FirstWellPosition.Y;
@@ -176,7 +176,7 @@ namespace WorkstationController.Core.Data
             else
             {
                 double eachYUnit = (ye - ys) / (WellsInfo.NumberOfWellsY - 1);
-                y = (1 + row) * eachYUnit;
+                y = ys + row * eachYUnit;
             }
            
             return new Point(x, y);
