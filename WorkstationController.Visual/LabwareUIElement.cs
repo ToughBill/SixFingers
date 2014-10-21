@@ -15,6 +15,10 @@ namespace WorkstationController.VisualElement
     /// </summary>
     public class LabwareUIElement : BasewareUIElement
     {
+
+        /// <summary>
+        /// no well is selected;
+        /// </summary>
         Labware _labware;
         /// <summary>
         /// ctor
@@ -42,13 +46,18 @@ namespace WorkstationController.VisualElement
             }
         }
 
+        /// <summary>
+        /// inner data
+        /// </summary>
 		public Labware Labware
         {
             get
             {
                 return _labware;
             }
-        }        /// <summary>
+        }        
+        
+        /// <summary>
         /// redraw
         /// </summary>
         /// <param name="drawingVisual"></param>
@@ -66,11 +75,11 @@ namespace WorkstationController.VisualElement
             }
 
 
-            int xPos = (mapGrid - 1) * Worktable.DistanceBetweenAdjacentPins + (int)_worktable.FirstPinPosition.X;
+            int xPos = (mapGrid - 1) * Worktable.DistanceBetweenAdjacentPins + (int)_worktable.FirstPinPosition.X ;
             int yPos = (int)_worktable.FirstPinPosition.Y;
             if (carrier != null)
             {
-                xPos = xPos + carrier.XOffset;
+                xPos = xPos - (carrier.XOffset );
                 yPos += carrier.YOffset;
                 int siteIndex = _labware.SiteID;
                 var site = carrier.Sites[siteIndex];
@@ -89,33 +98,18 @@ namespace WorkstationController.VisualElement
             VisualCommon.DrawText( new Point( xPos, yPos+sz.Height), _labware.Label,drawingContext);
             int cols = _labware.WellsInfo.NumberOfWellsX;
             int rows = _labware.WellsInfo.NumberOfWellsY;
-            Vector vector = new Vector(xPos, yPos);
+            Vector vector = new Vector(xPos + Carrier.defaultOffSetX, yPos);
             for (int row = 0; row < rows; row++)
             {
                 for (int col = 0; col < cols; col++)
                 {
-                    var position = GetPosition(row, col) + vector;
+                    var position = _labware.GetPosition(row, col) + vector;
                     VisualCommon.DrawCircle(position, _labware.WellsInfo.WellRadius, drawingContext, _labware.BackgroundColor);
                 }
             }
             drawingContext.Close();
         }
 
-        private Point GetPosition(int row, int col)
-        {
-            int xs = 0;
-            int xe = (int)_labware.Dimension.XLength;
-            double eachXUnit = (xe - xs) / (1 + _labware.WellsInfo.NumberOfWellsX);
-            double x = (1 + col) * eachXUnit;
-
-            int ys = (int)_labware.WellsInfo.FirstWellPosition.Y;
-            int ye = (int)_labware.WellsInfo.LastWellPosition.Y;
-            double eachYUnit = (ye - ys) / (1+_labware.WellsInfo.NumberOfWellsY);
-            double y = (1 + row) * eachYUnit;
-            return new Point(x, y);
-        }
-
-
-   
+       
     }
 }

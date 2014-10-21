@@ -211,5 +211,12 @@ where T : class
                          10 * containerSize.Height / 400, System.Windows.Media.Brushes.DarkBlue),
                          ptVisual);
         }
+
+        internal static void DrawLine(Point ptStart, Point ptEnd,DrawingContext dc, Color color)
+        {
+            Pen myPen = new Pen(new SolidColorBrush(color), 2.0F);
+            //myPen.DashStyle = DashStyles.Dot;
+            dc.DrawLine(myPen, ptStart, ptEnd);
+        }
     }
 }

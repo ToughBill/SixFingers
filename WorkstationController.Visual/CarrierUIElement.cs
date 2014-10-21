@@ -85,10 +85,18 @@ namespace WorkstationController.VisualElement
             int xPos = GetBoundingRectXStart(mapGrid);//
             int yPos = GetBoundingRectYStart();
             Size sz = new Size(_carrier.Dimension.XLength, _carrier.Dimension.YLength);
+
+            //2 draw click area
+            int szClickAreaUnit = (int)(sz.Width / 6);
+            VisualCommon.DrawRect(GetUnderneathPinXStart(mapGrid), (int)(_worktable.FirstPinPosition.Y),
+                new Size(_worktable.FirstRowPinSize.Width*15,_worktable.FirstRowPinSize.Width*30), 
+                drawingContext, 
+                Colors.OrangeRed,Brushes.DarkBlue);
+
             Color border = _isSelected ? Colors.Blue : Colors.Black;
             VisualCommon.DrawRect(xPos, yPos, sz, drawingContext, border);
             //VisualCommon.DrawLine()
-            //2 each site
+            //3 each site
             foreach(Site site in _carrier.Sites)
             {
                 int xSite = (int)(site.Position.X + xPos);
@@ -115,6 +123,11 @@ namespace WorkstationController.VisualElement
             rc.Y -= blowUnit;
             rc.Width += blowUnit*2;
             rc.Height += blowUnit*2;
+        }
+
+        private int GetUnderneathPinXStart(int grid)
+        {
+            return (int)(_worktable.FirstPinPosition.X + (grid - 1) * Worktable.DistanceBetweenAdjacentPins);
         }
 
         public int GetBoundingRectXStart(int grid)

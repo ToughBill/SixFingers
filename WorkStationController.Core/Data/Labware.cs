@@ -140,6 +140,50 @@ namespace WorkstationController.Core.Data
         }
 
         /// <summary>
+        /// get physical position
+        /// </summary>
+        /// <param name="row"></param>
+        /// <param name="col"></param>
+        /// <returns></returns>
+        public Point GetPosition(int row, int col)
+        {
+            if (col >= _wellsInfo.NumberOfWellsX)
+                throw new Exception("column index bigger or equal to the column count!");
+            if( row >= _wellsInfo.NumberOfWellsY)
+                throw new Exception("row index bigger or equal to the row count!");
+
+            double x = 0;
+            double xs = _wellsInfo.FirstWellPosition.X;
+            double xe = _wellsInfo.LastWellPosition.X;
+            if (_wellsInfo.NumberOfWellsX == 1)
+            {
+                x = xs;
+            }
+            else
+            {
+                double eachXUnit = (xe - xs) / (WellsInfo.NumberOfWellsX - 1);
+                x = (1 + col) * eachXUnit;
+            }
+
+            int ys = (int)WellsInfo.FirstWellPosition.Y;
+            int ye = (int)WellsInfo.LastWellPosition.Y;
+
+            double y = 0;
+            if(_wellsInfo.NumberOfWellsY == 1)
+            {
+                y = ys;
+            }
+            else
+            {
+                double eachYUnit = (ye - ys) / (WellsInfo.NumberOfWellsY - 1);
+                y = (1 + row) * eachYUnit;
+            }
+           
+            return new Point(x, y);
+        }
+
+
+        /// <summary>
         /// Create an instance of Labware from a XML file
         /// </summary>
         /// <param name="fromXmlFile">XML file name</param>
