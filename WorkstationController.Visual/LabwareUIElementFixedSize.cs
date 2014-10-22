@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using System.Text;
 using System.Windows;
@@ -18,7 +19,7 @@ namespace WorkstationController.VisualElement
 
         private VisualCollection _children;
         private Size _boudingSize;
-        
+        private readonly Color defaultCircleColor = Colors.DarkGray;
         /// <summary>
         /// ctor
         /// </summary>
@@ -31,9 +32,128 @@ namespace WorkstationController.VisualElement
             _children = new VisualCollection(this);
             _children.Add(CreateBorderVisual());
             AddWellVisuals();
+            this.MouseMove += LabwareUIElementFixedSize_MouseMove;
+            this.MouseLeftButtonDown += LabwareUIElementFixedSize_MouseLeftButtonDown;
         }
 
-        public  void UpdateContainerSize(Size newSize)
+        void LabwareUIElementFixedSize_MouseMove(object sender, System.Windows.Input.MouseEventArgs e)
+        {
+            foreach (MyDrawingVisual drawingVisual in _children)
+            {
+                if (drawingVisual.State == WellState.HighLight)
+                {
+                    ModifyState(drawingVisual, WellState.Normal);
+                }
+            }
+            Point pt = e.GetPosition((UIElement)sender);
+            VisualTreeHelper.HitTest(this, null,
+                new HitTestResultCallback(MyHitTestResultMouseMove),
+                new PointHitTestParameters(pt));
+        }
+
+        /// <summary>
+        /// return the selected wells, use List<> for backward compatible.
+        /// </summary>
+        public List<int> SelectedWellIDs
+        {
+            get
+            {
+                List<int> selected = new List<int>();
+                foreach(MyDrawingVisual drawingVisual in _children)
+                {
+                    if(drawingVisual.State == WellState.Selected)
+                    {
+                        selected.Add(drawingVisual.ID);
+                    }
+                }
+                return selected;
+            }
+        }
+        private void ModifyState(MyDrawingVisual drawingVisual, WellState state)
+        {
+            drawingVisual.State = state;
+            Brush brush;
+            switch(state)
+            {
+                case WellState.HighLight:
+                    brush = Brushes.Yellow;
+                    break;
+                case WellState.Selected:
+                    brush = Brushes.DarkGreen;
+                    break;
+                default:
+                    brush = Brushes.White;
+                    break;
+            }
+            DrawingContext drawingContext = drawingVisual.RenderOpen();
+           
+
+            drawingContext.DrawEllipse(brush, new Pen(new SolidColorBrush(defaultCircleColor), 1), drawingVisual.Position, drawingVisual.Size.Width, drawingVisual.Size.Height);
+            if(state != WellState.Normal)
+            {
+                string sText = GetDescription(drawingVisual.ID);
+                Point ptDesc = drawingVisual.Position;
+                ptDesc.Y -= drawingVisual.Size.Height;
+                ptDesc.X -= 1.2*drawingVisual.Size.Width;
+                drawingContext.DrawText(new FormattedText(sText,
+                             CultureInfo.GetCultureInfo("en-us"),
+                             FlowDirection.LeftToRight,
+                             new Typeface("Verdana"),
+                             14 * _boudingSize.Width / 400, System.Windows.Media.Brushes.DarkBlue),
+                             ptDesc);
+             }
+            drawingContext.Close();
+            
+        }
+
+        private string GetDescription(int id)
+        {
+            int index = id - 1;
+            int colIndex = index / _labware.WellsInfo.NumberOfWellsY;
+            int rowID = id - colIndex * _labware.WellsInfo.NumberOfWellsY;
+            int colID = colIndex + 1;
+            return string.Format("{0}-{1}", colID, rowID);
+        }
+
+        void LabwareUIElementFixedSize_MouseLeftButtonDown(object sender, System.Windows.Input.MouseButtonEventArgs e)
+        {
+            foreach (MyDrawingVisual drawingVisual in _children)
+            {
+                if (drawingVisual.State == WellState.Selected)
+                {
+                    ModifyState(drawingVisual,WellState.Normal);
+                }
+            }
+            Point pt = e.GetPosition((UIElement)sender);
+            VisualTreeHelper.HitTest(this, null,
+                new HitTestResultCallback(MyHitTestResultMouseDown),
+                new PointHitTestParameters(pt));
+        }
+
+        private HitTestResultBehavior MyHitTestResultMouseDown(HitTestResult result)
+        {
+            return OnHit(result, WellState.Selected);
+        }
+
+        private HitTestResultBehavior OnHit(HitTestResult result, WellState wellState)
+        {
+            MyDrawingVisual hitVisual = (MyDrawingVisual)result.VisualHit;
+            if (hitVisual == null || hitVisual.ID == 0)
+                return HitTestResultBehavior.Continue;
+
+            //need to fill
+            bool canNOToverwrite = (hitVisual.State == WellState.Selected && wellState == WellState.HighLight);
+            if(!canNOToverwrite)
+                ModifyState(hitVisual, wellState);
+            return HitTestResultBehavior.Continue;
+        }
+
+        private HitTestResultBehavior MyHitTestResultMouseMove(HitTestResult result)
+        {
+            return OnHit(result, WellState.HighLight);
+        }
+
+        private void UpdateContainerSize(Size newSize)
         {
             Size wareSZ = new Size(_labware.Dimension.XLength,_labware.Dimension.YLength);
             _boudingSize = newSize;
@@ -52,10 +172,11 @@ namespace WorkstationController.VisualElement
         {
             int cols = _labware.WellsInfo.NumberOfWellsX;
             int rows = _labware.WellsInfo.NumberOfWellsY;
-            int wellIndex = 0;
-            for (int row = 0; row < rows; row++)
+            int wellIndex = 1;
+            
+            for (int col = 0; col < cols; col++)
             {
-                for (int col = 0; col < cols; col++)
+                for (int row = 0; row < rows; row++)
                 {
                     var position = _labware.GetPosition(row, col);
                     _children.Add(CreateWellVisual(position, wellIndex++));
@@ -73,8 +194,10 @@ namespace WorkstationController.VisualElement
             Point ptVisual = Physical2Visual(position, labwareSize, _boudingSize);
             Size sz = new Size(radius, radius);
             sz = Physical2Visual(sz, labwareSize, _boudingSize);
-            drawingContext.DrawEllipse(brush, new Pen(new SolidColorBrush(Colors.Black), 1), ptVisual, sz.Width, sz.Height);
-            drawingVisual.Index =  index;
+            drawingContext.DrawEllipse(brush, new Pen(new SolidColorBrush(defaultCircleColor), 1), ptVisual, sz.Width, sz.Height);
+            drawingVisual.ID =  index;
+            drawingVisual.Position = ptVisual;
+            drawingVisual.Size = sz;
             drawingContext.Close();
             return drawingVisual;
         }
@@ -95,18 +218,15 @@ namespace WorkstationController.VisualElement
             return ptVisual;
         }
 
-
         private Visual CreateBorderVisual()
         {
             MyDrawingVisual drawingVisual = new MyDrawingVisual();
             DrawingContext drawingContext = drawingVisual.RenderOpen();
             DrawRect( new Rect(_boudingSize), Colors.Black, drawingContext);
-            drawingVisual.Index = 0;
+            drawingVisual.ID = 0;
             drawingContext.Close();
             return drawingVisual;
         }
-
-
 
         private void DrawRect(Rect Rectangle, Color color, DrawingContext drawingContext)
         {
@@ -118,7 +238,7 @@ namespace WorkstationController.VisualElement
             Brush brush = new SolidColorBrush(color);
             if (color == Colors.White)
                 brush = null;
-            drawingContext.DrawEllipse(brush, new Pen(new SolidColorBrush(Colors.Black), 1), ptCenter, radius, radius);
+            drawingContext.DrawEllipse(brush, new Pen(new SolidColorBrush(defaultCircleColor), 1), ptCenter, radius, radius);
         }
 
         // Provide a required override for the VisualChildrenCount property.
@@ -138,10 +258,25 @@ namespace WorkstationController.VisualElement
             return _children[index];
         }
 
+        /// <summary>
+        /// drawing visual with more information
+        /// </summary>
         public class MyDrawingVisual : DrawingVisual
         {
-            public int Index { get; set; }
+            public int ID { get; set; }
+            public WellState State { get; set; }
+            public Point Position { get; set; }
+            public Size Size { get; set; }
+        }
 
+        /// <summary>
+        /// each well's state
+        /// </summary>
+        public enum WellState
+        {
+            Normal = 0,
+            HighLight,
+            Selected
         }
     }
 }
