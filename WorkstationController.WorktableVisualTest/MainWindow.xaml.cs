@@ -38,7 +38,7 @@ namespace WorkstationController.WorktableVisualTest
             labware1.TypeName = "16Pos Tubes";
             labware1.Label = "lab1";
             labware1.SiteID = 1;
-            labware1.WellsInfo = new WellsInfo(new Point(144, 115), new Point(990+144, 745), 12, 8, BottomShape.Flat, 32);
+            labware1.WellsInfo = new WellsInfo(new Point(144, 115), new Point(990+144, 745), 12, 8, BottomShape.Flat, 40);
             labware1.TypeName = LabwareBuildInType.Plate96_05ML.ToString();
             labware1.BackgroundColor = Color.FromArgb(255, 255, 0, 0);
             labware1.CarrierGrid = 0;
