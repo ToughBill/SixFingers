@@ -45,12 +45,13 @@ namespace WorkstationController.WorktableVisualTest
 
             LabwareUIElementFixedSize labwareUIElement = new LabwareUIElementFixedSize(labware1, new Size(400, 400));
             grid1.Children.Add(labwareUIElement);
-
+             
             this.MouseMove += MainWindow_MouseMove;
         }
 
         void MainWindow_MouseMove(object sender, MouseEventArgs e)
         {
+            (grid1.Children[0] as LabwareUIElementFixedSize).UpdateMousePosition(e);
             grid1.InvalidateVisual();
         }
     }
