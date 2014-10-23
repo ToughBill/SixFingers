@@ -20,6 +20,11 @@ namespace WorkstationController.Core.Data
         public string Name { get; set; }
 
         /// <summary>
+        /// UID of the layout
+        /// </summary>
+        public Guid ID { get; set; }
+
+        /// <summary>
         /// Carrier collection on layout
         /// </summary>
         private List<Carrier> carriers = new List<Carrier>();
@@ -36,6 +41,15 @@ namespace WorkstationController.Core.Data
                 return this.carriers;
             }
         }
+
+        /// <summary>
+        /// Default constructor
+        /// </summary>
+        public Layout()
+        {
+            this.ID = Guid.NewGuid();
+        }
+
 
         /// <summary>
         /// Create an instance of Layout from a XML file
@@ -75,8 +89,6 @@ namespace WorkstationController.Core.Data
 
             this.carriers.Remove(carrier);
         }
-
-        
 
         #region Serialization
 

@@ -182,15 +182,42 @@ namespace WorkstationController.Core.Utility
 
             if(typeof(T) == typeof(Labware))
             {
-
+                try
+                {
+                    KeyValuePair<string, Labware> lw_kvp = this._labwares.First(kvp => kvp.Value.ID == id);
+                    xmlFilePath = lw_kvp.Key;
+                    bFound = true;
+                }
+                catch (Exception)
+                {
+                    // If no matching, exception thrown and we catch it.
+                }
             }
             else if (typeof(T) == typeof(Carrier))
             {
-
+                try
+                {
+                    KeyValuePair<string, Carrier> ca_kvp = this._carriers.First(kvp => kvp.Value.ID == id);
+                    xmlFilePath = ca_kvp.Key;
+                    bFound = true;
+                }
+                catch (Exception)
+                {
+                    // If no matching, exception thrown and we catch it.
+                }
             }
             else if (typeof(T) == typeof(Layout))
             {
-
+                try
+                {
+                    KeyValuePair<string, Layout> lo_kvp = this._layouts.First(kvp => kvp.Value.ID == id);
+                    xmlFilePath = lo_kvp.Key;
+                    bFound = true;
+                }
+                catch (Exception)
+                {
+                    // If no matching, exception thrown and we catch it.
+                }
             }
             else if (typeof(T) == typeof(LiquidClass))
             {
@@ -210,7 +237,6 @@ namespace WorkstationController.Core.Utility
                 throw new ArgumentOutOfRangeException("T", typeof(T), "T must be Labware/Carrier/Layout/LiquidClass");
             }
            
-
             return bFound;
         }
 
@@ -227,15 +253,21 @@ namespace WorkstationController.Core.Utility
 
             if (typeof(T) == typeof(Labware))
             {
-
+                Labware labware = instrument as Labware;
+                string path = Path.Combine(this._labwareDirectory, labware.ID.ToString() + ".xml");
+                labware.Serialize(path);
             }
             else if (typeof(T) == typeof(Carrier))
             {
-
+                Carrier carrier = instrument as Carrier;
+                string path = Path.Combine(this._carrierDirectory, carrier.ID.ToString() + ".xml");
+                carrier.Serialize(path);
             }
             else if (typeof(T) == typeof(Layout))
             {
-
+                Layout layout = instrument as Layout;
+                string path = Path.Combine(this._layoutDirectory, layout.ID.ToString() + ".xml");
+                layout.Serialize(path);
             }
             else if (typeof(T) == typeof(LiquidClass))
             {

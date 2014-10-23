@@ -40,8 +40,7 @@ namespace WorkstationController.EditorTests
             int index = lstboxLabwares.ItemContainerGenerator.IndexFromContainer(lbi);
             if (index == -1)
                 return;
-            layoutEditor.SuggestCandidate(UIElementFactory.CreateUIElement(wares[index]));
-            
+            layoutEditor.SuggestCandidate(UIElementFactory.CreateUIElement(wares[index]));   
         }
 
         private void CreateTwoLabwares()

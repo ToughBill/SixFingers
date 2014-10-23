@@ -14,7 +14,7 @@ namespace WorkstationController.Core.Data
     public abstract class WareBase : INotifyPropertyChanged
     {
         protected Guid      _id = Guid.Empty;
-        protected string    _typeName = string.Empty;
+        protected string    _typeName = "<Need a name>";
         protected string    _label = string.Empty;
         protected Dimension _dimension = new Dimension();
 

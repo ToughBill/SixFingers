@@ -120,15 +120,24 @@ namespace WorkstationController
 
         private void OnLabwareNewMenuItemClick(object sender, RoutedEventArgs e)
         {
+            Labware labware = new Labware();
+            LabwareEditor editor = new LabwareEditor();
+            editor.DataContext = labware;
+            this.AddTabItem(editor);
         }
 
         private void OnLabwareDuplicateMenuItemClick(object sender, RoutedEventArgs e)
         {
-           
+            Labware labware = ((Labware)this.lb_labwares.SelectedItem).Clone() as Labware;
+            LabwareEditor editor = new LabwareEditor();
+            editor.DataContext = labware;
+            this.AddTabItem(editor);
         }
 
         private void OnLabwareDeleteMenuItemClick(object sender, RoutedEventArgs e)
         {
+            Labware selectedLW = (Labware)this.lb_labwares.SelectedItem;
+            InstrumentsManager.Instance.DeleteInstrument<Labware>(selectedLW.ID);
         }
         #endregion
 

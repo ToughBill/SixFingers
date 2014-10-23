@@ -211,7 +211,7 @@ namespace WorkstationController.Core.Data
             Labware copy = new Labware();
 
             copy._label = "<Need a label>";
-            copy._typeName = this._typeName;
+            copy._typeName = "<Need a name>";
             copy._dimension = (Dimension)this.Dimension.Clone();
             copy._backgroundColor = this._backgroundColor;
             copy._grid = this._grid;
