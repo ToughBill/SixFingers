@@ -17,8 +17,6 @@ namespace WorkstationController.Core.Data
     public class Carrier : WareBase, ISerialization, INotifyPropertyChanged, ICloneable
     {
         public const int undefinedGrid = 0;
-        public const int defaultOffSetX = 120;
-        
         private List<Labware> _labwares = new List<Labware>();  // Labwares on the carrier
         private List<Site> _sites = new List<Site>();           // sites for mounting labwares
         
@@ -134,7 +132,7 @@ namespace WorkstationController.Core.Data
 
             if (_labwares.Contains(labware))
                 return;
-            labware.CarrierGrid = _grid;
+            labware.ParentCarrier = this;
             this._labwares.Add(labware);
         }
 

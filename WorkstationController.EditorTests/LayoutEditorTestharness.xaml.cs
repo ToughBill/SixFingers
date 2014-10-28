@@ -47,14 +47,14 @@ namespace WorkstationController.EditorTests
         {
             Labware labware1 = new Labware();
             labware1.ZValues = new ZValues(360, 625, 665, 1610);
-            labware1.Dimension = new Dimension(250, 2700);
+            labware1.Dimension = new Dimension(250, 3050);
             labware1.TypeName = "16Pos Tubes";
             labware1.Label = "lab1";
             labware1.SiteID = 1;
             labware1.WellsInfo = new WellsInfo(new Point(0, -32), new Point(0, 2788), 1, 16, BottomShape.Flat, 50);
             labware1.TypeName = LabwareBuildInType.Tubes16Pos13_100MM.ToString();
             labware1.BackgroundColor = Color.FromArgb(255, 255, 0, 0);
-            labware1.CarrierGrid = 0;
+            labware1.ParentCarrier = null;
 
             Carrier carrier1 = new Carrier(BuildInCarrierType.MP_3POS);
             Carrier carrier2 = new Carrier(BuildInCarrierType.Tube13mm_16POS);
@@ -74,7 +74,7 @@ namespace WorkstationController.EditorTests
             labware.WellsInfo = new WellsInfo(new Point(0, -32), new Point(0, 2788), 1, 16, BottomShape.Flat, 50);
             labware.TypeName = LabwareBuildInType.Tubes16Pos13_100MM.ToString();
             labware.BackgroundColor = Color.FromArgb(255, 255, 0, 0);
-            labware.CarrierGrid = 1;
+            labware.ParentCarrier = null;
             //layoutEditor.AddCandidate(new LabwareUIElement(labware));
             UserControlContainer.InvalidateVisual();
         }

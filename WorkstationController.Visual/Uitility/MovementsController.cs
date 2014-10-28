@@ -175,15 +175,19 @@ namespace WorkstationController.VisualElement.Uitility
                 return;
             CarrierUIElement carrierUIElement = _selectedUIElement as CarrierUIElement;
             Carrier carrier = carrierUIElement.Carrier;
+
+            int newGrid = VisualCommon.FindCorrespondingGrid(ptCurrent.X);
+            int orgGrid = carrier.Grid;
+            carrier.Grid = newGrid;
             if (carrier.Labwares.Count == 0)
+                return;
+            if (newGrid == orgGrid)
                 return;
 
             foreach(Labware labware in carrier.Labwares)
             {
-                int orgGrid = labware.CarrierGrid;
-                labware.CarrierGrid = VisualCommon.FindCorrespondingGrid(ptCurrent.X);
-                if( orgGrid != labware.CarrierGrid)
-                    Debug.WriteLine("{0} labware hash:{1}",DateTime.Now.ToShortTimeString(),labware.GetHashCode());
+                labware.Refresh();
+                Debug.WriteLine("{0} labware hash:{1}", DateTime.Now.ToShortTimeString(), labware.GetHashCode());
             }
         }
 

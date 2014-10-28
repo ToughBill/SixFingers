@@ -20,6 +20,9 @@ namespace WorkstationController.VisualElement
         /// no well is selected;
         /// </summary>
         Labware _labware;
+        const int wellDefaultOffsetToSiteMargin = 120;
+
+
         /// <summary>
         /// ctor
         /// </summary>
@@ -64,26 +67,33 @@ namespace WorkstationController.VisualElement
         protected override void Render(DrawingVisual drawingVisual)
         {
             DrawingContext drawingContext = drawingVisual.RenderOpen();
-            Carrier carrier = null;
-            if (!_isSelected && _labware.CarrierGrid == Carrier.undefinedGrid)
+            Carrier carrier = _labware.ParentCarrier ;
+            if (!_isSelected && carrier == null)
                 return;
 
-            int mapGrid = _labware.CarrierGrid;
+
+            int mapGrid = 0;
+            if( carrier != null)
+            {
+                mapGrid = carrier.Grid;
+            }
+
             if (_isSelected)
             {
                 mapGrid = VisualCommon.FindCorrespondingGrid(_ptDragPosition.X);
             }
 
 
-            int xPos = (mapGrid - 1) * Worktable.DistanceBetweenAdjacentPins + (int)_worktable.FirstPinPosition.X ;
+            int pinPos = (mapGrid - 1) * Worktable.DistanceBetweenAdjacentPins + (int)_worktable.FirstPinPosition.X ;
+            int xPos = pinPos;
             int yPos = (int)_worktable.FirstPinPosition.Y;
             if (carrier != null)
             {
-                xPos = xPos - (carrier.XOffset );
-                yPos += carrier.YOffset;
-                int siteIndex = _labware.SiteID;
+                xPos = pinPos - (carrier.XOffset);  //get carrier x start pos
+                yPos -= carrier.YOffset;
+                int siteIndex = _labware.SiteID - 1;
                 var site = carrier.Sites[siteIndex];
-                xPos += (int)site.Position.X;
+                xPos += (int)site.Position.X;       //get site x start pos
                 yPos += (int)site.Position.Y;
             }
             else
@@ -98,7 +108,7 @@ namespace WorkstationController.VisualElement
             VisualCommon.DrawText( new Point( xPos, yPos+sz.Height), _labware.Label,drawingContext);
             int cols = _labware.WellsInfo.NumberOfWellsX;
             int rows = _labware.WellsInfo.NumberOfWellsY;
-            Vector vector = new Vector(xPos + Carrier.defaultOffSetX, yPos);
+            Vector vector = new Vector(xPos + wellDefaultOffsetToSiteMargin, yPos + wellDefaultOffsetToSiteMargin);
             for (int row = 0; row < rows; row++)
             {
                 for (int col = 0; col < cols; col++)

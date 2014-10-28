@@ -49,7 +49,7 @@ namespace WorkstationController.EditorTests
             labware.TypeName = LabwareBuildInType.Tubes16Pos13_100MM.ToString();
             labware.WellsInfo = new WellsInfo(new Point(0, -32), new Point(0, 2788), 1, 16, BottomShape.Flat, 50);
             labware.BackgroundColor = Color.FromArgb(255, 255, 0, 0);
-            labware.CarrierGrid = 1;
+            labware.ParentCarrier = null;
 
             this.DataContext = labware;
             UserControlNames.ItemsSource = strs;

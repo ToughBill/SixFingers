@@ -41,7 +41,7 @@ namespace WorkstationController.WorktableVisualTest
             labware1.WellsInfo = new WellsInfo(new Point(144, 115), new Point(990+144, 745), 12, 8, BottomShape.Flat, 40);
             labware1.TypeName = LabwareBuildInType.Plate96_05ML.ToString();
             labware1.BackgroundColor = Color.FromArgb(255, 255, 0, 0);
-            labware1.CarrierGrid = 0;
+            labware1.ParentCarrier = null;
 
             LabwareUIElementFixedSize labwareUIElement = new LabwareUIElementFixedSize(labware1, new Size(400, 400));
             grid1.Children.Add(labwareUIElement);

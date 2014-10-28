@@ -37,6 +37,7 @@ namespace WorkstationController.VisualElement.Uitility
                 LabwareUIElement labwareUIElement = (LabwareUIElement)baseUIElement;
                 Labware labware = labwareUIElement.Labware;
                 CarrierUIElement carrierUIElement = FindSuitableCarrier(position, labware.TypeName, container);
+                labware.ParentCarrier = carrierUIElement.Carrier;
                 carrierUIElement.Carrier.AddLabware(labware);
             }
             

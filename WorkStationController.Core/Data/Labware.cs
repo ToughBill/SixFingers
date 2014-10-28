@@ -47,7 +47,7 @@ namespace WorkstationController.Core.Data
     {
         private Color       _backgroundColor;
         private int         _siteID = 0;
-        private int         _grid = Carrier.undefinedGrid;
+        private Carrier     _parentCarrier = null;
         private WellsInfo   _wellsInfo = new WellsInfo();
         private ZValues     _zValues = new ZValues();
 
@@ -82,21 +82,33 @@ namespace WorkstationController.Core.Data
         }
 
         /// <summary>
-        /// On which carrier the labware mounts, can be empty.
+        /// On which carrier the labware mounts, can be null.
         /// </summary>
-        public int CarrierGrid
+        public Carrier ParentCarrier
         {
             get
             {
-                return _grid;
+                return _parentCarrier;
             }
             set
             {
-                if (_grid == value)
-                    return;
-                this.OnPropertyChanged<int>(ref this._grid, value, "CarrierGrid");
+                _parentCarrier = value;
+                if (value != null)
+                    this.OnPropertyChanged<Carrier>(ref this._parentCarrier, value, "ParentCarrier");
             }
         }
+
+        //we need a more eligant way to force the OnPropertyChanged event fires.
+        public void Refresh()
+        {
+            var color = _backgroundColor;
+            byte oldA = color.A;
+            color.A = (byte)(255 - oldA);
+            BackgroundColor = color;
+            color.A = oldA;
+            BackgroundColor = color;
+        }
+
 
         /// <summary>
         /// The info of the wells on the ware
@@ -214,13 +226,15 @@ namespace WorkstationController.Core.Data
             copy._typeName = "<Need a name>";
             copy._dimension = (Dimension)this.Dimension.Clone();
             copy._backgroundColor = this._backgroundColor;
-            copy._grid = this._grid;
+            copy._parentCarrier = (Carrier)this._parentCarrier.Clone();
             copy._siteID = this._siteID;
             copy._wellsInfo = (WellsInfo)this._wellsInfo.Clone();
             copy._zValues = (ZValues)this._zValues.Clone();
 
             return copy;
         }
+
+      
     }
 
     /// <summary>

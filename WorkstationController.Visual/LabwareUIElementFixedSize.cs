@@ -163,9 +163,6 @@ namespace WorkstationController.VisualElement
             return string.Format("{0}-{1}", colID, rowID);
         }
 
-    
-
-
         private void UpdateContainerSize(Size newSize)
         {
             Size wareSZ = new Size(_labware.Dimension.XLength,_labware.Dimension.YLength);

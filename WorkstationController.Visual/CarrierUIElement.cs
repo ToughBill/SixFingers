@@ -72,26 +72,20 @@ namespace WorkstationController.VisualElement
         override protected void Render(DrawingVisual drawingVisual)
         {
             DrawingContext drawingContext = drawingVisual.RenderOpen();
-            if (!_isSelected && Grid == Carrier.undefinedGrid)
+            if (Grid == Carrier.undefinedGrid)
                 return;
 
-            int mapGrid = _carrier.Grid;
-            if(_isSelected)
-            {
-                mapGrid = VisualCommon.FindCorrespondingGrid(_ptDragPosition.X);
-            }
-            
             //1 border
-            int xPos = GetBoundingRectXStart(mapGrid);//
+            int xPos = GetBoundingRectXStart(_carrier.Grid);//
             int yPos = GetBoundingRectYStart();
             Size sz = new Size(_carrier.Dimension.XLength, _carrier.Dimension.YLength);
 
             //2 draw click area
-            int szClickAreaUnit = (int)(sz.Width / 6);
-            VisualCommon.DrawRect(GetUnderneathPinXStart(mapGrid), (int)(_worktable.FirstPinPosition.Y),
-                new Size(_worktable.FirstRowPinSize.Width*15,_worktable.FirstRowPinSize.Width*30), 
-                drawingContext, 
-                Colors.OrangeRed,Brushes.DarkBlue);
+            //int szClickAreaUnit = (int)(sz.Width / 6);
+            //VisualCommon.DrawRect(GetUnderneathPinXStart(_carrier.Grid), (int)(_worktable.FirstPinPosition.Y),
+            //    new Size(_worktable.FirstRowPinSize.Width*15,_worktable.FirstRowPinSize.Width*30), 
+            //    drawingContext, 
+            //    Colors.OrangeRed,Brushes.DarkBlue);
 
             Color border = _isSelected ? Colors.Blue : Colors.Black;
             VisualCommon.DrawRect(xPos, yPos, sz, drawingContext, border);
@@ -130,11 +124,20 @@ namespace WorkstationController.VisualElement
             return (int)(_worktable.FirstPinPosition.X + (grid - 1) * Worktable.DistanceBetweenAdjacentPins);
         }
 
+        /// <summary>
+        /// get the bounding rectangle's x start
+        /// </summary>
+        /// <param name="grid"></param>
+        /// <returns></returns>
         public int GetBoundingRectXStart(int grid)
         {
             return (int)(_worktable.FirstPinPosition.X + (grid - 1) * Worktable.DistanceBetweenAdjacentPins - _carrier.XOffset);
         }
 
+        /// <summary>
+        /// get the bounding rectangle's xStart
+        /// </summary>
+        /// <returns></returns>
         public int GetBoundingRectXStart()
         {
             return GetBoundingRectXStart(this.Grid);
