@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Windows;
@@ -23,8 +24,9 @@ namespace WorkstationController.VisualElement.Uitility
             BasewareUIElement newUIElement;
             if (wareBase is Labware)
             {
-                //Labware labware = ((Labware)wareBase).Clone();
-                newUIElement = new LabwareUIElement((Labware)wareBase);
+                Labware labware = ((Labware)wareBase).Clone() as Labware;
+                newUIElement = new LabwareUIElement(labware);
+                Debug.Write("labware" + string.Format("{0}", labware.GetHashCode()));
             }
             else
             {

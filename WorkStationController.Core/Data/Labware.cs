@@ -223,10 +223,10 @@ namespace WorkstationController.Core.Data
             Labware copy = new Labware();
 
             copy._label = "<Need a label>";
-            copy._typeName = "<Need a name>";
+            copy._typeName = this.TypeName;
             copy._dimension = (Dimension)this.Dimension.Clone();
             copy._backgroundColor = this._backgroundColor;
-            copy._parentCarrier = (Carrier)this._parentCarrier.Clone();
+            copy._parentCarrier = null;
             copy._siteID = this._siteID;
             copy._wellsInfo = (WellsInfo)this._wellsInfo.Clone();
             copy._zValues = (ZValues)this._zValues.Clone();

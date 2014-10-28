@@ -25,6 +25,7 @@ namespace WorkstationController.VisualElement.Uitility
         private BasewareUIElement _selectedUIElement;
         private BasewareUIElement _uiElementCandidate;
         private bool enableMouseMove = true;
+        private bool otherFormNeedPickup = false;
         private DateTime lastClickTime = DateTime.MinValue;
         public event EventHandler onLabelPreviewChanged;
      
@@ -42,6 +43,21 @@ namespace WorkstationController.VisualElement.Uitility
                 _uiElementCandidate = value;
             }
         }
+
+
+        public bool AllowPickup
+        { 
+            get
+            {
+                return otherFormNeedPickup;
+            }
+            set
+            {
+                otherFormNeedPickup = value;
+                ClearLastSelection();
+            }
+        }
+
         /// <summary>
         /// selected UI element
         /// </summary>
@@ -65,7 +81,6 @@ namespace WorkstationController.VisualElement.Uitility
             _myCanvas.PreviewMouseLeftButtonDown += myCanvas_PreviewMouseLeftButtonDown;
             _myCanvas.PreviewMouseLeftButtonUp += myCanvas_PreviewMouseLeftButtonUp;
             _myCanvas.MouseMove += myCanvas_MouseMove;
-            
         }
 
         /// <summary>
@@ -83,24 +98,29 @@ namespace WorkstationController.VisualElement.Uitility
             bool isDoubleClick = now.Subtract(lastClickTime).TotalSeconds < 0.5;
             lastClickTime = now;
             Point ptClick = e.GetPosition(_myCanvas);
+            ClearLastSelection();
             _selectedUIElement = FindSelectedUIElement(ptClick);
-            if (_selectedUIElement != null)
+            if (_selectedUIElement == null)
+                return;
+            _selectedUIElement.Selected = true;
+            _ptClick = ptClick;
+            if(_selectedUIElement is LabwareUIElement && isDoubleClick)
             {
-                _selectedUIElement.Selected = true;
-                _ptClick = ptClick;
-                if(_selectedUIElement is LabwareUIElement)
-                {
-                    LabwareUIElement labwareUIElement = _selectedUIElement as LabwareUIElement;
-                    if (isDoubleClick)
-                    {
-                        onLabelPreviewChanged(this, new LabelChangeEventArgs(labwareUIElement));
-                        _selectedUIElement.Selected = false;
-                        _selectedUIElement = null;
-                        return;
-                    }
-                }
-                Mouse.OverrideCursor = Cursors.Hand;
-                _myCanvas.CaptureMouse();
+                LabwareUIElement labwareUIElement = _selectedUIElement as LabwareUIElement;
+                onLabelPreviewChanged(this, new LabelChangeEventArgs(labwareUIElement));
+                _selectedUIElement.Selected = false;
+                _selectedUIElement = null;
+                return;
+            }
+            Mouse.OverrideCursor = Cursors.Hand;
+            _myCanvas.CaptureMouse();
+        }
+
+        private void ClearLastSelection()
+        {
+            foreach (var uiElement in _myCanvas.Children)
+            {
+                ((BasewareUIElement)uiElement).Selected = false;
             }
         }
 
@@ -112,6 +132,10 @@ namespace WorkstationController.VisualElement.Uitility
             Debug.WriteLine("Clear selection");
             if (_selectedUIElement == null)
                 return;
+            //pipetting commands need to highlight the labware
+            if(otherFormNeedPickup)
+                return;
+            
             WareInstaller.MountThis(_selectedUIElement,e.GetPosition(_myCanvas),_myCanvas);
             DeHighlightAllSite();
             _selectedUIElement.Selected = false;
@@ -120,6 +144,9 @@ namespace WorkstationController.VisualElement.Uitility
 
         void myCanvas_MouseMove(object sender, MouseEventArgs e)
         {
+            if (otherFormNeedPickup)
+                return;
+
             Point ptMouse = e.GetPosition(_myCanvas);
             if (e.LeftButton == MouseButtonState.Released)
                 return;
@@ -208,7 +235,11 @@ namespace WorkstationController.VisualElement.Uitility
             HitTestResult result = VisualTreeHelper.HitTest(_myCanvas, pt);
             if (result == null)
                 return null;
-            return VisualCommon.FindParent<BasewareUIElement>(result.VisualHit); 
+
+            if( otherFormNeedPickup)
+                return VisualCommon.FindParent<LabwareUIElement>(result.VisualHit);
+            else
+                return VisualCommon.FindParent<BasewareUIElement>(result.VisualHit); 
         }
 
     }

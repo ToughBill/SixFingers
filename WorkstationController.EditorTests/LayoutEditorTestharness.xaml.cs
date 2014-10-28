@@ -79,6 +79,11 @@ namespace WorkstationController.EditorTests
             UserControlContainer.InvalidateVisual();
         }
 
+        private void CheckBox_Click(object sender, RoutedEventArgs e)
+        {
+            layoutEditor.AllowPickup = (bool)chkbox1.IsChecked;
+        }
+
  
 
     }
