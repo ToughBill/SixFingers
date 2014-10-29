@@ -196,7 +196,7 @@ namespace WorkstationController.Core.Data
             _dimension = new Data.Dimension(240, 3160);
             _xoffset = 120;
             _yoffset = 247;
-            Site site1 = new Site(new Point(0, 110), new Size(240, 3050), new List<string> { LabwareBuildInType.Tubes16Pos13_100MM.ToString() });
+            Site site1 = new Site(new Point(0, 110),new Size(240, 3050),1, new List<string> { LabwareBuildInType.Tubes16Pos13_100MM.ToString() });
             _sites.Add(site1);
             _grid = undefinedGrid;
             TypeName = BuildInCarrierType.Tube13mm_16POS.ToString();
@@ -208,9 +208,9 @@ namespace WorkstationController.Core.Data
             _dimension = new Data.Dimension(1490, 3160);
             _xoffset = 120;
             _yoffset = 247;
-            Site site1 = new Site(new Point(55, 250), new Size(1270, 850), new List<string> { LabwareBuildInType.Plate96_05ML.ToString()});
-            Site site2 = new Site(new Point(55, 1210), new Size(1270, 850), new List<string> { LabwareBuildInType.Plate96_05ML.ToString() });
-            Site site3 = new Site(new Point(55, 2170), new Size(1270, 850), new List<string> { LabwareBuildInType.Plate96_05ML.ToString() });
+            Site site1 = new Site(new Point(55, 250), new Size(1270, 850),1, new List<string> { LabwareBuildInType.Plate96_05ML.ToString()});
+            Site site2 = new Site(new Point(55, 1210), new Size(1270, 850),2, new List<string> { LabwareBuildInType.Plate96_05ML.ToString() });
+            Site site3 = new Site(new Point(55, 2170), new Size(1270, 850),3, new List<string> { LabwareBuildInType.Plate96_05ML.ToString() });
             _sites.Add(site1);
             _sites.Add(site2);
             _sites.Add(site3);
@@ -241,7 +241,7 @@ namespace WorkstationController.Core.Data
         private int                          _number = 0;
         private Point                        _position = new Point(0, 0);
         private Size                         _sz = new Size(0, 0);
-        private ObservableCollection<string> _allowedLabwareTypeNames = new ObservableCollection<string>();
+        private int                         _id = -1;        private ObservableCollection<string> _allowedLabwareTypeNames = new ObservableCollection<string>();
        
         public int Number
         {
@@ -255,7 +255,11 @@ namespace WorkstationController.Core.Data
             }
         }
 
-        public Point Position 
+        /// <summary>
+        /// position
+        /// </summary>        public Point Position 
+        /// 
+        public Point Position   
         {
             get
             {
@@ -266,8 +270,26 @@ namespace WorkstationController.Core.Data
                 PropertyChangedNotifyHelper.NotifyPropertyChanged<Point>(ref this._position, value, this, "Position", this.PropertyChanged);
             }
         }
-   
-        public Size Size 
+
+        /// <summary>
+        /// id, 1based
+        /// </summary>
+        public int ID
+        {
+            get
+            {
+                return _id;
+            }
+            set
+            {
+                _id = value;
+            }
+        }   
+
+        /// <summary>
+        /// size
+        /// </summary>        public Size Size 
+        public Size Size
         { 
             get
             {
@@ -302,16 +324,17 @@ namespace WorkstationController.Core.Data
         public Site()
         { }
 
-        public Site(Point position, Size sz, List<string> allowedLabwareTypeNames)
+        public Site(Point position, Size sz, int id, List<string> allowedLabwareTypeNames)
         {
             _position = position;
             _sz = sz;
+            _id = id;            
             _allowedLabwareTypeNames = new ObservableCollection<string>(allowedLabwareTypeNames);
         }
 
         public object Clone()
         {
-            Site site = new Site(_position, _sz, new List<string>(_allowedLabwareTypeNames));
+            Site site = new Site(_position, _sz,_id,new List<string>(_allowedLabwareTypeNames));
             return site;
         }
     }
