@@ -134,6 +134,18 @@ where T : class
         }
 
         /// <summary>
+        /// from physical to visual 
+        /// </summary>
+        /// <param name="size"></param>
+        /// <returns></returns>
+        public static Size Physic2Visual(Size size)
+        {
+            double wPixel = VisualCommon.Convert2PixelXUnit(size.Width);
+            double hPixel = VisualCommon.Convert2PixelYUnit(size.Height);
+            return new Size(wPixel, hPixel);
+        }
+
+        /// <summary>
         /// draw rect
         /// </summary>
         /// <param name="x"></param>

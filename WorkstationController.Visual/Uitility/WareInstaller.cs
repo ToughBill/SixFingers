@@ -36,8 +36,11 @@ namespace WorkstationController.VisualElement.Uitility
             {
                 LabwareUIElement labwareUIElement = (LabwareUIElement)baseUIElement;
                 Labware labware = labwareUIElement.Labware;
-                CarrierUIElement carrierUIElement = FindSuitableCarrier(position, labware.TypeName, container);
+                CarrierUIElement carrierUIElement = null;
+                Site site = null;
+                FindSuitableCarrier(position, labware.TypeName, container, ref carrierUIElement, ref site);
                 labware.ParentCarrier = carrierUIElement.Carrier;
+                labware.SiteID = site.ID;
                 carrierUIElement.Carrier.AddLabware(labware);
             }
             
@@ -106,24 +109,27 @@ namespace WorkstationController.VisualElement.Uitility
             return true;
         }
 
-        private static CarrierUIElement FindSuitableCarrier(Point pt, string labwareTypeName,Grid container)
+        private static bool FindSuitableCarrier(Point pt, string labwareTypeName, Grid container,ref CarrierUIElement carrierUIElement,ref Site site)
         {
             foreach (UIElement uiElement in container.Children)
             {
                 if (!(uiElement is CarrierUIElement))
                     continue;
-                CarrierUIElement carrierUIElement = uiElement as CarrierUIElement;
-                if (carrierUIElement.FindSiteForLabware(pt, labwareTypeName) != null)
+                carrierUIElement = uiElement as CarrierUIElement;
+                site = carrierUIElement.FindSiteForLabware(pt, labwareTypeName);
+                if (site != null)
                 {
-                    return carrierUIElement;
+                    return true;
                 }
             }
-            return null;
+            return false;
         }
 
         private static bool HasSuitableSite(Point pt, string labwareTypeName,Grid container)
         {
-            return FindSuitableCarrier(pt, labwareTypeName, container) != null;
+            CarrierUIElement carrierUIElement = null;
+            Site site = null;
+            return FindSuitableCarrier(pt, labwareTypeName, container,ref carrierUIElement, ref site);
         }
 
         private static bool IsOutofRange(int grid, CarrierUIElement carrierUIElement)

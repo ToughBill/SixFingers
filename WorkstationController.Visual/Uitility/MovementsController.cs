@@ -91,7 +91,6 @@ namespace WorkstationController.VisualElement.Uitility
             _myCanvas.CaptureMouse();
         }
 
-
         void myCanvas_PreviewMouseLeftButtonDown(object sender, MouseButtonEventArgs e)
         {
             //judge double click
@@ -105,7 +104,8 @@ namespace WorkstationController.VisualElement.Uitility
             _selectedUIElement = FindSelectedUIElement(ptClick);
             if (_selectedUIElement == null)
                 return;
-            _selectedUIElement.Selected = true;
+
+            SetUIElementSelectedState();
             _ptClick = ptClick;
 
             //process double click event for labwareUIElement
@@ -119,6 +119,15 @@ namespace WorkstationController.VisualElement.Uitility
             }
             Mouse.OverrideCursor = Cursors.Hand;
             _myCanvas.CaptureMouse();
+        }
+
+        private void SetUIElementSelectedState()
+        {
+            _selectedUIElement.Selected = true;
+            if(_selectedUIElement is LabwareUIElement)
+            {
+                ((LabwareUIElement)_selectedUIElement).Labware.ParentCarrier = null;
+            }
         }
 
         private void ClearLastSelection()
@@ -198,6 +207,12 @@ namespace WorkstationController.VisualElement.Uitility
   
         private void UpdateSelectedElement(Point ptCurrent)
         {
+            var physicalSize = new Size(_selectedUIElement.Ware.Dimension.XLength, _selectedUIElement.Ware.Dimension.YLength);
+            Size visualSize = VisualCommon.Physic2Visual(physicalSize);
+            //adjust position to its center position
+            ptCurrent.X -= visualSize.Width / 2;
+            ptCurrent.Y -= visualSize.Height / 2;
+            
             _selectedUIElement.SetDragPosition(ptCurrent);
             Debug.WriteLine(string.Format("x{0} y{1}", ptCurrent.X, ptCurrent.Y));
             UpdateLabwareUIElements(_selectedUIElement,ptCurrent);

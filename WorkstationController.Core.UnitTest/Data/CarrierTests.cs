@@ -27,7 +27,7 @@ namespace WorkstationController.Core.UnitTest
             carrier.Dimension.XLength = 40;
             carrier.Dimension.YLength = 500;
             carrier.Grid = 3;
-            carrier.Sites.Add(new Site(new Point(0, 0), new Size(10, 10), new List<string>(new string[] {"a", "b", "c"})));
+            carrier.Sites.Add(new Site(new Point(0, 0), new Size(10, 10),1, new List<string>(new string[] {"a", "b", "c"})));
 
             Labware labware1 = new Labware();
             labware1.Label = "Labware1";

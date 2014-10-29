@@ -100,12 +100,14 @@ namespace WorkstationController.VisualElement
                 
                 Size tmpSZ = new Size(site.Size.Width,site.Size.Height);
                 Rect rc = new Rect(new Point(xSite, ySite), tmpSZ);
+                Brush fillBrush = null;
                 if (bNeedHighLight)
                 {
                     BlowUp(ref rc);
                     border = Colors.DarkGreen;
+                    fillBrush = new SolidColorBrush(Color.FromArgb(128, 255, 255, 0));
                 }
-                VisualCommon.DrawRect((int)rc.X, (int)rc.Y,rc.Size, drawingContext, border);
+                VisualCommon.DrawRect((int)rc.X, (int)rc.Y, rc.Size, drawingContext, border, fillBrush);
             }
             drawingContext.Close();
         }
