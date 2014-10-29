@@ -27,8 +27,10 @@ namespace WorkstationController.VisualElement.Uitility
         private bool enableMouseMove = true;
         private bool otherFormNeedPickup = false;
         private DateTime lastClickTime = DateTime.MinValue;
+        Vector relativeClickPosition2LeftTop = new Vector(-1, -1);
+        readonly Vector notdefinedRelativePosition = new Vector(-1, -1);
         public event EventHandler onLabelPreviewChanged;
-     
+        
         /// <summary>
         /// new UI element introduced from somewhere, nomarlly from listbox
         /// </summary>
@@ -40,6 +42,7 @@ namespace WorkstationController.VisualElement.Uitility
             }
             set
             {
+                relativeClickPosition2LeftTop = notdefinedRelativePosition;
                 _uiElementCandidate = value;
             }
         }
@@ -104,9 +107,9 @@ namespace WorkstationController.VisualElement.Uitility
             _selectedUIElement = FindSelectedUIElement(ptClick);
             if (_selectedUIElement == null)
                 return;
-
-            SetUIElementSelectedState();
+            
             _ptClick = ptClick;
+            SetUIElementSelectedState();
 
             //process double click event for labwareUIElement
             if(_selectedUIElement is LabwareUIElement && isDoubleClick)
@@ -126,8 +129,21 @@ namespace WorkstationController.VisualElement.Uitility
             _selectedUIElement.Selected = true;
             if(_selectedUIElement is LabwareUIElement)
             {
+                //relativeClickPosition2LeftTop
+                RememberRelativePosition((LabwareUIElement)_selectedUIElement);
                 ((LabwareUIElement)_selectedUIElement).Labware.ParentCarrier = null;
             }
+        }
+
+        private void RememberRelativePosition(LabwareUIElement labwareUIElement)
+        {
+            if(labwareUIElement.Labware.ParentCarrier == null)
+            {
+                relativeClickPosition2LeftTop = new Vector(-1, -1);
+                return;
+            }
+            Point ptLabwareUIElementInCanvase = labwareUIElement.GetLeftTopPositionInCanvas();
+            relativeClickPosition2LeftTop = _ptClick - ptLabwareUIElementInCanvase;
         }
 
         private void ClearLastSelection()
@@ -207,12 +223,21 @@ namespace WorkstationController.VisualElement.Uitility
   
         private void UpdateSelectedElement(Point ptCurrent)
         {
-            var physicalSize = new Size(_selectedUIElement.Ware.Dimension.XLength, _selectedUIElement.Ware.Dimension.YLength);
-            Size visualSize = VisualCommon.Physic2Visual(physicalSize);
-            //adjust position to its center position
-            ptCurrent.X -= visualSize.Width / 2;
-            ptCurrent.Y -= visualSize.Height / 2;
-            
+            if (_selectedUIElement is LabwareUIElement)
+            {
+                var physicalSize = new Size(_selectedUIElement.Ware.Dimension.XLength, _selectedUIElement.Ware.Dimension.YLength);
+                Size visualSize = VisualCommon.Physic2Visual(physicalSize);
+                //adjust position to its center position
+                if (relativeClickPosition2LeftTop.X < 0)
+                {
+                    ptCurrent.X -= visualSize.Width / 2;
+                    ptCurrent.Y -= visualSize.Height / 2;
+                }
+                else
+                {
+                    ptCurrent -= relativeClickPosition2LeftTop;
+                }
+            }
             _selectedUIElement.SetDragPosition(ptCurrent);
             Debug.WriteLine(string.Format("x{0} y{1}", ptCurrent.X, ptCurrent.Y));
             UpdateLabwareUIElements(_selectedUIElement,ptCurrent);

@@ -122,6 +122,23 @@ namespace WorkstationController.VisualElement
             drawingContext.Close();
         }
 
-       
+
+
+        internal Point GetLeftTopPositionInCanvas()
+        {
+            var carrier = _labware.ParentCarrier;
+            int grid = carrier.Grid;
+            int pinPos = (grid - 1) * Worktable.DistanceBetweenAdjacentPins + (int)_worktable.FirstPinPosition.X;
+            int xPos = pinPos;
+            int yPos = (int)_worktable.FirstPinPosition.Y;
+            xPos = pinPos - (carrier.XOffset);  //get carrier x start pos
+            yPos -= carrier.YOffset;
+            int siteIndex = _labware.SiteID - 1;
+            var site = carrier.Sites[siteIndex];
+            xPos += (int)site.Position.X;       //get site x start pos
+            yPos += (int)site.Position.Y;
+            Rect rc = VisualCommon.Physic2Visual(xPos, yPos, new Size(0, 0));
+            return rc.TopLeft;
+        }
     }
 }
