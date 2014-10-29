@@ -84,7 +84,7 @@ namespace WorkstationController.VisualElement
             }
 
 
-            int pinPos = (mapGrid - 1) * Worktable.DistanceBetweenAdjacentPins + (int)_worktable.FirstPinPosition.X ;
+            int pinPos = (mapGrid - 1) * Worktable.DistanceBetweenAdjacentPins + (int)_worktable.FirstPinPosition.X;
             int xPos = pinPos;
             int yPos = (int)_worktable.FirstPinPosition.Y;
             if (carrier != null)
@@ -98,8 +98,10 @@ namespace WorkstationController.VisualElement
             }
             else
             {
-                xPos -= _labware.Dimension.XLength / 2;
-                yPos -= 137;
+                Point ptPhysical = VisualCommon.Convert2PhysicalXY(_ptDragPosition.X, _ptDragPosition.Y);
+                xPos = (int)ptPhysical.X;
+                yPos = (int)ptPhysical.Y;
+                //drawingContext.DrawRectangle(Brushes.Black, null, new Rect(xPos,yPos,10,10));
             }
             
             Size sz = new Size(_labware.Dimension.XLength, _labware.Dimension.YLength);

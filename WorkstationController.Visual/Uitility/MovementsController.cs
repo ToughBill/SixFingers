@@ -94,9 +94,12 @@ namespace WorkstationController.VisualElement.Uitility
 
         void myCanvas_PreviewMouseLeftButtonDown(object sender, MouseButtonEventArgs e)
         {
+            //judge double click
             DateTime now = DateTime.Now;
             bool isDoubleClick = now.Subtract(lastClickTime).TotalSeconds < 0.5;
             lastClickTime = now;
+
+            //select ui element
             Point ptClick = e.GetPosition(_myCanvas);
             ClearLastSelection();
             _selectedUIElement = FindSelectedUIElement(ptClick);
@@ -104,6 +107,8 @@ namespace WorkstationController.VisualElement.Uitility
                 return;
             _selectedUIElement.Selected = true;
             _ptClick = ptClick;
+
+            //process double click event for labwareUIElement
             if(_selectedUIElement is LabwareUIElement && isDoubleClick)
             {
                 LabwareUIElement labwareUIElement = _selectedUIElement as LabwareUIElement;
@@ -128,10 +133,11 @@ namespace WorkstationController.VisualElement.Uitility
         {
             _myCanvas.ReleaseMouseCapture();
             Mouse.OverrideCursor = Cursors.Arrow;
+
             //clear select flag
-            Debug.WriteLine("Clear selection");
             if (_selectedUIElement == null)
                 return;
+
             //pipetting commands need to highlight the labware
             if(otherFormNeedPickup)
                 return;
@@ -144,7 +150,7 @@ namespace WorkstationController.VisualElement.Uitility
 
         void myCanvas_MouseMove(object sender, MouseEventArgs e)
         {
-            if (otherFormNeedPickup)
+            if (otherFormNeedPickup) //other form pick, don't allow mousemove
                 return;
 
             Point ptMouse = e.GetPosition(_myCanvas);
@@ -193,6 +199,7 @@ namespace WorkstationController.VisualElement.Uitility
         private void UpdateSelectedElement(Point ptCurrent)
         {
             _selectedUIElement.SetDragPosition(ptCurrent);
+            Debug.WriteLine(string.Format("x{0} y{1}", ptCurrent.X, ptCurrent.Y));
             UpdateLabwareUIElements(_selectedUIElement,ptCurrent);
         }
 
@@ -222,7 +229,6 @@ namespace WorkstationController.VisualElement.Uitility
         {
             if (_uiElementCandidate == null)
                 return;
-            Debug.WriteLine("ElectCandidate");
             _selectedUIElement = _uiElementCandidate;
             _myCanvas.Children.Add(_uiElementCandidate);
             _myCanvas.InvalidateVisual();

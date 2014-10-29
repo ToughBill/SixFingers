@@ -97,16 +97,14 @@ namespace WorkstationController.Control
         /// <summary>
         /// suggest candidate
         /// </summary>
-        /// <param name="uiElement"></param>
-        public void SuggestCandidate(BasewareUIElement uiElement)
+        /// <param name="labwareTypeName"></param>
+        public void SuggestCandidate(WareBase wareBase)
         {
-            Debug.WriteLine("suggest candidate");
-            //uiController.RemoveCurrentSelectFlag();
+            var uiElement = UIElementFactory.CreateUIElement(wareBase,uiContainer.Children);
             uiController.UIElementCandidate = uiElement;
             Mouse.OverrideCursor = Cursors.Hand;
             uiController.CaptureMouse();
         }
-       
     }
 
     public class WorktableGrid : Grid

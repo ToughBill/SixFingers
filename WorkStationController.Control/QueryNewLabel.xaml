@@ -5,7 +5,7 @@
     <Grid>
         <Label Content="名称：" Height="24" HorizontalAlignment="Left" Margin="50,7,0,0" VerticalAlignment="Top"/>
         <TextBox HorizontalAlignment="Left" Name="txtLabwareLabel" Height="24" Margin="100,7,0,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Width="240"/>
-        <Button Content="确认" Name="btnConfirm" HorizontalAlignment="Left" Margin="103,126,0,0" VerticalAlignment="Top" Width="103" Height="24" Click="btnConfirm_Click"/>
+        <Button Content="确认" Name="btnConfirm" HorizontalAlignment="Left" Margin="103,126,0,0" VerticalAlignment="Top" Width="103" Height="24" Click="btnConfirm_Click" IsDefault="True"/>
         <Button Content="取消" Name="btnCancel"  HorizontalAlignment="Left" Margin="241,126,0,0" VerticalAlignment="Top" Width="98"  Height="24" RenderTransformOrigin="0.52,3.292" Click="btnCancel_Click"/>
         <Label Content="提示：" Height="24" HorizontalAlignment="Left" Margin="51,44,0,0" VerticalAlignment="Top"/>
         <TextBox HorizontalAlignment="Left" Name="txtHint"  Height="61" Margin="102,51,0,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Width="236"/>

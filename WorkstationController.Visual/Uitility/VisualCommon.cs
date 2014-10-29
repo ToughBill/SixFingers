@@ -48,6 +48,20 @@ namespace WorkstationController.VisualElement.Uitility
         }
 
         /// <summary>
+        /// convert pixel on UI to physical position.
+        /// </summary>
+        /// <param name="xPixel"></param>
+        /// <param name="yPixel"></param>
+        /// <returns></returns>
+        public static Point Convert2PhysicalXY(double xPixel,double yPixel)
+        {
+            double percentY = (yPixel - GetYShift()) / (worktableOccupiesRatio * containerSize.Height);
+            double percentX = (xPixel-GetXShift()) / (worktableOccupiesRatio * containerSize.Width);
+            return new Point( Configurations.Instance.Worktable.Size.Width * percentX,
+                              Configurations.Instance.Worktable.Size.Height * percentY);
+        }
+
+        /// <summary>
         /// find the parent visual which type is T
         /// </summary>
         /// <typeparam name="T"></typeparam>
@@ -101,6 +115,13 @@ where T : class
             }
         }
 
+        /// <summary>
+        /// from physical to visual
+        /// </summary>
+        /// <param name="x"></param>
+        /// <param name="y"></param>
+        /// <param name="size"></param>
+        /// <returns></returns>
         public static Rect Physic2Visual(int x, int y, Size size)
         {
             double xPixel = VisualCommon.Convert2PixelXUnit(x);

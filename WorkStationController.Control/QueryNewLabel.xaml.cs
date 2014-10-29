@@ -35,7 +35,8 @@ namespace WorkstationController.Control
         public QueryNewLabelForm(UIElementCollection uIElementCollection, LabwareUIElement labwareUIElement):this()
         {
             // TODO: Complete member initialization
-            
+            //find the current one, the label set cannot be same to one of the other ones'.
+            txtLabwareLabel.Text = labwareUIElement.Label;
             try
             {
                 labwareUIElements = new List<LabwareUIElement>();
