@@ -80,6 +80,31 @@
                                             <TextBlock Text="{Binding Path=TypeName}" ToolTip="{Binding Path=TypeName}"/>
                                         </DataTemplate>
                                     </ListBox.ItemTemplate>
+                                    <ListBox.ContextMenu>
+                                        <ContextMenu>
+                                            <MenuItem Header="Edit..." Click="OnCarrierEditMenuItemClick">
+                                                <MenuItem.Icon>
+                                                    <Image Source="/Resources/edit.png" Height="20" Width="20"/>
+                                                </MenuItem.Icon>
+                                            </MenuItem>
+                                            <MenuItem Header="New..." Click="OnCarrierNewMenuItemClick">
+                                                <MenuItem.Icon>
+                                                    <Image Source="/Resources/add.png" Height="20" Width="20"/>
+                                                </MenuItem.Icon>
+                                            </MenuItem>
+                                            <MenuItem Header="Duplicate..." Click="OnCarrierDuplicateMenuItemClick">
+                                                <MenuItem.Icon>
+                                                    <Image Source="/Resources/duplicate.png" Height="20" Width="20"/>
+                                                </MenuItem.Icon>
+                                            </MenuItem>
+                                            <Separator/>
+                                            <MenuItem Header="Delete" Click="OnCarrierDeleteMenuItemClick">
+                                                <MenuItem.Icon>
+                                                    <Image Source="/Resources/delete.png" Height="20" Width="20"/>
+                                                </MenuItem.Icon>
+                                            </MenuItem>
+                                        </ContextMenu>
+                                    </ListBox.ContextMenu>
                                 </ListBox>
                             </DockPanel>
                         </TabItem>

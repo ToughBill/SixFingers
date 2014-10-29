@@ -17,12 +17,12 @@ namespace WorkstationController.Control
     /// <summary>
     /// Interaction logic for CarrierEditor.xaml
     /// </summary>
-    public partial class CarrierEditorUserControl : UserControl
+    public partial class CarrierEditor : UserControl
     {
         /// <summary>
         /// ctor
         /// </summary>
-        public CarrierEditorUserControl()
+        public CarrierEditor()
         {
             InitializeComponent();
         }

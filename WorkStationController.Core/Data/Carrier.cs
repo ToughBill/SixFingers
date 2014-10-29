@@ -238,10 +238,23 @@ namespace WorkstationController.Core.Data
     {
         public event PropertyChangedEventHandler PropertyChanged = delegate { };
 
+        private int                          _number = 0;
         private Point                        _position = new Point(0, 0);
         private Size                         _sz = new Size(0, 0);
         private ObservableCollection<string> _allowedLabwareTypeNames = new ObservableCollection<string>();
        
+        public int Number
+        {
+            get
+            {
+                return this._number;
+            }
+            set
+            {
+                PropertyChangedNotifyHelper.NotifyPropertyChanged<int>(ref this._number, value, this, "Number", this.PropertyChanged);
+            }
+        }
+
         public Point Position 
         {
             get

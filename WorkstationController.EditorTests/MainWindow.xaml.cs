@@ -40,7 +40,7 @@ namespace WorkstationController.EditorTests
             strs.Add(LabwareEditor);
             strs.Add(CarrierEditor);
             labwareEditorUserControl = new LabwareEditor();
-            carrierEditorUserControl = new CarrierEditorUserControl();
+            carrierEditorUserControl = new CarrierEditor();
           
             labware.ZValues = new ZValues(360, 625, 665, 1610);
             labware.Dimension = new Dimension(0, 2700);
