@@ -152,24 +152,24 @@ namespace WorkstationController
 
         private void OnCarrierNewMenuItemClick(object sender, RoutedEventArgs e)
         {
-            Labware labware = new Labware();
-            LabwareEditor editor = new LabwareEditor();
-            editor.DataContext = labware;
+            Carrier carrier = new Carrier();
+            CarrierEditor editor = new CarrierEditor();
+            editor.DataContext = carrier;
             this.AddTabItem(editor);
         }
 
         private void OnCarrierDuplicateMenuItemClick(object sender, RoutedEventArgs e)
         {
-            Labware labware = ((Labware)this.lb_labwares.SelectedItem).Clone() as Labware;
-            LabwareEditor editor = new LabwareEditor();
-            editor.DataContext = labware;
+            Carrier carrier = ((Carrier)this.lb_carriers.SelectedItem).Clone() as Carrier;
+            CarrierEditor editor = new CarrierEditor();
+            editor.DataContext = carrier;
             this.AddTabItem(editor);
         }
 
         private void OnCarrierDeleteMenuItemClick(object sender, RoutedEventArgs e)
         {
-            Labware selectedLW = (Labware)this.lb_labwares.SelectedItem;
-            InstrumentsManager.Instance.DeleteInstrument<Labware>(selectedLW.ID);
+            Carrier selectedCr = (Carrier)this.lb_labwares.SelectedItem;
+            InstrumentsManager.Instance.DeleteInstrument<Carrier>(selectedCr.ID);
         }
         #endregion
 
