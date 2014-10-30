@@ -340,7 +340,10 @@ namespace WorkstationController.Core.Utility
         #region FileSystemWatcher event handlers
         private void OnLabwareXmlFileCreated(object sender, FileSystemEventArgs e)
         {
-            Labware labware = SerializationHelper.Deserialize<Labware>(e.FullPath);
+            Labware labware = this.CreatedInstrument.Pop() as Labware;
+            if (labware == null)
+                throw new InvalidOperationException("Labware instance was supposed to be existing.");
+
             this._labwares.Add(e.FullPath, labware);
             this.PropertyChanged(this, new PropertyChangedEventArgs("Labwares"));
         }
@@ -353,7 +356,10 @@ namespace WorkstationController.Core.Utility
 
         private void OnCarrierXmlFileCreated(object sender, FileSystemEventArgs e)
         {
-            Carrier carrier = SerializationHelper.Deserialize<Carrier>(e.FullPath);
+            Carrier carrier = this.CreatedInstrument.Pop() as Carrier;
+            if (carrier == null)
+                throw new InvalidOperationException("Carrier instance was supposed to be existing.");
+
             this._carriers.Add(e.FullPath, carrier);
             this.PropertyChanged(this, new PropertyChangedEventArgs("Carriers"));
         }

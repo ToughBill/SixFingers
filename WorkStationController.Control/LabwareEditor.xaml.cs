@@ -13,6 +13,7 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 using WorkstationController.Core.Data;
+using WorkstationController.Core.Utility;
 
 namespace WorkstationController.Control
 {
@@ -33,6 +34,25 @@ namespace WorkstationController.Control
         void LabwareUserControl_Loaded(object sender, RoutedEventArgs e)
         {
             //cmbItemType.ItemsSource = Enum.GetValues(typeof(LabwareType)).Cast<LabwareType>();
+        }
+
+        private void OnSaveButtonClick(object sender, RoutedEventArgs e)
+        {
+            // The DataContext must be LiquidClass
+            Labware labware = this.DataContext as Labware;
+            if (labware == null)
+                throw new InvalidOperationException("DataContext of LabwareEditor must be an instance of Labware");
+
+            // If this instance of LiquidClass had been serialized, save it
+            string xmlFilePath = string.Empty;
+            if (InstrumentsManager.Instance.FindInstrument<Labware>(labware.ID, out xmlFilePath))
+            {
+                labware.Serialize(xmlFilePath);
+            }
+            else // else save the instance of LiquidClass as a new XML file
+            {
+                InstrumentsManager.Instance.SaveInstrument<Labware>(labware);
+            }
         }
     }
 }

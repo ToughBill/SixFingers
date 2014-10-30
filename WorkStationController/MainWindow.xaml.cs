@@ -56,7 +56,19 @@ namespace WorkstationController
 
             // create new tab item
             TabItem tab = new TabItem();
-            tab.Tag = Guid.NewGuid();
+            
+            // Set the Tag of the tab as the UID of the instrument
+            if(control.DataContext is WareBase)
+            {
+                WareBase ware = control.DataContext as WareBase;
+                tab.Tag = ware.ID;
+            }
+            else if (control.DataContext is LiquidClass)
+            {
+                LiquidClass liquidClass = control.DataContext as LiquidClass;
+                tab.Tag = liquidClass.ID;
+            }
+ 
             tab.HeaderTemplate = tabDynamic.FindResource("TabHeader") as DataTemplate;
 
             StackPanel stackpanel = new StackPanel();
@@ -74,15 +86,9 @@ namespace WorkstationController
             return tab;
         }
 
-        private void tabDynamic_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        private void DeleteTabItem(Guid tag)
         {
-        }
-
-        private void btnDelete_Click(object sender, RoutedEventArgs e)
-        {
-            Guid tabName = (Guid)(sender as Button).CommandParameter;
-
-            var item = tabDynamic.Items.Cast<TabItem>().Where(i => i.Tag.Equals(tabName)).SingleOrDefault();
+            var item = tabDynamic.Items.Cast<TabItem>().Where(i => i.Tag.Equals(tag)).SingleOrDefault();
 
             TabItem tab = item as TabItem;
 
@@ -106,6 +112,16 @@ namespace WorkstationController
                 }
                 tabDynamic.SelectedItem = selectedTab;
             }
+        }
+
+        private void tabDynamic_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+        }
+
+        private void btnDelete_Click(object sender, RoutedEventArgs e)
+        {
+            Guid tabName = (Guid)(sender as Button).CommandParameter;
+            DeleteTabItem(tabName);
         }
         #endregion
 
@@ -138,6 +154,7 @@ namespace WorkstationController
         {
             Labware selectedLW = (Labware)this.lb_labwares.SelectedItem;
             InstrumentsManager.Instance.DeleteInstrument<Labware>(selectedLW.ID);
+            DeleteTabItem(selectedLW.ID);
         }
         #endregion
 
@@ -170,6 +187,7 @@ namespace WorkstationController
         {
             Carrier selectedCr = (Carrier)this.lb_labwares.SelectedItem;
             InstrumentsManager.Instance.DeleteInstrument<Carrier>(selectedCr.ID);
+            DeleteTabItem(selectedCr.ID);
         }
         #endregion
 
@@ -202,6 +220,7 @@ namespace WorkstationController
         {
             LiquidClass selectedLC = (LiquidClass)this.lb_liquidclass.SelectedItem;
             InstrumentsManager.Instance.DeleteInstrument<LiquidClass>(selectedLC.ID);
+            DeleteTabItem(selectedLC.ID);
         }
         #endregion
     }

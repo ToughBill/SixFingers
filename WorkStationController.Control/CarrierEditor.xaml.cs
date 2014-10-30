@@ -11,6 +11,8 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
+using WorkstationController.Core.Data;
+using WorkstationController.Core.Utility;
 
 namespace WorkstationController.Control
 {
@@ -25,6 +27,25 @@ namespace WorkstationController.Control
         public CarrierEditor()
         {
             InitializeComponent();
+        }
+
+        private void OnSaveButtonClick(object sender, RoutedEventArgs e)
+        {
+            // The DataContext must be Carrier
+            Carrier carrier = this.DataContext as Carrier;
+            if (carrier == null)
+                throw new InvalidOperationException("DataContext of Carrier must be an instance of Carrier");
+
+            // If this instance of LiquidClass had been serialized, save it
+            string xmlFilePath = string.Empty;
+            if (InstrumentsManager.Instance.FindInstrument<Carrier>(carrier.ID, out xmlFilePath))
+            {
+                carrier.Serialize(xmlFilePath);
+            }
+            else // else save the instance of LiquidClass as a new XML file
+            {
+                InstrumentsManager.Instance.SaveInstrument<Carrier>(carrier);
+            }
         }
     }
 }

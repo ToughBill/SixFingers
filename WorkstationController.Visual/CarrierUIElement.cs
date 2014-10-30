@@ -178,19 +178,18 @@ namespace WorkstationController.VisualElement
         /// <returns></returns>
         public Site FindSiteForLabware(Point ptInCanvas, string labwareTypeName)
         {
-            if (Grid == Carrier.undefinedGrid)
+            if (Grid == Carrier.undefinedGrid || !_carrier.AllowedLabwareTypeNames.Contains(labwareTypeName))
                 return null;
-            int xPos = GetBoundingRectXStart(Grid);//
+
+            int xPos = GetBoundingRectXStart(Grid);
             int yPos = GetBoundingRectYStart();
             Rect rc = VisualCommon.Physic2Visual(xPos, yPos, new Size(_carrier.Dimension.XLength, _carrier.Dimension.YLength));
             if (!rc.Contains(ptInCanvas))
                 return null;
+
             Site siteExpected = null;
             foreach (Site site in _carrier.Sites)
             {
-                if (!site.AllowedLabwareTypeNames.Contains(labwareTypeName))
-                    continue;
-
                 int xSite = (int)(site.Position.X + xPos);
                 int ySite = (int)(site.Position.Y + yPos);
                 rc = VisualCommon.Physic2Visual(xSite, ySite, site.Size);
@@ -200,8 +199,8 @@ namespace WorkstationController.VisualElement
                     break;
                 }
             }
+
             return siteExpected;
         }
-
     }
 }

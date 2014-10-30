@@ -233,8 +233,6 @@ namespace WorkstationController.Core.Data
 
             return copy;
         }
-
-      
     }
 
     /// <summary>
@@ -296,7 +294,7 @@ namespace WorkstationController.Core.Data
             }
             set
             {
-                PropertyChangedNotifyHelper.NotifyPropertyChanged<int>(ref this._zStart, value, this, "ZStart", this.PropertyChanged);   
+                PropertyChangedNotifyHelper.NotifyPropertyChanged<int>(ref this._zDispense, value, this, "ZDispense", this.PropertyChanged);   
             }
         }
 

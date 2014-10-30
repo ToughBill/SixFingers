@@ -17,9 +17,11 @@ namespace WorkstationController.Core.Data
     public class Carrier : WareBase, ISerialization, INotifyPropertyChanged, ICloneable
     {
         public const int undefinedGrid = 0;
-        private List<Labware> _labwares = new List<Labware>();  // Labwares on the carrier
-        private List<Site> _sites = new List<Site>();           // sites for mounting labwares
-        
+
+        private List<Labware>                _labwares                = new List<Labware>();  // Labwares on the carrier
+        private List<Site>                   _sites                   = new List<Site>();           // sites for mounting labwares
+        private ObservableCollection<string> _allowedLabwareTypeNames = new ObservableCollection<string>();
+
         private int _xoffset = default(int);
         private int _yoffset = default(int);
         private int _grid = 0;
@@ -83,6 +85,24 @@ namespace WorkstationController.Core.Data
                 _sites = new List<Site>();
             }
         }
+
+        /// <summary>
+        /// The labwares that are acceptable.
+        /// </summary>
+        [XmlArray("AllowedLabwareTypeNames")]
+        [XmlArrayItem("AllowedLabwareTypeName", typeof(string), IsNullable = false)]
+        public ObservableCollection<string> AllowedLabwareTypeNames
+        {
+            get
+            {
+                return _allowedLabwareTypeNames;
+            }
+            set
+            {
+                _allowedLabwareTypeNames = value;
+            }
+        }
+
         /// <summary>
         /// Default constructor
         /// </summary>
@@ -180,9 +200,12 @@ namespace WorkstationController.Core.Data
         public object Clone()
         {
             Carrier newCarrier = new Carrier();
-            newCarrier.TypeName = this.TypeName;
+            newCarrier.TypeName = "<Need a name>";
+            newCarrier.Label = "<Need a name>";
             newCarrier.XOffset = this.XOffset;
             newCarrier.YOffset = this.YOffset;
+            foreach (string allowedLabwareTypeName in this.AllowedLabwareTypeNames)
+                newCarrier.AllowedLabwareTypeNames.Add(allowedLabwareTypeName);
             newCarrier.Sites = new List<Site>();
             foreach (Site site in _sites)
                 newCarrier.Sites.Add(site.Clone() as Site);
@@ -196,7 +219,7 @@ namespace WorkstationController.Core.Data
             _dimension = new Data.Dimension(240, 3160);
             _xoffset = 120;
             _yoffset = 247;
-            Site site1 = new Site(new Point(0, 110),new Size(240, 3050),1, new List<string> { LabwareBuildInType.Tubes16Pos13_100MM.ToString() });
+            Site site1 = new Site(new Point(0, 110),new Size(240, 3050), 1);
             _sites.Add(site1);
             _grid = undefinedGrid;
             TypeName = BuildInCarrierType.Tube13mm_16POS.ToString();
@@ -208,9 +231,9 @@ namespace WorkstationController.Core.Data
             _dimension = new Data.Dimension(1490, 3160);
             _xoffset = 120;
             _yoffset = 247;
-            Site site1 = new Site(new Point(55, 250), new Size(1270, 850),1, new List<string> { LabwareBuildInType.Plate96_05ML.ToString()});
-            Site site2 = new Site(new Point(55, 1210), new Size(1270, 850),2, new List<string> { LabwareBuildInType.Plate96_05ML.ToString() });
-            Site site3 = new Site(new Point(55, 2170), new Size(1270, 850),3, new List<string> { LabwareBuildInType.Plate96_05ML.ToString() });
+            Site site1 = new Site(new Point(55, 250), new Size(1270, 850), 1);
+            Site site2 = new Site(new Point(55, 1210), new Size(1270, 850), 2);
+            Site site3 = new Site(new Point(55, 2170), new Size(1270, 850), 3);
             _sites.Add(site1);
             _sites.Add(site2);
             _sites.Add(site3);
@@ -238,27 +261,13 @@ namespace WorkstationController.Core.Data
     {
         public event PropertyChangedEventHandler PropertyChanged = delegate { };
 
-        private int                          _number = 0;
-        private Point                        _position = new Point(0, 0);
-        private Size                         _sz = new Size(0, 0);
-        private int                         _id = -1;        private ObservableCollection<string> _allowedLabwareTypeNames = new ObservableCollection<string>();
+        private Point _position = new Point(0, 0);
+        private Size  _sz       = new Size(0, 0);
+        private int   _id       = -1;        
        
-        public int Number
-        {
-            get
-            {
-                return this._number;
-            }
-            set
-            {
-                PropertyChangedNotifyHelper.NotifyPropertyChanged<int>(ref this._number, value, this, "Number", this.PropertyChanged);
-            }
-        }
-
         /// <summary>
         /// position
-        /// </summary>        public Point Position 
-        /// 
+        /// </summary>
         public Point Position   
         {
             get
@@ -272,7 +281,7 @@ namespace WorkstationController.Core.Data
         }
 
         /// <summary>
-        /// id, 1based
+        /// id, 1-based
         /// </summary>
         public int ID
         {
@@ -287,8 +296,8 @@ namespace WorkstationController.Core.Data
         }   
 
         /// <summary>
-        /// size
-        /// </summary>        public Size Size 
+        /// Size of the carrier
+        /// </summary>
         public Size Size
         { 
             get
@@ -302,39 +311,21 @@ namespace WorkstationController.Core.Data
         }
 
         /// <summary>
-        /// The labwares that are acceptable.
-        /// </summary>
-        [XmlArray("AllowedLabwareTypeNames")]
-        [XmlArrayItem("AllowedLabwareTypeName", typeof(string), IsNullable = false)]
-        public ObservableCollection<string> AllowedLabwareTypeNames
-        {
-            get
-            {
-                return _allowedLabwareTypeNames;
-            }
-            set
-            {
-                _allowedLabwareTypeNames = value;
-            }
-        }
-
-        /// <summary>
         /// Default constructor
         /// </summary>
         public Site()
         { }
 
-        public Site(Point position, Size sz, int id, List<string> allowedLabwareTypeNames)
+        public Site(Point position, Size sz, int id)
         {
             _position = position;
             _sz = sz;
             _id = id;            
-            _allowedLabwareTypeNames = new ObservableCollection<string>(allowedLabwareTypeNames);
         }
 
         public object Clone()
         {
-            Site site = new Site(_position, _sz,_id,new List<string>(_allowedLabwareTypeNames));
+            Site site = new Site(_position, _sz, _id);
             return site;
         }
     }

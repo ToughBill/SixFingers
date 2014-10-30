@@ -56,20 +56,27 @@
         <DataGrid Grid.Row="5" Grid.Column="0" Grid.ColumnSpan="4" Margin="3" AutoGenerateColumns="False" 
                   ItemsSource="{Binding Path=Sites}" FrozenColumnCount="1" CanUserResizeRows="False" CanUserAddRows="False">
             <DataGrid.Columns>
-                <DataGridTextColumn Header="Site" Binding="{Binding Path=Number}" IsReadOnly="True" CanUserResize="False" CanUserSort="False"/>
+                <DataGridTextColumn Header="Site" Binding="{Binding Path=ID}" IsReadOnly="True" CanUserResize="False" CanUserSort="False"/>
                 <DataGridTextColumn Header="X-Offset" MinWidth="90" Binding="{Binding Path=Position.X}"/>
                 <DataGridTextColumn Header="Y-Offset" MinWidth="90" Binding="{Binding Path=Position.Y}"/>
                 <DataGridTextColumn Header="X-Size" MinWidth="90" Binding="{Binding Path=Size.Width}"/>
                 <DataGridTextColumn Header="Y-Size" MinWidth="90" Binding="{Binding Path=Size.Height}"/>
-                <DataGridComboBoxColumn Header="Allowed Labware Type Names" ItemsSource="{Binding Path=AllowedLabwareTypeNames}"/>
+                <DataGridTemplateColumn Header="Shape" MinWidth="90">
+                    <DataGridTemplateColumn.CellTemplate>
+                        <DataTemplate>
+                            <TextBlock Text="Rectangle"/>
+                        </DataTemplate>
+                    </DataGridTemplateColumn.CellTemplate>
+                </DataGridTemplateColumn>
             </DataGrid.Columns>
         </DataGrid>
         <!--Allowed labware type-->
         <Label Grid.Row="6" Grid.Column="0" Content="Allowed Labwae on this carrier:" HorizontalContentAlignment="Right"/>
-        <ComboBox Grid.Row="6" Grid.Column="1" Grid.ColumnSpan="2" Width="150" HorizontalAlignment="Left"/>
+        <ComboBox Grid.Row="6" Grid.Column="1" Grid.ColumnSpan="2" Width="150" HorizontalAlignment="Left"
+                  ItemsSource="{Binding Path=AllowedLabwareTypeNames}" SelectedIndex="0"/>
         <!--Save button-->
         <StackPanel Grid.Row="7" Grid.Column="2" Grid.ColumnSpan="2" HorizontalAlignment="Right" VerticalAlignment="Bottom" Height="35" Width="155">
-            <Button MinWidth="150" MinHeight="30" Content="Save" Margin="0,5,5,0"/>
+            <Button MinWidth="150" MinHeight="30" Content="Save" Margin="0,5,5,0" Click="OnSaveButtonClick"/>
         </StackPanel>
     </Grid>
 </UserControl>
