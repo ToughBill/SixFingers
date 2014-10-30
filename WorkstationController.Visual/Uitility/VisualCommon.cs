@@ -134,6 +134,17 @@ where T : class
         }
 
         /// <summary>
+        /// most left position
+        /// </summary>
+        public static double MostLeft
+        {
+            get
+            {
+                return GetXShift() + VisualCommon.Convert2PixelXUnit(Configurations.Instance.Worktable.FirstPinPosition.X);
+            }
+        }
+
+        /// <summary>
         /// from physical to visual 
         /// </summary>
         /// <param name="size"></param>

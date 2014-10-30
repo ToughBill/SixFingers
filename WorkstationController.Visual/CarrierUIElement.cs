@@ -72,8 +72,8 @@ namespace WorkstationController.VisualElement
         override protected void Render(DrawingVisual drawingVisual)
         {
             DrawingContext drawingContext = drawingVisual.RenderOpen();
-            if (Grid == Carrier.undefinedGrid)
-                return;
+            //if (Grid == Carrier.undefinedGrid)
+            //    return;
 
             //1 border
             int xPos = GetBoundingRectXStart(_carrier.Grid);//

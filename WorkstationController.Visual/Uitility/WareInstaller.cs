@@ -49,31 +49,27 @@ namespace WorkstationController.VisualElement.Uitility
         private static void RemoveUIElementsOnCarrier(Grid container, CarrierUIElement carrierUIElement)
         {
             Carrier carrier = carrierUIElement.Carrier;
-            for (int i = 0; i < container.Children.Count; i++)
+            foreach(var labware in carrier.Labwares)
             {
-                if(container.Children[i] is LabwareUIElement)
-                {
-                    LabwareUIElement labwareUIElement = container.Children[i] as LabwareUIElement;
-                    RemoveLostLabwareUIElement(container,labwareUIElement, carrier);
-                }
+                RemoveLabware(container, labware);
             }
             carrier.Labwares.Clear();
            
         }
 
-        private static void RemoveLostLabwareUIElement(Grid container, LabwareUIElement labwareUIElement, Carrier carrier)
+        private static void RemoveLabware(Grid container, Labware labware)
         {
-            for (int j = 0; j < carrier.Labwares.Count; j++)
+            for (int i = 0; i < container.Children.Count; i++)
             {
-                if (labwareUIElement.Labware.Equals(carrier.Labwares[j]))
+                if (container.Children[i] is LabwareUIElement)
                 {
-                    container.Children.Remove(labwareUIElement);
+                    if (((LabwareUIElement)container.Children[i]).Labware.Equals(labware))
+                        container.Children.RemoveAt(i);
                 }
             }
         }
 
-      
-
+       
         private static bool IsValid(BasewareUIElement baseUIElement, Point position, Grid container)
         {
             int gridPos = VisualCommon.FindCorrespondingGrid(position.X);

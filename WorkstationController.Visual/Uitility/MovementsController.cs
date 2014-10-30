@@ -47,6 +47,7 @@ namespace WorkstationController.VisualElement.Uitility
             }
         }
 
+        
 
         public bool AllowPickup
         { 
@@ -107,10 +108,8 @@ namespace WorkstationController.VisualElement.Uitility
             _selectedUIElement = FindSelectedUIElement(ptClick);
             if (_selectedUIElement == null)
                 return;
-            
             _ptClick = ptClick;
             SetUIElementSelectedState();
-
             //process double click event for labwareUIElement
             if(_selectedUIElement is LabwareUIElement && isDoubleClick)
             {
@@ -120,6 +119,7 @@ namespace WorkstationController.VisualElement.Uitility
                 _selectedUIElement = null;
                 return;
             }
+            
             Mouse.OverrideCursor = Cursors.Hand;
             _myCanvas.CaptureMouse();
         }
@@ -127,23 +127,26 @@ namespace WorkstationController.VisualElement.Uitility
         private void SetUIElementSelectedState()
         {
             _selectedUIElement.Selected = true;
+            RememberRelativePosition(_selectedUIElement);
             if(_selectedUIElement is LabwareUIElement)
             {
                 //relativeClickPosition2LeftTop
-                RememberRelativePosition((LabwareUIElement)_selectedUIElement);
                 ((LabwareUIElement)_selectedUIElement).Labware.ParentCarrier = null;
             }
         }
 
-        private void RememberRelativePosition(LabwareUIElement labwareUIElement)
+        private void RememberRelativePosition(BasewareUIElement baseUIElement)
         {
-            if(labwareUIElement.Labware.ParentCarrier == null)
+            if (baseUIElement is LabwareUIElement)
             {
-                relativeClickPosition2LeftTop = new Vector(-1, -1);
-                return;
+                if (((LabwareUIElement)baseUIElement).Labware.ParentCarrier == null)
+                {
+                    relativeClickPosition2LeftTop = new Vector(-1, -1);
+                    return;
+                }
             }
-            Point ptLabwareUIElementInCanvase = labwareUIElement.GetLeftTopPositionInCanvas();
-            relativeClickPosition2LeftTop = _ptClick - ptLabwareUIElementInCanvase;
+            Point ptIElementInCanvase = baseUIElement.GetLeftTopPositionInCanvas();
+            relativeClickPosition2LeftTop = _ptClick - ptIElementInCanvase;
         }
 
         private void ClearLastSelection()
@@ -166,8 +169,14 @@ namespace WorkstationController.VisualElement.Uitility
             //pipetting commands need to highlight the labware
             if(otherFormNeedPickup)
                 return;
-            
-            WareInstaller.MountThis(_selectedUIElement,e.GetPosition(_myCanvas),_myCanvas);
+
+
+            //here is very tricky, for Carrier, we hope to install them by topleft, 
+            //but for labware, we hope to install them by their center.
+            Vector vecAdjust = new Vector();
+            if(_selectedUIElement is CarrierUIElement)
+                vecAdjust = GetAdjustVector();// = e.GetPosition(_myCanvas) - relativeClickPosition2LeftTop;
+            WareInstaller.MountThis(_selectedUIElement, e.GetPosition(_myCanvas) - vecAdjust, _myCanvas);
             DeHighlightAllSite();
             _selectedUIElement.Selected = false;
             _selectedUIElement = null;
@@ -177,22 +186,17 @@ namespace WorkstationController.VisualElement.Uitility
         {
             if (otherFormNeedPickup) //other form pick, don't allow mousemove
                 return;
-
+           
             Point ptMouse = e.GetPosition(_myCanvas);
             if (e.LeftButton == MouseButtonState.Released)
                 return;
             if (!enableMouseMove)
                 return;
-            
-            if (ptMouse.X < 0 || ptMouse.X > _myCanvas.ActualWidth)
-                return;
 
-            if (ptMouse.Y < 0 || ptMouse.Y > _myCanvas.ActualHeight)
-                return;
-            
             bool hasUIElement2Operate = _uiElementCandidate != null || _selectedUIElement != null;
             if (!hasUIElement2Operate)
                 return;
+
             
             if(_selectedUIElement is LabwareUIElement)
             {
@@ -223,24 +227,20 @@ namespace WorkstationController.VisualElement.Uitility
   
         private void UpdateSelectedElement(Point ptCurrent)
         {
-            if (_selectedUIElement is LabwareUIElement)
-            {
-                var physicalSize = new Size(_selectedUIElement.Ware.Dimension.XLength, _selectedUIElement.Ware.Dimension.YLength);
-                Size visualSize = VisualCommon.Physic2Visual(physicalSize);
-                //adjust position to its center position
-                if (relativeClickPosition2LeftTop.X < 0)
-                {
-                    ptCurrent.X -= visualSize.Width / 2;
-                    ptCurrent.Y -= visualSize.Height / 2;
-                }
-                else
-                {
-                    ptCurrent -= relativeClickPosition2LeftTop;
-                }
-            }
+            //adjust position to its center position
+            Vector vectorAdjust = GetAdjustVector();
+            ptCurrent -= vectorAdjust;
             _selectedUIElement.SetDragPosition(ptCurrent);
             Debug.WriteLine(string.Format("x{0} y{1}", ptCurrent.X, ptCurrent.Y));
             UpdateLabwareUIElements(_selectedUIElement,ptCurrent);
+        }
+
+        private Vector GetAdjustVector()
+        {
+            Size visualSize = _selectedUIElement.VisualSize;
+            Vector vector = relativeClickPosition2LeftTop.X < 0 ? new Vector(visualSize.Width / 2, visualSize.Height / 2)
+                : relativeClickPosition2LeftTop;
+            return vector;
         }
 
         private void UpdateLabwareUIElements(BasewareUIElement _selectedUIElement,Point ptCurrent)
@@ -282,10 +282,13 @@ namespace WorkstationController.VisualElement.Uitility
             if (result == null)
                 return null;
 
-            if( otherFormNeedPickup)
+            if (otherFormNeedPickup)
                 return VisualCommon.FindParent<LabwareUIElement>(result.VisualHit);
             else
-                return VisualCommon.FindParent<BasewareUIElement>(result.VisualHit); 
+            {
+                //we give labwareUI element priority
+                return VisualCommon.FindParent<BasewareUIElement>(result.VisualHit);
+            }
         }
 
     }
