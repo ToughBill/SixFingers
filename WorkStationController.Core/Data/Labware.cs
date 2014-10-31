@@ -15,7 +15,8 @@ namespace WorkstationController.Core.Data
     public enum LabwareBuildInType
     {
         Tubes16Pos13_100MM = 0,
-        Plate96_05ML = 1
+        Plate96_05ML = 1,
+        Plate24_2ML  = 2
     }
 
     /// <summary>
@@ -92,6 +93,9 @@ namespace WorkstationController.Core.Data
             }
             set
             {
+                //remove from the original carrier.
+                if (_parentCarrier != null)
+                    _parentCarrier.Labwares.Remove(this);
                 _parentCarrier = value;
                 if (value != null)
                     this.OnPropertyChanged<Carrier>(ref this._parentCarrier, value, "ParentCarrier");

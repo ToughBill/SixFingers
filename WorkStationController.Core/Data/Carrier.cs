@@ -237,7 +237,8 @@ namespace WorkstationController.Core.Data
             _sites.Add(site1);
             _sites.Add(site2);
             _sites.Add(site3);
-
+            _allowedLabwareTypeNames.Add(LabwareBuildInType.Plate96_05ML.ToString());
+            _allowedLabwareTypeNames.Add(LabwareBuildInType.Plate24_2ML.ToString());
             _grid = undefinedGrid;
             TypeName = BuildInCarrierType.MP_3POS.ToString();
         }
