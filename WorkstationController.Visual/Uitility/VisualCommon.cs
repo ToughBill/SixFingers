@@ -165,12 +165,12 @@ where T : class
         /// <param name="drawingContext"></param>
         /// <param name="color"></param>
         /// <param name="brush"></param>
-        public static void DrawRect(int x, int y, Size size, DrawingContext drawingContext, Color color, Brush brush = null)
+        public static void DrawRect(int x, int y, Size size, DrawingContext drawingContext, Color color, Brush brush = null, int thickness = 1)
         {
             Rect rc = Physic2Visual(x,y,size);
             if (brush == null)
                 brush = Brushes.Transparent;
-            drawingContext.DrawRectangle(brush, new Pen(new SolidColorBrush(color), 1), rc);
+            drawingContext.DrawRectangle(brush, new Pen(new SolidColorBrush(color), thickness), rc);
         }
 
      
@@ -203,7 +203,7 @@ where T : class
             double rXPixel = VisualCommon.Convert2PixelXUnit(radius);
             double rYPixel = VisualCommon.Convert2PixelYUnit(radius);
             Brush brush = new SolidColorBrush(color);
-            drawingContext.DrawEllipse(brush, new Pen(new SolidColorBrush(color), 1), new Point(xPixel, yPixel), rXPixel, rYPixel);
+            drawingContext.DrawEllipse(null, new Pen(new SolidColorBrush(color), 1), new Point(xPixel, yPixel), rXPixel, rYPixel);
         }
 
         private static double GetXShift()
@@ -240,6 +240,8 @@ where T : class
 
         }
 
+    
+
         internal static void DrawText(Point pt, 
                                       string text,
                                       DrawingContext drawingContext)
@@ -248,12 +250,15 @@ where T : class
             double xPixel = VisualCommon.Convert2PixelXUnit(pt.X) + GetXShift();
             double yPixel = VisualCommon.Convert2PixelYUnit(pt.Y) + GetYShift();
             Point ptVisual = new Point(xPixel, yPixel);
-            drawingContext.DrawText(new FormattedText(text,
+            double fontSize = 10 * containerSize.Height / 400;
+            
+            var formattedText = new FormattedText(text,
                          CultureInfo.GetCultureInfo("en-us"),
                          FlowDirection.LeftToRight,
                          new Typeface("Verdana"),
-                         10 * containerSize.Height / 400, System.Windows.Media.Brushes.DarkBlue),
-                         ptVisual);
+                         fontSize, System.Windows.Media.Brushes.DarkBlue);
+
+            drawingContext.DrawText(formattedText,ptVisual);
         }
 
         internal static void DrawLine(Point ptStart, Point ptEnd,DrawingContext dc, Color color)
@@ -263,4 +268,3 @@ where T : class
             dc.DrawLine(myPen, ptStart, ptEnd);
         }
     }
-}

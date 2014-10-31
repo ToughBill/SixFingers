@@ -86,9 +86,10 @@ namespace WorkstationController.VisualElement
             //    new Size(_worktable.FirstRowPinSize.Width*15,_worktable.FirstRowPinSize.Width*30), 
             //    drawingContext, 
             //    Colors.OrangeRed,Brushes.DarkBlue);
-
+            Brush fillBrush = new SolidColorBrush(Color.FromArgb(128, 200, 200, 200));
             Color border = _isSelected ? Colors.Blue : Colors.Black;
-            VisualCommon.DrawRect(xPos, yPos, sz, drawingContext, border);
+            VisualCommon.DrawRect(xPos, yPos, sz, drawingContext, border,fillBrush);
+            fillBrush = new SolidColorBrush(Color.FromArgb(128, 255, 255, 255));
             //VisualCommon.DrawLine()
             //3 each site
             foreach(Site site in _carrier.Sites)
@@ -100,7 +101,7 @@ namespace WorkstationController.VisualElement
                 
                 Size tmpSZ = new Size(site.Size.Width,site.Size.Height);
                 Rect rc = new Rect(new Point(xSite, ySite), tmpSZ);
-                Brush fillBrush = null;
+                
                 if (bNeedHighLight)
                 {
                     BlowUp(ref rc);
@@ -178,7 +179,7 @@ namespace WorkstationController.VisualElement
         /// <returns></returns>
         public Site FindSiteForLabware(Point ptInCanvas, string labwareTypeName)
         {
-            if (Grid == Carrier.undefinedGrid || !_carrier.AllowedLabwareTypeNames.Contains(labwareTypeName))
+            if (Grid <= Carrier.undefinedGrid || !_carrier.AllowedLabwareTypeNames.Contains(labwareTypeName))
                 return null;
 
             int xPos = GetBoundingRectXStart(Grid);

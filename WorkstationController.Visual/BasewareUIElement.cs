@@ -21,9 +21,14 @@ namespace WorkstationController.VisualElement
         /// </summary>
         protected Worktable _worktable = null;
         protected bool _isSelected = false;
+        protected bool _isHighLighted = false;
         protected WareBase _ware = null;
         protected Point _ptDragPosition;
 
+        /// <summary>
+        /// ctor
+        /// </summary>
+        /// <param name="ware"></param>
         public BasewareUIElement(WareBase ware)
         {
             _ware = ware;
@@ -32,6 +37,9 @@ namespace WorkstationController.VisualElement
             ware.PropertyChanged += ware_PropertyChanged;
         }
 
+        /// <summary>
+        /// get inner ware
+        /// </summary>
         public WareBase Ware { 
             get
             {
@@ -82,6 +90,24 @@ namespace WorkstationController.VisualElement
             Render(drawingVisual);
             return drawingVisual;
         }
+
+        /// <summary>
+        /// in some case, we need just highLight the ware instead of Selecting it,
+        /// because select meaning potential movement.
+        /// </summary>
+        public bool HighLighted
+        {
+            get
+            {
+                return _isHighLighted;
+            }
+            set
+            {
+                _isHighLighted = value;
+                InvalidateVisual();
+            }
+        }
+
 
         /// <summary>
         /// whether the UIElement is selected

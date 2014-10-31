@@ -58,7 +58,7 @@ namespace WorkstationController.VisualElement.Uitility
             set
             {
                 otherFormNeedPickup = value;
-                ClearLastSelection();
+                //ClearLastSelection();
             }
         }
 
@@ -99,7 +99,7 @@ namespace WorkstationController.VisualElement.Uitility
         {
             //judge double click
             DateTime now = DateTime.Now;
-            bool isDoubleClick = now.Subtract(lastClickTime).TotalSeconds < 0.5;
+            bool isDoubleClick = e.ClickCount == 2;
             lastClickTime = now;
 
             //select ui element
@@ -108,19 +108,24 @@ namespace WorkstationController.VisualElement.Uitility
             _selectedUIElement = FindSelectedUIElement(ptClick);
             if (_selectedUIElement == null)
                 return;
-            _ptClick = ptClick;
-            SetUIElementSelectedState();
+           
             //process double click event for labwareUIElement
             if(_selectedUIElement is LabwareUIElement && isDoubleClick)
             {
                 LabwareUIElement labwareUIElement = _selectedUIElement as LabwareUIElement;
+                labwareUIElement.Selected = false;
                 onLabelPreviewChanged(this, new LabelChangeEventArgs(labwareUIElement));
-                _selectedUIElement.Selected = false;
                 _selectedUIElement = null;
                 return;
             }
-            
-            Mouse.OverrideCursor = Cursors.Hand;
+
+            if(otherFormNeedPickup)
+            {
+                _selectedUIElement.HighLighted = true;
+                return;
+            }
+            _ptClick = ptClick;
+            SetUIElementSelectedState();
             _myCanvas.CaptureMouse();
         }
 
@@ -154,6 +159,7 @@ namespace WorkstationController.VisualElement.Uitility
             foreach (var uiElement in _myCanvas.Children)
             {
                 ((BasewareUIElement)uiElement).Selected = false;
+                ((BasewareUIElement)uiElement).HighLighted = false;
             }
         }
 

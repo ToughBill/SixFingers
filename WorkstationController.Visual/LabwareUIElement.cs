@@ -68,9 +68,9 @@ namespace WorkstationController.VisualElement
         {
             DrawingContext drawingContext = drawingVisual.RenderOpen();
             Carrier carrier = _labware.ParentCarrier ;
-            if (!_isSelected && carrier == null)
+            
+            if (!NeedMoveOrOnACarrier())
                 return;
-
 
             int mapGrid = 0;
             if( carrier != null)
@@ -82,7 +82,6 @@ namespace WorkstationController.VisualElement
             {
                 mapGrid = VisualCommon.FindCorrespondingGrid(_ptDragPosition.X);
             }
-
 
             int pinPos = (mapGrid - 1) * Worktable.DistanceBetweenAdjacentPins + (int)_worktable.FirstPinPosition.X;
             int xPos = pinPos;
@@ -105,8 +104,13 @@ namespace WorkstationController.VisualElement
             }
             
             Size sz = new Size(_labware.Dimension.XLength, _labware.Dimension.YLength);
-            Color border = _isSelected ? Colors.Blue : Colors.Black;
-            VisualCommon.DrawRect(xPos, yPos, sz, drawingContext, border);
+            Color border = NeedHighLight() ? Colors.Blue : Colors.Black;
+            Color background = _labware.BackgroundColor;
+            background = Color.FromArgb(160,background.R,background.G,background.B);
+            _labware.BackgroundColor = background;
+            Brush brush = new SolidColorBrush(_labware.BackgroundColor);
+            int thickness = NeedHighLight() ? 2 : 1;
+            VisualCommon.DrawRect(xPos, yPos, sz, drawingContext, border, brush, thickness);
             VisualCommon.DrawText( new Point( xPos, yPos+sz.Height), _labware.Label,drawingContext);
             int cols = _labware.WellsInfo.NumberOfWellsX;
             int rows = _labware.WellsInfo.NumberOfWellsY;
@@ -116,14 +120,22 @@ namespace WorkstationController.VisualElement
                 for (int col = 0; col < cols; col++)
                 {
                     var position = _labware.GetPosition(row, col) + vector;
-                    VisualCommon.DrawCircle(position, _labware.WellsInfo.WellRadius, drawingContext, _labware.BackgroundColor);
+                    VisualCommon.DrawCircle(position, _labware.WellsInfo.WellRadius, drawingContext,Colors.Black);
                 }
             }
             drawingContext.Close();
         }
 
+        private bool NeedHighLight()
+        {
+            return _isHighLighted || _isSelected;
+        }
 
-
+        private bool NeedMoveOrOnACarrier()
+        {
+            Carrier carrier = _labware.ParentCarrier ;
+            return _isSelected || carrier != null;
+        }
         
     }
 }
