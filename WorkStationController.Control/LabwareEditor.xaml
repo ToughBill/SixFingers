@@ -71,10 +71,10 @@
         <Button Grid.Row="5" Grid.Column="6" Content="move to"/>
         <Button Grid.Row="6" Grid.Column="5" Content="&lt;&lt;transfer"/>
         <Button Grid.Row="6" Grid.Column="6" Content="move to"/>
-        <TextBox Grid.Row="5" Grid.Column="2" Text="{Binding Path=WellsInfo.FirstWellPosition.X}"/>
-        <TextBox Grid.Row="5" Grid.Column="4" Text="{Binding Path=WellsInfo.FirstWellPosition.Y}"/>
-        <TextBox Grid.Row="6" Grid.Column="2" Text="{Binding Path=WellsInfo.LastWellPosition.X}"/>
-        <TextBox Grid.Row="6" Grid.Column="4" Text="{Binding Path=WellsInfo.LastWellPosition.Y}"/>
+        <TextBox Grid.Row="5" Grid.Column="2" Text="{Binding Path=WellsInfo.FirstWellPositionX}"/>
+        <TextBox Grid.Row="5" Grid.Column="4" Text="{Binding Path=WellsInfo.FirstWellPositionY}"/>
+        <TextBox Grid.Row="6" Grid.Column="2" Text="{Binding Path=WellsInfo.LastWellPositionX}"/>
+        <TextBox Grid.Row="6" Grid.Column="4" Text="{Binding Path=WellsInfo.LastWellPositionY}"/>
         <!--ZValues-->
         <TextBlock Grid.Row="7" Grid.Column="4" Text="Z" VerticalAlignment="Bottom" HorizontalAlignment="Center"/>
         <Label Grid.Row="8" Grid.Column="0" Content="Z-Travel" Grid.ColumnSpan="2" HorizontalContentAlignment="Right"/>

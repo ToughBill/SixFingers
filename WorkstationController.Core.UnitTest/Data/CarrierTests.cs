@@ -27,7 +27,7 @@ namespace WorkstationController.Core.UnitTest
             carrier.Dimension.XLength = 40;
             carrier.Dimension.YLength = 500;
             carrier.Grid = 3;
-            carrier.Sites.Add(new Site(new Point(0, 0), new Size(10, 10), 1));
+            carrier.Sites.Add(new Site(0, 0, 0, 10, 10, 1));
 
             Labware labware1 = new Labware();
             labware1.Label = "Labware1";
@@ -36,8 +36,10 @@ namespace WorkstationController.Core.UnitTest
             labware1.WellsInfo.WellRadius = 4;
             labware1.WellsInfo.NumberOfWellsX = 8;
             labware1.WellsInfo.NumberOfWellsY = 12;
-            labware1.WellsInfo.FirstWellPosition = new Point(8, 10);
-            labware1.WellsInfo.LastWellPosition = new Point(78, 118);
+            labware1.WellsInfo.FirstWellPositionX = 8;
+            labware1.WellsInfo.FirstWellPositionY = 10;
+            labware1.WellsInfo.LastWellPositionX = 78;
+            labware1.WellsInfo.LastWellPositionX = 118;
             labware1.ZValues.ZTravel = 4200;
             labware1.ZValues.ZStart = 4000;
             labware1.ZValues.ZDispense = 3500;
@@ -51,8 +53,10 @@ namespace WorkstationController.Core.UnitTest
             labware2.WellsInfo.WellRadius = 4;
             labware2.WellsInfo.NumberOfWellsX = 8;
             labware2.WellsInfo.NumberOfWellsY = 12;
-            labware2.WellsInfo.FirstWellPosition = new Point(8, 10);
-            labware2.WellsInfo.LastWellPosition = new Point(78, 118);
+            labware1.WellsInfo.FirstWellPositionX = 8;
+            labware1.WellsInfo.FirstWellPositionY = 10;
+            labware1.WellsInfo.LastWellPositionX = 78;
+            labware1.WellsInfo.LastWellPositionX = 118;
             labware2.ZValues.ZTravel = 4200;
             labware2.ZValues.ZStart = 4000;
             labware2.ZValues.ZDispense = 3500;

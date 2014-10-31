@@ -219,7 +219,7 @@ namespace WorkstationController.Core.Data
             _dimension = new Data.Dimension(240, 3160);
             _xoffset = 120;
             _yoffset = 247;
-            Site site1 = new Site(new Point(0, 110),new Size(240, 3050), 1);
+            Site site1 = new Site(0, 110, 0, 240, 3050, 1);
             _sites.Add(site1);
             _grid = undefinedGrid;
             TypeName = BuildInCarrierType.Tube13mm_16POS.ToString();
@@ -231,9 +231,9 @@ namespace WorkstationController.Core.Data
             _dimension = new Data.Dimension(1490, 3160);
             _xoffset = 120;
             _yoffset = 247;
-            Site site1 = new Site(new Point(55, 250), new Size(1270, 850), 1);
-            Site site2 = new Site(new Point(55, 1210), new Size(1270, 850), 2);
-            Site site3 = new Site(new Point(55, 2170), new Size(1270, 850), 3);
+            Site site1 = new Site(55, 250, 0, 1270, 850, 1);
+            Site site2 = new Site(55, 1210, 0, 1270, 850, 2);
+            Site site3 = new Site(55, 2170, 0, 1270, 850, 3);
             _sites.Add(site1);
             _sites.Add(site2);
             _sites.Add(site3);
@@ -262,27 +262,90 @@ namespace WorkstationController.Core.Data
     {
         public event PropertyChangedEventHandler PropertyChanged = delegate { };
 
-        private Point _position = new Point(0, 0);
-        private Size  _sz       = new Size(0, 0);
-        private int   _id       = -1;        
+        private double _xoffset = 0.0;
+        private double _yoffset = 0.0;
+        private double _zoffset = 0.0;
+        private double _xsize   = 0.0;
+        private double _ysize   = 0.0;
+        private int   _id       = -1;       
        
         /// <summary>
-        /// position
+        /// Gets or sets the X-Offset of carrier
         /// </summary>
-        public Point Position   
+        public double XOffset
         {
             get
             {
-                return _position;
+                return _xoffset;
             }
             set
             {
-                PropertyChangedNotifyHelper.NotifyPropertyChanged<Point>(ref this._position, value, this, "Position", this.PropertyChanged);
+                PropertyChangedNotifyHelper.NotifyPropertyChanged<double>(ref this._xoffset, value, this, "XOffset", this.PropertyChanged);
             }
         }
 
         /// <summary>
-        /// id, 1-based
+        /// Gets or sets the Y-Offset of carrier
+        /// </summary>
+        public double YOffset
+        {
+            get
+            {
+                return _yoffset;
+            }
+            set
+            {
+                PropertyChangedNotifyHelper.NotifyPropertyChanged<double>(ref this._yoffset, value, this, "YOffset", this.PropertyChanged);
+            }
+        }
+
+        /// <summary>
+        /// Gets or sets the Z-Offset of carrier
+        /// </summary>
+        public double ZOffset
+        {
+            get
+            {
+                return _zoffset;
+            }
+            set
+            {
+                PropertyChangedNotifyHelper.NotifyPropertyChanged<double>(ref this._zoffset, value, this, "ZOffset", this.PropertyChanged);
+            }
+        }
+
+        /// <summary>
+        /// Gets or sets the X-Size of carrier
+        /// </summary>
+        public double XSize
+        {
+            get
+            {
+                return _xsize;
+            }
+            set
+            {
+                PropertyChangedNotifyHelper.NotifyPropertyChanged<double>(ref this._xsize, value, this, "XSize", this.PropertyChanged);
+            }
+        }
+
+        /// <summary>
+        /// Gets or sets the X-Size of carrier
+        /// </summary>
+        public double YSize
+        {
+            get
+            {
+                return _ysize;
+            }
+            set
+            {
+                PropertyChangedNotifyHelper.NotifyPropertyChanged<double>(ref this._ysize, value, this, "YSize", this.PropertyChanged);
+            }
+        }
+
+        /// <summary>
+        /// Gets or sets the Id of carrier, 1-based
         /// </summary>
         public int ID
         {
@@ -297,37 +360,26 @@ namespace WorkstationController.Core.Data
         }   
 
         /// <summary>
-        /// Size of the carrier
-        /// </summary>
-        public Size Size
-        { 
-            get
-            {
-                return _sz;
-            }
-            set
-            {
-                PropertyChangedNotifyHelper.NotifyPropertyChanged<Size>(ref this._sz, value, this, "Size", this.PropertyChanged);
-            }
-        }
-
-        /// <summary>
         /// Default constructor
         /// </summary>
         public Site()
         { }
 
-        public Site(Point position, Size sz, int id)
+        public Site(double xoffset, double yoffset, double zoffset,
+                    double xsize, double ysize, 
+                    int id)
         {
-            _position = position;
-            _sz = sz;
+            _xoffset = xoffset;
+            _yoffset = yoffset;
+            _zoffset = zoffset;
+            _xsize = xsize;
+            _ysize = ysize;
             _id = id;            
         }
 
         public object Clone()
         {
-            Site site = new Site(_position, _sz, _id);
-            return site;
+            return new Site(_xoffset, _yoffset, _zoffset, _xsize, _yoffset, _id);
         }
     }
 }

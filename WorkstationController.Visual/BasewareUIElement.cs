@@ -190,8 +190,8 @@ namespace WorkstationController.VisualElement
             {
                 int siteIndex = ((Labware)_ware).SiteID - 1;
                 var site = carrier.Sites[siteIndex];
-                xPos += (int)site.Position.X;       //get site x start pos
-                yPos += (int)site.Position.Y;
+                xPos += (int)site.XOffset;       //get site x start pos
+                yPos += (int)site.YOffset;
             }
             Rect rc = VisualCommon.Physic2Visual(xPos, yPos, new Size(0, 0));
             return rc.TopLeft;

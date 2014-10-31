@@ -57,10 +57,11 @@
                   ItemsSource="{Binding Path=Sites}" FrozenColumnCount="1" CanUserResizeRows="False" CanUserAddRows="False">
             <DataGrid.Columns>
                 <DataGridTextColumn Header="Site" Binding="{Binding Path=ID}" IsReadOnly="True" CanUserResize="False" CanUserSort="False"/>
-                <DataGridTextColumn Header="X-Offset" MinWidth="90" Binding="{Binding Path=Position.X}"/>
-                <DataGridTextColumn Header="Y-Offset" MinWidth="90" Binding="{Binding Path=Position.Y}"/>
-                <DataGridTextColumn Header="X-Size" MinWidth="90" Binding="{Binding Path=Size.Width}"/>
-                <DataGridTextColumn Header="Y-Size" MinWidth="90" Binding="{Binding Path=Size.Height}"/>
+                <DataGridTextColumn Header="X-Offset" MinWidth="90" Binding="{Binding Path=XOffset}"/>
+                <DataGridTextColumn Header="Y-Offset" MinWidth="90" Binding="{Binding Path=YOffset}"/>
+                <DataGridTextColumn Header="Z-Offset" MinWidth="90" Binding="{Binding Path=ZOffset}"/>
+                <DataGridTextColumn Header="X-Size" MinWidth="90" Binding="{Binding Path=XSize}"/>
+                <DataGridTextColumn Header="Y-Size" MinWidth="90" Binding="{Binding Path=YSize}"/>
                 <DataGridTemplateColumn Header="Shape" MinWidth="90">
                     <DataGridTemplateColumn.CellTemplate>
                         <DataTemplate>

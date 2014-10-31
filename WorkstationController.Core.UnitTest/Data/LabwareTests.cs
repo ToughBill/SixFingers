@@ -34,8 +34,10 @@ namespace WorkstationController.Core.UnitTest
             labware.WellsInfo.WellRadius = 4;
             labware.WellsInfo.NumberOfWellsX = 8;
             labware.WellsInfo.NumberOfWellsY = 12;
-            labware.WellsInfo.FirstWellPosition = new Point(8, 10);
-            labware.WellsInfo.LastWellPosition = new Point(78, 118);
+            labware.WellsInfo.FirstWellPositionX = 8;
+            labware.WellsInfo.FirstWellPositionY = 10;
+            labware.WellsInfo.LastWellPositionX = 78;
+            labware.WellsInfo.LastWellPositionX = 118;
 
             labware.ZValues.ZTravel = 300;
             labware.ZValues.ZStart = 600;

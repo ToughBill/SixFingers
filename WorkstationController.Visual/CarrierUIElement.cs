@@ -94,12 +94,12 @@ namespace WorkstationController.VisualElement
             //3 each site
             foreach(Site site in _carrier.Sites)
             {
-                int xSite = (int)(site.Position.X + xPos);
-                int ySite = (int)(site.Position.Y + yPos);
+                int xSite = (int)(site.XOffset + xPos);
+                int ySite = (int)(site.YOffset + yPos);
                 border = _isSelected ? Colors.Blue : Colors.Brown;
                 bool bNeedHighLight = site == _siteNeedHighLight;
                 
-                Size tmpSZ = new Size(site.Size.Width,site.Size.Height);
+                Size tmpSZ = new Size(site.XSize, site.YSize);
                 Rect rc = new Rect(new Point(xSite, ySite), tmpSZ);
                 
                 if (bNeedHighLight)
@@ -191,9 +191,9 @@ namespace WorkstationController.VisualElement
             Site siteExpected = null;
             foreach (Site site in _carrier.Sites)
             {
-                int xSite = (int)(site.Position.X + xPos);
-                int ySite = (int)(site.Position.Y + yPos);
-                rc = VisualCommon.Physic2Visual(xSite, ySite, site.Size);
+                int xSite = (int)(site.XOffset + xPos);
+                int ySite = (int)(site.YOffset + yPos);
+                rc = VisualCommon.Physic2Visual(xSite, ySite, new Size(site.XSize, site.YSize));
                 if (rc.Contains(ptInCanvas))
                 {
                     siteExpected = site;

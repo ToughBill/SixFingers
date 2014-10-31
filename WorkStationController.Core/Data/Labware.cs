@@ -169,8 +169,8 @@ namespace WorkstationController.Core.Data
                 throw new Exception("row index bigger or equal to the row count!");
 
             double x = 0;
-            double xs = _wellsInfo.FirstWellPosition.X;
-            double xe = _wellsInfo.LastWellPosition.X;
+            double xs = _wellsInfo.FirstWellPositionX;
+            double xe = _wellsInfo.LastWellPositionX;
             if (_wellsInfo.NumberOfWellsX == 1)
             {
                 x = xs;
@@ -181,8 +181,8 @@ namespace WorkstationController.Core.Data
                 x =  xs + col * eachXUnit;
             }
 
-            int ys = (int)WellsInfo.FirstWellPosition.Y;
-            int ye = (int)WellsInfo.LastWellPosition.Y;
+            int ys = (int)WellsInfo.FirstWellPositionY;
+            int ye = (int)WellsInfo.LastWellPositionY;
 
             double y = 0;
             if(_wellsInfo.NumberOfWellsY == 1)
@@ -240,7 +240,7 @@ namespace WorkstationController.Core.Data
     }
 
     /// <summary>
-    /// four z-heights used in pipetting
+    /// Four z-heights used in pipetting
     /// </summary>
     public class ZValues : INotifyPropertyChanged, ICloneable
     {
@@ -357,9 +357,14 @@ namespace WorkstationController.Core.Data
         private int         _wellRadius;
         private int         _numberOfWellsX;
         private int         _numberOfWellsY;
+        private double      _firstWellPositionX;
+        private double      _firstWellPositionY;
+        private double      _lastWellPositionX;
+        private double      _lastWellPositionY;
+        private BottomShape _bottomShape;
+
         private Point       _firstWellPosition;
         private Point       _lastWellPosition;
-        private BottomShape _bottomShape;
 
         /// <summary>
         /// Gets or sets the radius of the well, in 1/10 millimetre(mm.)
@@ -407,32 +412,62 @@ namespace WorkstationController.Core.Data
         }
 
         /// <summary>
-        /// The position of the first well (most top-left well) on labware
+        /// Gets or sets the X position of first well
         /// </summary>
-        public Point FirstWellPosition
+        public double FirstWellPositionX
         {
             get
             {
-                return _firstWellPosition;
+                return _firstWellPositionX;
             }
             set
             {
-                PropertyChangedNotifyHelper.NotifyPropertyChanged<Point>(ref this._firstWellPosition, value, this, "FirstWellPosition", this.PropertyChanged); 
+                PropertyChangedNotifyHelper.NotifyPropertyChanged<double>(ref this._firstWellPositionX, value, this, "FirstWellPositionX", this.PropertyChanged);
             }
         }
 
         /// <summary>
-        /// The position of the last well (most bottom-right well) on labware
+        /// Gets or sets the Y position of first well
         /// </summary>
-        public Point LastWellPosition
+        public double FirstWellPositionY
         {
             get
             {
-                return _lastWellPosition;
+                return _firstWellPositionY;
             }
             set
             {
-                PropertyChangedNotifyHelper.NotifyPropertyChanged<Point>(ref this._lastWellPosition, value, this, "LastWellPosition", this.PropertyChanged); 
+                PropertyChangedNotifyHelper.NotifyPropertyChanged<double>(ref this._firstWellPositionY, value, this, "FirstWellPositionY", this.PropertyChanged);
+            }
+        }
+
+        /// <summary>
+        /// Gets or sets the X position of last well
+        /// </summary>
+        public double LastWellPositionX
+        {
+            get
+            {
+                return _lastWellPositionX;
+            }
+            set
+            {
+                PropertyChangedNotifyHelper.NotifyPropertyChanged<double>(ref this._lastWellPositionX, value, this, "LastWellPositionX", this.PropertyChanged);
+            }
+        }
+
+        /// <summary>
+        /// Gets or sets the Y position of last well
+        /// </summary>
+        public double LastWellPositionY
+        {
+            get
+            {
+                return _lastWellPositionY;
+            }
+            set
+            {
+                PropertyChangedNotifyHelper.NotifyPropertyChanged<double>(ref this._lastWellPositionY, value, this, "LastWellPositionY", this.PropertyChanged);
             }
         }
 
@@ -461,19 +496,29 @@ namespace WorkstationController.Core.Data
         /// <summary>
         /// Constructor
         /// </summary>
-        public WellsInfo(Point first, Point last, int xNum, int yNum, BottomShape shape, int r)
+        public WellsInfo(double firstWellPosX, double firstWellPosY,
+                         double lastWellPosX, double lastWellPosY,
+                         int xNum, int yNum, 
+                         BottomShape shape, 
+                         int r)
         {
             WellRadius = r;
             NumberOfWellsX = xNum;
             NumberOfWellsY = yNum;
-            FirstWellPosition = first;
-            LastWellPosition = last;
+            FirstWellPositionX = firstWellPosX;
+            FirstWellPositionY = firstWellPosY;
+            LastWellPositionY = lastWellPosX;
+            LastWellPositionY = lastWellPosY;
             BottomShape = shape;
         }
 
         public object Clone()
         {
-            return new WellsInfo(this._firstWellPosition, this._lastWellPosition, this._numberOfWellsX, this._numberOfWellsY, this._bottomShape, _wellRadius);
+            return new WellsInfo(this._firstWellPositionX, this._firstWellPositionY, 
+                                 this._lastWellPositionX, this._lastWellPositionY, 
+                                 this._numberOfWellsX, this._numberOfWellsY, 
+                                 this._bottomShape, 
+                                 _wellRadius);
         }
     }
 }
