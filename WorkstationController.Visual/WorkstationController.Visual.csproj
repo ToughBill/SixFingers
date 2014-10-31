@@ -50,7 +50,6 @@
   <ItemGroup>
     <Compile Include="BasewareUIElement.cs" />
     <Compile Include="CarrierUIElement.cs" />
-    <Compile Include="InstrumentsManager.cs" />
     <Compile Include="LabwareUIElement.cs" />
     <Compile Include="LabwareUIElementFixedSize.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

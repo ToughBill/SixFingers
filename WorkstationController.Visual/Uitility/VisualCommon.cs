@@ -53,11 +53,11 @@ namespace WorkstationController.VisualElement.Uitility
         /// <param name="xPixel"></param>
         /// <param name="yPixel"></param>
         /// <returns></returns>
-        public static Point Convert2PhysicalXY(double xPixel,double yPixel)
+        public static Point Convert2PhysicalXY(double xPixel, double yPixel)
         {
             double percentY = (yPixel - GetYShift()) / (worktableOccupiesRatio * containerSize.Height);
-            double percentX = (xPixel-GetXShift()) / (worktableOccupiesRatio * containerSize.Width);
-            return new Point( Configurations.Instance.Worktable.Size.Width * percentX,
+            double percentX = (xPixel - GetXShift()) / (worktableOccupiesRatio * containerSize.Width);
+            return new Point(Configurations.Instance.Worktable.Size.Width * percentX,
                               Configurations.Instance.Worktable.Size.Height * percentY);
         }
 
@@ -110,7 +110,7 @@ where T : class
                 if (!(uiElement is BasewareUIElement))
                     continue;
                 BasewareUIElement basewareUIElement = (BasewareUIElement)uiElement;
-                if(basewareUIElement != null)
+                if (basewareUIElement != null)
                     basewareUIElement.InvalidateVisual();
             }
         }
@@ -167,13 +167,13 @@ where T : class
         /// <param name="brush"></param>
         public static void DrawRect(int x, int y, Size size, DrawingContext drawingContext, Color color, Brush brush = null, int thickness = 1)
         {
-            Rect rc = Physic2Visual(x,y,size);
+            Rect rc = Physic2Visual(x, y, size);
             if (brush == null)
                 brush = Brushes.Transparent;
             drawingContext.DrawRectangle(brush, new Pen(new SolidColorBrush(color), thickness), rc);
         }
 
-     
+
         /// <summary>
         /// draw solid rect
         /// </summary>
@@ -218,16 +218,16 @@ where T : class
 
         internal static void DrawGridNumber(int grid, int firstPinX, DrawingContext dc)
         {
-            double xPixel = VisualCommon.Convert2PixelXUnit(firstPinX) + GetXShift()*0.95;
+            double xPixel = VisualCommon.Convert2PixelXUnit(firstPinX) + GetXShift() * 0.95;
             //when height is 400 use font 10
-            
-            double yPixel = containerSize.Height *0.81;
-             dc.DrawText( new FormattedText((grid + 1).ToString(),
-                          CultureInfo.GetCultureInfo("en-us"),
-                          FlowDirection.LeftToRight,
-                          new Typeface("Verdana"),
-                          10 * containerSize.Height / 400, System.Windows.Media.Brushes.DarkBlue),
-                          new System.Windows.Point(xPixel, yPixel));
+
+            double yPixel = containerSize.Height * 0.81;
+            dc.DrawText(new FormattedText((grid + 1).ToString(),
+                         CultureInfo.GetCultureInfo("en-us"),
+                         FlowDirection.LeftToRight,
+                         new Typeface("Verdana"),
+                         10 * containerSize.Height / 400, System.Windows.Media.Brushes.DarkBlue),
+                         new System.Windows.Point(xPixel, yPixel));
         }
 
         internal static int FindCorrespondingGrid(double xPixelOnCanvas)
@@ -235,36 +235,36 @@ where T : class
             double unitXPixels = VisualCommon.Convert2PixelXUnit(Worktable.DistanceBetweenAdjacentPins);
             double startXmm = Configurations.Instance.Worktable.FirstPinPosition.X;
             double xPixelsOffset = VisualCommon.Convert2PixelXUnit(startXmm);
-            int mapGrid =  (int)(Math.Ceiling((xPixelOnCanvas - GetXShift() - xPixelsOffset) / unitXPixels + 0.5));
+            int mapGrid = (int)(Math.Ceiling((xPixelOnCanvas - GetXShift() - xPixelsOffset) / unitXPixels + 0.5));
             return mapGrid;
 
         }
 
-    
 
-        internal static void DrawText(Point pt, 
+
+        internal static void DrawText(Point pt,
                                       string text,
                                       DrawingContext drawingContext)
-                                      
         {
             double xPixel = VisualCommon.Convert2PixelXUnit(pt.X) + GetXShift();
             double yPixel = VisualCommon.Convert2PixelYUnit(pt.Y) + GetYShift();
             Point ptVisual = new Point(xPixel, yPixel);
             double fontSize = 10 * containerSize.Height / 400;
-            
+
             var formattedText = new FormattedText(text,
                          CultureInfo.GetCultureInfo("en-us"),
                          FlowDirection.LeftToRight,
                          new Typeface("Verdana"),
                          fontSize, System.Windows.Media.Brushes.DarkBlue);
 
-            drawingContext.DrawText(formattedText,ptVisual);
+            drawingContext.DrawText(formattedText, ptVisual);
         }
 
-        internal static void DrawLine(Point ptStart, Point ptEnd,DrawingContext dc, Color color)
+        internal static void DrawLine(Point ptStart, Point ptEnd, DrawingContext dc, Color color)
         {
             Pen myPen = new Pen(new SolidColorBrush(color), 2.0F);
             //myPen.DashStyle = DashStyles.Dot;
             dc.DrawLine(myPen, ptStart, ptEnd);
         }
     }
+}
