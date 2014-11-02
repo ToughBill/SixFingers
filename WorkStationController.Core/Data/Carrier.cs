@@ -379,7 +379,7 @@ namespace WorkstationController.Core.Data
 
         public object Clone()
         {
-            return new Site(_xoffset, _yoffset, _zoffset, _xsize, _yoffset, _id);
+            return new Site(_xoffset, _yoffset, _zoffset, _xsize, _ysize, _id);
         }
     }
 }

@@ -507,7 +507,7 @@ namespace WorkstationController.Core.Data
             NumberOfWellsY = yNum;
             FirstWellPositionX = firstWellPosX;
             FirstWellPositionY = firstWellPosY;
-            LastWellPositionY = lastWellPosX;
+            LastWellPositionX = lastWellPosX;
             LastWellPositionY = lastWellPosY;
             BottomShape = shape;
         }
