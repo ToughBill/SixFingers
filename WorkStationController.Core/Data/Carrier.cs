@@ -5,6 +5,7 @@ using System.ComponentModel;
 using System.Linq;
 using System.IO;
 using System.Windows;
+using System.Windows.Media;
 using System.Xml.Serialization;
 using WorkstationController.Core.Utility;
 
@@ -22,9 +23,19 @@ namespace WorkstationController.Core.Data
         private List<Site>                   _sites                   = new List<Site>();           // sites for mounting labwares
         private ObservableCollection<string> _allowedLabwareTypeNames = new ObservableCollection<string>();
 
-        private int _xoffset = default(int);
-        private int _yoffset = default(int);
-        private int _grid = 0;
+        private Color _backgroundColor = Colors.Gray;
+        private int   _xoffset         = default(int);
+        private int   _yoffset         = default(int);
+        private int   _grid            = 0;
+
+        /// <summary>
+        /// Background color
+        /// </summary>
+        public Color BackgroundColor
+        {
+            get { return _backgroundColor; }
+            set { this.OnPropertyChanged<Color>(ref this._backgroundColor, value, "BackgroundColor"); }
+        }
 
         /// <summary>
         /// The X offset of the left-top corner of carrier against the most left-top pin the carrier installed on

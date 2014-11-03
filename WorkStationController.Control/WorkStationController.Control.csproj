@@ -54,6 +54,9 @@
     <Reference Include="PresentationFramework" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="ColorPickerCombo.xaml.cs">
+      <DependentUpon>ColorPickerCombo.xaml</DependentUpon>
+    </Compile>
     <Compile Include="QueryNewLabel.xaml.cs">
       <DependentUpon>QueryNewLabel.xaml</DependentUpon>
     </Compile>
@@ -65,6 +68,10 @@
     <Page Include="CarrierEditor.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="ColorPickerCombo.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
     </Page>
     <Page Include="LabwareEditor.xaml">
       <Generator>MSBuild:Compile</Generator>

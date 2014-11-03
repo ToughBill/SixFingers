@@ -33,7 +33,11 @@ namespace WorkstationController.Control
 
         void LabwareUserControl_Loaded(object sender, RoutedEventArgs e)
         {
-            //cmbItemType.ItemsSource = Enum.GetValues(typeof(LabwareType)).Cast<LabwareType>();
+            Labware labware = this.DataContext as Labware;
+            if (labware != null)
+            {
+                this._colorPicker.SelectedColor = labware.BackgroundColor;
+            }
         }
 
         private void OnSaveButtonClick(object sender, RoutedEventArgs e)

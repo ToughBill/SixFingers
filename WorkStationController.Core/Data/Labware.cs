@@ -46,14 +46,14 @@ namespace WorkstationController.Core.Data
     [Serializable]
     public class Labware : WareBase, ISerialization, INotifyPropertyChanged, ICloneable
     {
-        private Color       _backgroundColor;
+        private Color       _backgroundColor = Colors.Gray;
         private int         _siteID = 0;
         private Carrier     _parentCarrier = null;
         private WellsInfo   _wellsInfo = new WellsInfo();
         private ZValues     _zValues = new ZValues();
 
         /// <summary>
-        /// back ground color
+        /// Background color
         /// </summary>
         public Color BackgroundColor
         {
@@ -152,7 +152,6 @@ namespace WorkstationController.Core.Data
             _zValues = new ZValues();
             _dimension = new Dimension();
             _wellsInfo = new WellsInfo();
-
         }
 
         /// <summary>

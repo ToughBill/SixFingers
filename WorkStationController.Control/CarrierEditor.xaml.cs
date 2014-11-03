@@ -27,6 +27,16 @@ namespace WorkstationController.Control
         public CarrierEditor()
         {
             InitializeComponent();
+            this.Loaded += CarrierEditor_Loaded;
+        }
+
+        void CarrierEditor_Loaded(object sender, RoutedEventArgs e)
+        {
+            Carrier carrier = this.DataContext as Carrier;
+            if (carrier != null)
+            {
+                this._colorPicker.SelectedColor = carrier.BackgroundColor;
+            }
         }
 
         private void OnSaveButtonClick(object sender, RoutedEventArgs e)
