@@ -4,6 +4,7 @@ using System.Globalization;
 using System.Linq;
 using System.Text;
 using System.Windows;
+using System.Windows.Input;
 using System.Windows.Media;
 using WorkstationController.Core.Data;
 
@@ -17,10 +18,11 @@ namespace WorkstationController.VisualElement
         /// </summary>
         Labware _labware;
         List<MyDrawingVisual> wellVisuals;
-        private Point curMouse;
         private Size _boudingSize;
         private readonly Color defaultCircleColor = Colors.DarkGray;
-        private Rect tightBoundingRect;
+        private Rect _tightBoundingRect;
+        private SingleSelection _singleSelection;
+        private MultiSelection _multiSelection;
         /// <summary>
         /// ctor
         /// </summary>
@@ -31,8 +33,33 @@ namespace WorkstationController.VisualElement
             this._labware = labware;
             UpdateContainerSize(boundingSize);
             AddWellVisuals();
+            _singleSelection = new SingleSelection(wellVisuals, _tightBoundingRect, _labware);
+            _multiSelection = new MultiSelection(wellVisuals);
             //this.MouseMove += LabwareUIElementFixedSize_MouseMove;
             this.MouseLeftButtonDown += LabwareUIElementFixedSize_MouseLeftButtonDown;
+            this.MouseMove += LabwareUIElementFixedSize_MouseMove;
+            this.MouseUp += LabwareUIElementFixedSize_MouseUp;
+        }
+        void LabwareUIElementFixedSize_MouseLeftButtonDown(object sender, System.Windows.Input.MouseButtonEventArgs e)
+        {
+            Point pt = e.GetPosition(this);
+            _multiSelection.OnLeftButtonDown(pt);
+            _singleSelection.OnLeftButtonDown(pt);
+            InvalidateVisual();
+        }
+
+        void LabwareUIElementFixedSize_MouseUp(object sender, MouseButtonEventArgs e)
+        {
+            _multiSelection.OnLeftButtonUp(e.GetPosition(this));
+            InvalidateVisual();
+        }
+
+        void LabwareUIElementFixedSize_MouseMove(object sender, MouseEventArgs e)
+        {
+            Point pt = e.GetPosition(this);
+            _multiSelection.OnMouseMove(pt);
+            _singleSelection.OnMouseMove(pt);
+            InvalidateVisual();
         }
 
 
@@ -40,13 +67,17 @@ namespace WorkstationController.VisualElement
         {
             base.OnRender(drawingContext);
             DrawBorder(drawingContext);
-            //DrawRect(tightBoundingRect, Colors.LightGreen, drawingContext);
+            if(_multiSelection.IsValid)
+            {
+                DrawRect(_multiSelection.Rect, Colors.Blue, drawingContext);
+            }
             foreach(MyDrawingVisual drawingVisual in wellVisuals)
             {
                 DrawCircle(drawingVisual.Position,
                     drawingVisual.Size.Width,
                     GetStateColor(drawingVisual.State),
                     drawingContext);
+
                 if (drawingVisual.State != WellState.Normal)
                 {
                     string sText = GetDescription(drawingVisual.ID);
@@ -61,57 +92,6 @@ namespace WorkstationController.VisualElement
                                  ptDesc);
                 }
             }
-        }
-
-        public void UpdateMousePosition(System.Windows.Input.MouseEventArgs e)
-        {
-            Point pt = e.GetPosition(this);
-            curMouse = pt;
-            int focusID = GetFocusID(pt);
-            foreach (MyDrawingVisual drawingVisual in wellVisuals)
-            {
-                if (drawingVisual.State == WellState.Selected) //don't change the selected one.
-                    continue;
-                WellState state = drawingVisual.ID == focusID ? WellState.HighLight : WellState.Normal;
-                ModifyState(drawingVisual, state);
-            }
-            InvalidateVisual();
-        }
-
-        void LabwareUIElementFixedSize_MouseLeftButtonDown(object sender, System.Windows.Input.MouseButtonEventArgs e)
-        {
-            Point pt = e.GetPosition((UIElement)sender);
-            int focusID = GetFocusID(pt);
-            
-            foreach (MyDrawingVisual drawingVisual in wellVisuals)
-            {
-                if (drawingVisual.State == WellState.Selected)
-                {
-                    ModifyState(drawingVisual, WellState.Normal);
-                }
-            }
-          
-            foreach (MyDrawingVisual drawingVisual in wellVisuals)
-            {
-                if (drawingVisual.ID == focusID)
-                {
-                    ModifyState(drawingVisual, WellState.Selected);
-                    break;
-                }
-            }
-            InvalidateVisual();
-        }
-
-
-        private int GetFocusID(Point pt)
-        {
-            if (!tightBoundingRect.Contains(pt))
-                return -1;
-            double unitX = tightBoundingRect.Width / _labware.WellsInfo.NumberOfWellsX;
-            double unitY = tightBoundingRect.Height / _labware.WellsInfo.NumberOfWellsY;
-            int colID = (int)Math.Ceiling((pt.X - tightBoundingRect.X) / unitX);
-            int rowID = (int)Math.Ceiling((pt.Y - tightBoundingRect.Y) / unitY);
-            return (colID-1) * _labware.WellsInfo.NumberOfWellsY + rowID;
         }
 
         /// <summary>
@@ -132,10 +112,7 @@ namespace WorkstationController.VisualElement
                 return selected;
             }
         }
-        private void ModifyState(MyDrawingVisual drawingVisual, WellState state)
-        {
-            drawingVisual.State = state;
-        }
+       
 
         private Color GetStateColor(WellState state)
         {
@@ -190,7 +167,6 @@ namespace WorkstationController.VisualElement
                 for (int row = 0; row < rows; row++)
                 {
                     var position = _labware.GetPosition(row, col);
-               
                     wellVisuals.Add(CreateWellVisual(position, wellID++,total));
                 }
             }
@@ -212,13 +188,13 @@ namespace WorkstationController.VisualElement
             {
                 Point ptTmp = ptVisual;
                 ptTmp -= new Vector(sz.Width, sz.Height);
-                tightBoundingRect.X = ptTmp.X;
-                tightBoundingRect.Y = ptTmp.Y;
+                _tightBoundingRect.X = ptTmp.X;
+                _tightBoundingRect.Y = ptTmp.Y;
             }
             if (wellID == totalCnt)
             {
-                tightBoundingRect.Width = ptVisual.X - tightBoundingRect.X + sz.Width;
-                tightBoundingRect.Height = ptVisual.Y - tightBoundingRect.Y + sz.Height;
+                _tightBoundingRect.Width = ptVisual.X - _tightBoundingRect.X + sz.Width;
+                _tightBoundingRect.Height = ptVisual.Y - _tightBoundingRect.Y + sz.Height;
             }
 
             return drawingVisual;
@@ -258,29 +234,204 @@ namespace WorkstationController.VisualElement
                 brush = null;
             drawingContext.DrawEllipse(brush, new Pen(new SolidColorBrush(defaultCircleColor), 1), ptCenter, radius, radius);
         }
+    }
 
-    
-        /// <summary>
-        /// drawing visual with more information
-        /// </summary>
-        public class MyDrawingVisual
+    /// <summary>
+    /// each well's state
+    /// </summary>
+    public enum WellState
+    {
+        Normal = 0,
+        HighLight,
+        Selected
+    }
+    /// <summary>
+    /// drawing visual with more information
+    /// </summary>
+    public class MyDrawingVisual
+    {
+        public int ID { get; set; }
+        public WellState State { get; set; }
+        public Point Position { get; set; }
+        public Size Size { get; set; }
+    }
+
+
+    class SingleSelection
+    {
+        MyDrawingVisual _selectedWell;
+        List<MyDrawingVisual> _allWellVisuals;
+        Rect _tightBoundingRect;
+        Labware _labware;
+        bool bValid = false;
+        public SingleSelection(List<MyDrawingVisual> allWellVisuals,Rect rcBoundary, Labware labware)
         {
-            public int ID { get; set; }
-            public WellState State { get; set; }
-            public Point Position { get; set; }
-            public Size Size { get; set; }
+            _allWellVisuals = allWellVisuals;
+            _labware = labware;
+            _tightBoundingRect = rcBoundary;
         }
 
-        /// <summary>
-        /// each well's state
-        /// </summary>
-        public enum WellState
+        bool IsCtrlPressed()
         {
-            Normal = 0,
-            HighLight,
-            Selected
+            return Keyboard.IsKeyDown(Key.LeftCtrl) || Keyboard.IsKeyDown(Key.RightCtrl);
         }
 
-    
+        public int GetFocusID(Point pt)
+        {
+            if (!_tightBoundingRect.Contains(pt))
+                return -1;
+            double unitX = _tightBoundingRect.Width / _labware.WellsInfo.NumberOfWellsX;
+            double unitY = _tightBoundingRect.Height / _labware.WellsInfo.NumberOfWellsY;
+            int colID = (int)Math.Ceiling((pt.X - _tightBoundingRect.X) / unitX);
+            int rowID = (int)Math.Ceiling((pt.Y - _tightBoundingRect.Y) / unitY);
+            return (colID - 1) * _labware.WellsInfo.NumberOfWellsY + rowID;
+        }
+
+        public void OnLeftButtonDown(Point pt)
+        {
+            if (_selectedWell != null)
+                _selectedWell.State = WellState.Normal;
+            if (IsCtrlPressed())
+            {
+                bValid = false;
+                return;
+            }
+            int focusID = GetFocusID(pt);
+            foreach (MyDrawingVisual drawingVisual in _allWellVisuals)
+            {
+                if (drawingVisual.State == WellState.Selected)
+                {
+                    drawingVisual.State = WellState.Normal;
+                }
+            }
+
+            foreach (MyDrawingVisual drawingVisual in _allWellVisuals)
+            {
+                if (drawingVisual.ID == focusID)
+                {
+                    drawingVisual.State = WellState.Selected;
+                    break;
+                }
+            }
+        }
+
+
+        internal void OnMouseMove(Point pt)
+        {
+            if (IsCtrlPressed())
+            {
+                //SetAll2Default();
+                return;
+            }
+            int focusID = GetFocusID(pt);
+            foreach (MyDrawingVisual drawingVisual in _allWellVisuals)
+            {
+                if (drawingVisual.State == WellState.Selected) //don't change the selected one.
+                    continue;
+                WellState state = drawingVisual.ID == focusID ? WellState.HighLight : WellState.Normal;
+                drawingVisual.State = state;
+            }
+        }
+
+        private void SetAll2Default()
+        {
+            foreach (MyDrawingVisual drawingVisual in _allWellVisuals)
+            {
+                if (drawingVisual.State == WellState.Normal)
+                    continue;
+                drawingVisual.State = WellState.Normal;
+            }
+        }
+    }
+
+    class MultiSelection
+    {
+        private bool _bValid = false;
+        private Point _ptStart;
+        private Point _ptEnd;
+        
+        List<MyDrawingVisual> _allWellVisuals;
+
+        public MultiSelection( List<MyDrawingVisual> allWellVisuals)
+        {
+            _allWellVisuals = allWellVisuals;
+        }
+
+        bool IsWellSelected(Point ptWell)
+        {
+            Rect rc = new Rect(_ptStart, _ptEnd);
+            return rc.Contains(ptWell);
+        }
+
+        bool IsCtrlPressed()
+        {
+            return Keyboard.IsKeyDown(Key.LeftCtrl) || Keyboard.IsKeyDown(Key.RightCtrl);
+        }
+
+        private void SetAll2Default()
+        {
+            foreach (MyDrawingVisual drawingVisual in _allWellVisuals)
+            {
+                if (drawingVisual.State == WellState.Normal)
+                    continue;
+                drawingVisual.State = WellState.Normal;
+            }
+        }
+
+        public void OnLeftButtonDown(Point pt)
+        {
+            if (IsCtrlPressed())
+            {
+                _ptStart = pt;
+                _ptEnd = _ptStart;
+                _bValid = true;
+                SetAll2Default();
+            }
+            else
+            {
+                _bValid = false;
+            }
+        }
+
+        public void OnMouseMove(Point point)
+        {
+            if(!_bValid)
+               return ;
+            _ptEnd = point;
+        }
+
+        internal void OnLeftButtonUp(Point point)
+        {
+            if(!_bValid)
+                return;
+
+            _bValid = false;
+            Rect rc = new Rect(_ptStart, _ptEnd);
+            foreach(var wellVisual in _allWellVisuals)
+            {
+                if(rc.Contains(wellVisual.Position))
+                {
+                    wellVisual.State = WellState.Selected;
+                }
+            }
+
+        }
+
+        public bool IsValid
+        { 
+            get 
+            { 
+                return _bValid; 
+            }
+        }
+
+        public Rect Rect
+        { 
+            get
+            {
+                return new Rect(_ptStart, _ptEnd);
+            }
+        
+        }
     }
 }

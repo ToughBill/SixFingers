@@ -51,8 +51,8 @@ namespace WorkstationController.WorktableVisualTest
 
         void MainWindow_MouseMove(object sender, MouseEventArgs e)
         {
-            (grid1.Children[0] as LabwareUIElementFixedSize).UpdateMousePosition(e);
-            grid1.InvalidateVisual();
+            //(grid1.Children[0] as LabwareUIElementFixedSize).UpdateMousePosition(e);
+            //grid1.InvalidateVisual();
         }
     }
 }
