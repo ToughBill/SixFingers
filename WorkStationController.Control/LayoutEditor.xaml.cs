@@ -97,7 +97,7 @@ namespace WorkstationController.Control
         /// <summary>
         /// suggest candidate
         /// </summary>
-        /// <param name="labwareTypeName"></param>
+        /// <param name="wareBase">A WareBase instance</param>
         public void SuggestCandidate(WareBase wareBase)
         {
             var uiElement = UIElementFactory.CreateUIElement(wareBase,uiContainer.Children);

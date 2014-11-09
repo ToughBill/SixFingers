@@ -1,11 +1,11 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio Express 2013 for Windows Desktop
-VisualStudioVersion = 12.0.21005.1
+# Visual Studio 2013
+VisualStudioVersion = 12.0.30501.0
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WorkstationController", "WorkStationController\WorkstationController.csproj", "{FAEFEEA8-C6D6-45F0-89C1-684EA323FB01}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WorkStationController.Control", "WorkStationController.Control\WorkStationController.Control.csproj", "{789BB44F-D2C3-4A2A-8262-34214D65D9D0}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WorkstationController.Control", "WorkStationController.Control\WorkstationController.Control.csproj", "{789BB44F-D2C3-4A2A-8262-34214D65D9D0}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WorkstationController.Core", "WorkStationController.Core\WorkstationController.Core.csproj", "{C3BA4CCF-E014-4E15-BE64-1675C58EF27A}"
 EndProject

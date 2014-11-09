@@ -25,6 +25,7 @@
     <WarningLevel>4</WarningLevel>
     <DocumentationFile>..\bin\Debug\CarvoEx2.Control.XML</DocumentationFile>
     <Prefer32Bit>false</Prefer32Bit>
+    <NoWarn>1591</NoWarn>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
@@ -35,6 +36,7 @@
     <WarningLevel>4</WarningLevel>
     <DocumentationFile>..\bin\Release\WorkstationController.Control.XML</DocumentationFile>
     <Prefer32Bit>false</Prefer32Bit>
+    <NoWarn>1591</NoWarn>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="System" />
@@ -54,6 +56,12 @@
     <Reference Include="PresentationFramework" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="ThirdParties\ExtendedTabControl\Converters.cs" />
+    <Compile Include="ThirdParties\ExtendedTabControl\Helper.cs" />
+    <Compile Include="ThirdParties\ExtendedTabControl\TabControl.cs" />
+    <Compile Include="ThirdParties\ExtendedTabControl\TabEventArgs.cs" />
+    <Compile Include="ThirdParties\ExtendedTabControl\TabItem.cs" />
+    <Compile Include="ThirdParties\ExtendedTabControl\TabPanel.cs" />
     <Compile Include="ColorPickerCombo.xaml.cs">
       <DependentUpon>ColorPickerCombo.xaml</DependentUpon>
     </Compile>
@@ -65,6 +73,10 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>strings.resx</DependentUpon>
     </Compile>
+    <Page Include="ThirdParties\ExtendedTabControl\Themes\Generic.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
     <Page Include="CarrierEditor.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -146,6 +158,10 @@
   </ItemGroup>
   <ItemGroup>
     <Resource Include="Resources\zvalues.png" />
+  </ItemGroup>
+  <ItemGroup />
+  <ItemGroup>
+    <Resource Include="ThirdParties\ExtendedTabControl\Images\newtab.ico" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
