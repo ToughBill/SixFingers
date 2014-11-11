@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 2013
-VisualStudioVersion = 12.0.30501.0
+# Visual Studio Express 2013 for Windows Desktop
+VisualStudioVersion = 12.0.21005.1
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WorkstationController", "WorkStationController\WorkstationController.csproj", "{FAEFEEA8-C6D6-45F0-89C1-684EA323FB01}"
 EndProject
@@ -18,6 +18,8 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WorkstationController.VisualTests", "WorkstationController.WorktableVisualTest\WorkstationController.VisualTests.csproj", "{88FC3037-8D83-440A-B955-A09E2855B91D}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WorkstationController.UserControlTests", "WorkstationController.EditorTests\WorkstationController.UserControlTests.csproj", "{C100F7E9-C835-401E-B24B-D542ED3401A7}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WorkstationController.Hardware", "WorkStationController.Hardware\WorkstationController.Hardware.csproj", "{D8B83067-6FB6-4E8E-A2BD-5CCEDC0A9C08}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -53,6 +55,10 @@ Global
 		{C100F7E9-C835-401E-B24B-D542ED3401A7}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{C100F7E9-C835-401E-B24B-D542ED3401A7}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{C100F7E9-C835-401E-B24B-D542ED3401A7}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D8B83067-6FB6-4E8E-A2BD-5CCEDC0A9C08}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D8B83067-6FB6-4E8E-A2BD-5CCEDC0A9C08}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D8B83067-6FB6-4E8E-A2BD-5CCEDC0A9C08}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D8B83067-6FB6-4E8E-A2BD-5CCEDC0A9C08}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
