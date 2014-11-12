@@ -11,6 +11,7 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
+using WorkstationController.Control.Resources;
 using WorkstationController.Core.Data;
 using WorkstationController.VisualElement;
 
@@ -23,7 +24,8 @@ namespace WorkstationController.Control
     {
         Labware _labware;
         bool bOk = false;
-
+        PipettingSettings pipettingSettings = null;
+        LabwareUIElementFixedSize labwareUIElement = null;
         public bool IsOk 
         { 
             get 
@@ -32,24 +34,63 @@ namespace WorkstationController.Control
             }
         }
 
-        public PipettingCommandEidtor(Labware selectedLabware)
+        public PipettingCommandEidtor(Labware selectedLabware, bool isAspirate)
         {
             _labware = selectedLabware;
             InitializeComponent();
             this.Loaded += PipettingCommandEidtor_Loaded;
-          
+            SetCaption(isAspirate);
+        }
+
+        private void SetCaption(bool isAspirate)
+        {
+ 	        lblCommandName.Content = isAspirate ? strings.aspirate : strings.dispense;
         }
 
         void PipettingCommandEidtor_Loaded(object sender, RoutedEventArgs e)
         {
-
-            container.Children.Add(new LabwareUIElementFixedSize(_labware, new Size(container.ActualWidth, container.ActualHeight)));
+            labwareUIElement = new LabwareUIElementFixedSize(_labware, new Size(container.ActualWidth, container.ActualHeight));
+            container.Children.Add(labwareUIElement);
         }
 
         private void btnOk_Click(object sender, RoutedEventArgs e)
         {
+            
+            string sVolume = txtVolume.Text;
+            int volume = 0;
+            bool bok = int.TryParse(sVolume, out volume);
+            if(!bok)
+            {
+                SetInfo(strings.VolumeMustBeDigital, Brushes.Red);
+                return;
+            }
+            if(volume <= 0)
+            {
+                SetInfo(strings.VolumeMustBeBiggerThan0, Brushes.Red);
+                return;
+            }
+
+            if( labwareUIElement.SelectedWellIDs.Count == 0)
+            {
+                SetInfo(strings.MustSelectSomeWell,Brushes.Red);
+                return;
+            }
+            pipettingSettings = new PipettingSettings(_labware.Label,new List<int>(){1},labwareUIElement.SelectedWellIDs,GetLiquidClass(),lblCommandName.Content == strings.aspirate,volume);
             bOk = true;
             this.Visibility = System.Windows.Visibility.Hidden;
+        }
+
+        private LiquidClass GetLiquidClass()
+        {
+
+            //would be:
+ 	        return (LiquidClass)liquidClasses.SelectedItem;
+        }
+
+        private void SetInfo(string text, Brush color)
+        {
+            txtInfo.Text = text;
+            txtInfo.Foreground = color ;
         }
 
         private void btnAbort_Click(object sender, RoutedEventArgs e)
@@ -65,13 +106,22 @@ namespace WorkstationController.Control
         List<int> _selectedWellIDs;
         bool _isAspirate;
         int _volumeUL;
-        public PipettingSettings(List<int> tipIDUsed, List<int> selectedWellIDs, bool isAspirate, int volumeUL)
+        string _labwareLabel;
+        LiquidClass _liquidClass;
+        public PipettingSettings(string labwareLabel, 
+            List<int> tipIDUsed, 
+            List<int> selectedWellIDs,
+            LiquidClass liquidClass,
+            bool isAspirate, 
+            int volumeUL)
         {
             _tipsIDUsed = tipIDUsed;
             _selectedWellIDs = selectedWellIDs;
             _isAspirate = isAspirate;
             _volumeUL = volumeUL;
+            _labwareLabel = labwareLabel;
         }
+
         public int VolumeUL
         { 
             get
@@ -79,6 +129,23 @@ namespace WorkstationController.Control
                 return _volumeUL;
             }
         }
+
+         public LiquidClass LiquidClass
+        { 
+            get
+            {
+                return _liquidClass;
+            }
+        }
+
+        public string LabwareLabel
+        {
+            get
+            {
+                return _labwareLabel;
+            }
+        }
+
         public List<int> SelectedWellIDs
         {
             get
@@ -86,6 +153,7 @@ namespace WorkstationController.Control
                 return _selectedWellIDs;
             }
         }
+
         public List<int> TipsIDsUsed
         {
             get
@@ -93,6 +161,7 @@ namespace WorkstationController.Control
                 return _tipsIDUsed;
             }
         }
+
         public bool IsAspirate
         {
             get

@@ -28,12 +28,14 @@
         </Grid>
         <Grid Grid.Row="2" Name="liquidClassSettings" Grid.Column="2">
             <Label Content="LiquidClass:" HorizontalAlignment="Left" Margin="4,16,0,0" VerticalAlignment="Top"/>
-            <ComboBox HorizontalAlignment="Left" Margin="100,12,0,0" VerticalAlignment="Top" Width="120"/>
+            <ComboBox Name="liquidClasses" HorizontalAlignment="Left" Margin="100,12,0,0" VerticalAlignment="Top" Width="120"/>
         </Grid>
         <Grid Name="container" Grid.Row ="1" Grid.RowSpan="3" Grid.Column="0" Grid.ColumnSpan="2" Background="LightYellow">
 
         </Grid>
-        <Button Name="btnOk" Content="Ok" Grid.Column="2" HorizontalAlignment="Left" Margin="149,154,0,0" Grid.Row="3" VerticalAlignment="Top" Width="80" Click="btnOk_Click"/>
-        <Button Name="btnAbort" Content="Abort" Grid.Column="2" HorizontalAlignment="Left" Margin="59,154,0,0" Grid.Row="3" VerticalAlignment="Top" Width="80" Click="btnAbort_Click"/>
+        <Button Name="btnOk" Content="Ok" Grid.Column="2" HorizontalAlignment="Left" Margin="208,186,0,0" Grid.Row="3" VerticalAlignment="Top" Width="80" Click="btnOk_Click"/>
+        <Button Name="btnAbort" Content="Abort" Grid.Column="2" HorizontalAlignment="Left" Margin="118,186,0,0" Grid.Row="3" VerticalAlignment="Top" Width="80" Click="btnAbort_Click"/>
+        <Label Content="Hint:" Grid.Column="2" HorizontalAlignment="Left" Margin="4,21,0,0" Grid.Row="3" VerticalAlignment="Top"/>
+        <TextBox Name="txtInfo" Grid.Column="2" HorizontalAlignment="Left" Height="120" Margin="9,52,0,0" Grid.Row="3" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Width="276"/>
     </Grid>
 </UserControl>

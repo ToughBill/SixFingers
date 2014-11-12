@@ -117,10 +117,25 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
+  <data name="aspirate" xml:space="preserve">
+    <value>吸液</value>
+  </data>
+  <data name="dispense" xml:space="preserve">
+    <value>喷液</value>
+  </data>
   <data name="LabelAlreadyExist" xml:space="preserve">
     <value>标签已经存在</value>
   </data>
   <data name="LabelCannotBeEmpty" xml:space="preserve">
     <value>标签不得为空</value>
+  </data>
+  <data name="MustSelectSomeWell" xml:space="preserve">
+    <value>必须选择某些孔位！</value>
+  </data>
+  <data name="VolumeMustBeBiggerThan0" xml:space="preserve">
+    <value>体积必须大于零！</value>
+  </data>
+  <data name="VolumeMustBeDigital" xml:space="preserve">
+    <value>体积必须为数字！</value>
   </data>
 </root>

@@ -39,7 +39,7 @@ namespace WorkstationController.EditorTests
             labware1.BackgroundColor = Color.FromArgb(255, 255, 0, 0);
             labware1.ParentCarrier = null;
 
-            container.Children.Add(new PipettingCommandEidtor(labware1));
+            container.Children.Add(new PipettingCommandEidtor(labware1,false));
         }
     }
 }
