@@ -56,8 +56,8 @@
     <Reference Include="PresentationFramework" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="PipettingCommand.xaml.cs">
-      <DependentUpon>PipettingCommand.xaml</DependentUpon>
+    <Compile Include="PipettingCommandEditor.xaml.cs">
+      <DependentUpon>PipettingCommandEditor.xaml</DependentUpon>
     </Compile>
     <Compile Include="ThirdParties\ExtendedTabControl\Converters.cs" />
     <Compile Include="ThirdParties\ExtendedTabControl\Helper.cs" />
@@ -76,7 +76,7 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>strings.resx</DependentUpon>
     </Compile>
-    <Page Include="PipettingCommand.xaml">
+    <Page Include="PipettingCommandEditor.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
