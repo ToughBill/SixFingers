@@ -25,24 +25,18 @@ namespace WorkstationController.Control
     public partial class LayoutEditor : UserControl
     {
         UIMovementsController uiController;
+
         /// <summary>
-        /// c'tor
+        /// Default constructor
         /// </summary>
         public LayoutEditor()
         {
             InitializeComponent();
             
-            uiContainer.SizeChanged += uiContainer_SizeChanged;
-            uiController = new UIMovementsController(uiContainer);
+            _worktable.SizeChanged += uiContainer_SizeChanged;
+            uiController = new UIMovementsController(_worktable);
             uiController.onLabelPreviewChanged += uiController_onLabelPreviewChanged; ;
             this.Loaded += LayoutUserControl_Loaded;
-        }
-
-        void uiController_onLabelPreviewChanged(object sender, EventArgs e)
-        {
-            LabwareUIElement labwareUIElement = (e as LabelChangeEventArgs).LabwareUIElement;
-            QueryNewLabelForm queryNewLabelForm = new QueryNewLabelForm(uiContainer.Children, labwareUIElement);
-            queryNewLabelForm.ShowDialog();
         }
 
         public bool AllowPickup 
@@ -56,9 +50,27 @@ namespace WorkstationController.Control
                 uiController.AllowPickup = value;
             }
         }
+        
+        /// <summary>
+        /// suggest candidate
+        /// </summary>
+        /// <param name="wareBase">A WareBase instance</param>
+        public void SuggestCandidate(WareBase wareBase)
+        {
+            var uiElement = UIElementFactory.CreateUIElement(wareBase, _worktable.Children);
+            uiController.UIElementCandidate = uiElement;
+            Mouse.OverrideCursor = Cursors.Hand;
+            uiController.CaptureMouse();
+        }
 
+        private void uiController_onLabelPreviewChanged(object sender, EventArgs e)
+        {
+            LabwareUIElement labwareUIElement = (e as LabelChangeEventArgs).LabwareUIElement;
+            QueryNewLabelForm queryNewLabelForm = new QueryNewLabelForm(_worktable.Children, labwareUIElement);
+            queryNewLabelForm.ShowDialog();
+        }
 
-        void LayoutUserControl_Loaded(object sender, RoutedEventArgs e)
+        private void LayoutUserControl_Loaded(object sender, RoutedEventArgs e)
         {
             //to do, replace it by load the worktable from a xml
             Worktable worktable = new Worktable(
@@ -68,18 +80,17 @@ namespace WorkstationController.Control
                                          new Size(5, 50), new Point(500, 500), 1500, 2500, 20);
 
             Configurations.Instance.Worktable = worktable;
-            uiContainer.AttachWorktableVisual();
-            uiContainer.MouseMove += uiContainer_MouseMove;
+            _worktable.AttachWorktableVisual();
+            _worktable.MouseMove += uiContainer_MouseMove;
             OnContainerSizeChanged(new Size(800, 600));
         }
 
-        void uiContainer_MouseMove(object sender, MouseEventArgs e)
+        private void uiContainer_MouseMove(object sender, MouseEventArgs e)
         {
-            uiContainer.InvalidateVisual();
+            _worktable.InvalidateVisual();
         }
 
-
-        void uiContainer_SizeChanged(object sender, SizeChangedEventArgs e)
+        private void uiContainer_SizeChanged(object sender, SizeChangedEventArgs e)
         {
             OnContainerSizeChanged(e.NewSize);
         }
@@ -88,32 +99,22 @@ namespace WorkstationController.Control
         {
             if (Configurations.Instance.Worktable == null)
                 return;
-            
+
             VisualCommon.UpdateContainerSize(newSize);
-            uiContainer.InvalidateVisual();
-            VisualCommon.UpdateVisuals(uiContainer.Children);
-        }
-        
-        /// <summary>
-        /// suggest candidate
-        /// </summary>
-        /// <param name="wareBase">A WareBase instance</param>
-        public void SuggestCandidate(WareBase wareBase)
-        {
-            var uiElement = UIElementFactory.CreateUIElement(wareBase,uiContainer.Children);
-            uiController.UIElementCandidate = uiElement;
-            Mouse.OverrideCursor = Cursors.Hand;
-            uiController.CaptureMouse();
+            _worktable.InvalidateVisual();
+            VisualCommon.UpdateVisuals(_worktable.Children);
         }
     }
 
     public class WorktableGrid : Grid
     {
         WorktableVisual worktableVisual = null;
+
         public void AttachWorktableVisual()
         {
             this.worktableVisual = new WorktableVisual();
         }
+
         protected override void OnRender(System.Windows.Media.DrawingContext dc)
         {
             base.OnRender(dc);
@@ -128,7 +129,6 @@ namespace WorkstationController.Control
                        new Typeface("Verdana"),
                        15, System.Windows.Media.Brushes.DarkBlue),
                        new System.Windows.Point(ActualWidth-150, ActualHeight-100));
-
         }
     }
 }

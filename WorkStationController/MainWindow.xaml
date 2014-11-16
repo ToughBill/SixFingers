@@ -113,6 +113,11 @@
                                 <RotateTransform Angle="90"></RotateTransform>
                             </TabItem.LayoutTransform>
                         </TabItem>
+                        <TabItem Header="COMMANDS" Background="GreenYellow">
+                            <TabItem.LayoutTransform>
+                                <RotateTransform Angle="90"></RotateTransform>
+                            </TabItem.LayoutTransform>
+                        </TabItem>
                         <TabItem Header="LIQUID CLASSES" Background="Violet">
                             <TabItem.LayoutTransform>
                                 <RotateTransform Angle="90"></RotateTransform>

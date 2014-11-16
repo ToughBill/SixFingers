@@ -7,6 +7,25 @@
              mc:Ignorable="d" 
              d:DesignHeight="600" d:DesignWidth="800">
     <Grid>
-        <local:WorktableGrid x:Name="uiContainer" Grid.Row="0" Background="LightYellow" VerticalAlignment="Stretch" HorizontalAlignment="Stretch"/>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="3*"/>
+            <RowDefinition Height="6*"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+        
+        <GroupBox Header="Script" Grid.Row="0" Grid.Column="0">
+            
+        </GroupBox>
+        <GroupBox Header="Layout" Grid.Row="1" Grid.Column="0">
+            <local:WorktableGrid x:Name="_worktable" Grid.Row="0" Background="LightYellow" VerticalAlignment="Stretch" HorizontalAlignment="Stretch"/>
+        </GroupBox>
+        <DockPanel Grid.Row="2">
+            <Button Content="RUN" Background="Green" DockPanel.Dock="Left" Margin="10" Width="100"/>
+            <Button Content="RESUME" Background="Blue" DockPanel.Dock="Left" Margin="10" Width="100"/>
+            <Button Content="STOP" Background="Red" DockPanel.Dock="Left" Margin="10" Width="100"/>
+            <StackPanel DockPanel.Dock="Right" HorizontalAlignment="Right" VerticalAlignment="Center">
+                <Button Content="Save" DockPanel.Dock="Right" Width="120" Height="40" Margin="10"/>
+            </StackPanel>
+        </DockPanel>
     </Grid>
 </UserControl>
