@@ -50,12 +50,14 @@
   <ItemGroup>
     <Compile Include="Data\ArmInfo.cs" />
     <Compile Include="Data\Carrier.cs" />
+    <Compile Include="Data\Command.cs" />
     <Compile Include="Data\Config.cs" />
     <Compile Include="Data\DitiBox.cs" />
     <Compile Include="Data\Labware.cs" />
     <Compile Include="Data\Layout.cs" />
     <Compile Include="Data\LiquidClass.cs" />
     <Compile Include="Data\PumpInfo.cs" />
+    <Compile Include="Data\Script.cs" />
     <Compile Include="Data\WareBase.cs" />
     <Compile Include="Data\Worktable.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
