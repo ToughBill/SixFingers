@@ -4,25 +4,78 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:WorkstationController.Control"
+             xmlns:thirdparty="clr-namespace:WorkstationController.Control.ThirdParties"
              mc:Ignorable="d" 
-             d:DesignHeight="600" d:DesignWidth="800">
+             d:DesignHeight="600" d:DesignWidth="750">
+    <UserControl.Resources>
+        <Style x:Key="ItemContStyle" TargetType="ListViewItem">
+            <Style.Resources>
+                <LinearGradientBrush x:Key="MouseOverBrush" StartPoint="0.5, 0" EndPoint="0.5, 1">
+                    <GradientStop Color="#22000000" Offset="0" />
+                    <GradientStop Color="#44000000" Offset="0.4" />
+                    <GradientStop Color="#55000000" Offset="0.6" />
+                    <GradientStop Color="#33000000" Offset="0.9" />
+                    <GradientStop Color="#22000000" Offset="1" />
+                </LinearGradientBrush>
+            </Style.Resources>
+            <Setter Property="Padding" Value="0,4" />
+            <Setter Property="HorizontalContentAlignment" Value="Stretch" />
+            <!-- The default control template for ListViewItem has a Border 
+           which contains the item's content. -->
+            <Setter Property="Border.BorderThickness" Value="0,0,0,0.5" />
+            <Setter Property="Border.BorderBrush" Value="LightGray" />
+            <!-- These triggers react to changes in the attached properties set
+           during a managed drag-drop operation. -->
+            <Style.Triggers>
+                <Trigger Property="thirdparty:ListViewItemDragState.IsBeingDragged" Value="True">
+                    <Setter Property="FontWeight" Value="DemiBold" />
+                </Trigger>
+                <Trigger Property="thirdparty:ListViewItemDragState.IsUnderDragCursor" Value="True">
+                    <Setter Property="Background" Value="{StaticResource MouseOverBrush}" />
+                </Trigger>
+            </Style.Triggers>
+        </Style>
+    </UserControl.Resources>
     <Grid>
         <Grid.RowDefinitions>
-            <RowDefinition Height="3*"/>
-            <RowDefinition Height="6*"/>
+            <RowDefinition Height="4*"/>
+            <RowDefinition Height="5*"/>
             <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
         
         <GroupBox Header="Script" Grid.Row="0" Grid.Column="0">
-            
+            <ListView Name="_listView" Grid.Row="0" Grid.Column="1" ItemContainerStyle="{StaticResource ItemContStyle}"
+                      Margin="4" Padding="2" SelectionMode="Single">
+                <ListView.View>
+                    <GridView>
+                        <GridViewColumn Header="Command" DisplayMemberBinding="{Binding Name}" Width="150" />
+                        <GridViewColumn Header="Parameters" DisplayMemberBinding="{Binding Parameters}" Width="400" />
+                    </GridView>
+                </ListView.View>
+            </ListView>
         </GroupBox>
         <GroupBox Header="Layout" Grid.Row="1" Grid.Column="0">
             <local:WorktableGrid x:Name="_worktable" Grid.Row="0" Background="LightYellow" VerticalAlignment="Stretch" HorizontalAlignment="Stretch"/>
         </GroupBox>
         <DockPanel Grid.Row="2">
-            <Button Content="RUN" Background="Green" DockPanel.Dock="Left" Margin="10" Width="100"/>
-            <Button Content="RESUME" Background="Blue" DockPanel.Dock="Left" Margin="10" Width="100"/>
-            <Button Content="STOP" Background="Red" DockPanel.Dock="Left" Margin="10" Width="100"/>
+            <Button DockPanel.Dock="Left" Margin="10" Width="100">
+                <StackPanel HorizontalAlignment="Center" Orientation="Horizontal" VerticalAlignment="Center">
+                    <TextBlock Text="RUN" VerticalAlignment="Center" Margin="5"/>
+                    <Image Source="Resources/run.png" Width="24"/>
+                </StackPanel>
+            </Button>
+            <Button DockPanel.Dock="Left" Margin="10" Width="100">
+                <StackPanel HorizontalAlignment="Center" Orientation="Horizontal" VerticalAlignment="Center">
+                    <TextBlock Text="RESUME" VerticalAlignment="Center" Margin="5"/>
+                    <Image Source="Resources/resume.png" Width="24"/>
+                </StackPanel>
+            </Button>
+            <Button DockPanel.Dock="Left" Margin="10" Width="100">
+                <StackPanel HorizontalAlignment="Center" Orientation="Horizontal" VerticalAlignment="Center">
+                    <TextBlock Text="STOP" VerticalAlignment="Center" Margin="5"/>
+                    <Image Source="Resources/stop.png" Width="25"/>
+                </StackPanel>
+            </Button>
             <StackPanel DockPanel.Dock="Right" HorizontalAlignment="Right" VerticalAlignment="Center">
                 <Button Content="Save" DockPanel.Dock="Right" Width="120" Height="40" Margin="10"/>
             </StackPanel>

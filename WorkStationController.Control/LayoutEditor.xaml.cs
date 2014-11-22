@@ -13,6 +13,7 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
+using WorkstationController.Control.ThirdParties;
 using WorkstationController.Core.Data;
 using WorkstationController.VisualElement;
 using WorkstationController.VisualElement.Uitility;
@@ -24,7 +25,8 @@ namespace WorkstationController.Control
     /// </summary>
     public partial class LayoutEditor : UserControl
     {
-        UIMovementsController uiController;
+        UIMovementsController            _uiController = null;
+        ListViewDragDropManager<Command> _dragMgr      = null;
 
         /// <summary>
         /// Default constructor
@@ -34,8 +36,8 @@ namespace WorkstationController.Control
             InitializeComponent();
             
             _worktable.SizeChanged += uiContainer_SizeChanged;
-            uiController = new UIMovementsController(_worktable);
-            uiController.onLabelPreviewChanged += uiController_onLabelPreviewChanged; ;
+            _uiController = new UIMovementsController(_worktable);
+            _uiController.onLabelPreviewChanged += uiController_onLabelPreviewChanged; ;
             this.Loaded += LayoutUserControl_Loaded;
         }
 
@@ -43,11 +45,11 @@ namespace WorkstationController.Control
         {
             get
             {
-                return uiController.AllowPickup;
+                return _uiController.AllowPickup;
             }
             set
             {
-                uiController.AllowPickup = value;
+                _uiController.AllowPickup = value;
             }
         }
         
@@ -58,9 +60,9 @@ namespace WorkstationController.Control
         public void SuggestCandidate(WareBase wareBase)
         {
             var uiElement = UIElementFactory.CreateUIElement(wareBase, _worktable.Children);
-            uiController.UIElementCandidate = uiElement;
+            _uiController.UIElementCandidate = uiElement;
             Mouse.OverrideCursor = Cursors.Hand;
-            uiController.CaptureMouse();
+            _uiController.CaptureMouse();
         }
 
         private void uiController_onLabelPreviewChanged(object sender, EventArgs e)
@@ -83,6 +85,9 @@ namespace WorkstationController.Control
             _worktable.AttachWorktableVisual();
             _worktable.MouseMove += uiContainer_MouseMove;
             OnContainerSizeChanged(new Size(800, 600));
+
+            // Initial drag & drop manager and hook it with the listview
+            this._dragMgr = new ListViewDragDropManager<Command>(this._listView);
         }
 
         private void uiContainer_MouseMove(object sender, MouseEventArgs e)

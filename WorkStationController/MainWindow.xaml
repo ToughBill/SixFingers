@@ -117,6 +117,7 @@
                             <TabItem.LayoutTransform>
                                 <RotateTransform Angle="90"></RotateTransform>
                             </TabItem.LayoutTransform>
+                            <ListBox ItemsSource="{Binding Path=SupportedCommands}"/>
                         </TabItem>
                         <TabItem Header="LIQUID CLASSES" Background="Violet">
                             <TabItem.LayoutTransform>

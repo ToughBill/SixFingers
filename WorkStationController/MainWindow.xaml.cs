@@ -18,6 +18,7 @@ namespace WorkstationController
     {
         #region Private members
         private InstrumentsManager _instrumentsManager = InstrumentsManager.Instance;
+        private List<Command> _supportedCommands = null;
 
         // Dynamic tab items
         private List<TabItem> _tabItems = new List<TabItem>();
@@ -36,6 +37,14 @@ namespace WorkstationController
         }
 
         /// <summary>
+        /// Gets the supported commands
+        /// </summary>
+        public List<Command> SupportedCommands
+        {
+            get { return this._supportedCommands; }
+        }
+
+        /// <summary>
         /// Default constructor
         /// </summary>
         public MainWindow()
@@ -43,6 +52,7 @@ namespace WorkstationController
             InitializeComponent();
 
             this._instrumentsManager.Initialize();
+            this._supportedCommands = Command.CreatSupportedCommands();
 
             // Set the data context of the dialog
             this.DataContext = this;

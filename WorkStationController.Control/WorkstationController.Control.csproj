@@ -76,6 +76,9 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>strings.resx</DependentUpon>
     </Compile>
+    <Compile Include="ThirdParties\ListViewDragDropManager\DragAdorner.cs" />
+    <Compile Include="ThirdParties\ListViewDragDropManager\ListViewDragDropManager.cs" />
+    <Compile Include="ThirdParties\ListViewDragDropManager\MouseUtilities.cs" />
     <Page Include="PipettingCommandEditor.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -166,7 +169,11 @@
   <ItemGroup>
     <Resource Include="Resources\zvalues.png" />
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <Resource Include="Resources\resume.png" />
+    <Resource Include="Resources\run.png" />
+    <Resource Include="Resources\stop.png" />
+  </ItemGroup>
   <ItemGroup>
     <Resource Include="ThirdParties\ExtendedTabControl\Images\newtab.ico" />
   </ItemGroup>

@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 
 namespace WorkstationController.Core.Data
 {
@@ -10,6 +11,22 @@ namespace WorkstationController.Core.Data
     {
         private string _name       = string.Empty;
         private string _parameters = string.Empty;
+
+        /// <summary>
+        /// Create the supported command list
+        /// </summary>
+        /// <returns>The supported command list</returns>
+        public static List<Command> CreatSupportedCommands()
+        {
+            List<Command> commands = new List<Command>();
+
+            commands.Add(new Command("Aspiration", ""));
+            commands.Add(new Command("Dispense", ""));
+            commands.Add(new Command("Get DiTi", ""));
+            commands.Add(new Command("Drop DiTi", ""));
+
+            return commands;
+        }
 
         /// <summary>
         /// Default constructor for deserialization
@@ -39,6 +56,11 @@ namespace WorkstationController.Core.Data
         {
             get { return this._parameters; }
             set { this._parameters = value; }
+        }
+
+        public override string ToString()
+        {
+            return this._name;
         }
 
         public object Clone()
