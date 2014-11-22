@@ -3,7 +3,7 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:control="clr-namespace:WorkstationController.Control;assembly=WorkstationController.Control"
         Title="Workstation Controller 0.1" Height="600" Width="1000"
-        WindowStartupLocation="CenterScreen" WindowState="Normal">
+        WindowStartupLocation="CenterScreen" WindowState="Maximized">
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"/>
@@ -30,7 +30,7 @@
                 <!--Instruments selection-->
                 <DockPanel Grid.Column="0">
                     <TabControl TabStripPlacement="Right" DockPanel.Dock="Top">
-                        <TabItem Header="LABWARE" Background="Yellow">
+                        <TabItem Header="LABWARE" Background="Yellow" Height="30" Width="100">
                             <TabItem.LayoutTransform>
                                 <RotateTransform Angle="90"></RotateTransform>
                             </TabItem.LayoutTransform>
@@ -69,7 +69,7 @@
                                 </ListBox>
                             </DockPanel>
                         </TabItem>
-                        <TabItem Header="CARRIERS" Background="Blue">
+                        <TabItem Header="CARRIERS" Background="Blue" Height="30" Width="100">
                             <TabItem.LayoutTransform>
                                 <RotateTransform Angle="90"></RotateTransform>
                             </TabItem.LayoutTransform>
@@ -108,18 +108,52 @@
                                 </ListBox>
                             </DockPanel>
                         </TabItem>
-                        <TabItem Header="RECIPES" Background="Coral">
+                        <TabItem Header="COMMANDS" Background="GreenYellow" Height="30" Width="100">
                             <TabItem.LayoutTransform>
                                 <RotateTransform Angle="90"></RotateTransform>
                             </TabItem.LayoutTransform>
+                            <ListBox x:Name="_commandsListbox" ItemsSource="{Binding Path=SupportedCommands}" SelectionChanged="OnCommandListBoxSelectionChanged"/>
                         </TabItem>
-                        <TabItem Header="COMMANDS" Background="GreenYellow">
+                        <TabItem Header="RECIPES" Background="Coral" Height="30" Width="100">
                             <TabItem.LayoutTransform>
                                 <RotateTransform Angle="90"></RotateTransform>
                             </TabItem.LayoutTransform>
-                            <ListBox ItemsSource="{Binding Path=SupportedCommands}"/>
+                            <DockPanel>
+                                <ListBox x:Name="lb_recipes" DockPanel.Dock="Top">
+                                    <ListBox.ItemTemplate>
+                                        <DataTemplate>
+                                            <TextBlock Text="{Binding Path=TypeName}" ToolTip="{Binding Path=TypeName}"/>
+                                        </DataTemplate>
+                                    </ListBox.ItemTemplate>
+                                    <ListBox.ContextMenu>
+                                        <ContextMenu>
+                                            <MenuItem Header="Edit..." Click="OnRecipesEditMenuItemClick">
+                                                <MenuItem.Icon>
+                                                    <Image Source="/Resources/edit.png" Height="20" Width="20"/>
+                                                </MenuItem.Icon>
+                                            </MenuItem>
+                                            <MenuItem Header="New..." Click="OnRecipesNewMenuItemClick">
+                                                <MenuItem.Icon>
+                                                    <Image Source="/Resources/add.png" Height="20" Width="20"/>
+                                                </MenuItem.Icon>
+                                            </MenuItem>
+                                            <MenuItem Header="Duplicate..." Click="OnRecipesDuplicateMenuItemClick">
+                                                <MenuItem.Icon>
+                                                    <Image Source="/Resources/duplicate.png" Height="20" Width="20"/>
+                                                </MenuItem.Icon>
+                                            </MenuItem>
+                                            <Separator/>
+                                            <MenuItem Header="Delete" Click="OnRecipesDeleteMenuItemClick">
+                                                <MenuItem.Icon>
+                                                    <Image Source="/Resources/delete.png" Height="20" Width="20"/>
+                                                </MenuItem.Icon>
+                                            </MenuItem>
+                                        </ContextMenu>
+                                    </ListBox.ContextMenu>
+                                </ListBox>
+                            </DockPanel>
                         </TabItem>
-                        <TabItem Header="LIQUID CLASSES" Background="Violet">
+                        <TabItem Header="LIQUID CLASSES" Background="Violet" Height="30" Width="100">
                             <TabItem.LayoutTransform>
                                 <RotateTransform Angle="90"></RotateTransform>
                             </TabItem.LayoutTransform>
@@ -165,7 +199,7 @@
                 <GridSplitter Grid.Column="1" Width="2" MinWidth="2" ResizeDirection="Columns" VerticalAlignment="Stretch" HorizontalAlignment="Stretch"/>
 
                 <ScrollViewer HorizontalScrollBarVisibility="Auto" Grid.Column="2" >
-                    <TabControl Name="tabDynamic" ItemsSource="{Binding}" SelectionChanged="tabDynamic_SelectionChanged">
+                    <TabControl Name="tabDynamic" ItemsSource="{Binding}" SelectionChanged="OnCommandTabItemSelectionChanged">
                         <TabControl.Resources>
                             <DataTemplate x:Key="TabHeader" DataType="TabItem">
                                 <DockPanel>

@@ -19,6 +19,7 @@ namespace WorkstationController
         #region Private members
         private InstrumentsManager _instrumentsManager = InstrumentsManager.Instance;
         private List<Command> _supportedCommands = null;
+        private ListView _currentScriptListView = null;
 
         // Dynamic tab items
         private List<TabItem> _tabItems = new List<TabItem>();
@@ -124,8 +125,35 @@ namespace WorkstationController
             }
         }
 
-        private void tabDynamic_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        private void OnCommandListBoxSelectionChanged(object sender, SelectionChangedEventArgs e)
         {
+            if (this._commandsListbox.SelectedIndex == -1)
+                return;
+
+            Command sel_command = (Command)this._commandsListbox.SelectedItem;
+            Command copy_command = (Command)sel_command.Clone();
+            copy_command.Parameters = "1, 2, 3, 4";
+            DragDrop.DoDragDrop(this._currentScriptListView, copy_command, DragDropEffects.Copy | DragDropEffects.Move);
+
+            this._commandsListbox.SelectedIndex = -1;
+        }
+
+        private void OnCommandTabItemSelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            System.Collections.IList items = e.AddedItems;
+            if(items.Count > 0 && items[0] is TabItem)
+            {
+                TabItem tabitem = (TabItem)items[0];
+                if(((StackPanel)tabitem.Content).Children[0] is LayoutEditor)
+                {
+                    LayoutEditor layoutEditor = ((StackPanel)tabitem.Content).Children[0] as LayoutEditor;
+                    this._currentScriptListView = layoutEditor.ScriptListView;
+                }
+                else
+                {
+                    this._currentScriptListView = null;
+                }
+            }
         }
 
         private void btnDelete_Click(object sender, RoutedEventArgs e)
@@ -198,6 +226,27 @@ namespace WorkstationController
             Carrier selectedCr = (Carrier)this.lb_labwares.SelectedItem;
             InstrumentsManager.Instance.DeleteInstrument<Carrier>(selectedCr.ID);
             DeleteTabItem(selectedCr.ID);
+        }
+        #endregion
+
+        #region Recipes context menu
+        private void OnRecipesEditMenuItemClick(object sender, RoutedEventArgs e)
+        {
+        }
+
+        private void OnRecipesNewMenuItemClick(object sender, RoutedEventArgs e)
+        {
+            LayoutEditor editor = new LayoutEditor();
+            editor.DataContext = null;
+            this.AddTabItem(editor);
+        }
+
+        private void OnRecipesDuplicateMenuItemClick(object sender, RoutedEventArgs e)
+        {
+        }
+
+        private void OnRecipesDeleteMenuItemClick(object sender, RoutedEventArgs e)
+        {
         }
         #endregion
 

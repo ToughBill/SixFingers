@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Diagnostics;
 using System.Globalization;
 using System.Linq;
@@ -28,6 +29,14 @@ namespace WorkstationController.Control
         UIMovementsController            _uiController = null;
         ListViewDragDropManager<Command> _dragMgr      = null;
 
+        // Temp _worktable to make code compile
+        WorktableGrid _worktable = new WorktableGrid();
+        
+        // Temp commands for listview binding
+        ObservableCollection<Command> _script = new ObservableCollection<Command>(
+            new Command[] { new Command("Aspiration", "10, 3, 15, 20"), 
+                            new Command("Dispense", "10, 3, 15, 20")});
+
         /// <summary>
         /// Default constructor
         /// </summary>
@@ -37,7 +46,7 @@ namespace WorkstationController.Control
             
             _worktable.SizeChanged += uiContainer_SizeChanged;
             _uiController = new UIMovementsController(_worktable);
-            _uiController.onLabelPreviewChanged += uiController_onLabelPreviewChanged; ;
+            _uiController.onLabelPreviewChanged += uiController_onLabelPreviewChanged;
             this.Loaded += LayoutUserControl_Loaded;
         }
 
@@ -50,6 +59,14 @@ namespace WorkstationController.Control
             set
             {
                 _uiController.AllowPickup = value;
+            }
+        }
+
+        public ListView ScriptListView
+        {
+            get
+            {
+                return this._listView;
             }
         }
         
@@ -88,6 +105,7 @@ namespace WorkstationController.Control
 
             // Initial drag & drop manager and hook it with the listview
             this._dragMgr = new ListViewDragDropManager<Command>(this._listView);
+            this._listView.ItemsSource = this._script;
         }
 
         private void uiContainer_MouseMove(object sender, MouseEventArgs e)
