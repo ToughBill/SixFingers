@@ -37,7 +37,7 @@ namespace WorkstationController.Core.Data
         /// <summary>
         /// 50
         /// </summary>
-        Fivty,      
+        Fifty,      
 
         /// <summary>
         /// 10
