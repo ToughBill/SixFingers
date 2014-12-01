@@ -30,7 +30,7 @@ namespace WorkstationController.Control
         ListViewDragDropManager<Command> _dragMgr      = null;
 
         // Temp _worktable to make code compile
-        WorktableGrid _worktable = new WorktableGrid();
+        //WorktableGrid _worktable = new WorktableGrid();
         
         // Temp commands for listview binding
         ObservableCollection<Command> _script = new ObservableCollection<Command>(

@@ -24,15 +24,9 @@ namespace WorkstationController.Control
     {
         Labware _labware;
         bool bOk = false;
-        PipettingSettings pipettingSettings = null;
+        PipettingCommand pipettingCommand = null;
         LabwareUIElementFixedSize labwareUIElement = null;
-        public bool IsOk 
-        { 
-            get 
-            {
-                return bOk;
-            }
-        }
+   
 
         public PipettingCommandEidtor(Labware selectedLabware, bool isAspirate)
         {
@@ -75,14 +69,13 @@ namespace WorkstationController.Control
                 SetInfo(strings.MustSelectSomeWell,Brushes.Red);
                 return;
             }
-            pipettingSettings = new PipettingSettings(_labware.Label,new List<int>(){1},labwareUIElement.SelectedWellIDs,GetLiquidClass(),lblCommandName.Content == strings.aspirate,volume);
+            pipettingCommand = new PipettingCommand(_labware.Label,new List<int>(){1},labwareUIElement.SelectedWellIDs,GetLiquidClass(),lblCommandName.Content == strings.aspirate,volume);
             bOk = true;
             this.Visibility = System.Windows.Visibility.Hidden;
         }
 
         private LiquidClass GetLiquidClass()
         {
-
             //would be:
  	        return (LiquidClass)liquidClasses.SelectedItem;
         }
@@ -97,78 +90,28 @@ namespace WorkstationController.Control
         {
             this.Visibility = System.Windows.Visibility.Hidden;
         }
+
+
+        #region properties
+        public bool IsOk
+        {
+            get
+            {
+                return bOk;
+            }
+        }
+
+        public PipettingCommand PipettingCommand
+        {
+            get
+            {
+                return pipettingCommand;
+            }
+        }
+        #endregion
+
     }
 
 
-    class PipettingSettings
-    {
-        List<int> _tipsIDUsed;
-        List<int> _selectedWellIDs;
-        bool _isAspirate;
-        int _volumeUL;
-        string _labwareLabel;
-        LiquidClass _liquidClass;
-        public PipettingSettings(string labwareLabel, 
-            List<int> tipIDUsed, 
-            List<int> selectedWellIDs,
-            LiquidClass liquidClass,
-            bool isAspirate, 
-            int volumeUL)
-        {
-            _tipsIDUsed = tipIDUsed;
-            _selectedWellIDs = selectedWellIDs;
-            _isAspirate = isAspirate;
-            _volumeUL = volumeUL;
-            _labwareLabel = labwareLabel;
-        }
-
-        public int VolumeUL
-        { 
-            get
-            {
-                return _volumeUL;
-            }
-        }
-
-         public LiquidClass LiquidClass
-        { 
-            get
-            {
-                return _liquidClass;
-            }
-        }
-
-        public string LabwareLabel
-        {
-            get
-            {
-                return _labwareLabel;
-            }
-        }
-
-        public List<int> SelectedWellIDs
-        {
-            get
-            {
-                return _selectedWellIDs;
-            }
-        }
-
-        public List<int> TipsIDsUsed
-        {
-            get
-            {
-                return _tipsIDUsed;
-            }
-        }
-
-        public bool IsAspirate
-        {
-            get
-            {
-                return _isAspirate;
-            }
-        }
-
-    }
+    
 }

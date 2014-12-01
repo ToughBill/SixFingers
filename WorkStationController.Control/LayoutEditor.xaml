@@ -55,7 +55,7 @@
             </ListView>
         </GroupBox>
         <GroupBox Header="Layout" Grid.Row="1" Grid.Column="0">
-            <!--<local:WorktableGrid x:Name="_worktable" Grid.Row="0" Background="LightYellow" VerticalAlignment="Stretch" HorizontalAlignment="Stretch"/>-->
+            <local:WorktableGrid x:Name="_worktable" Grid.Row="0" Background="LightYellow" VerticalAlignment="Stretch" HorizontalAlignment="Stretch"/>
         </GroupBox>
         <DockPanel Grid.Row="2">
             <Button DockPanel.Dock="Left" Margin="10" Width="100">
