@@ -20,6 +20,7 @@ namespace WorkstationController.VisualElement
         /// no well is selected;
         /// </summary>
         Labware _labware;
+
         const int wellDefaultOffsetToSiteMargin = 120;
 
 
@@ -32,7 +33,7 @@ namespace WorkstationController.VisualElement
             this._labware = labware;
             _children.Add(CreateViusal());
         }
-
+        
         /// <summary>
         /// Gets or sets the label of the ware
         /// </summary>
@@ -59,7 +60,7 @@ namespace WorkstationController.VisualElement
                 return _labware;
             }
         }        
-        
+
         /// <summary>
         /// redraw
         /// </summary>
@@ -83,26 +84,8 @@ namespace WorkstationController.VisualElement
                 mapGrid = VisualCommon.FindCorrespondingGrid(_ptDragPosition.X);
             }
 
-            int pinPos = (mapGrid - 1) * Worktable.DistanceBetweenAdjacentPins + (int)_worktable.FirstPinPosition.X;
-            int xPos = pinPos;
-            int yPos = (int)_worktable.FirstPinPosition.Y;
-            if (carrier != null)
-            {
-                xPos = pinPos - (carrier.XOffset);  //get carrier x start pos
-                yPos -= carrier.YOffset;
-                int siteIndex = _labware.SiteID - 1;
-                var site = carrier.Sites[siteIndex];
-                xPos += (int)site.XOffset;       //get site x start pos
-                yPos += (int)site.YOffset;
-            }
-            else
-            {
-                Point ptPhysical = VisualCommon.Convert2PhysicalXY(_ptDragPosition.X, _ptDragPosition.Y);
-                xPos = (int)ptPhysical.X;
-                yPos = (int)ptPhysical.Y;
-                //drawingContext.DrawRectangle(Brushes.Black, null, new Rect(xPos,yPos,10,10));
-            }
-            
+            int xPos = 0, yPos = 0;
+            CalculatePositions(ref xPos, ref yPos, mapGrid, carrier);
             Size sz = new Size(_labware.Dimension.XLength, _labware.Dimension.YLength);
             Color border = NeedHighLight() ? Colors.Blue : Colors.Black;
             Color background = _labware.BackgroundColor;
@@ -124,6 +107,28 @@ namespace WorkstationController.VisualElement
                 }
             }
             drawingContext.Close();
+        }
+
+        private void CalculatePositions(ref int xPos, ref int yPos, int mapGrid, Carrier carrier)
+        {
+            int pinPos = (mapGrid - 1) * Worktable.DistanceBetweenAdjacentPins + (int)_worktable.FirstPinPosition.X;
+            xPos = pinPos;
+            yPos = (int)_worktable.FirstPinPosition.Y;
+            if (carrier != null)
+            {
+                xPos = pinPos - (carrier.XOffset);  //get carrier x start pos
+                yPos -= carrier.YOffset;
+                int siteIndex = _labware.SiteID - 1;
+                var site = carrier.Sites[siteIndex];
+                xPos += (int)site.XOffset;          //get site x start pos
+                yPos += (int)site.YOffset;
+            }
+            else
+            {
+                Point ptPhysical = VisualCommon.Convert2PhysicalXY(_ptDragPosition.X, _ptDragPosition.Y);
+                xPos = (int)ptPhysical.X;
+                yPos = (int)ptPhysical.Y;
+            }
         }
 
         private bool NeedHighLight()
