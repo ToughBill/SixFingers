@@ -56,6 +56,7 @@
     <Compile Include="Data\Labware.cs" />
     <Compile Include="Data\Layout.cs" />
     <Compile Include="Data\LiquidClass.cs" />
+    <Compile Include="Data\PipettingCommand.cs" />
     <Compile Include="Data\PumpInfo.cs" />
     <Compile Include="Data\Script.cs" />
     <Compile Include="Data\WareBase.cs" />
