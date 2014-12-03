@@ -211,7 +211,7 @@ namespace WorkstationController.Core.Data
         public object Clone()
         {
             Carrier newCarrier = new Carrier();
-            newCarrier.TypeName = "<Need a name>";
+            newCarrier.TypeName = this.TypeName;
             newCarrier.Label = "<Need a name>";
             newCarrier.XOffset = this.XOffset;
             newCarrier.YOffset = this.YOffset;
@@ -233,6 +233,7 @@ namespace WorkstationController.Core.Data
             Site site1 = new Site(0, 110, 0, 240, 3050, 1);
             _sites.Add(site1);
             _grid = undefinedGrid;
+            _allowedLabwareTypeNames.Add(LabwareBuildInType.Tubes16Pos13_100MM.ToString());
             TypeName = BuildInCarrierType.Tube13mm_16POS.ToString();
         }
 

@@ -112,7 +112,7 @@
                             <TabItem.LayoutTransform>
                                 <RotateTransform Angle="90"></RotateTransform>
                             </TabItem.LayoutTransform>
-                            <ListBox x:Name="_commandsListbox" ItemsSource="{Binding Path=SupportedCommands}" SelectionChanged="OnCommandListBoxSelectionChanged"/>
+                            <ListBox x:Name="_commandsListbox" ItemsSource="{Binding Path=SupportedCommands}"/>
                         </TabItem>
                         <TabItem Header="RECIPES" Background="Coral" Height="30" Width="100">
                             <TabItem.LayoutTransform>

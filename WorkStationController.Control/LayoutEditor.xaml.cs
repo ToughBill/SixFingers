@@ -62,13 +62,7 @@ namespace WorkstationController.Control
             }
         }
 
-        public ListView ScriptListView
-        {
-            get
-            {
-                return this._listView;
-            }
-        }
+      
         
         /// <summary>
         /// suggest candidate
@@ -102,10 +96,6 @@ namespace WorkstationController.Control
             _worktable.AttachWorktableVisual();
             _worktable.MouseMove += uiContainer_MouseMove;
             OnContainerSizeChanged(new Size(800, 600));
-
-            // Initial drag & drop manager and hook it with the listview
-            this._dragMgr = new ListViewDragDropManager<Command>(this._listView);
-            this._listView.ItemsSource = this._script;
         }
 
         private void uiContainer_MouseMove(object sender, MouseEventArgs e)

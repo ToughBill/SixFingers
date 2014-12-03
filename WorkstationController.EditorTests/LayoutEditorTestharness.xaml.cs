@@ -105,6 +105,11 @@ namespace WorkstationController.EditorTests
             layoutEditor.AllowPickup = (bool)chkbox1.IsChecked;
         }
 
+        private void btnSave_Click(object sender, RoutedEventArgs e)
+        {
+
+        }
+
  
 
     }

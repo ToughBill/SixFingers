@@ -37,10 +37,13 @@ namespace WorkstationController.VisualElement.Uitility
                 LabwareUIElement labwareUIElement = (LabwareUIElement)baseUIElement;
                 Labware labware = labwareUIElement.Labware;
                 CarrierUIElement carrierUIElement = null;
-                Site site = null;
-                FindSuitableCarrier(position, labware.TypeName, container, ref carrierUIElement, ref site);
-                labware.ParentCarrier = carrierUIElement.Carrier;
-                labware.SiteID = site.ID;
+                int siteID = -1;
+                bool bFound = FindSuitableCarrier(position, labware.TypeName, container, ref carrierUIElement, ref siteID);
+                if(bFound)
+                {
+                    labware.ParentCarrier = carrierUIElement.Carrier;
+                    labware.SiteID = siteID;
+                }
                 carrierUIElement.Carrier.AddLabware(labware);
             }
             
@@ -105,27 +108,27 @@ namespace WorkstationController.VisualElement.Uitility
             return true;
         }
 
-        private static bool FindSuitableCarrier(Point pt, string labwareTypeName, Grid container,ref CarrierUIElement carrierUIElement,ref Site site)
+        private static bool FindSuitableCarrier(Point pt, string labwareTypeName, Grid container,ref CarrierUIElement carrierUIElement,ref int siteID)
         {
+            bool bFound = false;
             foreach (UIElement uiElement in container.Children)
             {
                 if (!(uiElement is CarrierUIElement))
                     continue;
                 carrierUIElement = uiElement as CarrierUIElement;
-                site = carrierUIElement.FindSiteForLabware(pt, labwareTypeName);
-                if (site != null)
-                {
-                    return true;
-                }
+
+                bFound = carrierUIElement.GetSiteIDAcceptsTheLabware(pt, labwareTypeName, ref siteID);
+                if (bFound)
+                    break;
             }
-            return false;
+            return bFound;
         }
 
         private static bool HasSuitableSite(Point pt, string labwareTypeName,Grid container)
         {
             CarrierUIElement carrierUIElement = null;
-            Site site = null;
-            return FindSuitableCarrier(pt, labwareTypeName, container,ref carrierUIElement, ref site);
+            int siteID = -1;
+            return FindSuitableCarrier(pt, labwareTypeName, container, ref carrierUIElement, ref siteID);
         }
 
         private static bool IsOutofRange(int grid, CarrierUIElement carrierUIElement)

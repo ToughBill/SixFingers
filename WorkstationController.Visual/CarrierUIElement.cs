@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Diagnostics;
 using System.Windows;
 using System.Windows.Media;
 using WorkstationController.Core.Data;
@@ -15,8 +16,9 @@ namespace WorkstationController.VisualElement
         /// Carrier data
         /// </summary>
         private Carrier _carrier = null;
-        private Site _siteNeedHighLight = null;
-
+        public const int InvalidSiteIndex = -1;
+        private int _highLightSiteIndex = InvalidSiteIndex;
+        
         /// <summary>
         /// Constructor
         /// </summary>
@@ -80,35 +82,30 @@ namespace WorkstationController.VisualElement
             int yPos = GetBoundingRectYStart();
             Size sz = new Size(_carrier.Dimension.XLength, _carrier.Dimension.YLength);
 
-            //2 draw click area
-            //int szClickAreaUnit = (int)(sz.Width / 6);
-            //VisualCommon.DrawRect(GetUnderneathPinXStart(_carrier.Grid), (int)(_worktable.FirstPinPosition.Y),
-            //    new Size(_worktable.FirstRowPinSize.Width*15,_worktable.FirstRowPinSize.Width*30), 
-            //    drawingContext, 
-            //    Colors.OrangeRed,Brushes.DarkBlue);
-            Brush fillBrush = new SolidColorBrush(Color.FromArgb(128, 200, 200, 200));
+            Brush grayBrush = new SolidColorBrush(Color.FromArgb(128, 200, 200, 200));
             Color border = _isSelected ? Colors.Blue : Colors.Black;
-            VisualCommon.DrawRect(xPos, yPos, sz, drawingContext, border,fillBrush);
-            fillBrush = new SolidColorBrush(Color.FromArgb(128, 255, 255, 255));
-            //VisualCommon.DrawLine()
-            //3 each site
-            foreach(Site site in _carrier.Sites)
+            VisualCommon.DrawRect(xPos, yPos, sz, drawingContext, border,grayBrush);
+            
+   
+            //2 each site
+            for (int i = 0; i < _carrier.Sites.Count; i++ )
             {
+                var fillBrsuh = new SolidColorBrush(Color.FromArgb(128, 255, 255, 255));
+                var site = _carrier.Sites[i];
                 int xSite = (int)(site.XOffset + xPos);
                 int ySite = (int)(site.YOffset + yPos);
                 border = _isSelected ? Colors.Blue : Colors.Brown;
-                bool bNeedHighLight = site == _siteNeedHighLight;
-                
+                bool bNeedHighLight = i == _highLightSiteIndex;
+
                 Size tmpSZ = new Size(site.XSize, site.YSize);
                 Rect rc = new Rect(new Point(xSite, ySite), tmpSZ);
-                
                 if (bNeedHighLight)
                 {
                     BlowUp(ref rc);
                     border = Colors.DarkGreen;
-                    fillBrush = new SolidColorBrush(Color.FromArgb(128, 255, 255, 0));
+                    fillBrsuh = new SolidColorBrush(Color.FromArgb(128, 255, 255, 0));
                 }
-                VisualCommon.DrawRect((int)rc.X, (int)rc.Y, rc.Size, drawingContext, border, fillBrush);
+                VisualCommon.DrawRect((int)rc.X, (int)rc.Y, rc.Size, drawingContext, border, fillBrsuh);
             }
             drawingContext.Close();
         }
@@ -156,20 +153,39 @@ namespace WorkstationController.VisualElement
             SetHighLightFlag(ptInCanvas,labwareTypeName,bMouseMove);
             InvalidateVisual();
         }
-
-        private void RemoveHighLightFlag()
-        {
-            _siteNeedHighLight = null;
-        }
+      
         private void SetHighLightFlag(Point ptInCanvas,string labwareTypeName, bool bMouseMove = true)
         {
-            RemoveHighLightFlag();
-            //if not from mousemove, we need to remove all the highLight flag.
             if (!bMouseMove) 
                 return;
-            _siteNeedHighLight = FindSiteForLabware(ptInCanvas, labwareTypeName);
+            _highLightSiteIndex = GetSiteIndexAcceptsTheLabware(ptInCanvas, labwareTypeName);
         }
+        private int GetSiteIndexAcceptsTheLabware(Point ptInCanvas, string labwareTypeName)
+        {
+            if (Grid <= Carrier.undefinedGrid || !_carrier.AllowedLabwareTypeNames.Contains(labwareTypeName))
+                return InvalidSiteIndex;
 
+            int xPos = GetBoundingRectXStart(Grid);
+            int yPos = GetBoundingRectYStart();
+            Rect rc = VisualCommon.Physic2Visual(xPos, yPos, new Size(_carrier.Dimension.XLength, _carrier.Dimension.YLength));
+            if (!rc.Contains(ptInCanvas))
+                return InvalidSiteIndex;
+
+            int siteIndex = InvalidSiteIndex;
+            for (int i = 0; i < _carrier.Sites.Count;i++ )
+            {
+                var site = _carrier.Sites[i];
+                int xSite = (int)(site.XOffset + xPos);
+                int ySite = (int)(site.YOffset + yPos);
+                rc = VisualCommon.Physic2Visual(xSite, ySite, new Size(site.XSize, site.YSize));
+                if (rc.Contains(ptInCanvas))
+                {
+                    siteIndex =  i;
+                    break;
+                }
+            }
+            return siteIndex;
+        }
 
         /// <summary>
         /// find a site which can accept the labware
@@ -177,31 +193,15 @@ namespace WorkstationController.VisualElement
         /// <param name="ptInCanvas"></param>
         /// <param name="labwareTypeName"></param>
         /// <returns></returns>
-        public Site FindSiteForLabware(Point ptInCanvas, string labwareTypeName)
+        public bool GetSiteIDAcceptsTheLabware(Point ptInCanvas, string labwareTypeName, ref int siteID)
         {
-            if (Grid <= Carrier.undefinedGrid || !_carrier.AllowedLabwareTypeNames.Contains(labwareTypeName))
-                return null;
-
-            int xPos = GetBoundingRectXStart(Grid);
-            int yPos = GetBoundingRectYStart();
-            Rect rc = VisualCommon.Physic2Visual(xPos, yPos, new Size(_carrier.Dimension.XLength, _carrier.Dimension.YLength));
-            if (!rc.Contains(ptInCanvas))
-                return null;
-
-            Site siteExpected = null;
-            foreach (Site site in _carrier.Sites)
+            int siteIndex = GetSiteIndexAcceptsTheLabware(ptInCanvas, labwareTypeName);
+            if( siteIndex != InvalidSiteIndex)
             {
-                int xSite = (int)(site.XOffset + xPos);
-                int ySite = (int)(site.YOffset + yPos);
-                rc = VisualCommon.Physic2Visual(xSite, ySite, new Size(site.XSize, site.YSize));
-                if (rc.Contains(ptInCanvas))
-                {
-                    siteExpected = site;
-                    break;
-                }
+                siteID = _carrier.Sites[siteIndex].ID;
             }
-
-            return siteExpected;
+            return siteIndex != InvalidSiteIndex;
+            
         }
     }
 }
