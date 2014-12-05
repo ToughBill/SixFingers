@@ -5,6 +5,7 @@ using System.Windows.Input;
 using System.Windows.Media;
 using WorkstationController.Control;
 using WorkstationController.Core.Data;
+using WorkstationController.Core.Utility;
 using WorkstationController.VisualElement;
 using WorkstationController.VisualElement.Uitility;
 
@@ -108,7 +109,7 @@ namespace WorkstationController.EditorTests
         private void btnSave_Click(object sender, RoutedEventArgs e)
         {
             var layout = layoutEditor.GetLayout("test");
-            layout.Serialize()
+            layout.Serialize(FolderHelper.GetLayoutFolder()+"test.xml");
         }
 
 

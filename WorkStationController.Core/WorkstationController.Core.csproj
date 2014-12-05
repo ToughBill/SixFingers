@@ -51,10 +51,8 @@
     <Compile Include="Data\ArmInfo.cs" />
     <Compile Include="Data\Carrier.cs" />
     <Compile Include="Data\Command.cs" />
-    <Compile Include="Data\CommandsManager.cs" />
     <Compile Include="Data\Config.cs" />
     <Compile Include="Data\DitiBox.cs" />
-    <Compile Include="Data\FolderHelper.cs" />
     <Compile Include="Data\Labware.cs" />
     <Compile Include="Data\Layout.cs" />
     <Compile Include="Data\LiquidClass.cs" />
@@ -69,6 +67,8 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
+    <Compile Include="Utility\CommandsManager.cs" />
+    <Compile Include="Utility\FolderHelper.cs" />
     <Compile Include="Utility\InstrumentsManager.cs" />
     <Compile Include="Utility\ISerialization.cs" />
     <Compile Include="Utility\PropertyChangedNotifyHelper.cs" />

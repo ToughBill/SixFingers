@@ -31,19 +31,22 @@ namespace WorkstationController.Core.Utility
             }
 
             XmlSerializer serializer = new XmlSerializer(typeof(T));
-            
-            using (Stream fs = new FileStream(xmlFileName, FileMode.Create, FileAccess.Write, FileShare.None))
+            string sContent = "";
+            using (var ms = new MemoryStream())
             {
-                XmlWriterSettings settings = new XmlWriterSettings();
-                settings.Encoding = new UnicodeEncoding(false, false);
-                settings.Indent = true;
-                settings.OmitXmlDeclaration = false;
-
-                using (XmlWriter writer = XmlWriter.Create(fs, settings))
+                using (var xw = XmlWriter.Create(ms,
+                    new XmlWriterSettings()
+                    {
+                        Encoding = new UTF8Encoding(false),
+                        Indent = true,
+                        NewLineOnAttributes = true,
+                    }))
                 {
-                    serializer.Serialize(writer, objectGraph);
+                    serializer.Serialize(xw, objectGraph);
+                    sContent =  Encoding.UTF8.GetString(ms.ToArray());
                 }
             }
+            File.WriteAllText(xmlFileName, sContent);
         }
 
         /// <summary>
