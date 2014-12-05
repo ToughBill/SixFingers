@@ -50,7 +50,6 @@ namespace WorkstationController.Core.Data
             this.ID = Guid.NewGuid();
         }
 
-
         /// <summary>
         /// Create an instance of Layout from a XML file
         /// </summary>

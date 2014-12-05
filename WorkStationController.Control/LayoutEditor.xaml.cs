@@ -62,7 +62,30 @@ namespace WorkstationController.Control
             }
         }
 
-      
+
+        /// <summary>
+        /// get layout form UI.
+        /// </summary>
+        /// <param name="Name"></param>
+        /// <returns></returns>
+        public Layout GetLayout(string Name)
+        {
+            Layout layout = new Layout();
+
+            //get carriers
+            foreach (UIElement uiElement in _worktable.Children)
+            {
+                if(!(uiElement is BasewareUIElement))
+                    continue;
+                if (uiElement is CarrierUIElement)
+                {
+                    var carrierUIElement = (CarrierUIElement)uiElement;
+                    layout.AddCarrier(carrierUIElement.Carrier);
+                }
+            }
+            layout.Name = Name;
+            return layout;
+        }
         
         /// <summary>
         /// suggest candidate

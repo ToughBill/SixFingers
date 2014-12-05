@@ -107,10 +107,10 @@ namespace WorkstationController.EditorTests
 
         private void btnSave_Click(object sender, RoutedEventArgs e)
         {
-
+            var layout = layoutEditor.GetLayout("test");
+            layout.Serialize()
         }
 
- 
 
     }
 }

@@ -129,4 +129,7 @@
   <data name="FolderNotExistsError" xml:space="preserve">
     <value>Directory ({0}) does not exists.</value>
   </data>
+  <data name="LayoutFolder" xml:space="preserve">
+    <value>layoutFolder\\</value>
+  </data>
 </root>
