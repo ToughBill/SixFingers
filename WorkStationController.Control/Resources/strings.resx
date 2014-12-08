@@ -138,4 +138,10 @@
   <data name="VolumeMustBeDigital" xml:space="preserve">
     <value>体积必须为数字！</value>
   </data>
+  <data name="Delete" xml:space="preserve">
+    <value>删除</value>
+  </data>
+  <data name="Edit" xml:space="preserve">
+    <value>编辑</value>
+  </data>
 </root>

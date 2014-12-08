@@ -17,6 +17,7 @@ using System.Windows.Shapes;
 using WorkstationController.Control.ThirdParties;
 using WorkstationController.Core.Data;
 using WorkstationController.VisualElement;
+using WorkstationController.VisualElement.ContextMenu;
 using WorkstationController.VisualElement.Uitility;
 
 namespace WorkstationController.Control
@@ -26,17 +27,8 @@ namespace WorkstationController.Control
     /// </summary>
     public partial class LayoutEditor : UserControl
     {
-        UIMovementsController            _uiController = null;
-        ListViewDragDropManager<Command> _dragMgr      = null;
-
-        // Temp _worktable to make code compile
-        //WorktableGrid _worktable = new WorktableGrid();
-        
-        // Temp commands for listview binding
-        ObservableCollection<Command> _script = new ObservableCollection<Command>(
-            new Command[] { new Command("Aspiration", "10, 3, 15, 20"), 
-                            new Command("Dispense", "10, 3, 15, 20")});
-
+        UIMovementsController           _uiController = null;
+        WareContextMenuController       _contextMenuController = null;
         /// <summary>
         /// Default constructor
         /// </summary>
@@ -46,6 +38,7 @@ namespace WorkstationController.Control
             
             _worktable.SizeChanged += uiContainer_SizeChanged;
             _uiController = new UIMovementsController(_worktable);
+            _contextMenuController = new WareContextMenuController(_uiController);
             _uiController.onLabelPreviewChanged += uiController_onLabelPreviewChanged;
             this.Loaded += LayoutUserControl_Loaded;
         }
@@ -105,7 +98,7 @@ namespace WorkstationController.Control
             QueryNewLabelForm queryNewLabelForm = new QueryNewLabelForm(_worktable.Children, labwareUIElement);
             queryNewLabelForm.ShowDialog();
         }
-
+     
         private void LayoutUserControl_Loaded(object sender, RoutedEventArgs e)
         {
             //to do, replace it by load the worktable from a xml

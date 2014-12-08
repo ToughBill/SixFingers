@@ -12,6 +12,7 @@ using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
 using WorkstationController.Control;
 using WorkstationController.Core.Data;
+using WorkstationController.VisualElement;
 
 namespace WorkstationController.EditorTests
 {
@@ -40,6 +41,12 @@ namespace WorkstationController.EditorTests
             labware1.ParentCarrier = null;
 
             container.Children.Add(new PipettingCommandEidtor(labware1,false));
+        }
+
+        public void UpdateLabware(Labware newLabware)
+        {
+            container.Children.Clear();
+            container.Children.Add(new PipettingCommandEidtor(newLabware, false));
         }
     }
 }

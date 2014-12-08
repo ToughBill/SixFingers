@@ -11,6 +11,7 @@ using System.Windows.Input;
 using System.Windows.Documents;
 using System.Diagnostics;
 using WorkstationController.Core.Data;
+using WorkstationController.VisualElement.ContextMenu;
 
 namespace WorkstationController.VisualElement.Uitility
 {
@@ -30,7 +31,7 @@ namespace WorkstationController.VisualElement.Uitility
         Vector relativeClickPosition2LeftTop = new Vector(-1, -1);
         readonly Vector notdefinedRelativePosition = new Vector(-1, -1);
         public event EventHandler onLabelPreviewChanged;
-        
+        public event EventHandler onWareContextMenuFired;
         /// <summary>
         /// new UI element introduced from somewhere, nomarlly from listbox
         /// </summary>
@@ -48,7 +49,9 @@ namespace WorkstationController.VisualElement.Uitility
         }
 
         
-
+       /// <summary>
+       /// commands need to pick up a ware.
+       /// </summary>
         public bool AllowPickup
         { 
             get
@@ -84,7 +87,27 @@ namespace WorkstationController.VisualElement.Uitility
             this._myCanvas = grid;
             _myCanvas.PreviewMouseLeftButtonDown += myCanvas_PreviewMouseLeftButtonDown;
             _myCanvas.PreviewMouseLeftButtonUp += myCanvas_PreviewMouseLeftButtonUp;
+            _myCanvas.PreviewMouseRightButtonUp += _myCanvas_PreviewMouseRightButtonUp;
+            _myCanvas.IsVisibleChanged += _myCanvas_IsVisibleChanged;
             _myCanvas.MouseMove += myCanvas_MouseMove;
+        }
+
+        void _myCanvas_IsVisibleChanged(object sender, DependencyPropertyChangedEventArgs e)
+        {
+            onWareContextMenuFired(this, new ContextEvtArgs(null, new Point(0,0), false));
+        }
+
+        void _myCanvas_PreviewMouseRightButtonUp(object sender, MouseButtonEventArgs e)
+        {
+            Point ptClick = e.GetPosition(_myCanvas);
+            _selectedUIElement = FindSelectedUIElement(ptClick);
+            bool bNeed2Show = _selectedUIElement != null;
+            if (onWareContextMenuFired != null)
+            {
+                Point ptInScreen = _myCanvas.PointToScreen(ptClick);
+                onWareContextMenuFired(this, new ContextEvtArgs(_selectedUIElement, ptInScreen, bNeed2Show));
+            }
+            
         }
 
         /// <summary>
@@ -97,6 +120,12 @@ namespace WorkstationController.VisualElement.Uitility
 
         void myCanvas_PreviewMouseLeftButtonDown(object sender, MouseButtonEventArgs e)
         {
+            //fire context menu event
+             if(onWareContextMenuFired != null)
+            {
+                onWareContextMenuFired(this, new ContextEvtArgs(_selectedUIElement, new Point(0,0), false));
+            }
+
             //judge double click
             DateTime now = DateTime.Now;
             bool isDoubleClick = e.ClickCount == 2;
@@ -108,6 +137,7 @@ namespace WorkstationController.VisualElement.Uitility
             _selectedUIElement = FindSelectedUIElement(ptClick);
             if (_selectedUIElement == null)
                 return;
+           
            
             //process double click event for labwareUIElement
             if(_selectedUIElement is LabwareUIElement && isDoubleClick)

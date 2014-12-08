@@ -6,6 +6,9 @@ using System.Text;
 
 namespace WorkstationController.VisualElement.Uitility
 {
+    /// <summary>
+    /// label changed event
+    /// </summary>
     public class LabelChangeEventArgs : EventArgs
     {
         LabwareUIElement _labwareUIElement = null;

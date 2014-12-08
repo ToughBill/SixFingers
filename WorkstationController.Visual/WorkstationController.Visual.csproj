@@ -50,6 +50,8 @@
   <ItemGroup>
     <Compile Include="BasewareUIElement.cs" />
     <Compile Include="CarrierUIElement.cs" />
+    <Compile Include="contextMenu\contextMenuController.cs" />
+    <Compile Include="contextMenu\ContextEvtArgs.cs" />
     <Compile Include="LabwareUIElement.cs" />
     <Compile Include="LabwareUIElementFixedSize.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -58,6 +60,9 @@
     <Compile Include="Uitility\MovementsController.cs" />
     <Compile Include="Uitility\UIElementFactory.cs" />
     <Compile Include="Uitility\VisualCommon.cs" />
+    <Compile Include="contextMenu\contextMenuForm.xaml.cs">
+      <DependentUpon>contextMenuForm.xaml</DependentUpon>
+    </Compile>
     <Compile Include="WorktableVisual.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -65,6 +70,12 @@
       <Project>{c3ba4ccf-e014-4e15-be64-1675c58ef27a}</Project>
       <Name>WorkstationController.Core</Name>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Page Include="contextMenu\contextMenuForm.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
