@@ -52,6 +52,8 @@
     <Compile Include="CarrierUIElement.cs" />
     <Compile Include="contextMenu\contextMenuController.cs" />
     <Compile Include="contextMenu\ContextEvtArgs.cs" />
+    <Compile Include="contextMenu\contextMenuEntity.cs" />
+    <Compile Include="contextMenu\WareCommand.cs" />
     <Compile Include="LabwareUIElement.cs" />
     <Compile Include="LabwareUIElementFixedSize.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

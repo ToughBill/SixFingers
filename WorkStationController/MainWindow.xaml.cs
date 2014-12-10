@@ -50,8 +50,15 @@ namespace WorkstationController
         public MainWindow()
         {
             InitializeComponent();
-
-            this._instrumentsManager.Initialize();
+            try
+            {
+                this._instrumentsManager.Initialize();
+            }
+            catch(Exception ex)
+            {
+                MessageBox.Show(ex.Message, "启动失败！");
+                return;
+            }
             this._supportedCommands = Command.CreatSupportedCommands();
 
             // Set the data context of the dialog
