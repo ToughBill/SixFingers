@@ -54,7 +54,7 @@ namespace WorkstationController.VisualElement.ContextMenu
 
         void onDeleteItem(object sender, System.Windows.Input.ExecutedRoutedEventArgs e)
         {
-            throw new NotImplementedException();
+            MessageBox.Show("On delete item");
         }
 
         void movementsController_onWareContextFired(object sender, EventArgs e)

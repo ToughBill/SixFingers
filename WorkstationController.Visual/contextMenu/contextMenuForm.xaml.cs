@@ -30,28 +30,27 @@ namespace WorkstationController.VisualElement
             this.Loaded += ContextMenuForm_Loaded;
         }
 
-        public ObservableCollection<ContextMenuEntity> MenuEntities { get; set; }
+        private ObservableCollection<ContextMenuEntity> MenuEntities { get; set; }
 
 
         public void SetMenus(ObservableCollection<ContextMenuEntity> menuEntities)
         {
             MenuEntities = menuEntities;
-            //lstContextMenus.ItemsSource = MenuEntities;
-            //lstContextMenus.ItemsSource = _menuEntities;
         }
 
         void ContextMenuForm_Loaded(object sender, RoutedEventArgs e)
         {
-            lstContextMenus.MouseDown += lstContextMenus_MouseDown;
+            lstContextMenus.PreviewMouseLeftButtonDown += lstContextMenus_PreviewMouseLeftButtonDown; ;
         }
 
-        void lstContextMenus_MouseDown(object sender, MouseButtonEventArgs e)
+        void lstContextMenus_PreviewMouseLeftButtonDown(object sender, MouseButtonEventArgs e)
         {
-            int selIndex = lstContextMenus.SelectedIndex;
-            if (selIndex == -1)
+            var item = ItemsControl.ContainerFromElement(lstContextMenus, e.OriginalSource as DependencyObject) as ListBoxItem;
+            if (item == null)
                 return;
-            var command = MenuEntities[selIndex].Command2Do;
-            command.Execute(null,this);
+            string s = item.Content.ToString().ToLower();
+            var command = MenuEntities.Where(x => x.Text.ToLower() == s).Select(x => x.Command2Do).ToList().First();
+            command.Execute(null, this);
         }
     }
 }
