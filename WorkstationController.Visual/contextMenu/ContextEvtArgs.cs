@@ -7,7 +7,7 @@ using System.Windows;
 namespace WorkstationController.VisualElement.ContextMenu
 {
     /// <summary>
-    /// clicked ware
+    /// event argument
     /// </summary>
     class ContextEvtArgs : EventArgs
     {
