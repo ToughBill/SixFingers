@@ -27,18 +27,27 @@ namespace WorkstationController.Core.Data
         /// <summary>
         /// Carrier collection on layout
         /// </summary>
-        private List<Carrier> carriers = new List<Carrier>();
+        private List<Carrier> _carriers = new List<Carrier>();
+
+        [XmlArray("CarrierSkeletons")]
+        [XmlArrayItem("CarrierSkeleton", typeof(CarrierSkeleton), IsNullable = false)]
+        public List<CarrierSkeleton> CarrierSkeletons { get; set; }
+
+
+        [XmlArray("LabwareSkeletons")]
+        [XmlArrayItem("LabwareSkeleton", typeof(LabwareSkeleton), IsNullable = false)]
+        public List<LabwareSkeleton> LabwareSkeletons { get; set; }
+
 
         /// <summary>
-        /// Gets the labware collection on layout
+        /// Gets the labware collection on layout, don't serialize this
         /// </summary>
-        [XmlArray("Carriers")]
-        [XmlArrayItem("Carrier", typeof(Carrier), IsNullable = false)]
+        [XmlIgnoreAttribute] 
         public List<Carrier> Carriers
         {
             get
             {
-                return this.carriers;
+                return this._carriers;
             }
         }
 
@@ -70,9 +79,9 @@ namespace WorkstationController.Core.Data
             {
                 throw new ArgumentNullException("carrier", "carrier must not be null.");
             }
-            if (carriers.Contains(carrier))
+            if (_carriers.Contains(carrier))
                 return;
-            this.carriers.Add(carrier);
+            this._carriers.Add(carrier);
         }
 
         /// <summary>
@@ -86,7 +95,7 @@ namespace WorkstationController.Core.Data
                 throw new ArgumentNullException("carrier", "carrier must not be null.");
             }
 
-            this.carriers.Remove(carrier);
+            this._carriers.Remove(carrier);
         }
 
         #region Serialization
@@ -101,5 +110,43 @@ namespace WorkstationController.Core.Data
         }
 
         #endregion
+    }
+
+
+    /// <summary>
+    /// basic info to create the carrier
+    /// </summary>
+    public class CarrierSkeleton
+    {
+        /// <summary>
+        ///as property
+        /// </summary>
+        public string TypeName { get; set; }
+
+        /// <summary>
+        /// grid of the carrier
+        /// </summary>
+        public int Grid { get; set; }
+    }
+
+    /// <summary>
+    /// basic info to create the labware
+    /// </summary>
+    public class LabwareSkeleton
+    {
+        /// <summary>
+        /// as property
+        /// </summary>
+        public string TypeName { get; set; }
+
+        /// <summary>
+        /// as property
+        /// </summary>
+        public int Grid { get; set; }
+        
+        /// <summary>
+        /// as property
+        /// </summary>
+        public int Site { get; set; }
     }
 }

@@ -23,7 +23,6 @@ namespace WorkstationController.VisualElement
 
         const int wellDefaultOffsetToSiteMargin = 120;
 
-
         /// <summary>
         /// ctor
         /// </summary>
@@ -84,6 +83,8 @@ namespace WorkstationController.VisualElement
                 mapGrid = VisualCommon.FindCorrespondingGrid(_ptDragPosition.X);
             }
 
+
+            //calculate positioon & draw border rectangle
             int xPos = 0, yPos = 0;
             CalculatePositions(ref xPos, ref yPos, mapGrid, carrier);
             Size sz = new Size(_labware.Dimension.XLength, _labware.Dimension.YLength);
@@ -95,6 +96,8 @@ namespace WorkstationController.VisualElement
             int thickness = NeedHighLight() ? 2 : 1;
             VisualCommon.DrawRect(xPos, yPos, sz, drawingContext, border, brush, thickness);
             VisualCommon.DrawText( new Point( xPos, yPos+sz.Height), _labware.Label,drawingContext);
+
+            //draw wells
             int cols = _labware.WellsInfo.NumberOfWellsX;
             int rows = _labware.WellsInfo.NumberOfWellsY;
             Vector vector = new Vector(xPos + wellDefaultOffsetToSiteMargin, yPos + wellDefaultOffsetToSiteMargin);
