@@ -51,9 +51,16 @@
                      Text="{Binding Path=TypeName}"/>
         </StackPanel>
         <!--Color-->
-        <TextBlock Grid.Row="0" Grid.Column="5" Text="Color:" VerticalAlignment="Center" HorizontalAlignment="Right"/>
-        <control:ColorPickerCombo x:Name="_colorPicker" Grid.Row="0" Grid.Column="6" Margin="5" SelectedColor="{Binding Path=BackgroundColor, Mode=TwoWay}"/>
-        <!--Dimension-->
+        <StackPanel  Grid.Row="0" Grid.Column="5" Orientation="Horizontal">
+            <TextBlock Text="Grid:" VerticalAlignment="Center"  Margin="5" HorizontalAlignment="Left"/>
+            <TextBlock Text="" Name="txtGrid" VerticalAlignment="Center"  Margin="5" HorizontalAlignment="Left"/>
+        </StackPanel>
+        <StackPanel  Grid.Row="0" Grid.Column="6">
+            <TextBlock Text="Color:" VerticalAlignment="Center"  Margin="5" HorizontalAlignment="Left"/>
+            <control:ColorPickerCombo x:Name="_colorPicker" Margin="5" SelectedColor="{Binding Path=BackgroundColor, Mode=TwoWay}"/>
+
+        </StackPanel>
+         <!--Dimension-->
         <TextBlock Grid.Row="1" Grid.Column="2" Text="X" VerticalAlignment="Bottom" HorizontalAlignment="Center"/>
         <TextBlock Grid.Row="1" Grid.Column="4" Text="Y" VerticalAlignment="Bottom" HorizontalAlignment="Center"/>
         <Label Grid.Row="2" Grid.Column="0" Content="Dimension:"/>
