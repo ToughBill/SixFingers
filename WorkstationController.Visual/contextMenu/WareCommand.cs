@@ -12,7 +12,7 @@ namespace WorkstationController.VisualElement.contextMenu
         /// <summary>
         /// Occurs when the command initiates a check to determine whether the command can be executed on the command target.
         /// </summary>
-        public event CanExecuteRoutedEventHandler CanExecute
+        public new event CanExecuteRoutedEventHandler CanExecute
         {
             add
             {

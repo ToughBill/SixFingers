@@ -5,14 +5,12 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              mc:Ignorable="d" WindowStyle="None" Height="160" Width="160">
     <Grid>
-        <ListBox FontSize="14" FontFamily="Simsum" Name="lstContextMenus" Height="auto" Width="auto">
-            <!--<ListBox.ItemTemplate>
+        <ListBox FontSize="14" FontFamily="Simsum" Name="lstContextMenus" ItemsSource="{Binding}" Height="auto" Width="auto">
+            <ListBox.ItemTemplate>
                 <DataTemplate>
                     <TextBlock  Text="{Binding Text}"/>
                 </DataTemplate>
-            </ListBox.ItemTemplate>-->
-            <ListBoxItem>Edit</ListBoxItem>
-            <ListBoxItem>Delete</ListBoxItem>
+            </ListBox.ItemTemplate>
         </ListBox>
     </Grid>
 </Window>

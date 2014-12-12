@@ -22,6 +22,8 @@ namespace WorkstationController.Control
     /// </summary>
     public partial class LabwareEditor : UserControl
     {
+        Labware _labware;
+        
         /// <summary>
         /// ctor
         /// </summary>
@@ -29,6 +31,15 @@ namespace WorkstationController.Control
         {
             InitializeComponent();
             this.Loaded += LabwareUserControl_Loaded;
+        }
+
+        /// <summary>
+        /// ctor
+        /// </summary>
+        /// <param name="labware"></param>
+        public LabwareEditor(Labware labware):this()
+        {
+            _labware = labware;
         }
 
         void LabwareUserControl_Loaded(object sender, RoutedEventArgs e)

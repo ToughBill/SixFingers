@@ -1,4 +1,5 @@
 ﻿using System.Collections.ObjectModel;
+using System.Diagnostics;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
@@ -8,6 +9,7 @@ using WorkstationController.Core.Data;
 using WorkstationController.Core.Utility;
 using WorkstationController.VisualElement;
 using WorkstationController.VisualElement.Uitility;
+using WorkstationController.VisualElement.ContextMenu;
 
 namespace WorkstationController.EditorTests
 {
@@ -27,9 +29,18 @@ namespace WorkstationController.EditorTests
         void LayoutEditorTestharness_Loaded(object sender, RoutedEventArgs e)
         {
             layoutEditor = new LayoutEditor();
+            layoutEditor.ContextMenuController.onEditLabware += ContextMenu_onEditLabware;
             UserControlContainer.Children.Add(layoutEditor);
             CreateTwoLabwares();
         }
+
+        void ContextMenu_onEditLabware(object sender, System.EventArgs e)
+        {
+            LabwareEditArgs labwareEditArgs = e as LabwareEditArgs;
+            LabwareEditorTestharness labwareEditorTestharness = new LabwareEditorTestharness(labwareEditArgs.Labware);
+            labwareEditorTestharness.Show();
+        }
+
 
         private void lstboxLabwares_PreviewMouseLeftButtonDown(object sender, MouseButtonEventArgs e)
         {

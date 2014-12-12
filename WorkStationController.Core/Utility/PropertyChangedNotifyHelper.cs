@@ -14,12 +14,12 @@ namespace WorkstationController.Core.Utility
                 return;
             oldValue = setValue;
 
-#if DEBUG
-            // Output debug message for notifying value changed
-            string debug_message = string.Format("[{0}] changed - Old Value: {1}; New Value: {2}",
-                propertyName, oldValue, setValue);
-            Trace.WriteLine(debug_message);
-#endif
+//#if DEBUG
+//            // Output debug message for notifying value changed
+//            string debug_message = string.Format("[{0}] changed - Old Value: {1}; New Value: {2}",
+//                propertyName, oldValue, setValue);
+//            Trace.WriteLine(debug_message);
+//#endif
             PropertyChangedEventHandler handler_ref = handler;
             if(handler_ref != null)
                 handler_ref(sender, new PropertyChangedEventArgs(propertyName));

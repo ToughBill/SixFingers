@@ -9,6 +9,9 @@ using WorkstationController.VisualElement.Uitility;
 
 namespace WorkstationController.VisualElement
 {
+    /// <summary>
+    /// base uiElement
+    /// </summary>
     public class BasewareUIElement : UIElement
     {
         /// <summary>
@@ -20,9 +23,25 @@ namespace WorkstationController.VisualElement
         /// Worktable data
         /// </summary>
         protected Worktable _worktable = null;
+
+        /// <summary>
+        /// whether the ui element is selected
+        /// </summary>
         protected bool _isSelected = false;
+
+        /// <summary>
+        /// whether the ui element is highlighted
+        /// </summary>
         protected bool _isHighLighted = false;
+
+        /// <summary>
+        /// the inner ware data
+        /// </summary>
         protected WareBase _ware = null;
+
+        /// <summary>
+        /// drag position
+        /// </summary>
         protected Point _ptDragPosition;
 
         /// <summary>
@@ -73,6 +92,11 @@ namespace WorkstationController.VisualElement
             }
         }
 
+        
+        /// <summary>
+        /// draw method
+        /// </summary>
+        /// <param name="drawingContext"></param>
         protected override void OnRender(DrawingContext drawingContext)
         {
             base.OnRender(drawingContext);
@@ -148,13 +172,19 @@ namespace WorkstationController.VisualElement
             }
         }
 
-        // Provide a required override for the VisualChildrenCount property.
+        /// <summary>
+        /// Provide a required override for the VisualChildrenCount property.
+        /// </summary>
         protected override int VisualChildrenCount
         {
             get { return _children.Count; }
         }
 
-        // Provide a required override for the GetVisualChild method.
+        /// <summary>
+        ///Provide a required override for the GetVisualChild method. 
+        /// </summary>
+        /// <param name="index"></param>
+        /// <returns></returns>
         protected override Visual GetVisualChild(int index)
         {
             if (index < 0 || index >= _children.Count)

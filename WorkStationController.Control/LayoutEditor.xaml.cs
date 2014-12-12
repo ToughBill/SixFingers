@@ -29,6 +29,16 @@ namespace WorkstationController.Control
     {
         UIMovementsController           _uiController = null;
         WareContextMenuController       _contextMenuController = null;
+
+        #region events
+        public WareContextMenuController ContextMenuController 
+        { 
+            get
+            {
+                return _contextMenuController;
+            }
+        }
+        #endregion
         /// <summary>
         /// Default constructor
         /// </summary>
@@ -42,6 +52,8 @@ namespace WorkstationController.Control
             _uiController.onLabelPreviewChanged += uiController_onLabelPreviewChanged;
             this.Loaded += LayoutUserControl_Loaded;
         }
+
+       
 
         public bool AllowPickup 
         {

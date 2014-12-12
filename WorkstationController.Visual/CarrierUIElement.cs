@@ -16,6 +16,10 @@ namespace WorkstationController.VisualElement
         /// Carrier data
         /// </summary>
         private Carrier _carrier = null;
+
+        /// <summary>
+        /// site's default invalid index value
+        /// </summary>
         public const int InvalidSiteIndex = -1;
         private int _highLightSiteIndex = InvalidSiteIndex;
         
@@ -192,6 +196,7 @@ namespace WorkstationController.VisualElement
         /// </summary>
         /// <param name="ptInCanvas"></param>
         /// <param name="labwareTypeName"></param>
+        /// <param name="siteID"></param>
         /// <returns></returns>
         public bool GetSiteIDAcceptsTheLabware(Point ptInCanvas, string labwareTypeName, ref int siteID)
         {

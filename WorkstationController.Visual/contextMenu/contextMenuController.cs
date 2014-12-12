@@ -5,6 +5,7 @@ using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Windows;
+using WorkstationController.Core.Data;
 using WorkstationController.VisualElement.contextMenu;
 using WorkstationController.VisualElement.Uitility;
 
@@ -17,7 +18,21 @@ namespace WorkstationController.VisualElement.ContextMenu
     {
         ContextMenuForm contextMenuForm = new ContextMenuForm();
         ContextWindowState windowState = ContextWindowState.closed;
-        BasewareUIElement basewareUIElement = null;
+        WareBase wareBaseClicked = null;
+
+
+        #region events
+        /// <summary>
+        /// event when about to edit labware 
+        /// </summary>
+        public event EventHandler onEditLabware;
+
+        /// <summary>
+        /// event when about to edit carrier
+        /// </summary>
+        public event EventHandler onEditCarrier;
+        #endregion
+
         /// <summary>
         /// controller of ware's context menu.
         /// </summary>
@@ -32,29 +47,32 @@ namespace WorkstationController.VisualElement.ContextMenu
         {
             const string delete = "delete";
             const string edit = "edit";
-            ContextMenuEntity deleteItm = new ContextMenuEntity(delete);
-            deleteItm.Command2Do = new WareCommand(delete, typeof(Window));
-            deleteItm.Command2Do.Executed += onDeleteItem;
+            //ContextMenuEntity deleteItm = new ContextMenuEntity(delete);
+            //deleteItm.Command2Do = new WareCommand(delete, typeof(Window));
+            //deleteItm.Command2Do.Executed += onDeleteItem;
 
             ContextMenuEntity editItm = new ContextMenuEntity(edit);
             editItm.Command2Do = new WareCommand(edit, typeof(Window));
             editItm.Command2Do.Executed += onEditItem;
 
             ObservableCollection<ContextMenuEntity> menuEntities = new ObservableCollection<ContextMenuEntity>();
-            menuEntities.Add(deleteItm);
+            //menuEntities.Add(deleteItm);
             menuEntities.Add(editItm);
             return menuEntities;
         }
 
         private void onEditItem(object sender, System.Windows.Input.ExecutedRoutedEventArgs e)
         {
-            //throw new NotImplementedException();
-            MessageBox.Show("On Edit item");
-        }
-
-        void onDeleteItem(object sender, System.Windows.Input.ExecutedRoutedEventArgs e)
-        {
-            MessageBox.Show("On delete item");
+            if( wareBaseClicked is Labware)
+            {
+                if( onEditLabware != null)
+                    onEditLabware(this, new LabwareEditArgs(wareBaseClicked as Labware));
+            }
+            else
+            {
+                if( onEditCarrier != null)
+                    onEditCarrier(this, new CarrierEditArgs(wareBaseClicked as Carrier));
+            }
         }
 
         void movementsController_onWareContextFired(object sender, EventArgs e)
@@ -66,7 +84,7 @@ namespace WorkstationController.VisualElement.ContextMenu
                 windowState = ContextWindowState.closed;
                 return;
             }
-            basewareUIElement = contextEvtArgs.Element;
+            wareBaseClicked = contextEvtArgs.ClickedWareBase;
             contextMenuForm.WindowStartupLocation = System.Windows.WindowStartupLocation.Manual;
             contextMenuForm.Topmost = true;
             contextMenuForm.Left = contextEvtArgs.Position.X;
@@ -80,8 +98,7 @@ namespace WorkstationController.VisualElement.ContextMenu
             else
                 windowState = ContextWindowState.show;
          
-            Debug.WriteLine("x:{0}", contextEvtArgs.Position.X);
-            Debug.WriteLine("y:{0}", contextEvtArgs.Position.Y);
+
         }
 
         enum ContextWindowState

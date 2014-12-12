@@ -263,7 +263,6 @@ namespace WorkstationController.VisualElement
         List<MyDrawingVisual> _allWellVisuals;
         Rect _tightBoundingRect;
         Labware _labware;
-        bool bValid = false;
         public SingleSelection(List<MyDrawingVisual> allWellVisuals,Rect rcBoundary, Labware labware)
         {
             _allWellVisuals = allWellVisuals;
@@ -293,7 +292,6 @@ namespace WorkstationController.VisualElement
                 _selectedWell.State = WellState.Normal;
             if (IsCtrlPressed())
             {
-                bValid = false;
                 return;
             }
             int focusID = GetFocusID(pt);

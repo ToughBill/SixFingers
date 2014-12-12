@@ -105,7 +105,7 @@ namespace WorkstationController.VisualElement.Uitility
             if (onWareContextMenuFired != null)
             {
                 Point ptInScreen = _myCanvas.PointToScreen(ptClick);
-                onWareContextMenuFired(this, new ContextEvtArgs(_selectedUIElement, ptInScreen, bNeed2Show));
+                onWareContextMenuFired(this, new ContextEvtArgs(_selectedUIElement.Ware, ptInScreen, bNeed2Show));
             }
             
         }
@@ -123,7 +123,7 @@ namespace WorkstationController.VisualElement.Uitility
             //fire context menu event
              if(onWareContextMenuFired != null)
             {
-                onWareContextMenuFired(this, new ContextEvtArgs(_selectedUIElement, new Point(0,0), false));
+                onWareContextMenuFired(this, new ContextEvtArgs(_selectedUIElement.Ware, new Point(0,0), false));
             }
 
             //judge double click
@@ -267,7 +267,6 @@ namespace WorkstationController.VisualElement.Uitility
             Vector vectorAdjust = GetAdjustVector();
             ptCurrent -= vectorAdjust;
             _selectedUIElement.SetDragPosition(ptCurrent);
-            Debug.WriteLine(string.Format("x{0} y{1}", ptCurrent.X, ptCurrent.Y));
             UpdateLabwareUIElements(_selectedUIElement,ptCurrent);
         }
 

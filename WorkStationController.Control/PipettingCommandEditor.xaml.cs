@@ -69,7 +69,10 @@ namespace WorkstationController.Control
                 SetInfo(strings.MustSelectSomeWell,Brushes.Red);
                 return;
             }
-            pipettingCommand = new PipettingCommand(_labware.Label,new List<int>(){1},labwareUIElement.SelectedWellIDs,GetLiquidClass(),lblCommandName.Content == strings.aspirate,volume);
+            pipettingCommand = new PipettingCommand(_labware.Label,new List<int>(){1},
+                labwareUIElement.SelectedWellIDs,
+                GetLiquidClass(), 
+                ((string)lblCommandName.Content) == strings.aspirate,volume);
             bOk = true;
             this.Visibility = System.Windows.Visibility.Hidden;
         }
