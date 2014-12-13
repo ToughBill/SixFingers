@@ -58,7 +58,6 @@
         <StackPanel  Grid.Row="0" Grid.Column="6">
             <TextBlock Text="Color:" VerticalAlignment="Center"  Margin="5" HorizontalAlignment="Left"/>
             <control:ColorPickerCombo x:Name="_colorPicker" Margin="5" SelectedColor="{Binding Path=BackgroundColor, Mode=TwoWay}"/>
-
         </StackPanel>
          <!--Dimension-->
         <TextBlock Grid.Row="1" Grid.Column="2" Text="X" VerticalAlignment="Bottom" HorizontalAlignment="Center"/>

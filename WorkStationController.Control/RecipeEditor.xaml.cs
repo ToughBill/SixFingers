@@ -14,7 +14,7 @@ namespace WorkstationController.Control
     /// <summary>
     /// Interaction logic for Layout.xaml
     /// </summary>
-    public partial class LayoutEditor : UserControl
+    public partial class RecipeEditor : UserControl
     {
         UIMovementsController           _uiController = null;
         WareContextMenuController       _contextMenuController = null;
@@ -31,7 +31,7 @@ namespace WorkstationController.Control
         /// <summary>
         /// Default constructor
         /// </summary>
-        public LayoutEditor()
+        public RecipeEditor()
         {
             InitializeComponent();
             

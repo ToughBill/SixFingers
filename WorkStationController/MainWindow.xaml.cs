@@ -138,7 +138,7 @@ namespace WorkstationController
             if(items.Count > 0 && items[0] is TabItem)
             {
                 TabItem tabitem = (TabItem)items[0];
-                LayoutEditor layoutEditor = ((StackPanel)tabitem.Content).Children[0] as LayoutEditor;
+                RecipeEditor layoutEditor = ((StackPanel)tabitem.Content).Children[0] as RecipeEditor;
             }
         }
 
@@ -222,7 +222,7 @@ namespace WorkstationController
 
         private void OnRecipesNewMenuItemClick(object sender, RoutedEventArgs e)
         {
-            LayoutEditor editor = new LayoutEditor();
+            RecipeEditor editor = new RecipeEditor();
             editor.DataContext = null;
             this.AddTabItem(editor);
         }
