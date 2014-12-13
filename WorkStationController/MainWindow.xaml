@@ -35,7 +35,7 @@
                                 <RotateTransform Angle="90"></RotateTransform>
                             </TabItem.LayoutTransform>
                             <DockPanel>
-                                <ListBox x:Name="lb_labwares" DockPanel.Dock="Top" ItemsSource="{Binding Path=InstrumentsManager.Labwares}">
+                                <ListBox x:Name="lb_labwares" DockPanel.Dock="Top" ItemsSource="{Binding Path=InstrumentsManager.Labwares}" MouseDoubleClick="OnLabwaresMouseDoubleClick">
                                     <ListBox.ItemTemplate>
                                         <DataTemplate>
                                             <TextBlock Text="{Binding Path=TypeName}" ToolTip="{Binding Path=TypeName}"/>
@@ -74,7 +74,7 @@
                                 <RotateTransform Angle="90"></RotateTransform>
                             </TabItem.LayoutTransform>
                             <DockPanel>
-                                <ListBox x:Name="lb_carriers" DockPanel.Dock="Top" ItemsSource="{Binding Path=InstrumentsManager.Carriers}">
+                                <ListBox x:Name="lb_carriers" DockPanel.Dock="Top" ItemsSource="{Binding Path=InstrumentsManager.Carriers}" MouseDoubleClick="OnCarriersMouseDoubleClick">
                                     <ListBox.ItemTemplate>
                                         <DataTemplate>
                                             <TextBlock Text="{Binding Path=TypeName}" ToolTip="{Binding Path=TypeName}"/>
@@ -119,7 +119,7 @@
                                 <RotateTransform Angle="90"></RotateTransform>
                             </TabItem.LayoutTransform>
                             <DockPanel>
-                                <ListBox x:Name="lb_recipes" DockPanel.Dock="Top">
+                                <ListBox x:Name="lb_recipes" DockPanel.Dock="Top" MouseDoubleClick="OnRecipesMouseDoubleClick">
                                     <ListBox.ItemTemplate>
                                         <DataTemplate>
                                             <TextBlock Text="{Binding Path=TypeName}" ToolTip="{Binding Path=TypeName}"/>
@@ -158,7 +158,7 @@
                                 <RotateTransform Angle="90"></RotateTransform>
                             </TabItem.LayoutTransform>
                             <DockPanel>
-                                <ListBox x:Name="lb_liquidclass" DockPanel.Dock="Top" ItemsSource="{Binding Path=InstrumentsManager.LiquidClasses}">
+                                <ListBox x:Name="lb_liquidclass" DockPanel.Dock="Top" ItemsSource="{Binding Path=InstrumentsManager.LiquidClasses}" MouseDoubleClick="OnLiquidclassMouseDoubleClick">
                                     <ListBox.ItemTemplate>
                                         <DataTemplate>
                                             <TextBlock Text="{Binding Path=TypeName}" ToolTip="{Binding Path=TypeName}"/>

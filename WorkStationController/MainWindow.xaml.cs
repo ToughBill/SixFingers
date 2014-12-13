@@ -131,6 +131,23 @@ namespace WorkstationController
             }
         }
 
+        private bool ActivateEditingTab(Guid tag)
+        {
+            bool isEditing = false;
+
+            var item = tabDynamic.Items.Cast<TabItem>().Where(i => i.Tag.Equals(tag)).SingleOrDefault();
+
+            TabItem tabItem = item as TabItem;
+
+            if (tabItem != null)
+            {
+                tabDynamic.SelectedItem = tabItem;
+                isEditing = true;
+            }
+
+            return isEditing;
+        }
+
 
         private void OnCommandTabItemSelectionChanged(object sender, SelectionChangedEventArgs e)
         {
@@ -150,10 +167,18 @@ namespace WorkstationController
         #endregion
 
         #region Labware context menu
+        private void OnLabwaresMouseDoubleClick(object sender, System.Windows.Input.MouseButtonEventArgs e)
+        {
+            this.OnLabwareEditMenuItemClick(sender, e);
+        }
+
         private void OnLabwareEditMenuItemClick(object sender, RoutedEventArgs e)
         {
-            LabwareEditor editor = new LabwareEditor();
             Labware selectedLW = (Labware)this.lb_labwares.SelectedItem;
+            if (this.ActivateEditingTab(selectedLW.ID))
+                return;
+
+            LabwareEditor editor = new LabwareEditor();
             editor.DataContext = selectedLW;
             this.AddTabItem(editor);
         }
@@ -183,10 +208,18 @@ namespace WorkstationController
         #endregion
 
         #region Carrier context menu
+        private void OnCarriersMouseDoubleClick(object sender, System.Windows.Input.MouseButtonEventArgs e)
+        {
+            this.OnCarrierEditMenuItemClick(sender, e);
+        }
+
         private void OnCarrierEditMenuItemClick(object sender, RoutedEventArgs e)
         {
-            CarrierEditor editor = new CarrierEditor();
             Carrier selectedCr = (Carrier)this.lb_carriers.SelectedItem;
+            if (this.ActivateEditingTab(selectedCr.ID))
+                return;
+
+            CarrierEditor editor = new CarrierEditor();
             editor.DataContext = selectedCr;
             this.AddTabItem(editor);
         }
@@ -216,6 +249,11 @@ namespace WorkstationController
         #endregion
 
         #region Recipes context menu
+        private void OnRecipesMouseDoubleClick(object sender, System.Windows.Input.MouseButtonEventArgs e)
+        {
+            this.OnRecipesEditMenuItemClick(sender, e);
+        }
+
         private void OnRecipesEditMenuItemClick(object sender, RoutedEventArgs e)
         {
         }
@@ -237,10 +275,18 @@ namespace WorkstationController
         #endregion
 
         #region LiquidClass context menu
+        private void OnLiquidclassMouseDoubleClick(object sender, System.Windows.Input.MouseButtonEventArgs e)
+        {
+            this.OnLiquidClassEditMenuItemClick(sender, e);
+        }
+
         private void OnLiquidClassEditMenuItemClick(object sender, RoutedEventArgs e)
         {
-            LiquidClassEditor editor = new LiquidClassEditor();
             LiquidClass selectedLC = (LiquidClass)this.lb_liquidclass.SelectedItem;
+            if (this.ActivateEditingTab(selectedLC.ID))
+                return;
+
+            LiquidClassEditor editor = new LiquidClassEditor();
             editor.DataContext = selectedLC;
             this.AddTabItem(editor);
         }
