@@ -88,10 +88,12 @@ namespace WorkstationController
  
             tab.HeaderTemplate = tabDynamic.FindResource("TabHeader") as DataTemplate;
 
-            StackPanel stackpanel = new StackPanel();
-            stackpanel.HorizontalAlignment = System.Windows.HorizontalAlignment.Left;
-            stackpanel.Children.Add(control);
-            tab.Content = stackpanel;
+            //StackPanel stackpanel = new StackPanel();
+            //stackpanel.HorizontalAlignment = System.Windows.HorizontalAlignment.Left;
+            //stackpanel.Children.Add(control);
+            Grid grid = new Grid();
+            grid.Children.Add(control);
+            tab.Content = grid;
 
             // insert tab at most left position
             _tabItems.Insert(0, tab);
@@ -155,7 +157,7 @@ namespace WorkstationController
             if(items.Count > 0 && items[0] is TabItem)
             {
                 TabItem tabitem = (TabItem)items[0];
-                RecipeEditor layoutEditor = ((StackPanel)tabitem.Content).Children[0] as RecipeEditor;
+                RecipeEditor layoutEditor = ((Grid)tabitem.Content).Children[0] as RecipeEditor;
             }
         }
 

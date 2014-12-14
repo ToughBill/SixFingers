@@ -13,7 +13,7 @@ namespace WorkstationController.VisualElement.Uitility
     /// </summary>
     public class VisualCommon
     {
-        private const double worktableOccupiesRatio = 0.8;
+        private const double worktableOccupiesRatio = 0.9;
         /// <summary>
         /// container's size;
         /// </summary>
@@ -208,7 +208,7 @@ where T : class
 
         private static double GetXShift()
         {
-            return 0.1 * containerSize.Width;
+            return (1-worktableOccupiesRatio)/2.0 * containerSize.Width;
         }
 
         private static double GetYShift()

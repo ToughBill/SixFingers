@@ -29,9 +29,11 @@
                 </StackPanel>
             </Grid>
         </GroupBox>
-        <GroupBox Header="Layout" Grid.Row="0" Grid.Column="1" Margin="3">
-            <local:WorktableGrid x:Name="_worktable" Grid.Row="0" Background="LightYellow" VerticalAlignment="Stretch" HorizontalAlignment="Stretch" Margin="3"/>
-        </GroupBox>
+        <local:WorktableGrid Grid.Column="1" x:Name="_worktable" Background="LightYellow" VerticalAlignment="Stretch" HorizontalAlignment="Stretch" Margin="3"/>
+        <!--<GroupBox Header="Layout" Grid.Row="0" Grid.Column="1" Margin="3">
+            <local:WorktableGrid x:Name="_worktable" Background="LightYellow" VerticalAlignment="Stretch" HorizontalAlignment="Stretch" Margin="3"/>
+            --><!--<Grid Name="_worktable" Background="LightYellow" VerticalAlignment="Stretch" HorizontalAlignment="Stretch" Margin="3"/>--><!--
+        </GroupBox>-->
         <StackPanel Grid.Row="1" Grid.Column="0" Orientation="Horizontal" HorizontalAlignment="Center">
             <Button Content="RUN" Margin="10,10,5,10" MinWidth="80"/>
             <Button Content="RESUME" Margin="10,10,5,10" MinWidth="80"/>

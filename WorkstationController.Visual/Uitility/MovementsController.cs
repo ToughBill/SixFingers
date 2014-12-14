@@ -102,7 +102,7 @@ namespace WorkstationController.VisualElement.Uitility
             Point ptClick = e.GetPosition(_myCanvas);
             _selectedUIElement = FindSelectedUIElement(ptClick);
             bool bNeed2Show = _selectedUIElement != null;
-            if (onWareContextMenuFired != null)
+            if (onWareContextMenuFired != null && bNeed2Show)
             {
                 Point ptInScreen = _myCanvas.PointToScreen(ptClick);
                 onWareContextMenuFired(this, new ContextEvtArgs(_selectedUIElement.Ware, ptInScreen, bNeed2Show));
@@ -121,7 +121,7 @@ namespace WorkstationController.VisualElement.Uitility
         void myCanvas_PreviewMouseLeftButtonDown(object sender, MouseButtonEventArgs e)
         {
             //fire context menu event
-             if(onWareContextMenuFired != null)
+            if (onWareContextMenuFired != null && _selectedUIElement!= null)
             {
                 onWareContextMenuFired(this, new ContextEvtArgs(_selectedUIElement.Ware, new Point(0,0), false));
             }
