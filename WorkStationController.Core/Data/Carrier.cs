@@ -124,10 +124,16 @@ namespace WorkstationController.Core.Data
         /// <summary>
         /// Constructor
         /// </summary>
-        /// <param name="buildinType"></param>
-        public Carrier(BuildInCarrierType buildinType)
+        /// <param name="buildInType"></param>
+        public Carrier(BuildInCarrierType buildInType)
         {
-            switch (buildinType)
+            CreateBuildInCarrier(buildInType);
+            
+        }
+
+        private void CreateBuildInCarrier(BuildInCarrierType buildInType)
+        {
+            switch (buildInType)
             {
                 case BuildInCarrierType.MP_3POS:
                     CreateMP_3POS();
@@ -138,6 +144,18 @@ namespace WorkstationController.Core.Data
                 default:
                     break;
             }
+        }
+
+        /// <summary>
+        /// ctor
+        /// </summary>
+        /// <param name="buildInType"></param>
+        /// <param name="grid"></param>
+        public Carrier(string buildInType, int grid)
+        {
+            BuildInCarrierType carrierType = (BuildInCarrierType)Enum.Parse(typeof(BuildInCarrierType), buildInType);
+            CreateBuildInCarrier(carrierType);
+            _grid = grid;
         }
         
         /// <summary>

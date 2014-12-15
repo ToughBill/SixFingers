@@ -29,19 +29,40 @@ namespace WorkstationController.Core.Data
         /// </summary>
         private List<Carrier> _carriers = new List<Carrier>();
 
+        private List<CarrierSkeleton> _carrierSkeletons;
+        private List<LabwareSkeleton> _labwareSkeletons;
         /// <summary>
         /// carrier reference info
         /// </summary>
         [XmlArray("CarrierSkeletons")]
         [XmlArrayItem("CarrierSkeleton", typeof(CarrierSkeleton), IsNullable = false)]
-        public List<CarrierSkeleton> CarrierSkeletons { get; set; }
-
+        public List<CarrierSkeleton> CarrierSkeletons
+        {
+            get
+            {
+                return _carrierSkeletons;
+            }
+            set
+            {
+                _carrierSkeletons = value;
+            }
+        }
         /// <summary>
         /// labware reference info
         /// </summary>
         [XmlArray("LabwareSkeletons")]
         [XmlArrayItem("LabwareSkeleton", typeof(LabwareSkeleton), IsNullable = false)]
-        public List<LabwareSkeleton> LabwareSkeletons { get; set; }
+        public List<LabwareSkeleton> LabwareSkeletons
+        {
+            get
+            {
+                return _labwareSkeletons;
+            }
+            set
+            {
+                _labwareSkeletons = value;
+            }
+        }
 
 
         /// <summary>
@@ -73,8 +94,25 @@ namespace WorkstationController.Core.Data
         /// <returns>A Layout instance</returns>
         public static Layout Create(string fromXmlFile)
         {
-            return SerializationHelper.Deserialize<Layout>(fromXmlFile);
+           Layout layout =  SerializationHelper.Deserialize<Layout>(fromXmlFile);
+           layout._carriers = RestoreCarriersFromSkeleton(layout._carrierSkeletons,layout._labwareSkeletons);
+           return layout;
         }
+
+        private static List<Carrier> RestoreCarriersFromSkeleton(List<CarrierSkeleton> carrierSkeletons, List<LabwareSkeleton> labwareSkeletons)
+        {
+            List<Carrier> carriers = new List<Carrier>();
+            List<Labware> labwares = new List<Labware>();
+            foreach(CarrierSkeleton carrierSkeletonItem in carrierSkeletons)
+            {
+                carriers.Add(new Carrier(carrierSkeletonItem.TypeName, carrierSkeletonItem.GridID));
+            }
+             foreach(LabwareSkeleton labwareSkeletonItem in labwareSkeletons)
+             {
+                 labwares.Add(new Labware(labwareSkeletonItem));
+             }
+        }
+
 
         /// <summary>
         /// Add a Carrier
@@ -150,6 +188,14 @@ namespace WorkstationController.Core.Data
             TypeName = carrier.TypeName;
             GridID = carrier.Grid;
         }
+
+        /// <summary>
+        /// make serializer happy
+        /// </summary>
+        public CarrierSkeleton()
+        {
+
+        }
         /// <summary>
         ///as property
         /// </summary>
@@ -166,12 +212,21 @@ namespace WorkstationController.Core.Data
     /// </summary>
     public class LabwareSkeleton
     {
+        /// <summary>
+        /// make serializer happy
+        /// </summary>
+        public LabwareSkeleton()
+        {
+
+        }
+
         public LabwareSkeleton(Labware labware)
         {
             // TODO: Complete member initialization
             TypeName = labware.TypeName;
             GridID = labware.ParentCarrier.Grid;
             SiteID = labware.SiteID;
+            Label = labware.Label;
         }
         /// <summary>
         /// as property
@@ -187,5 +242,10 @@ namespace WorkstationController.Core.Data
         /// as property
         /// </summary>
         public int SiteID { get; set; }
+
+        /// <summary>
+        /// as property
+        /// </summary>
+        public string Label { get; set; }
     }
 }

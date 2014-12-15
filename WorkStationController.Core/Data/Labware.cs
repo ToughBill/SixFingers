@@ -51,6 +51,7 @@ namespace WorkstationController.Core.Data
         private Carrier     _parentCarrier = null;
         private WellsInfo   _wellsInfo = new WellsInfo();
         private ZValues     _zValues = new ZValues();
+        
 
         /// <summary>
         /// Background color
@@ -152,6 +153,12 @@ namespace WorkstationController.Core.Data
             _zValues = new ZValues();
             _dimension = new Dimension();
             _wellsInfo = new WellsInfo();
+        }
+
+        public Labware(LabwareSkeleton labwareSkeletonItem)
+        {
+            // TODO: Complete member initialization
+            
         }
 
         /// <summary>
