@@ -64,6 +64,9 @@ namespace WorkstationController.VisualElement
             }
         }
 
+        /// <summary>
+        /// as property name
+        /// </summary>
         public Dimension Dimension
         {
             get

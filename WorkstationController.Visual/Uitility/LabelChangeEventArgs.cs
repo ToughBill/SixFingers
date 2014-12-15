@@ -12,12 +12,20 @@ namespace WorkstationController.VisualElement.Uitility
     public class LabelChangeEventArgs : EventArgs
     {
         LabwareUIElement _labwareUIElement = null;
+
+        /// <summary>
+        /// ctor
+        /// </summary>
+        /// <param name="uiElement"></param>
         public LabelChangeEventArgs(LabwareUIElement uiElement)
         {
             Debug.WriteLine("args hashcode :{0}", uiElement.GetHashCode());
             _labwareUIElement = uiElement;
         }
 
+        /// <summary>
+        /// labware uiElement
+        /// </summary>
         public LabwareUIElement LabwareUIElement
         {
             get

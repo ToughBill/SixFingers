@@ -30,8 +30,18 @@ namespace WorkstationController.VisualElement.Uitility
         private DateTime lastClickTime = DateTime.MinValue;
         Vector relativeClickPosition2LeftTop = new Vector(-1, -1);
         readonly Vector notdefinedRelativePosition = new Vector(-1, -1);
+
+        #region events
+        /// <summary>
+        /// when user double click on labware
+        /// </summary>
         public event EventHandler onLabelPreviewChanged;
+
+        /// <summary>
+        /// when right button down on labware
+        /// </summary>
         public event EventHandler onWareContextMenuFired;
+        #endregion
         /// <summary>
         /// new UI element introduced from somewhere, nomarlly from listbox
         /// </summary>
@@ -94,7 +104,8 @@ namespace WorkstationController.VisualElement.Uitility
 
         void _myCanvas_IsVisibleChanged(object sender, DependencyPropertyChangedEventArgs e)
         {
-            onWareContextMenuFired(this, new ContextEvtArgs(null, new Point(0,0), false));
+             if (onWareContextMenuFired != null)
+                onWareContextMenuFired(this, new ContextEvtArgs(null, new Point(0,0), false));
         }
 
         void _myCanvas_PreviewMouseRightButtonUp(object sender, MouseButtonEventArgs e)

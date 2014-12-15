@@ -165,6 +165,7 @@ where T : class
         /// <param name="drawingContext"></param>
         /// <param name="color"></param>
         /// <param name="brush"></param>
+        /// <param name="thickness"></param>
         public static void DrawRect(int x, int y, Size size, DrawingContext drawingContext, Color color, Brush brush = null, int thickness = 1)
         {
             Rect rc = Physic2Visual(x, y, size);

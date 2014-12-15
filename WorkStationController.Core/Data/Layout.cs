@@ -29,11 +29,16 @@ namespace WorkstationController.Core.Data
         /// </summary>
         private List<Carrier> _carriers = new List<Carrier>();
 
+        /// <summary>
+        /// carrier reference info
+        /// </summary>
         [XmlArray("CarrierSkeletons")]
         [XmlArrayItem("CarrierSkeleton", typeof(CarrierSkeleton), IsNullable = false)]
         public List<CarrierSkeleton> CarrierSkeletons { get; set; }
 
-
+        /// <summary>
+        /// labware reference info
+        /// </summary>
         [XmlArray("LabwareSkeletons")]
         [XmlArrayItem("LabwareSkeleton", typeof(LabwareSkeleton), IsNullable = false)]
         public List<LabwareSkeleton> LabwareSkeletons { get; set; }
@@ -57,6 +62,8 @@ namespace WorkstationController.Core.Data
         public Layout()
         {
             this.ID = Guid.NewGuid();
+            CarrierSkeletons = new List<CarrierSkeleton>();
+            LabwareSkeletons = new List<LabwareSkeleton>();
         }
 
         /// <summary>
@@ -106,8 +113,24 @@ namespace WorkstationController.Core.Data
         /// <param name="toXmlFile">XML file</param>
         public void Serialize(string toXmlFile)
         {
+            GetSkeletonInfos();
+           
             SerializationHelper.Serialize<Layout>(toXmlFile, this);
         }
+
+        private void GetSkeletonInfos()
+        {
+            CarrierSkeletons.Clear();
+            LabwareSkeletons.Clear();
+            foreach (Carrier carrier in _carriers)
+            {
+                CarrierSkeletons.Add(new CarrierSkeleton(carrier));
+                foreach(Labware labware in carrier.Labwares)
+                    LabwareSkeletons.Add(new LabwareSkeleton(labware));
+            }
+        }
+
+
 
         #endregion
     }
@@ -119,6 +142,15 @@ namespace WorkstationController.Core.Data
     public class CarrierSkeleton
     {
         /// <summary>
+        /// ctor
+        /// </summary>
+        /// <param name="carrier"></param>
+        public CarrierSkeleton(Carrier carrier)
+        {
+            TypeName = carrier.TypeName;
+            GridID = carrier.Grid;
+        }
+        /// <summary>
         ///as property
         /// </summary>
         public string TypeName { get; set; }
@@ -126,7 +158,7 @@ namespace WorkstationController.Core.Data
         /// <summary>
         /// grid of the carrier
         /// </summary>
-        public int Grid { get; set; }
+        public int GridID { get; set; }
     }
 
     /// <summary>
@@ -134,6 +166,13 @@ namespace WorkstationController.Core.Data
     /// </summary>
     public class LabwareSkeleton
     {
+        public LabwareSkeleton(Labware labware)
+        {
+            // TODO: Complete member initialization
+            TypeName = labware.TypeName;
+            GridID = labware.ParentCarrier.Grid;
+            SiteID = labware.SiteID;
+        }
         /// <summary>
         /// as property
         /// </summary>
@@ -142,11 +181,11 @@ namespace WorkstationController.Core.Data
         /// <summary>
         /// as property
         /// </summary>
-        public int Grid { get; set; }
+        public int GridID { get; set; }
         
         /// <summary>
         /// as property
         /// </summary>
-        public int Site { get; set; }
+        public int SiteID { get; set; }
     }
 }

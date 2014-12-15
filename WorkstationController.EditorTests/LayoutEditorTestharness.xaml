@@ -16,7 +16,6 @@
         <StackPanel Grid.Row="1" Orientation="Horizontal">
             <ListBox BorderThickness="0" VerticalAlignment="Stretch" Width="200" Name="lstboxLabwares" ItemsSource="{Binding}" SelectionMode="Single" PreviewMouseLeftButtonDown="lstboxLabwares_PreviewMouseLeftButtonDown"></ListBox>
             <CheckBox Name="chkbox1" Content="PipettingForm" HorizontalAlignment="Left"  VerticalAlignment="Top" Click="CheckBox_Click"/>
-            <Button Name="btnSave" Content="Save" Click="btnSave_Click" />
         </StackPanel>
         
     </Grid>

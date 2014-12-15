@@ -7,6 +7,9 @@ using System.Windows.Input;
 
 namespace WorkstationController.VisualElement.contextMenu
 {
+    /// <summary>
+    /// Ware command
+    /// </summary>
     public class WareCommand : RoutedCommand
     {
         /// <summary>

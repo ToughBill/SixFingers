@@ -14,12 +14,12 @@ namespace WorkstationController.VisualElement.ContextMenu
     /// <summary>
     /// process context menu of labware
     /// </summary>
-    public class WareContextMenuController
+    public class WareContextMenuController : IDisposable
     {
         ContextMenuForm contextMenuForm = new ContextMenuForm();
         ContextWindowState windowState = ContextWindowState.closed;
         WareBase wareBaseClicked = null;
-
+        UIMovementsController _movementsController;
 
         #region events
         /// <summary>
@@ -39,8 +39,17 @@ namespace WorkstationController.VisualElement.ContextMenu
         /// <param name="movementsController"></param>
         public WareContextMenuController(UIMovementsController movementsController)
         {
-            movementsController.onWareContextMenuFired += movementsController_onWareContextFired;
-            
+            _movementsController = movementsController;
+            _movementsController.onWareContextMenuFired += movementsController_onWareContextFired;
+        }
+
+        /// <summary>
+        /// resource cleaner
+        /// </summary>
+        public void Dispose()
+        {
+            _movementsController.onWareContextMenuFired -= movementsController_onWareContextFired;
+            contextMenuForm.Close();
         }
 
         private ObservableCollection<ContextMenuEntity> PrepareAllMenuEntities()
@@ -106,5 +115,7 @@ namespace WorkstationController.VisualElement.ContextMenu
             closed = 0,
             show
         }
+
+        
     }
 }

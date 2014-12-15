@@ -9,21 +9,23 @@ namespace WorkstationController.VisualElement.contextMenu
     /// <summary>
     /// context menu item entity
     /// </summary>
-    public class ContextMenuEntity : INotifyPropertyChanged
+    public class ContextMenuEntity
     {
-        /// <summary>
-        /// notifier property
-        /// </summary>
-        public event PropertyChangedEventHandler PropertyChanged;
-
         private string text;
-
         private WareCommand wareCommand;
 
+        /// <summary>
+        /// ctor
+        /// </summary>
+        /// <param name="sText"></param>
         public ContextMenuEntity(string sText)
         {
             text = sText;
         }
+
+        /// <summary>
+        /// command's description text
+        /// </summary>
         public string Text
         {
             get { return text; }

@@ -1,10 +1,12 @@
 ﻿using System;
+using System.Diagnostics;
 using System.Globalization;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Media;
 using WorkstationController.Core.Data;
+using WorkstationController.Core.Utility;
 using WorkstationController.VisualElement;
 using WorkstationController.VisualElement.ContextMenu;
 using WorkstationController.VisualElement.Uitility;
@@ -14,7 +16,7 @@ namespace WorkstationController.Control
     /// <summary>
     /// Interaction logic for Layout.xaml
     /// </summary>
-    public partial class RecipeEditor : UserControl
+    public partial class RecipeEditor : UserControl , IDisposable
     {
         UIMovementsController           _uiController = null;
         WareContextMenuController       _contextMenuController = null;
@@ -38,12 +40,14 @@ namespace WorkstationController.Control
             _worktable.SizeChanged += uiContainer_SizeChanged;
             _uiController = new UIMovementsController(_worktable);
             _contextMenuController = new WareContextMenuController(_uiController);
-            _uiController.onLabelPreviewChanged += uiController_onLabelPreviewChanged;
+            //_uiController.onLabelPreviewChanged += uiController_onLabelPreviewChanged;
             this.Loaded += LayoutUserControl_Loaded;
         }
 
        
-
+        /// <summary>
+        /// whether we allow other form select our wares
+        /// </summary>
         public bool AllowPickup 
         {
             get
@@ -56,13 +60,7 @@ namespace WorkstationController.Control
             }
         }
 
-
-        /// <summary>
-        /// get layout form UI.
-        /// </summary>
-        /// <param name="Name"></param>
-        /// <returns></returns>
-        public Layout GetLayout(string Name)
+        private Layout GetLayout()
         {
             Layout layout = new Layout();
 
@@ -77,7 +75,6 @@ namespace WorkstationController.Control
                     layout.AddCarrier(carrierUIElement.Carrier);
                 }
             }
-            layout.Name = Name;
             return layout;
         }
         
@@ -104,7 +101,7 @@ namespace WorkstationController.Control
         {
             //to do, replace it by load the worktable from a xml
             Worktable worktable = new Worktable(
-                                         new Size(8000, 3500),
+                                         new Size(6000, 3500),
                                          new Size(5, 30),
                                          new Size(5, 50),
                                          new Size(5, 50), new Point(500, 500), 1500, 2500, 20);
@@ -112,7 +109,9 @@ namespace WorkstationController.Control
             Configurations.Instance.Worktable = worktable;
             _worktable.AttachWorktableVisual();
             _worktable.MouseMove += uiContainer_MouseMove;
-            OnContainerSizeChanged(new Size(800, 600));
+            _worktable.UpdateLayout();
+            OnContainerSizeChanged(new Size(500, 500)); //give default size
+            _worktable.RenderSize = new Size(_worktable.RenderSize.Width + 1, _worktable.RenderSize.Height + 1); //force update
         }
 
         private void uiContainer_MouseMove(object sender, MouseEventArgs e)
@@ -134,6 +133,28 @@ namespace WorkstationController.Control
             _worktable.InvalidateVisual();
             VisualCommon.UpdateVisuals(_worktable.Children);
         }
+
+        public void Dispose()
+        {
+            _contextMenuController.Dispose();
+        }
+
+        private void btnSave_Click(object sender, RoutedEventArgs e)
+        {
+            Layout layout = GetLayout();
+            layout.Name = "test";
+            try
+            {
+                layout.Serialize(FolderHelper.GetLayoutFolder() + "testLayout.xml");
+            }
+            catch(Exception ex)
+            {
+                Debug.WriteLine(ex.Message);
+            }
+            
+        }
+
+     
     }
 
     public class WorktableGrid : Grid

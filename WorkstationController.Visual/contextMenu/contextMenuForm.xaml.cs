@@ -32,7 +32,10 @@ namespace WorkstationController.VisualElement
 
         private ObservableCollection<ContextMenuEntity> MenuEntities { get; set; }
 
-
+        /// <summary>
+        /// interface of setting menus
+        /// </summary>
+        /// <param name="menuEntities"></param>
         public void SetMenus(ObservableCollection<ContextMenuEntity> menuEntities)
         {
             lstContextMenus.DataContext = menuEntities;

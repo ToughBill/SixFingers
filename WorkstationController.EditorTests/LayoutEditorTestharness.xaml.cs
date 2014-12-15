@@ -10,6 +10,7 @@ using WorkstationController.Core.Utility;
 using WorkstationController.VisualElement;
 using WorkstationController.VisualElement.Uitility;
 using WorkstationController.VisualElement.ContextMenu;
+using System;
 
 namespace WorkstationController.EditorTests
 {
@@ -24,12 +25,18 @@ namespace WorkstationController.EditorTests
         {
             InitializeComponent();
             this.Loaded += LayoutEditorTestharness_Loaded;
+            this.Closing += LayoutEditorTestharness_Closing;
+        }
+
+        void LayoutEditorTestharness_Closing(object sender, System.ComponentModel.CancelEventArgs e)
+        {
+            layoutEditor.Dispose();
         }
 
         void LayoutEditorTestharness_Loaded(object sender, RoutedEventArgs e)
         {
             layoutEditor = new RecipeEditor();
-            layoutEditor.ContextMenuController.onEditLabware += ContextMenu_onEditLabware;
+            //layoutEditor.ContextMenuController.onEditLabware += ContextMenu_onEditLabware;
             UserControlContainer.Children.Add(layoutEditor);
             CreateTwoLabwares();
         }
@@ -116,13 +123,5 @@ namespace WorkstationController.EditorTests
         {
             layoutEditor.AllowPickup = (bool)chkbox1.IsChecked;
         }
-
-        private void btnSave_Click(object sender, RoutedEventArgs e)
-        {
-            var layout = layoutEditor.GetLayout("test");
-            layout.Serialize(FolderHelper.GetLayoutFolder()+"test.xml");
-        }
-
-
     }
 }

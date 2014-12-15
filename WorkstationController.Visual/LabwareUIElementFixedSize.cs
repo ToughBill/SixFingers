@@ -10,6 +10,9 @@ using WorkstationController.Core.Data;
 
 namespace WorkstationController.VisualElement
 {
+    /// <summary>
+    /// render labware which is only for selecting wells on it
+    /// </summary>
     public class LabwareUIElementFixedSize : UIElement
     {
 
@@ -62,7 +65,10 @@ namespace WorkstationController.VisualElement
             InvalidateVisual();
         }
 
-
+        /// <summary>
+        /// drawing method
+        /// </summary>
+        /// <param name="drawingContext"></param>
         protected override void OnRender(DrawingContext drawingContext)
         {
             base.OnRender(drawingContext);
@@ -95,7 +101,7 @@ namespace WorkstationController.VisualElement
         }
 
         /// <summary>
-        /// return the selected wells, use List<> for backward compatible.
+        /// return the selected wells, use List for backward compatible.
         /// </summary>
         public List<int> SelectedWellIDs
         {
@@ -241,25 +247,48 @@ namespace WorkstationController.VisualElement
     /// </summary>
     public enum WellState
     {
+        /// <summary>
+        /// init state
+        /// </summary>
         Normal = 0,
+
+        /// <summary>
+        /// mouse on
+        /// </summary>
         HighLight,
-        Selected
+
+        /// <summary>
+        /// has been selected
+        /// </summary>
+        Selected 
     }
     /// <summary>
     /// drawing visual with more information
     /// </summary>
     public class MyDrawingVisual
     {
+        /// <summary>
+        /// well ID
+        /// </summary>
         public int ID { get; set; }
+        /// <summary>
+        /// as property Name
+        /// </summary>
         public WellState State { get; set; }
+        /// <summary>
+        /// as property Name
+        /// </summary>
         public Point Position { get; set; }
+        /// <summary>
+        /// as property Name
+        /// </summary>
         public Size Size { get; set; }
     }
 
 
     class SingleSelection
     {
-        MyDrawingVisual _selectedWell;
+        MyDrawingVisual _selectedWell = null;
         List<MyDrawingVisual> _allWellVisuals;
         Rect _tightBoundingRect;
         Labware _labware;
