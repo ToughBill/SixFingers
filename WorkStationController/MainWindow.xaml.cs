@@ -85,6 +85,10 @@ namespace WorkstationController
                 LiquidClass liquidClass = control.DataContext as LiquidClass;
                 tab.Tag = liquidClass.ID;
             }
+            else if(control.DataContext == null)     // Tempeorary fix of new a recipe tab item.
+            {
+                tab.Tag = Guid.NewGuid();
+            }
  
             tab.HeaderTemplate = tabDynamic.FindResource("TabHeader") as DataTemplate;
 
