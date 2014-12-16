@@ -111,6 +111,13 @@ namespace WorkstationController.Core.Data
              {
                  labwares.Add(new Labware(labwareSkeletonItem));
              }
+             MountLabwaresOntoCarriers(carriers, labwares);
+             return carriers;
+        }
+
+        private static void MountLabwaresOntoCarriers(List<Carrier> carriers, List<Labware> labwares)
+        {
+            throw new NotImplementedException();
         }
 
 
