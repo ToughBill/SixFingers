@@ -43,9 +43,9 @@ namespace WorkstationController.EditorTests
 
         void ContextMenu_onEditLabware(object sender, System.EventArgs e)
         {
-            LabwareEditArgs labwareEditArgs = e as LabwareEditArgs;
-            LabwareEditorTestharness labwareEditorTestharness = new LabwareEditorTestharness(labwareEditArgs.Labware);
-            labwareEditorTestharness.Show();
+            //LabwareEditArgs labwareEditArgs = e as LabwareEditArgs;
+            //LabwareEditorTestharness labwareEditorTestharness = new LabwareEditorTestharness(labwareEditArgs.Labware);
+            //labwareEditorTestharness.Show();
         }
 
 
