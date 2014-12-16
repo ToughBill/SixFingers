@@ -58,13 +58,13 @@ namespace WorkstationController.Control
             if (labware == null)
                 throw new InvalidOperationException("DataContext of LabwareEditor must be an instance of Labware");
 
-            // If this instance of LiquidClass had been serialized, save it
+            // If this instance of labware had been serialized, update it
             string xmlFilePath = string.Empty;
             if (InstrumentsManager.Instance.FindInstrument<Labware>(labware.ID, out xmlFilePath))
             {
                 labware.Serialize(xmlFilePath);
             }
-            else // else save the instance of LiquidClass as a new XML file
+            else // else save the instance of labware as a new XML file
             {
                 InstrumentsManager.Instance.SaveInstrument<Labware>(labware);
             }

@@ -16,7 +16,7 @@
             <ColumnDefinition/>
             <ColumnDefinition/>
         </Grid.ColumnDefinitions>
-        <GroupBox Header="Script" Grid.Row="0" Grid.Column="0" Margin="3">
+        <GroupBox Header="Script" Grid.Row="0" Grid.Column="1" Margin="3">
             <Grid>
                 <Grid.RowDefinitions>
                     <RowDefinition Height="8*"/>
@@ -29,7 +29,7 @@
                 </StackPanel>
             </Grid>
         </GroupBox>
-        <GroupBox Header="Layout" Grid.Row="0" Grid.Column="1" Margin="3">
+        <GroupBox Header="Layout" Grid.Row="0" Grid.Column="0" Margin="3">
             <local:WorktableGrid x:Name="_worktable" Background="LightYellow" VerticalAlignment="Stretch" HorizontalAlignment="Stretch" Margin="3"/>
         </GroupBox>
         <StackPanel Grid.Row="1" Grid.Column="0" Orientation="Horizontal" HorizontalAlignment="Center">

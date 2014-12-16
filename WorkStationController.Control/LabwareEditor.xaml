@@ -8,7 +8,7 @@
              d:DesignHeight="380" d:DesignWidth="650">
     <Grid>
         <Grid.RowDefinitions>
-            <RowDefinition/>
+            <RowDefinition Height="Auto"/>
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="Auto"/>
@@ -45,19 +45,19 @@
                 <Setter Property="Width" Value="120"/>
             </Style>
         </Grid.Resources>
-        <StackPanel Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="5" Orientation="Horizontal" HorizontalAlignment="Left">
-            <Label Content="Labware Name:"/>
-            <TextBox MinWidth="150" Height="30" Margin="3,2,0,2" VerticalContentAlignment="Center"
-                     Text="{Binding Path=TypeName}"/>
-        </StackPanel>
+        
+        <Label Grid.Row="0" Grid.Column="0" Content="TypeName: "/>
+        <TextBox  Grid.Row="0" Grid.Column="2"  MinWidth="150" Height="30" Margin="3,2,0,2" VerticalContentAlignment="Center"
+                    Text="{Binding Path=TypeName}"/>
+        
         <!--Color-->
         <StackPanel  Grid.Row="0" Grid.Column="5" Orientation="Horizontal">
             <TextBlock Text="Grid:" VerticalAlignment="Center"  Margin="5" HorizontalAlignment="Left"/>
             <TextBlock Text="" Name="txtGrid" VerticalAlignment="Center"  Margin="5" HorizontalAlignment="Left"/>
         </StackPanel>
-        <StackPanel  Grid.Row="0" Grid.Column="6">
+        <StackPanel  Grid.Row="0" Grid.Column="6" Orientation="Horizontal">
             <TextBlock Text="Color:" VerticalAlignment="Center"  Margin="5" HorizontalAlignment="Left"/>
-            <control:ColorPickerCombo x:Name="_colorPicker" Margin="5" SelectedColor="{Binding Path=BackgroundColor, Mode=TwoWay}"/>
+            <control:ColorPickerCombo x:Name="_colorPicker" HorizontalAlignment="Stretch" Margin="5" SelectedColor="{Binding Path=BackgroundColor, Mode=TwoWay}"/>
         </StackPanel>
          <!--Dimension-->
         <TextBlock Grid.Row="1" Grid.Column="2" Text="X" VerticalAlignment="Bottom" HorizontalAlignment="Center"/>
