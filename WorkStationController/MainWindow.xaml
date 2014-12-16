@@ -69,12 +69,12 @@
                                 </ListBox>
                             </DockPanel>
                         </TabItem>
-                        <TabItem Header="CARRIERS" Background="Blue" Height="30" Width="100">
+                        <TabItem Header="CARRIERS" Background="LightBlue" Height="30" Width="100">
                             <TabItem.LayoutTransform>
                                 <RotateTransform Angle="90"></RotateTransform>
                             </TabItem.LayoutTransform>
                             <DockPanel>
-                                <ListBox x:Name="lb_carriers" DockPanel.Dock="Top" ItemsSource="{Binding Path=InstrumentsManager.Carriers}" MouseDoubleClick="OnCarriersMouseDoubleClick">
+                                <ListBox x:Name="lb_carriers" DockPanel.Dock="Top" ItemsSource="{Binding Path=InstrumentsManager.Carriers}" PreviewMouseLeftButtonDown="lb_carriers_PreviewMouseLeftButtonDown" MouseDoubleClick="OnCarriersMouseDoubleClick">
                                     <ListBox.ItemTemplate>
                                         <DataTemplate>
                                             <TextBlock Text="{Binding Path=TypeName}" ToolTip="{Binding Path=TypeName}"/>

@@ -86,9 +86,16 @@
             </DataGrid.Columns>
         </DataGrid>
         <!--Allowed labware type-->
-        <Label Grid.Row="6" Grid.Column="0" Content="Allowed Labwae on this carrier:" HorizontalContentAlignment="Right"/>
-        <ComboBox Grid.Row="6" Grid.Column="1" Grid.ColumnSpan="2" Width="150" HorizontalAlignment="Left"
-                  ItemsSource="{Binding Path=AllowedLabwareTypeNames}" SelectedIndex="0"/>
+        <Label Grid.Row="6" Grid.Column="0" Content="Allowed Labware on this carrier:" HorizontalContentAlignment="Right"/>
+        <!--<ComboBox Grid.Row="6" Grid.Column="1" Grid.ColumnSpan="2" Width="150" HorizontalAlignment="Left"
+                  ItemsSource="{Binding Path=AllowedLabwareTypeNames}" SelectedIndex="0"/>-->
+        <ListBox Grid.Row="6" Grid.Column="1" Grid.RowSpan ="2" Grid.ColumnSpan="2" Name="lstAllowedLabwares" ItemsSource="{Binding}">
+            <ListBox.ItemTemplate>
+                <DataTemplate>
+                    <CheckBox IsChecked="{Binding Path=IsAllowed,Mode=TwoWay}" Content="{Binding Path = TypeName}"/> 
+                </DataTemplate>
+            </ListBox.ItemTemplate>
+        </ListBox>
         <!--Save button-->
         <StackPanel Grid.Row="7" Grid.Column="2" Grid.ColumnSpan="3" HorizontalAlignment="Right" VerticalAlignment="Bottom" Height="35" Width="155">
             <Button MinWidth="150" MinHeight="30" Content="Save" Margin="0,5,5,0" Click="OnSaveButtonClick"/>

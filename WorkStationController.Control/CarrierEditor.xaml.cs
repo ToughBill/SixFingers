@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Linq;
 using System.Text;
 using System.Windows;
@@ -21,6 +22,7 @@ namespace WorkstationController.Control
     /// </summary>
     public partial class CarrierEditor : UserControl
     {
+        private ObservableCollection<LabwareCandidate> labwareCandidates;
         /// <summary>
         /// ctor
         /// </summary>
@@ -33,10 +35,20 @@ namespace WorkstationController.Control
         void CarrierEditor_Loaded(object sender, RoutedEventArgs e)
         {
             Carrier carrier = this.DataContext as Carrier;
+            labwareCandidates = new ObservableCollection<LabwareCandidate>();
+            foreach (var labware in InstrumentsManager.Instance.Labwares)
+            {
+                labwareCandidates.Add(new LabwareCandidate(labware.TypeName, true));
+            }
             if (carrier != null)
             {
+                foreach (var labwareCandidate in labwareCandidates)
+                {
+                    labwareCandidate.IsAllowed = carrier.AllowedLabwareTypeNames.Contains(labwareCandidate.TypeName);
+                }
                 this._colorPicker.SelectedColor = carrier.BackgroundColor;
             }
+            lstAllowedLabwares.DataContext = labwareCandidates;
         }
 
         private void OnSaveButtonClick(object sender, RoutedEventArgs e)
@@ -45,6 +57,8 @@ namespace WorkstationController.Control
             Carrier carrier = this.DataContext as Carrier;
             if (carrier == null)
                 throw new InvalidOperationException("DataContext of Carrier must be an instance of Carrier");
+
+            carrier.AllowedLabwareTypeNames = new ObservableCollection<string>(labwareCandidates.Where(x => x.IsAllowed).Select(x => x.TypeName));
 
             // If this instance of LiquidClass had been serialized, save it
             string xmlFilePath = string.Empty;
@@ -63,7 +77,12 @@ namespace WorkstationController.Control
             Carrier carrier = this.DataContext as Carrier;
             if (carrier == null)
                 throw new InvalidOperationException("DataContext of Carrier must be an instance of Carrier");
-            carrier.Sites.Add(new Site());
+            int existSiteCnt = carrier.Sites.Count;
+            Site newSite = new Site();
+            if (existSiteCnt > 0)
+                newSite = (Site)carrier.Sites[0].Clone();
+            newSite.ID = existSiteCnt + 1;
+            carrier.Sites.Add(newSite);
         }
 
         private void btnRemoveSite_Click(object sender, RoutedEventArgs e)
@@ -71,9 +90,21 @@ namespace WorkstationController.Control
             Carrier carrier = this.DataContext as Carrier;
             if (carrier == null)
                 throw new InvalidOperationException("DataContext of Carrier must be an instance of Carrier");
-            if (carrier.Sites.Count == 0)
+            int carrierCnt = carrier.Sites.Count;
+            if (carrierCnt == 0)
                 return;
-            carrier.Sites.RemoveAt(0);
+            carrier.Sites.RemoveAt(carrierCnt-1); //remove last
+        }
+    }
+
+    class LabwareCandidate
+    {
+        public bool IsAllowed { get; set; }
+        public string TypeName { get; set; }
+        public LabwareCandidate(string typeName, bool isAllowed)
+        {
+            IsAllowed = isAllowed;
+            TypeName = typeName;
         }
     }
 }

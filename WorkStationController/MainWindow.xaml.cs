@@ -5,9 +5,11 @@ using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
+using System.Windows.Media;
 using WorkstationController.Control;
 using WorkstationController.Core.Data;
 using WorkstationController.Core.Utility;
+using WorkstationController.VisualElement.Uitility;
 
 namespace WorkstationController
 {
@@ -157,6 +159,7 @@ namespace WorkstationController
 
         private void OnCommandTabItemSelectionChanged(object sender, SelectionChangedEventArgs e)
         {
+            
             System.Collections.IList items = e.AddedItems;
             if(items.Count > 0 && items[0] is TabItem)
             {
@@ -249,6 +252,8 @@ namespace WorkstationController
         private void OnCarrierDeleteMenuItemClick(object sender, RoutedEventArgs e)
         {
             Carrier selectedCr = (Carrier)this.lb_labwares.SelectedItem;
+            if (selectedCr == null)
+                return;
             InstrumentsManager.Instance.DeleteInstrument<Carrier>(selectedCr.ID);
             DeleteTabItem(selectedCr.ID);
         }
@@ -318,6 +323,25 @@ namespace WorkstationController
             LiquidClass selectedLC = (LiquidClass)this.lb_liquidclass.SelectedItem;
             InstrumentsManager.Instance.DeleteInstrument<LiquidClass>(selectedLC.ID);
             DeleteTabItem(selectedLC.ID);
+        }
+        #endregion
+
+        #region Carrier preview Left button down
+        private void lb_carriers_PreviewMouseLeftButtonDown(object sender, System.Windows.Input.MouseButtonEventArgs e)
+        {
+            Point pt = e.GetPosition(lb_carriers);
+            HitTestResult result = VisualTreeHelper.HitTest(lb_carriers, pt);
+            ListBoxItem lbi = VisualCommon.FindParent<ListBoxItem>(result.VisualHit);
+            if (lbi == null)
+                return;
+            int index = lb_carriers.ItemContainerGenerator.IndexFromContainer(lbi);
+            if (index == -1)
+                return;
+
+            TabItem tabitem = (TabItem)tabDynamic.SelectedItem;
+            RecipeEditor recipeEditor = ((Grid)tabitem.Content).Children[0] as RecipeEditor;
+            recipeEditor.SuggestCandidate((Carrier)lb_carriers.Items[index]);
+            //layoutEditor.SuggestCandidate(wares[index]); 
         }
         #endregion
     }

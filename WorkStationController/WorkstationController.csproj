@@ -106,6 +106,10 @@
       <Project>{c3ba4ccf-e014-4e15-be64-1675c58ef27a}</Project>
       <Name>WorkstationController.Core</Name>
     </ProjectReference>
+    <ProjectReference Include="..\WorkstationController.Visual\WorkstationController.Visual.csproj">
+      <Project>{575166a6-3f77-4c58-925f-441d7a1f5e87}</Project>
+      <Name>WorkstationController.Visual</Name>
+    </ProjectReference>
   </ItemGroup>
   <ItemGroup>
     <Resource Include="Resources\delete.gif" />
