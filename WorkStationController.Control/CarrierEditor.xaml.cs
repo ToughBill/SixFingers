@@ -57,5 +57,23 @@ namespace WorkstationController.Control
                 InstrumentsManager.Instance.SaveInstrument<Carrier>(carrier);
             }
         }
+
+        private void btnAddSite_Click(object sender, RoutedEventArgs e)
+        {
+            Carrier carrier = this.DataContext as Carrier;
+            if (carrier == null)
+                throw new InvalidOperationException("DataContext of Carrier must be an instance of Carrier");
+            carrier.Sites.Add(new Site());
+        }
+
+        private void btnRemoveSite_Click(object sender, RoutedEventArgs e)
+        {
+            Carrier carrier = this.DataContext as Carrier;
+            if (carrier == null)
+                throw new InvalidOperationException("DataContext of Carrier must be an instance of Carrier");
+            if (carrier.Sites.Count == 0)
+                return;
+            carrier.Sites.RemoveAt(0);
+        }
     }
 }

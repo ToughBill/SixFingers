@@ -20,7 +20,7 @@ namespace WorkstationController.Core.Data
         public const int undefinedGrid = 0;
 
         private List<Labware>                _labwares                = new List<Labware>();  // Labwares on the carrier
-        private List<Site>                   _sites                   = new List<Site>();           // sites for mounting labwares
+        private ObservableCollection<Site> _sites = new ObservableCollection<Site>();           // sites for mounting labwares
         private ObservableCollection<string> _allowedLabwareTypeNames = new ObservableCollection<string>();
 
         private Color _backgroundColor = Colors.Gray;
@@ -85,7 +85,7 @@ namespace WorkstationController.Core.Data
         /// </summary>
         [XmlArray("Sites")]
         [XmlArrayItem("Site", typeof(Site), IsNullable = false)]
-        public List<Site> Sites
+        public ObservableCollection<Site> Sites
         {
             get
             {
@@ -93,7 +93,7 @@ namespace WorkstationController.Core.Data
             }
             set
             {
-                _sites = new List<Site>();
+                _sites = new ObservableCollection<Site>();
             }
         }
 
@@ -235,7 +235,7 @@ namespace WorkstationController.Core.Data
             newCarrier.YOffset = this.YOffset;
             foreach (string allowedLabwareTypeName in this.AllowedLabwareTypeNames)
                 newCarrier.AllowedLabwareTypeNames.Add(allowedLabwareTypeName);
-            newCarrier.Sites = new List<Site>();
+            newCarrier.Sites = new ObservableCollection<Site>();
             foreach (Site site in _sites)
                 newCarrier.Sites.Add(site.Clone() as Site);
             newCarrier.Dimension = _dimension.Clone() as Dimension;
