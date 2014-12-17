@@ -27,10 +27,10 @@ namespace WorkstationController.Core.Data
         /// <summary>
         /// Carrier collection on layout
         /// </summary>
-        private List<Carrier> _carriers = new List<Carrier>();
+        protected List<Carrier> _carriers = new List<Carrier>();
 
-        private List<CarrierSkeleton> _carrierSkeletons;
-        private List<LabwareSkeleton> _labwareSkeletons;
+        protected List<CarrierSkeleton> _carrierSkeletons;
+        protected List<LabwareSkeleton> _labwareSkeletons;
         /// <summary>
         /// carrier reference info
         /// </summary>
@@ -87,19 +87,9 @@ namespace WorkstationController.Core.Data
             LabwareSkeletons = new List<LabwareSkeleton>();
         }
 
-        /// <summary>
-        /// Create an instance of Layout from a XML file
-        /// </summary>
-        /// <param name="fromXmlFile">XML file name</param>
-        /// <returns>A Layout instance</returns>
-        public static Layout Create(string fromXmlFile)
-        {
-           Layout layout =  SerializationHelper.Deserialize<Layout>(fromXmlFile);
-           layout._carriers = RestoreCarriersFromSkeleton(layout._carrierSkeletons,layout._labwareSkeletons);
-           return layout;
-        }
+       
 
-        private static List<Carrier> RestoreCarriersFromSkeleton(List<CarrierSkeleton> carrierSkeletons, List<LabwareSkeleton> labwareSkeletons)
+        protected static List<Carrier> RestoreCarriersFromSkeleton(List<CarrierSkeleton> carrierSkeletons, List<LabwareSkeleton> labwareSkeletons)
         {
             List<Carrier> carriers = new List<Carrier>();
             foreach(CarrierSkeleton carrierSkeletonItem in carrierSkeletons)
@@ -110,7 +100,7 @@ namespace WorkstationController.Core.Data
              return carriers;
         }
 
-        private static void RestoreLabwares(List<Carrier> carriers, List<LabwareSkeleton> labwareSkeletons)
+        protected static void RestoreLabwares(List<Carrier> carriers, List<LabwareSkeleton> labwareSkeletons)
         {
             foreach (LabwareSkeleton labwareSkeleton in labwareSkeletons)
             {
@@ -124,7 +114,6 @@ namespace WorkstationController.Core.Data
                 parentCarrier.Labwares.Add(labware);
             }
         }
-
 
         /// <summary>
         /// Add a Carrier
@@ -179,9 +168,6 @@ namespace WorkstationController.Core.Data
                     LabwareSkeletons.Add(new LabwareSkeleton(labware));
             }
         }
-
-
-
     }
 
 

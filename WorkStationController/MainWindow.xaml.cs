@@ -348,8 +348,15 @@ namespace WorkstationController
 
         private RecipeEditor GetRecipeEditor()
         {
-            TabItem tabitem = (TabItem)tabDynamic.SelectedItem;
-            return ((Grid)tabitem.Content).Children[0] as RecipeEditor;
+            //TabItem tabitem = (TabItem)tabDynamic.SelectedItem;
+            RecipeEditor recipeEditor = null;
+            foreach (TabItem tabItem in tabDynamic.Items)
+            {
+                recipeEditor = ((Grid)tabItem.Content).Children[0] as RecipeEditor;
+                if (recipeEditor != null)
+                    break;
+            }
+            return recipeEditor;
         }
 
         #region dispose
@@ -363,5 +370,10 @@ namespace WorkstationController
                 recipeEditor.Dispose();
         }
         #endregion
+
+        private void Window_Closing(object sender, System.ComponentModel.CancelEventArgs e)
+        {
+            Dispose();
+        }
     }
 }

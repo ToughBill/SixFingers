@@ -135,11 +135,11 @@ namespace WorkstationController.Core.UnitTest
         public void LayoutDeserializeFromXmlFileTest()
         {
             // With Carrier
-            Layout layoutWithCarrier = Layout.Create(this._xmlFileWithCarrierPath);
+            Recipe layoutWithCarrier = Recipe.Create(this._xmlFileWithCarrierPath);
             Assert.AreEqual<int>(layoutWithCarrier.Carriers.Count, 2);
 
             // Without Carrier
-            Layout layoutWihtoutCarrier = Layout.Create(this._xmlFileWithoutCarrierPath);
+            Recipe layoutWihtoutCarrier = Recipe.Create(this._xmlFileWithoutCarrierPath);
             Assert.AreEqual<int>(layoutWihtoutCarrier.Carriers.Count, 0);
         }
     }
