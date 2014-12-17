@@ -6,6 +6,7 @@ using System.Xml.Serialization;
 using WorkstationController.Core.Utility;
 using System.Windows.Media;
 using System.ComponentModel;
+using System.Collections.Generic;
 
 namespace WorkstationController.Core.Data
 {
@@ -69,7 +70,7 @@ namespace WorkstationController.Core.Data
         }
 
         /// <summary>
-        /// The site on which the labware installed on the carrier
+        /// The site on which the labware installed on the carrier, 1 based
         /// </summary>
         public int SiteID
         {
@@ -155,10 +156,19 @@ namespace WorkstationController.Core.Data
             _wellsInfo = new WellsInfo();
         }
 
-        public Labware(LabwareSkeleton labwareSkeletonItem)
+        static public Labware CreateFromSkeleton(LabwareSkeleton labwareSkeletonItem, Carrier parentCarrier = null)
         {
             // TODO: Complete member initialization
-            
+            List<Labware> labwares = new List<Labware>(InstrumentsManager.Instance.Labwares);
+            var baseLabware = labwares.Find(x => x.TypeName == labwareSkeletonItem.TypeName);
+            if( baseLabware == null)
+                throw new Exception(string.Format("Cannot find the specified labware: ", labwareSkeletonItem.TypeName));
+            var newLabware = (Labware)baseLabware.Clone();
+            newLabware.Label = labwareSkeletonItem.Label;
+            newLabware.SiteID = labwareSkeletonItem.SiteID;
+            newLabware.ParentCarrier = parentCarrier;
+            return newLabware;
+
         }
 
         /// <summary>

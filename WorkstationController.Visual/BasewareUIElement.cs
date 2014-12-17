@@ -209,7 +209,7 @@ namespace WorkstationController.VisualElement
                 carrier = ((Labware)_ware).ParentCarrier;
             else
                 carrier = (Carrier)_ware;
-            int grid = carrier.Grid;
+            int grid = carrier.GridID;
             int pinPos = (grid - 1) * Worktable.DistanceBetweenAdjacentPins + (int)_worktable.FirstPinPosition.X;
             int xPos = pinPos;
             int yPos = (int)_worktable.FirstPinPosition.Y;

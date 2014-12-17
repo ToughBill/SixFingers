@@ -43,12 +43,12 @@ namespace WorkstationController.VisualElement
         {
             get
             {
-                return _carrier.Grid;
+                return _carrier.GridID;
             }
 
             set
             {
-                _carrier.Grid = value;
+                _carrier.GridID = value;
                 base.InvalidateVisual();
             }
         }
@@ -85,7 +85,7 @@ namespace WorkstationController.VisualElement
             //    return;
 
             //1 border
-            int xPos = GetBoundingRectXStart(_carrier.Grid);//
+            int xPos = GetBoundingRectXStart(_carrier.GridID);//
             int yPos = GetBoundingRectYStart();
             Size sz = new Size(_carrier.Dimension.XLength, _carrier.Dimension.YLength);
 

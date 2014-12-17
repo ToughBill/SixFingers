@@ -75,7 +75,7 @@ namespace WorkstationController.VisualElement
             int mapGrid = 0;
             if( carrier != null)
             {
-                mapGrid = carrier.Grid;
+                mapGrid = carrier.GridID;
             }
 
             if (_isSelected)

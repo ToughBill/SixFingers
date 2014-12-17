@@ -16,7 +16,7 @@ namespace WorkstationController
     /// <summary>
     /// Interaction logic for MainWindow.xaml
     /// </summary>
-    public partial class MainWindow : Window
+    public partial class MainWindow : Window , IDisposable
     {
         #region Private members
         private InstrumentsManager _instrumentsManager = InstrumentsManager.Instance;
@@ -339,9 +339,28 @@ namespace WorkstationController
                 return;
 
             TabItem tabitem = (TabItem)tabDynamic.SelectedItem;
-            RecipeEditor recipeEditor = ((Grid)tabitem.Content).Children[0] as RecipeEditor;
+            RecipeEditor recipeEditor = GetRecipeEditor();
+            if (recipeEditor == null)
+                return;
             recipeEditor.SuggestCandidate((Carrier)lb_carriers.Items[index]);
-            //layoutEditor.SuggestCandidate(wares[index]); 
+        }
+        #endregion
+
+        private RecipeEditor GetRecipeEditor()
+        {
+            TabItem tabitem = (TabItem)tabDynamic.SelectedItem;
+            return ((Grid)tabitem.Content).Children[0] as RecipeEditor;
+        }
+
+        #region dispose
+        /// <summary>
+        /// dispose
+        /// </summary>
+        public void Dispose()
+        {
+            var recipeEditor = GetRecipeEditor();
+            if (recipeEditor != null)
+                recipeEditor.Dispose();
         }
         #endregion
     }

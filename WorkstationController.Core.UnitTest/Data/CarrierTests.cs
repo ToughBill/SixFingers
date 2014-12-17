@@ -26,7 +26,7 @@ namespace WorkstationController.Core.UnitTest
             Carrier carrier = new Carrier();
             carrier.Dimension.XLength = 40;
             carrier.Dimension.YLength = 500;
-            carrier.Grid = 3;
+            carrier.GridID = 3;
             carrier.Sites.Add(new Site(0, 0, 0, 10, 10, 1));
 
             Labware labware1 = new Labware();
@@ -72,7 +72,7 @@ namespace WorkstationController.Core.UnitTest
             Carrier carrier = new Carrier();
             carrier.Dimension.XLength = 40;
             carrier.Dimension.YLength = 500;
-            carrier.Grid = 3;
+            carrier.GridID = 3;
 
             carrier.Serialize(this._xmlFileWithoutLabwarePath);
         }

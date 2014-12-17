@@ -40,7 +40,7 @@ namespace WorkstationController.Core.UnitTest
             Carrier carrier1 = new Carrier();
             carrier1.Dimension.XLength = 40;
             carrier1.Dimension.YLength = 500;
-            carrier1.Grid = 1;
+            carrier1.GridID = 1;
 
             Labware labware11 = new Labware();
             labware11.TypeName = "Labware11";
@@ -85,7 +85,7 @@ namespace WorkstationController.Core.UnitTest
             Carrier carrier2 = new Carrier();
             carrier2.Dimension.XLength = 40;
             carrier2.Dimension.YLength = 500;
-            carrier2.Grid = 4;
+            carrier2.GridID = 4;
 
             Labware labware21 = new Labware();
             labware21.TypeName = "Labware21";

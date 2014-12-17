@@ -58,13 +58,13 @@ namespace WorkstationController.Core.Data
         }
 
         /// <summary>
-        /// Column id of the plastic pin on which the carrier sits
+        /// Column id of the plastic pin on which the carrier sits, 1 based
         /// </summary>
         [XmlElement]
-        public int Grid
+        public int GridID
         {
             get { return this._grid; }
-            set { this.OnPropertyChanged<int>(ref this._grid, value, "Grid"); }
+            set { this.OnPropertyChanged<int>(ref this._grid, value, "GridID"); }
         }
 
         /// <summary>
@@ -151,11 +151,15 @@ namespace WorkstationController.Core.Data
         /// </summary>
         /// <param name="buildInType"></param>
         /// <param name="grid"></param>
-        public Carrier(string buildInType, int grid)
+        static public Carrier CreateFromSkeleton(CarrierSkeleton skeleton)
         {
-            BuildInCarrierType carrierType = (BuildInCarrierType)Enum.Parse(typeof(BuildInCarrierType), buildInType);
-            CreateBuildInCarrier(carrierType);
-            _grid = grid;
+            List<Carrier> carriers = new List<Carrier>(InstrumentsManager.Instance.Carriers);
+            Carrier theCarrier = carriers.Find(x => x.TypeName == skeleton.TypeName);
+            if (theCarrier == null)
+                throw new Exception(string.Format("Cannot find the specified carrier: ", skeleton.TypeName));
+            Carrier newCarrier = (Carrier)theCarrier.Clone();
+            newCarrier.GridID = skeleton.GridID;
+            return newCarrier;
         }
         
         /// <summary>
@@ -239,7 +243,7 @@ namespace WorkstationController.Core.Data
             foreach (Site site in _sites)
                 newCarrier.Sites.Add(site.Clone() as Site);
             newCarrier.Dimension = _dimension.Clone() as Dimension;
-            newCarrier.Grid = undefinedGrid;
+            newCarrier.GridID = undefinedGrid;
             return newCarrier;
         }
 

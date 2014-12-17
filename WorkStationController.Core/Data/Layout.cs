@@ -11,7 +11,7 @@ namespace WorkstationController.Core.Data
     /// <summary>
     /// Definition of layout
     /// </summary>
-    public class Layout : ISerialization
+    public class Layout 
     {
         /// <summary>
         /// Name of the layout
@@ -102,22 +102,27 @@ namespace WorkstationController.Core.Data
         private static List<Carrier> RestoreCarriersFromSkeleton(List<CarrierSkeleton> carrierSkeletons, List<LabwareSkeleton> labwareSkeletons)
         {
             List<Carrier> carriers = new List<Carrier>();
-            List<Labware> labwares = new List<Labware>();
             foreach(CarrierSkeleton carrierSkeletonItem in carrierSkeletons)
             {
-                carriers.Add(new Carrier(carrierSkeletonItem.TypeName, carrierSkeletonItem.GridID));
+                carriers.Add(Carrier.CreateFromSkeleton(carrierSkeletonItem));
             }
-             foreach(LabwareSkeleton labwareSkeletonItem in labwareSkeletons)
-             {
-                 labwares.Add(new Labware(labwareSkeletonItem));
-             }
-             MountLabwaresOntoCarriers(carriers, labwares);
+             RestoreLabwares(carriers,labwareSkeletons);
              return carriers;
         }
 
-        private static void MountLabwaresOntoCarriers(List<Carrier> carriers, List<Labware> labwares)
+        private static void RestoreLabwares(List<Carrier> carriers, List<LabwareSkeleton> labwareSkeletons)
         {
-            throw new NotImplementedException();
+            foreach (LabwareSkeleton labwareSkeleton in labwareSkeletons)
+            {
+                var parentCarrier = carriers.Find(x => x.GridID == labwareSkeleton.GridID);
+                if (parentCarrier == null)
+                {
+                    //warning should be given here
+                    continue;
+                }
+                Labware labware = Labware.CreateFromSkeleton(labwareSkeleton, parentCarrier);
+                parentCarrier.Labwares.Add(labware);
+            }
         }
 
 
@@ -159,11 +164,11 @@ namespace WorkstationController.Core.Data
         public void Serialize(string toXmlFile)
         {
             GetSkeletonInfos();
-           
             SerializationHelper.Serialize<Layout>(toXmlFile, this);
         }
+        #endregion
 
-        private void GetSkeletonInfos()
+        protected void GetSkeletonInfos()
         {
             CarrierSkeletons.Clear();
             LabwareSkeletons.Clear();
@@ -177,7 +182,6 @@ namespace WorkstationController.Core.Data
 
 
 
-        #endregion
     }
 
 
@@ -193,7 +197,7 @@ namespace WorkstationController.Core.Data
         public CarrierSkeleton(Carrier carrier)
         {
             TypeName = carrier.TypeName;
-            GridID = carrier.Grid;
+            GridID = carrier.GridID;
         }
 
         /// <summary>
@@ -209,7 +213,7 @@ namespace WorkstationController.Core.Data
         public string TypeName { get; set; }
 
         /// <summary>
-        /// grid of the carrier
+        /// grid of the carrier, 1 based
         /// </summary>
         public int GridID { get; set; }
     }
@@ -231,7 +235,7 @@ namespace WorkstationController.Core.Data
         {
             // TODO: Complete member initialization
             TypeName = labware.TypeName;
-            GridID = labware.ParentCarrier.Grid;
+            GridID = labware.ParentCarrier.GridID;
             SiteID = labware.SiteID;
             Label = labware.Label;
         }

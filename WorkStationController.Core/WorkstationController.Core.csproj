@@ -58,6 +58,7 @@
     <Compile Include="Data\LiquidClass.cs" />
     <Compile Include="Data\PipettingCommand.cs" />
     <Compile Include="Data\PumpInfo.cs" />
+    <Compile Include="Data\Recipe.cs" />
     <Compile Include="Data\Script.cs" />
     <Compile Include="Data\WareBase.cs" />
     <Compile Include="Data\Worktable.cs" />

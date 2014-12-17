@@ -41,7 +41,7 @@ namespace WorkstationController.Core.UnitTest
             carrier.Dimension.XLength = 40;
             carrier.Dimension.YLength = 500;
             //carrier.AllowedLabwareType = 2;
-            carrier.Grid = 3;
+            carrier.GridID = 3;
 
             string xmlFileName = Path.Combine(UnitTestHelper.GetTestModuleDirectory(), "testresult", "CarrierNoLabwareSerializeTest.xml");
 
@@ -56,7 +56,7 @@ namespace WorkstationController.Core.UnitTest
             carrier.Dimension.XLength = 40;
             carrier.Dimension.YLength = 500;
             //carrier.AllowedLabwareType = 2;
-            carrier.Grid = 1;
+            carrier.GridID = 1;
 
             #region Labware1
             Labware labware1 = new Labware();

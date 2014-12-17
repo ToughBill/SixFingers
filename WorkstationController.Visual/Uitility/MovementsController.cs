@@ -297,8 +297,8 @@ namespace WorkstationController.VisualElement.Uitility
             Carrier carrier = carrierUIElement.Carrier;
 
             int newGrid = VisualCommon.FindCorrespondingGrid(ptCurrent.X);
-            int orgGrid = carrier.Grid;
-            carrier.Grid = newGrid;
+            int orgGrid = carrier.GridID;
+            carrier.GridID = newGrid;
             if (carrier.Labwares.Count == 0)
                 return;
             if (newGrid == orgGrid)
