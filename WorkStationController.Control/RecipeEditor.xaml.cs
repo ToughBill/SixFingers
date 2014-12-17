@@ -60,9 +60,9 @@ namespace WorkstationController.Control
             }
         }
 
-        private Layout GetLayout()
+        private Recipe GetLayoutPartOfRecipe()
         {
-            Layout layout = new Layout();
+            Recipe layout = new Recipe();
 
             //get carriers
             foreach (UIElement uiElement in _worktable.Children)
@@ -141,20 +141,17 @@ namespace WorkstationController.Control
 
         private void btnSave_Click(object sender, RoutedEventArgs e)
         {
-            Layout layout = GetLayout();
-            layout.Name = "test";
+            Recipe recipe = (Recipe)GetLayoutPartOfRecipe();
+            recipe.Name = txtRecipeName.Text;
             try
             {
-                layout.Serialize(FolderHelper.GetLayoutFolder() + "testLayout.xml");
+                InstrumentsManager.Instance.SaveInstrument(recipe);
             }
             catch(Exception ex)
             {
                 Debug.WriteLine(ex.Message);
             }
-            
         }
-
-     
     }
 
     public class WorktableGrid : Grid

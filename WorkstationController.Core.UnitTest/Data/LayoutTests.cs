@@ -24,16 +24,15 @@ namespace WorkstationController.Core.UnitTest
         [TestMethod]
         public void LayoutSerializeToXmlFileNoCarriersTest()
         {
-            Layout layout = new Layout();
+            Recipe layout = new Recipe();
             layout.Name = "LayoutSerializeTest";
-
             layout.Serialize(this._xmlFileWithoutCarrierPath);
         }
 
         [TestMethod]
         public void LayoutSerializeToXmlFileWithCarriersTest()
         {
-            Layout layout = new Layout();
+            Recipe layout = new Recipe();
             layout.Name = "LayoutSerializeTest";
 
             #region Add Carrier1

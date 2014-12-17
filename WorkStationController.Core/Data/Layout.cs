@@ -11,6 +11,7 @@ namespace WorkstationController.Core.Data
     /// <summary>
     /// Definition of layout
     /// </summary>
+    [Serializable]
     public class Layout 
     {
         /// <summary>
@@ -22,6 +23,7 @@ namespace WorkstationController.Core.Data
         /// <summary>
         /// UID of the layout
         /// </summary>
+        [XmlAttribute]
         public Guid ID { get; set; }
 
         /// <summary>
@@ -143,19 +145,6 @@ namespace WorkstationController.Core.Data
 
             this._carriers.Remove(carrier);
         }
-
-        #region Serialization
-
-        /// <summary>
-        /// Serializa a layout to XML file
-        /// </summary>
-        /// <param name="toXmlFile">XML file</param>
-        public void Serialize(string toXmlFile)
-        {
-            GetSkeletonInfos();
-            SerializationHelper.Serialize<Layout>(toXmlFile, this);
-        }
-        #endregion
 
         protected void GetSkeletonInfos()
         {
