@@ -251,7 +251,7 @@ namespace WorkstationController
 
         private void OnCarrierDeleteMenuItemClick(object sender, RoutedEventArgs e)
         {
-            Carrier selectedCr = (Carrier)this.lb_labwares.SelectedItem;
+            Carrier selectedCr = (Carrier)this.lb_carriers.SelectedItem;
             if (selectedCr == null)
                 return;
             InstrumentsManager.Instance.DeleteInstrument<Carrier>(selectedCr.ID);
