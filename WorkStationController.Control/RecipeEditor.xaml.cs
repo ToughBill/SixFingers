@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.ComponentModel;
 using System.Diagnostics;
 using System.Globalization;
 using System.Windows;
@@ -16,11 +18,11 @@ namespace WorkstationController.Control
     /// <summary>
     /// Interaction logic for Layout.xaml
     /// </summary>
-    public partial class RecipeEditor : UserControl , IDisposable
+    public partial class RecipeEditor : UserControl, IDisposable
     {
         UIMovementsController           _uiController = null;
         WareContextMenuController       _contextMenuController = null;
-
+        Recipe _recipe = null;
         #region events
         public WareContextMenuController ContextMenuController 
         { 
@@ -36,11 +38,13 @@ namespace WorkstationController.Control
         public RecipeEditor(Recipe recipe = null)
         {
             InitializeComponent();
-            
+            _recipe = recipe;
             _worktable.SizeChanged += uiContainer_SizeChanged;
             _uiController = new UIMovementsController(_worktable, recipe);
             _contextMenuController = new WareContextMenuController(_uiController);
-            //_uiController.onLabelPreviewChanged += uiController_onLabelPreviewChanged;
+            if (recipe == null)
+                _recipe = new Recipe();
+
             this.Loaded += LayoutUserControl_Loaded;
         }
 
@@ -60,23 +64,28 @@ namespace WorkstationController.Control
             }
         }
 
-        private Recipe GetLayoutPartOfRecipe()
-        {
-            Recipe layout = new Recipe();
+        #region bindings
+        public event PropertyChangedEventHandler PropertyChanged;
+  
+   
+            
+        #endregion
 
+        private List<Carrier> GetCarriers()
+        {
+            List<Carrier> carriers = new List<Carrier>();
             //get carriers
             foreach (UIElement uiElement in _worktable.Children)
             {
-                if(!(uiElement is BasewareUIElement))
-                    continue;
                 if (uiElement is CarrierUIElement)
                 {
                     var carrierUIElement = (CarrierUIElement)uiElement;
-                    layout.AddCarrier(carrierUIElement.Carrier);
+                    carriers.Add(carrierUIElement.Carrier);
                 }
             }
-            return layout;
+            return carriers;
         }
+       
         
         /// <summary>
         /// suggest candidate
@@ -90,24 +99,44 @@ namespace WorkstationController.Control
             _uiController.CaptureMouse();
         }
 
-        private void uiController_onLabelPreviewChanged(object sender, EventArgs e)
-        {
-            LabwareUIElement labwareUIElement = (e as LabelChangeEventArgs).LabwareUIElement;
-            QueryNewLabelForm queryNewLabelForm = new QueryNewLabelForm(_worktable.Children, labwareUIElement);
-            queryNewLabelForm.ShowDialog();
-        }
-     
+
+
+        #region form events
         private void LayoutUserControl_Loaded(object sender, RoutedEventArgs e)
         {
             //to do, replace it by load the worktable from a xml
-        
+            txtRecipeName.DataContext = _recipe;
             _worktable.AttachWorktableVisual();
             _worktable.MouseMove += uiContainer_MouseMove;
             _worktable.UpdateLayout();
-            OnContainerSizeChanged(new Size(500, 500)); //give default size
+             OnContainerSizeChanged(new Size(500, 500)); //give default size
             _worktable.RenderSize = new Size(_worktable.RenderSize.Width + 1, _worktable.RenderSize.Height + 1); //force update
         }
 
+
+        private void btnSave_Click(object sender, RoutedEventArgs e)
+        {
+            List<Carrier> carriers = GetCarriers();
+            _recipe.Carriers = carriers;
+            string xmlFilePath = string.Empty;
+            try
+            {
+                if (InstrumentsManager.Instance.FindInstrument<Recipe>(_recipe.ID, out xmlFilePath))
+                {
+                    _recipe.Serialize(xmlFilePath);
+                }
+                else
+                    InstrumentsManager.Instance.SaveInstrument(_recipe);
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine(ex.Message);
+            }
+        }
+
+        #endregion
+
+        #region sizeEvents
         private void uiContainer_MouseMove(object sender, MouseEventArgs e)
         {
             _worktable.InvalidateVisual();
@@ -127,33 +156,32 @@ namespace WorkstationController.Control
             _worktable.InvalidateVisual();
             VisualCommon.UpdateVisuals(_worktable.Children);
         }
+        #endregion
 
+        #region dispose
         public void Dispose()
         {
             _contextMenuController.Dispose();
         }
+        #endregion
 
-        private void btnSave_Click(object sender, RoutedEventArgs e)
+        #region control events
+        private void uiController_onLabelPreviewChanged(object sender, EventArgs e)
         {
-            Recipe recipe = (Recipe)GetLayoutPartOfRecipe();
-            recipe.Name = txtRecipeName.Text;
-            string xmlFilePath = string.Empty;
-            try
-            {
-                if (InstrumentsManager.Instance.FindInstrument<LiquidClass>(recipe.ID, out xmlFilePath))
-                {
-                    recipe.Serialize(xmlFilePath);
-                }
-                else
-                    InstrumentsManager.Instance.SaveInstrument(recipe);
-            }
-            catch(Exception ex)
-            {
-                Debug.WriteLine(ex.Message);
-            }
+            LabwareUIElement labwareUIElement = (e as LabelChangeEventArgs).LabwareUIElement;
+            QueryNewLabelForm queryNewLabelForm = new QueryNewLabelForm(_worktable.Children, labwareUIElement);
+            queryNewLabelForm.ShowDialog();
         }
+
+        #endregion
+
+    
     }
 
+    #region worktable render
+    /// <summary>
+    /// render the worktable
+    /// </summary>
     public class WorktableGrid : Grid
     {
         WorktableVisual worktableVisual = null;
@@ -179,4 +207,5 @@ namespace WorkstationController.Control
                        new System.Windows.Point(ActualWidth-150, ActualHeight-100));
         }
     }
+    #endregion
 }

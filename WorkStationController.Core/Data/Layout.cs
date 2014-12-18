@@ -66,6 +66,10 @@ namespace WorkstationController.Core.Data
             {
                 return this._carriers;
             }
+            set
+            {
+                _carriers = value;
+            }
         }
 
         /// <summary>

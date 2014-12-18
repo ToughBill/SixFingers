@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
 using System.Text;
 using System.Xml.Serialization;
@@ -11,8 +12,9 @@ namespace WorkstationController.Core.Data
     /// recipe describes a test of biology
     /// </summary>
     [Serializable]
-    public class Recipe : Layout, ISerialization,IDeserializationEx
+    public class Recipe : Layout, ISerialization, IDeserializationEx, INotifyPropertyChanged
     {
+        private string _recipeName;
         /// <summary>
         /// scripts to be executed
         /// </summary>
@@ -36,14 +38,31 @@ namespace WorkstationController.Core.Data
         /// Name of the recipe
         /// </summary>
         [XmlAttribute]
-        public string Name { get; set; }
+        public string Name
+        {
+            get
+            {
+                return _recipeName;
+            }
+            set
+            {
+                _recipeName = value;
+                if (PropertyChanged != null)
+                {
+                    PropertyChanged(this, new PropertyChangedEventArgs("Name"));
+                }
+            }
+        }
 
-
+        /// <summary>
+        /// ctor
+        /// </summary>
         public Recipe():base()
         {
             this.ID = Guid.NewGuid();
             Scripts = new List<string>();
         }
+
         /// <summary>
         /// Create an instance of Layout from a XML file
         /// </summary>
@@ -56,8 +75,6 @@ namespace WorkstationController.Core.Data
             return recipe;
         }
 
-
-
         /// <summary>
         /// post action - nothing
         /// </summary>
@@ -65,5 +82,7 @@ namespace WorkstationController.Core.Data
         {
             _carriers = RestoreCarriersFromSkeleton(_carrierSkeletons, _labwareSkeletons);
         }
+
+        public event PropertyChangedEventHandler PropertyChanged;
     }
 }

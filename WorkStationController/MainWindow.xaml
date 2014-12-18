@@ -3,7 +3,7 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:control="clr-namespace:WorkstationController.Control;assembly=WorkstationController.Control"
         Title="Workstation Controller 0.1" Height="600" Width="1000"
-        WindowStartupLocation="CenterScreen" WindowState="Maximized" Closing="Window_Closing" Icon="logo.ico">
+        WindowStartupLocation="CenterScreen" WindowState="Maximized" Closing="Window_Closing" Icon="Resources/logo.ico">
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"/>

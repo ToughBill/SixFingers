@@ -22,9 +22,9 @@ namespace WorkstationController.Core.Data
     {
         public const int undefinedGrid = 0;
 
-        private List<Labware>                _labwares                = new List<Labware>();  // Labwares on the carrier
-        private ObservableCollection<Site> _sites = new ObservableCollection<Site>();           // sites for mounting labwares
-        private ObservableCollection<string> _allowedLabwareTypeNames = new ObservableCollection<string>();
+        private List<Labware>                   _labwares = new List<Labware>();                     // Labwares on the carrier
+        private ObservableCollection<Site>      _sites = new ObservableCollection<Site>();           // sites for mounting labwares
+        private ObservableCollection<string>    _allowedLabwareTypeNames = new ObservableCollection<string>();
 
         private Color _backgroundColor = Colors.Gray;
         private int   _xoffset         = default(int);
