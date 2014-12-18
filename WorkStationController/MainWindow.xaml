@@ -3,7 +3,7 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:control="clr-namespace:WorkstationController.Control;assembly=WorkstationController.Control"
         Title="Workstation Controller 0.1" Height="600" Width="1000"
-        WindowStartupLocation="CenterScreen" WindowState="Maximized" Closing="Window_Closing">
+        WindowStartupLocation="CenterScreen" WindowState="Maximized" Closing="Window_Closing" Icon="logo.ico">
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"/>
@@ -12,7 +12,13 @@
             <RowDefinition Height="2*"/>
         </Grid.RowDefinitions>
         <Menu Grid.Row="0">
-            <MenuItem Header="File"></MenuItem>
+            <MenuItem Header="File">
+                <MenuItem Header="Save">
+                    <MenuItem.Icon>
+                        <Image Source="/Resources/save.png" Height="20" Width="20"/>
+                    </MenuItem.Icon>
+                </MenuItem>
+            </MenuItem>
             <MenuItem Header="Edit"></MenuItem>
             <MenuItem Header="View"></MenuItem>
             <MenuItem Header="Execute"></MenuItem>
