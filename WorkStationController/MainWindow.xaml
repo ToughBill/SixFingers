@@ -119,10 +119,10 @@
                                 <RotateTransform Angle="90"></RotateTransform>
                             </TabItem.LayoutTransform>
                             <DockPanel>
-                                <ListBox x:Name="lb_recipes" DockPanel.Dock="Top" MouseDoubleClick="OnRecipesMouseDoubleClick">
+                                <ListBox x:Name="lb_recipes" ItemsSource="{Binding Path=InstrumentsManager.Recipes}" DockPanel.Dock="Top" MouseDoubleClick="OnRecipesMouseDoubleClick">
                                     <ListBox.ItemTemplate>
                                         <DataTemplate>
-                                            <TextBlock Text="{Binding Path=TypeName}" ToolTip="{Binding Path=TypeName}"/>
+                                            <TextBlock Text="{Binding Path=Name}" ToolTip="{Binding Path=Name}"/>
                                         </DataTemplate>
                                     </ListBox.ItemTemplate>
                                     <ListBox.ContextMenu>
@@ -158,7 +158,7 @@
                                 <RotateTransform Angle="90"></RotateTransform>
                             </TabItem.LayoutTransform>
                             <DockPanel>
-                                <ListBox x:Name="lb_liquidclass" DockPanel.Dock="Top" ItemsSource="{Binding Path=InstrumentsManager.LiquidClasses}" MouseDoubleClick="OnLiquidclassMouseDoubleClick">
+                                <ListBox x:Name="lb_liquidclass" DockPanel.Dock="Top" ItemsSource="{Binding Path=InstrumentsManager.Recipes}" MouseDoubleClick="OnLiquidclassMouseDoubleClick">
                                     <ListBox.ItemTemplate>
                                         <DataTemplate>
                                             <TextBlock Text="{Binding Path=TypeName}" ToolTip="{Binding Path=TypeName}"/>

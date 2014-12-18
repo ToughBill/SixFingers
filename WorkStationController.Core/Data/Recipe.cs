@@ -11,7 +11,7 @@ namespace WorkstationController.Core.Data
     /// recipe describes a test of biology
     /// </summary>
     [Serializable]
-    public class Recipe : Layout, ISerialization
+    public class Recipe : Layout, ISerialization,IDeserializationEx
     {
         /// <summary>
         /// scripts to be executed
@@ -26,8 +26,22 @@ namespace WorkstationController.Core.Data
             SerializationHelper.Serialize(toXmlFile, this);
         }
 
+        /// <summary>
+        /// UID of the recipe
+        /// </summary>
+        [XmlAttribute]
+        public Guid ID { get; set; }
+
+        /// <summary>
+        /// Name of the recipe
+        /// </summary>
+        [XmlAttribute]
+        public string Name { get; set; }
+
+
         public Recipe():base()
         {
+            this.ID = Guid.NewGuid();
             Scripts = new List<string>();
         }
         /// <summary>
@@ -40,6 +54,16 @@ namespace WorkstationController.Core.Data
             Recipe recipe = SerializationHelper.Deserialize<Recipe>(fromXmlFile);
             recipe._carriers = RestoreCarriersFromSkeleton(recipe._carrierSkeletons, recipe._labwareSkeletons);
             return recipe;
+        }
+
+
+
+        /// <summary>
+        /// post action - nothing
+        /// </summary>
+        public void PostAction()
+        {
+            _carriers = RestoreCarriersFromSkeleton(_carrierSkeletons, _labwareSkeletons);
         }
     }
 }

@@ -45,7 +45,11 @@ namespace WorkstationController.Core.Data
     /// Data definition of a labware installed on the carrier
     /// </summary>
     [Serializable]
-    public class Labware : WareBase, ISerialization, INotifyPropertyChanged, ICloneable
+    public class Labware : WareBase, 
+        ISerialization, 
+        INotifyPropertyChanged,
+        ICloneable,
+        IDeserializationEx
     {
         private Color       _backgroundColor = Colors.Gray;
         private int         _siteID = 0;
@@ -252,6 +256,14 @@ namespace WorkstationController.Core.Data
             copy._zValues = (ZValues)this._zValues.Clone();
 
             return copy;
+        }
+
+        /// <summary>
+        /// post action - nothing
+        /// </summary>
+        public void PostAction()
+        {
+
         }
     }
 

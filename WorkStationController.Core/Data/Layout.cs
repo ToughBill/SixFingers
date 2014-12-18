@@ -15,24 +15,13 @@ namespace WorkstationController.Core.Data
     public class Layout 
     {
         /// <summary>
-        /// Name of the layout
-        /// </summary>
-        [XmlAttribute]
-        public string Name { get; set; }
-
-        /// <summary>
-        /// UID of the layout
-        /// </summary>
-        [XmlAttribute]
-        public Guid ID { get; set; }
-
-        /// <summary>
         /// Carrier collection on layout
         /// </summary>
         protected List<Carrier> _carriers = new List<Carrier>();
-
+        
         protected List<CarrierSkeleton> _carrierSkeletons;
         protected List<LabwareSkeleton> _labwareSkeletons;
+
         /// <summary>
         /// carrier reference info
         /// </summary>
@@ -84,7 +73,7 @@ namespace WorkstationController.Core.Data
         /// </summary>
         public Layout()
         {
-            this.ID = Guid.NewGuid();
+           
             CarrierSkeletons = new List<CarrierSkeleton>();
             LabwareSkeletons = new List<LabwareSkeleton>();
         }

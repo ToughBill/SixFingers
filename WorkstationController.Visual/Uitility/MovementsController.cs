@@ -91,15 +91,31 @@ namespace WorkstationController.VisualElement.Uitility
         /// ctor, control the grid
         /// </summary>
         /// <param name="grid"></param>
-        public UIMovementsController(System.Windows.Controls.Grid grid)
+        public UIMovementsController(System.Windows.Controls.Grid grid,Recipe existRecipe)
         {
             // TODO: Complete member initialization
             this._myCanvas = grid;
+            MountWares(existRecipe);
             _myCanvas.PreviewMouseLeftButtonDown += myCanvas_PreviewMouseLeftButtonDown;
             _myCanvas.PreviewMouseLeftButtonUp += myCanvas_PreviewMouseLeftButtonUp;
             _myCanvas.PreviewMouseRightButtonUp += _myCanvas_PreviewMouseRightButtonUp;
             _myCanvas.IsVisibleChanged += _myCanvas_IsVisibleChanged;
             _myCanvas.MouseMove += myCanvas_MouseMove;
+        }
+
+        private void MountWares(Recipe existRecipe)
+        {
+            if (existRecipe == null)
+                return;
+
+            foreach(Carrier carrier in existRecipe.Carriers)
+            {
+                foreach(Labware labware in carrier.Labwares)
+                {
+                    _myCanvas.Children.Add(new LabwareUIElement(labware));
+                }
+                _myCanvas.Children.Add(new CarrierUIElement(carrier));
+            }
         }
 
         void _myCanvas_IsVisibleChanged(object sender, DependencyPropertyChangedEventArgs e)

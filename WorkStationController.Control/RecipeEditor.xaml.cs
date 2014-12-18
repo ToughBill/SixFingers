@@ -33,12 +33,12 @@ namespace WorkstationController.Control
         /// <summary>
         /// Default constructor
         /// </summary>
-        public RecipeEditor()
+        public RecipeEditor(Recipe recipe = null)
         {
             InitializeComponent();
             
             _worktable.SizeChanged += uiContainer_SizeChanged;
-            _uiController = new UIMovementsController(_worktable);
+            _uiController = new UIMovementsController(_worktable, recipe);
             _contextMenuController = new WareContextMenuController(_uiController);
             //_uiController.onLabelPreviewChanged += uiController_onLabelPreviewChanged;
             this.Loaded += LayoutUserControl_Loaded;
@@ -100,13 +100,7 @@ namespace WorkstationController.Control
         private void LayoutUserControl_Loaded(object sender, RoutedEventArgs e)
         {
             //to do, replace it by load the worktable from a xml
-            Worktable worktable = new Worktable(
-                                         new Size(6000, 3500),
-                                         new Size(5, 30),
-                                         new Size(5, 50),
-                                         new Size(5, 50), new Point(500, 500), 1500, 2500, 20);
-
-            Configurations.Instance.Worktable = worktable;
+        
             _worktable.AttachWorktableVisual();
             _worktable.MouseMove += uiContainer_MouseMove;
             _worktable.UpdateLayout();
@@ -143,9 +137,15 @@ namespace WorkstationController.Control
         {
             Recipe recipe = (Recipe)GetLayoutPartOfRecipe();
             recipe.Name = txtRecipeName.Text;
+            string xmlFilePath = string.Empty;
             try
             {
-                InstrumentsManager.Instance.SaveInstrument(recipe);
+                if (InstrumentsManager.Instance.FindInstrument<LiquidClass>(recipe.ID, out xmlFilePath))
+                {
+                    recipe.Serialize(xmlFilePath);
+                }
+                else
+                    InstrumentsManager.Instance.SaveInstrument(recipe);
             }
             catch(Exception ex)
             {

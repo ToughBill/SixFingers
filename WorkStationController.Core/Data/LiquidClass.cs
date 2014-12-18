@@ -10,7 +10,11 @@ namespace WorkstationController.Core.Data
     /// Data definition of liquid class
     /// </summary>
     [Serializable]
-    public class LiquidClass : ISerialization, INotifyPropertyChanged, ICloneable
+    public class LiquidClass : 
+        ISerialization, 
+        INotifyPropertyChanged, 
+        ICloneable,
+        IDeserializationEx
     {
         #region private members for properties
         private string _typename = "<Need a name>";      
@@ -112,6 +116,16 @@ namespace WorkstationController.Core.Data
             copy._dispenseSinglePipetting = (DispensePipetting)this._dispenseSinglePipetting.Clone();
 
             return copy;
+        }
+
+
+
+        /// <summary>
+        /// post action - nothing
+        /// </summary>
+        public void PostAction()
+        {
+
         }
     }
 

@@ -15,7 +15,10 @@ namespace WorkstationController.Core.Data
     /// Data definition of Carrier installed on worktable
     /// </summary>
     [Serializable]
-    public class Carrier : WareBase, ISerialization, INotifyPropertyChanged, ICloneable
+    public class Carrier : WareBase, ISerialization, 
+        INotifyPropertyChanged, 
+        ICloneable,
+        IDeserializationEx
     {
         public const int undefinedGrid = 0;
 
@@ -275,6 +278,14 @@ namespace WorkstationController.Core.Data
             _allowedLabwareTypeNames.Add(LabwareBuildInType.Plate24_2ML.ToString());
             _grid = undefinedGrid;
             TypeName = BuildInCarrierType.MP_3POS.ToString();
+        }
+
+        /// <summary>
+        /// post action - nothing
+        /// </summary>
+        public void PostAction()
+        {
+            
         }
     }
 

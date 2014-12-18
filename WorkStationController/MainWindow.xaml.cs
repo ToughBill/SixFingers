@@ -267,6 +267,12 @@ namespace WorkstationController
 
         private void OnRecipesEditMenuItemClick(object sender, RoutedEventArgs e)
         {
+            Recipe selectedRecipe = (Recipe)this.lb_recipes.SelectedItem;
+            if (this.ActivateEditingTab(selectedRecipe.ID))
+                return;
+
+            RecipeEditor editor = new RecipeEditor(selectedRecipe);
+            this.AddTabItem(editor);
         }
 
         private void OnRecipesNewMenuItemClick(object sender, RoutedEventArgs e)

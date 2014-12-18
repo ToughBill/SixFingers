@@ -407,7 +407,7 @@ namespace WorkstationController.Core.Utility
         /// <typeparam name="T"></typeparam>
         /// <param name="instrumtsXmlFileDirectory"></param>
         /// <param name="instruments"></param>
-        static internal void LoadInstrument<T>(string instrumtsXmlFileDirectory, Dictionary<string, T> instruments)
+        static internal void LoadInstrument<T>(string instrumtsXmlFileDirectory, Dictionary<string, T> instruments) where T : IDeserializationEx
         {
             string[] instrumentXmlFiles = Directory.GetFiles(instrumtsXmlFileDirectory);
 
@@ -416,6 +416,7 @@ namespace WorkstationController.Core.Utility
                 if (Path.GetExtension(instrumentXmlFile).Equals(".xml"))
                 {
                     T instrument = SerializationHelper.Deserialize<T>(instrumentXmlFile);
+                    instrument.PostAction();
                     instruments.Add(instrumentXmlFile, instrument);
                 }
             }

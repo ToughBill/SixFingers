@@ -13,6 +13,7 @@ namespace WorkstationController.Core.Data
         int _volumeUL;
         string _labwareLabel;
         LiquidClass _liquidClass;
+        
         public PipettingCommand(string labwareLabel,
             List<int> tipIDUsed,
             List<int> selectedWellIDs,
