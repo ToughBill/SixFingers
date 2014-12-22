@@ -41,7 +41,7 @@
                                 <RotateTransform Angle="90"></RotateTransform>
                             </TabItem.LayoutTransform>
                             <DockPanel>
-                                <ListBox x:Name="lb_labwares" DockPanel.Dock="Top" ItemsSource="{Binding Path=InstrumentsManager.Labwares}" MouseDoubleClick="OnLabwaresMouseDoubleClick">
+                                <ListBox x:Name="lb_labwares" DockPanel.Dock="Top" ItemsSource="{Binding Path=InstrumentsManager.Labwares}" MouseDoubleClick="OnLabwaresMouseDoubleClick" PreviewMouseLeftButtonDown="lb_labwares_PreviewMouseLeftButtonDown">
                                     <ListBox.ItemTemplate>
                                         <DataTemplate>
                                             <TextBlock Text="{Binding Path=TypeName}" ToolTip="{Binding Path=TypeName}"/>

@@ -332,23 +332,35 @@ namespace WorkstationController
         }
         #endregion
 
-        #region Carrier preview Left button down
-        private void lb_carriers_PreviewMouseLeftButtonDown(object sender, System.Windows.Input.MouseButtonEventArgs e)
+        #region preview Left button down
+        private void OnLeftButtonDown(ListBox listBox, Point pt)
         {
-            Point pt = e.GetPosition(lb_carriers);
-            HitTestResult result = VisualTreeHelper.HitTest(lb_carriers, pt);
-            ListBoxItem lbi = VisualCommon.FindParent<ListBoxItem>(result.VisualHit);
-            if (lbi == null)
-                return;
-            int index = lb_carriers.ItemContainerGenerator.IndexFromContainer(lbi);
-            if (index == -1)
-                return;
-
             TabItem tabitem = (TabItem)tabDynamic.SelectedItem;
             RecipeEditor recipeEditor = GetRecipeEditor();
             if (recipeEditor == null)
                 return;
-            recipeEditor.SuggestCandidate((Carrier)lb_carriers.Items[index]);
+
+            HitTestResult result = VisualTreeHelper.HitTest(listBox, pt);
+            ListBoxItem lbi = VisualCommon.FindParent<ListBoxItem>(result.VisualHit);
+            if (lbi == null)
+                return;
+            int index = listBox.ItemContainerGenerator.IndexFromContainer(lbi);
+            if (index == -1)
+                return;
+
+            recipeEditor.SuggestCandidate((WareBase)listBox.Items[index]);
+        }
+
+        private void lb_carriers_PreviewMouseLeftButtonDown(object sender, System.Windows.Input.MouseButtonEventArgs e)
+        {
+            Point pt = e.GetPosition(lb_carriers);
+            OnLeftButtonDown(lb_carriers, pt);
+        }
+
+        private void lb_labwares_PreviewMouseLeftButtonDown(object sender, System.Windows.Input.MouseButtonEventArgs e)
+        {
+            Point pt = e.GetPosition(lb_labwares);
+            OnLeftButtonDown(lb_labwares, pt);
         }
         #endregion
 
@@ -381,5 +393,7 @@ namespace WorkstationController
         {
             Dispose();
         }
+
+   
     }
 }

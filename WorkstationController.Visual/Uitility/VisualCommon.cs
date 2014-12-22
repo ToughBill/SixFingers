@@ -17,7 +17,7 @@ namespace WorkstationController.VisualElement.Uitility
         /// <summary>
         /// container's size;
         /// </summary>
-        public static Size containerSize;
+        public static Size containerSize = new Size(500,500);
 
         /// <summary>
         /// from physical length to pixel units

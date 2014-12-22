@@ -20,7 +20,7 @@ namespace WorkstationController.VisualElement.Uitility
     /// </summary>
     public class UIMovementsController
     {
-        //private bool isDragging = false;
+        #region definitions
         private System.Windows.Controls.Grid _myCanvas;
         private Point _ptClick;
         private BasewareUIElement _selectedUIElement;
@@ -30,6 +30,7 @@ namespace WorkstationController.VisualElement.Uitility
         private DateTime lastClickTime = DateTime.MinValue;
         Vector relativeClickPosition2LeftTop = new Vector(-1, -1);
         readonly Vector notdefinedRelativePosition = new Vector(-1, -1);
+        #endregion
 
         #region events
         /// <summary>
@@ -42,6 +43,8 @@ namespace WorkstationController.VisualElement.Uitility
         /// </summary>
         public event EventHandler onWareContextMenuFired;
         #endregion
+
+        #region interface
         /// <summary>
         /// new UI element introduced from somewhere, nomarlly from listbox
         /// </summary>
@@ -58,8 +61,7 @@ namespace WorkstationController.VisualElement.Uitility
             }
         }
 
-        
-       /// <summary>
+        /// <summary>
        /// commands need to pick up a ware.
        /// </summary>
         public bool AllowPickup
@@ -74,7 +76,13 @@ namespace WorkstationController.VisualElement.Uitility
                 //ClearLastSelection();
             }
         }
-
+        /// <summary>
+        /// let mycanvas owns the mouse event
+        /// </summary>
+        public void CaptureMouse()
+        {
+            _myCanvas.CaptureMouse();
+        }
         /// <summary>
         /// selected UI element
         /// </summary>
@@ -86,7 +94,9 @@ namespace WorkstationController.VisualElement.Uitility
                 _selectedUIElement = value;
             }
         }
+        #endregion
 
+        #region ctor
         /// <summary>
         /// ctor, control the grid
         /// </summary>
@@ -95,15 +105,14 @@ namespace WorkstationController.VisualElement.Uitility
         {
             // TODO: Complete member initialization
             this._myCanvas = grid;
-            MountWares(existRecipe);
+            InitializeWares(existRecipe);
             _myCanvas.PreviewMouseLeftButtonDown += myCanvas_PreviewMouseLeftButtonDown;
             _myCanvas.PreviewMouseLeftButtonUp += myCanvas_PreviewMouseLeftButtonUp;
             _myCanvas.PreviewMouseRightButtonUp += _myCanvas_PreviewMouseRightButtonUp;
             _myCanvas.IsVisibleChanged += _myCanvas_IsVisibleChanged;
             _myCanvas.MouseMove += myCanvas_MouseMove;
         }
-
-        private void MountWares(Recipe existRecipe)
+        private void InitializeWares(Recipe existRecipe)
         {
             if (existRecipe == null)
                 return;
@@ -112,12 +121,18 @@ namespace WorkstationController.VisualElement.Uitility
             {
                 foreach(Labware labware in carrier.Labwares)
                 {
-                    _myCanvas.Children.Add(new LabwareUIElement(labware));
+                    var labwareUIElement = new LabwareUIElement(labware);
+                    Grid.SetZIndex(labwareUIElement, 20); //closer to user
+                    _myCanvas.Children.Add(labwareUIElement);
                 }
-                _myCanvas.Children.Add(new CarrierUIElement(carrier));
+                var carrierUIElement = new CarrierUIElement(carrier);
+                Grid.SetZIndex(carrierUIElement, 10);
+                _myCanvas.Children.Add(carrierUIElement);
             }
         }
+        #endregion
 
+        #region context menu
         void _myCanvas_IsVisibleChanged(object sender, DependencyPropertyChangedEventArgs e)
         {
              if (onWareContextMenuFired != null)
@@ -134,17 +149,10 @@ namespace WorkstationController.VisualElement.Uitility
                 Point ptInScreen = _myCanvas.PointToScreen(ptClick);
                 onWareContextMenuFired(this, new ContextEvtArgs(_selectedUIElement.Ware, ptInScreen, bNeed2Show));
             }
-            
         }
+        #endregion
 
-        /// <summary>
-        /// let mycanvas owns the mouse event
-        /// </summary>
-        public void CaptureMouse()
-        {
-            _myCanvas.CaptureMouse();
-        }
-
+        #region select UIElement, and prepare move
         void myCanvas_PreviewMouseLeftButtonDown(object sender, MouseButtonEventArgs e)
         {
             //fire context menu event
@@ -153,11 +161,8 @@ namespace WorkstationController.VisualElement.Uitility
                 onWareContextMenuFired(this, new ContextEvtArgs(_selectedUIElement.Ware, new Point(0,0), false));
             }
 
-            //judge double click
-            DateTime now = DateTime.Now;
-            bool isDoubleClick = e.ClickCount == 2;
-            lastClickTime = now;
-
+            UpdateLastClick();
+         
             //select ui element
             Point ptClick = e.GetPosition(_myCanvas);
             ClearLastSelection();
@@ -165,36 +170,42 @@ namespace WorkstationController.VisualElement.Uitility
             if (_selectedUIElement == null)
                 return;
            
-           
             //process double click event for labwareUIElement
-            if(_selectedUIElement is LabwareUIElement && isDoubleClick)
-            {
-                LabwareUIElement labwareUIElement = _selectedUIElement as LabwareUIElement;
-                labwareUIElement.Selected = false;
-                onLabelPreviewChanged(this, new LabelChangeEventArgs(labwareUIElement));
-                _selectedUIElement = null;
-                return;
-            }
+            bool isDoubleClick = e.ClickCount == 2;
+            onChangeLabel(isDoubleClick);
 
-            if(otherFormNeedPickup)
+            if (otherFormNeedPickup)
             {
                 _selectedUIElement.HighLighted = true;
-                return;
             }
+            else //let user move the UIElement
+            {
+                GetReady4Move(ptClick);
+              
+            }
+        }
+       
+        private void GetReady4Move(Point ptClick)
+        {
             _ptClick = ptClick;
-            SetUIElementSelectedState();
+            _selectedUIElement.Selected = true;
+            RememberRelativePosition(_selectedUIElement);
+            ForgetLabwareParent();
             _myCanvas.CaptureMouse();
         }
 
-        private void SetUIElementSelectedState()
+        private void ForgetLabwareParent()
         {
-            _selectedUIElement.Selected = true;
-            RememberRelativePosition(_selectedUIElement);
-            if(_selectedUIElement is LabwareUIElement)
+            if (_selectedUIElement is LabwareUIElement) //forget the parent
             {
                 //relativeClickPosition2LeftTop
                 ((LabwareUIElement)_selectedUIElement).Labware.ParentCarrier = null;
             }
+        }
+
+        private void UpdateLastClick()
+        {
+            lastClickTime = DateTime.Now;
         }
 
         private void RememberRelativePosition(BasewareUIElement baseUIElement)
@@ -219,6 +230,9 @@ namespace WorkstationController.VisualElement.Uitility
                 ((BasewareUIElement)uiElement).HighLighted = false;
             }
         }
+        #endregion
+
+        #region move and mount
 
         void myCanvas_PreviewMouseLeftButtonUp(object sender, MouseButtonEventArgs e)
         {
@@ -260,7 +274,6 @@ namespace WorkstationController.VisualElement.Uitility
             if (!hasUIElement2Operate)
                 return;
 
-            
             if(_selectedUIElement is LabwareUIElement)
             {
                 HighlightSiteInShadow(ptMouse, _selectedUIElement.Ware.TypeName);
@@ -268,44 +281,16 @@ namespace WorkstationController.VisualElement.Uitility
             ElectCandidate(); //we put the election here to avoid drawing wares out of worktable
             UpdateSelectedElement(ptMouse);
         }
-
-
-        #region highlight site
-        private void HighlightSiteInShadow(Point ptInCanvase,string labwareTypeName, bool bMouseMove = true)
-        {
-            foreach(var element in _myCanvas.Children)
-            {
-                if(element is CarrierUIElement)
-                {
-                    ((CarrierUIElement)element).HighLightSiteInShadow(ptInCanvase, labwareTypeName,bMouseMove);
-                }
-            }
-        }
-
-        private void DeHighlightAllSite()
-        {
-            HighlightSiteInShadow(new Point(0, 0),"", false);
-        }
-        #endregion
-  
         private void UpdateSelectedElement(Point ptCurrent)
         {
             //adjust position to its center position
             Vector vectorAdjust = GetAdjustVector();
             ptCurrent -= vectorAdjust;
             _selectedUIElement.SetDragPosition(ptCurrent);
-            UpdateLabwareUIElements(_selectedUIElement,ptCurrent);
+            UpdateLabwareUIElements(_selectedUIElement, ptCurrent);
         }
 
-        private Vector GetAdjustVector()
-        {
-            Size visualSize = _selectedUIElement.VisualSize;
-            Vector vector = relativeClickPosition2LeftTop.X < 0 ? new Vector(visualSize.Width / 2, visualSize.Height / 2)
-                : relativeClickPosition2LeftTop;
-            return vector;
-        }
-
-        private void UpdateLabwareUIElements(BasewareUIElement _selectedUIElement,Point ptCurrent)
+        private void UpdateLabwareUIElements(BasewareUIElement _selectedUIElement, Point ptCurrent)
         {
             if (!(_selectedUIElement is CarrierUIElement))
                 return;
@@ -320,7 +305,7 @@ namespace WorkstationController.VisualElement.Uitility
             if (newGrid == orgGrid)
                 return;
 
-            foreach(Labware labware in carrier.Labwares)
+            foreach (Labware labware in carrier.Labwares)
             {
                 labware.Refresh();
                 Debug.WriteLine("{0} labware hash:{1}", DateTime.Now.ToShortTimeString(), labware.GetHashCode());
@@ -349,9 +334,56 @@ namespace WorkstationController.VisualElement.Uitility
             else
             {
                 //we give labwareUI element priority
-                return VisualCommon.FindParent<BasewareUIElement>(result.VisualHit);
+                var labwareUIElement = VisualCommon.FindParent<LabwareUIElement>(result.VisualHit);
+                if (labwareUIElement != null)
+                    return labwareUIElement;
+                else
+                    return VisualCommon.FindParent<CarrierUIElement>(result.VisualHit);
             }
         }
 
+        private Vector GetAdjustVector()
+        {
+            Size visualSize = _selectedUIElement.VisualSize;
+            Vector vector = relativeClickPosition2LeftTop.X < 0 ? new Vector(visualSize.Width / 2, visualSize.Height / 2)
+                : relativeClickPosition2LeftTop;
+            return vector;
+        }
+
+        #endregion
+
+        #region double click change label
+        private void onChangeLabel(bool isDoubleClick)
+        {
+            if (!isDoubleClick)
+                return;
+            if (!(_selectedUIElement is LabwareUIElement))
+                return;
+            LabwareUIElement labwareUIElement = _selectedUIElement as LabwareUIElement;
+            labwareUIElement.Selected = false;
+            if (onLabelPreviewChanged != null)
+                onLabelPreviewChanged(this, new LabelChangeEventArgs(labwareUIElement));
+            _selectedUIElement = null;
+            return;
+        }
+        #endregion 
+
+        #region highlight site
+        private void HighlightSiteInShadow(Point ptInCanvase,string labwareTypeName, bool bMouseMove = true)
+        {
+            foreach(var element in _myCanvas.Children)
+            {
+                if(element is CarrierUIElement)
+                {
+                    ((CarrierUIElement)element).HighLightSiteInShadow(ptInCanvase, labwareTypeName,bMouseMove);
+                }
+            }
+        }
+
+        private void DeHighlightAllSite()
+        {
+            HighlightSiteInShadow(new Point(0, 0),"", false);
+        }
+        #endregion
     }
 }
