@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Carrier xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <ID>9d469626-72da-452c-82cc-863d01d0d44f</ID>
+  <TypeName>Tube13mm_16Pos</TypeName>
+  <Label />
+  <Dimension>
+    <XLength>240</XLength>
+    <YLength>3160</YLength>
+  </Dimension>
+  <BackgroundColor>
+    <A>255</A>
+    <R>128</R>
+    <G>128</G>
+    <B>128</B>
+    <ScA>1</ScA>
+    <ScR>0.215860531</ScR>
+    <ScG>0.215860531</ScG>
+    <ScB>0.215860531</ScB>
+  </BackgroundColor>
+  <XOffset>120</XOffset>
+  <YOffset>247</YOffset>
+  <GridID>0</GridID>
+  <Labwares />
+  <Sites>
+    <Site>
+      <XOffset>0</XOffset>
+      <YOffset>110</YOffset>
+      <ZOffset>0</ZOffset>
+      <XSize>240</XSize>
+      <YSize>3050</YSize>
+      <ID>1</ID>
+    </Site>
+  </Sites>
+  <AllowedLabwareTypeNames />
+</Carrier>

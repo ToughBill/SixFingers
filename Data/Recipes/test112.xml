@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Recipe xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  ID="0a6fd88d-cb18-46f6-8ea5-f10e29d2da3e"
+  Name="test112">
+  <CarrierSkeletons>
+    <CarrierSkeleton>
+      <TypeName>MP3</TypeName>
+      <GridID>7</GridID>
+    </CarrierSkeleton>
+  </CarrierSkeletons>
+  <LabwareSkeletons>
+    <LabwareSkeleton>
+      <TypeName>Plate24_2ML</TypeName>
+      <GridID>7</GridID>
+      <SiteID>1</SiteID>
+      <Label>label1</Label>
+    </LabwareSkeleton>
+    <LabwareSkeleton>
+      <TypeName>Plate96_05ML</TypeName>
+      <GridID>7</GridID>
+      <SiteID>2</SiteID>
+      <Label>label2</Label>
+    </LabwareSkeleton>
+    <LabwareSkeleton>
+      <TypeName>Plate96_05ML</TypeName>
+      <GridID>7</GridID>
+      <SiteID>3</SiteID>
+      <Label>label3</Label>
+    </LabwareSkeleton>
+  </LabwareSkeletons>
+  <Script_x0020_text />
+</Recipe>

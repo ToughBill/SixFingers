@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Labware xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <ID>673b6b61-9828-4fc8-bd23-2a237bf1cf3a</ID>
+  <TypeName>Plate96_05ML</TypeName>
+  <Label />
+  <Dimension>
+    <XLength>1270</XLength>
+    <YLength>855</YLength>
+  </Dimension>
+  <BackgroundColor>
+    <A>255</A>
+    <R>255</R>
+    <G>20</G>
+    <B>147</B>
+    <ScA>1</ScA>
+    <ScR>1</ScR>
+    <ScG>0.00699541066</ScG>
+    <ScB>0.291770667</ScB>
+  </BackgroundColor>
+  <SiteID>0</SiteID>
+  <WellsInfo>
+    <WellRadius>0</WellRadius>
+    <NumberOfWellsX>12</NumberOfWellsX>
+    <NumberOfWellsY>8</NumberOfWellsY>
+    <FirstWellPositionX>24</FirstWellPositionX>
+    <FirstWellPositionY>29</FirstWellPositionY>
+    <LastWellPositionX>1014</LastWellPositionX>
+    <LastWellPositionY>609</LastWellPositionY>
+    <BottomShape>Flat</BottomShape>
+  </WellsInfo>
+  <ZValues>
+    <ZTravel>360</ZTravel>
+    <ZStart>625</ZStart>
+    <ZDispense>665</ZDispense>
+    <ZMax>1610</ZMax>
+  </ZValues>
+</Labware>

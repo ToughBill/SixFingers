@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Carrier xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <ID>c31a3906-fe97-425a-9163-c0b4dd2a044a</ID>
+  <TypeName>MP3</TypeName>
+  <Label />
+  <Dimension>
+    <XLength>1490</XLength>
+    <YLength>3160</YLength>
+  </Dimension>
+  <BackgroundColor>
+    <A>255</A>
+    <R>128</R>
+    <G>128</G>
+    <B>128</B>
+    <ScA>1</ScA>
+    <ScR>0.215860531</ScR>
+    <ScG>0.215860531</ScG>
+    <ScB>0.215860531</ScB>
+  </BackgroundColor>
+  <XOffset>120</XOffset>
+  <YOffset>247</YOffset>
+  <GridID>0</GridID>
+  <Labwares />
+  <Sites>
+    <Site>
+      <XOffset>55</XOffset>
+      <YOffset>250</YOffset>
+      <ZOffset>0</ZOffset>
+      <XSize>1270</XSize>
+      <YSize>850</YSize>
+      <ID>1</ID>
+    </Site>
+    <Site>
+      <XOffset>55</XOffset>
+      <YOffset>1210</YOffset>
+      <ZOffset>0</ZOffset>
+      <XSize>1270</XSize>
+      <YSize>850</YSize>
+      <ID>2</ID>
+    </Site>
+    <Site>
+      <XOffset>55</XOffset>
+      <YOffset>2170</YOffset>
+      <ZOffset>0</ZOffset>
+      <XSize>1270</XSize>
+      <YSize>850</YSize>
+      <ID>3</ID>
+    </Site>
+  </Sites>
+  <AllowedLabwareTypeNames>
+    <AllowedLabwareTypeName>Plate24_2ML</AllowedLabwareTypeName>
+    <AllowedLabwareTypeName>Plate96_05ML</AllowedLabwareTypeName>
+  </AllowedLabwareTypeNames>
+</Carrier>
