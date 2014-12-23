@@ -59,17 +59,7 @@ namespace WorkstationController.Control
                 throw new InvalidOperationException("DataContext of Carrier must be an instance of Carrier");
 
             carrier.AllowedLabwareTypeNames = new ObservableCollection<string>(labwareCandidates.Where(x => x.IsAllowed).Select(x => x.TypeName));
-
-            // If this instance of LiquidClass had been serialized, save it
-            string xmlFilePath = string.Empty;
-            if (InstrumentsManager.Instance.FindInstrument<Carrier>(carrier.ID, out xmlFilePath))
-            {
-                carrier.Serialize(xmlFilePath);
-            }
-            else // else save the instance of LiquidClass as a new XML file
-            {
-                InstrumentsManager.Instance.SaveInstrument<Carrier>(carrier);
-            }
+            InstrumentsManager.Instance.SaveInstrument(carrier);
         }
 
         private void btnAddSite_Click(object sender, RoutedEventArgs e)

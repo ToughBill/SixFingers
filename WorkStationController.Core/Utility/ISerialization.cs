@@ -1,11 +1,12 @@
-﻿using System.Xml;
+﻿using System;
+using System.Xml;
 
 namespace WorkstationController.Core.Utility
 {
     /// <summary>
     /// Interface for serialization
     /// </summary>
-    interface ISerialization
+    public interface ISerialization
     {
         /// <summary>
         /// Serialize object to an XML file
@@ -17,9 +18,25 @@ namespace WorkstationController.Core.Utility
     /// <summary>
     /// do extra work after standard deserialization
     /// </summary>
-    interface IDeserializationEx
+    public interface IDeserializationEx
     {
         void PostAction();
+    }
+
+    /// <summary>
+    /// the name which used in saving & loading
+    /// </summary>
+    public interface ISaveName
+    {
+        string SaveName { get; set; }
+    }
+
+    /// <summary>
+    /// guid
+    /// </summary>
+    public interface IGUID
+    {
+        Guid ID { get; set; }
     }
 
 }

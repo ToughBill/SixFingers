@@ -24,8 +24,5 @@ namespace WorkstationController.Core.Data
                 return _instance;
             }
         }
-
-
-
     }
 }

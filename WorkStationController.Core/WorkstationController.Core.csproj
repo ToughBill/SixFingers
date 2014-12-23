@@ -69,7 +69,7 @@
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
     <Compile Include="Utility\CommandsManager.cs" />
-    <Compile Include="Utility\FolderHelper.cs" />
+    <Compile Include="Utility\HelperMethods.cs" />
     <Compile Include="Utility\InstrumentsManager.cs" />
     <Compile Include="Utility\ISerialization.cs" />
     <Compile Include="Utility\PropertyChangedNotifyHelper.cs" />

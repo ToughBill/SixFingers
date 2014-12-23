@@ -14,7 +14,9 @@ namespace WorkstationController.Core.Data
         ISerialization, 
         INotifyPropertyChanged, 
         ICloneable,
-        IDeserializationEx
+        IDeserializationEx,
+        ISaveName,
+        IGUID
     {
         #region private members for properties
         private string _typename = "<Need a name>";      
@@ -45,6 +47,22 @@ namespace WorkstationController.Core.Data
         {
             get { return this._typename; }
             set { PropertyChangedNotifyHelper.NotifyPropertyChanged<string>(ref this._typename, value, this, "Name", this.PropertyChanged); }
+        }
+
+        /// <summary>
+        /// the name would be used in saveing & loading
+        /// </summary>
+        [XmlIgnoreAttribute] 
+        public string SaveName
+        {
+            get
+            {
+                return TypeName;
+            }
+            set
+            {
+                TypeName = value;
+            }
         }
 
         /// <summary>

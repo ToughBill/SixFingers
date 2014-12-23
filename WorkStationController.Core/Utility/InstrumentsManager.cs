@@ -241,44 +241,50 @@ namespace WorkstationController.Core.Utility
             return bFound;
         }
 
+      
         /// <summary>
         /// Save instrument to its proper directory according to its type
         /// </summary>
         /// <typeparam name="T"></typeparam>
         /// <param name="instrument"></param>
-        public void SaveInstrument<T>(T instrument)
+        public void SaveInstrument<T>(T instrument) where T: ISaveName,ISerialization,IGUID
         {
             // Push the in air instrument to InstrumentManager and this instrument will be pop when
             // corresponding XML file created.
             InstrumentsManager.Instance.CreatedInstrument.Push(instrument);
-
+            RemoveExistingOne(instrument);
+            string saveName = instrument.SaveName + ".xml";
+            string directory = "";
             if (typeof(T) == typeof(Labware))
             {
-                Labware labware = instrument as Labware;
-                string path = Path.Combine(this._labwareDirectory, labware.ID.ToString() + ".xml");
-                labware.Serialize(path);
+                directory = _labwareDirectory;
             }
             else if (typeof(T) == typeof(Carrier))
             {
-                Carrier carrier = instrument as Carrier;
-                string path = Path.Combine(this._carrierDirectory, carrier.ID.ToString() + ".xml");
-                carrier.Serialize(path);
-            }
+                directory = _carrierDirectory;
+            }   
             else if (typeof(T) == typeof(Recipe))
             {
-                Recipe recipe = instrument as Recipe;
-                string path = Path.Combine(this._recpieDirectory, recipe.ID.ToString() + ".xml");
-                recipe.Serialize(path);
+                directory = _recpieDirectory;
             }
             else if (typeof(T) == typeof(LiquidClass))
             {
-                LiquidClass liquidClass = instrument as LiquidClass;
-                string path = Path.Combine(this._liquidClassDirectory, liquidClass.ID.ToString() + ".xml");
-                liquidClass.Serialize(path);
+                directory = _labwareDirectory;
             }
             else
             {
                 throw new ArgumentOutOfRangeException("T", typeof(T), "T must be Labware/Carrier/Recipe/LiquidClass");
+            }
+            string path = Path.Combine(directory, saveName);
+            instrument.Serialize(path);
+        }
+
+        private void RemoveExistingOne<T>(T instrument) where T :  IGUID
+        {
+            string xmlFilePath;
+            if (InstrumentsManager.Instance.FindInstrument<T>(instrument.ID, out xmlFilePath))
+            {
+                File.Delete(xmlFilePath);
             }
         }
 

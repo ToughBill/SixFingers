@@ -42,10 +42,16 @@ namespace WorkstationController.Control
             _worktable.SizeChanged += uiContainer_SizeChanged;
             _uiController = new UIMovementsController(_worktable, recipe);
             _contextMenuController = new WareContextMenuController(_uiController);
+            _contextMenuController.onEditLabware += _contextMenuController_onEditLabware;
             if (recipe == null)
                 _recipe = new Recipe();
 
             this.Loaded += LayoutUserControl_Loaded;
+        }
+
+        void _contextMenuController_onEditLabware(object sender, EventArgs e)
+        {
+            LabwareEditArgs labEditArgs =  (LabwareEditArgs)e;
         }
 
        
@@ -118,20 +124,7 @@ namespace WorkstationController.Control
         {
             List<Carrier> carriers = GetCarriers();
             _recipe.Carriers = carriers;
-            string xmlFilePath = string.Empty;
-            try
-            {
-                if (InstrumentsManager.Instance.FindInstrument<Recipe>(_recipe.ID, out xmlFilePath))
-                {
-                    _recipe.Serialize(xmlFilePath);
-                }
-                else
-                    InstrumentsManager.Instance.SaveInstrument(_recipe);
-            }
-            catch (Exception ex)
-            {
-                Debug.WriteLine(ex.Message);
-            }
+            InstrumentsManager.Instance.SaveInstrument(_recipe);
         }
 
         #endregion

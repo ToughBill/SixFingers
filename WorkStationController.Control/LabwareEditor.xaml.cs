@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -57,17 +58,7 @@ namespace WorkstationController.Control
             Labware labware = this.DataContext as Labware;
             if (labware == null)
                 throw new InvalidOperationException("DataContext of LabwareEditor must be an instance of Labware");
-
-            // If this instance of labware had been serialized, update it
-            string xmlFilePath = string.Empty;
-            if (InstrumentsManager.Instance.FindInstrument<Labware>(labware.ID, out xmlFilePath))
-            {
-                labware.Serialize(xmlFilePath);
-            }
-            else // else save the instance of labware as a new XML file
-            {
-                InstrumentsManager.Instance.SaveInstrument<Labware>(labware);
-            }
+            InstrumentsManager.Instance.SaveInstrument(labware);
         }
     }
 }

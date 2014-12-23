@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
 using System.Text;
+using System.Xml.Serialization;
 using WorkstationController.Core.Utility;
 
 namespace WorkstationController.Core.Data
@@ -11,7 +12,10 @@ namespace WorkstationController.Core.Data
     /// Carrier|Labware's common base
     /// </summary>
     [Serializable]
-    public abstract class WareBase : INotifyPropertyChanged
+    public abstract class WareBase : 
+        INotifyPropertyChanged,
+        ISaveName,
+        IGUID
     {
         protected Guid      _id = Guid.Empty;
         protected string    _typeName = "<Need a name>";
@@ -42,6 +46,22 @@ namespace WorkstationController.Core.Data
         {
             get{ return _typeName; }
             set{ PropertyChangedNotifyHelper.NotifyPropertyChanged<string>(ref this._typeName, value, this, "TypeName", this.PropertyChanged); }
+        }
+
+        /// <summary>
+        /// the name would be used in saveing & loading
+        /// </summary>
+        [XmlIgnoreAttribute] 
+        public string SaveName
+        {
+            get
+            {
+                return TypeName;
+            }
+            set
+            {
+                TypeName = value;
+            }
         }
 
         /// <summary>

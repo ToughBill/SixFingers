@@ -12,7 +12,12 @@ namespace WorkstationController.Core.Data
     /// recipe describes a test of biology
     /// </summary>
     [Serializable]
-    public class Recipe : Layout, ISerialization, IDeserializationEx, INotifyPropertyChanged
+    public class Recipe : Layout, 
+        ISerialization, 
+        IDeserializationEx,
+        ISaveName,
+        INotifyPropertyChanged,
+        IGUID
     {
         private string _recipeName;
         /// <summary>
@@ -51,6 +56,23 @@ namespace WorkstationController.Core.Data
                 {
                     PropertyChanged(this, new PropertyChangedEventArgs("Name"));
                 }
+            }
+        }
+
+
+        /// <summary>
+        /// the name would be used in saveing & loading
+        /// </summary>
+        [XmlIgnoreAttribute] 
+        public string SaveName
+        {
+            get
+            {
+                return Name;
+            }
+            set
+            {
+                Name = value;
             }
         }
 
