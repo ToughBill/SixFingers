@@ -40,7 +40,9 @@ namespace WorkstationController.Core.Utility
         private FileSystemWatcher _fsw_recipe = null;
         private FileSystemWatcher _fsw_liquidclass = null;
         #endregion
-
+        #region events
+        public event EventHandler onWareChanged;
+        #endregion
         /// <summary>
         /// Property changed event
         /// </summary>
@@ -246,21 +248,23 @@ namespace WorkstationController.Core.Utility
         /// Save instrument to its proper directory according to its type
         /// </summary>
         /// <typeparam name="T"></typeparam>
-        /// <param name="instrument"></param>
-        public void SaveInstrument<T>(T instrument) where T: ISaveName,ISerialization,IGUID
+        /// <param name="instrumentElement"></param>
+        public void SaveInstrument<T>(T instrumentElement) where T: ISaveName,ISerialization,IGUID
         {
             // Push the in air instrument to InstrumentManager and this instrument will be pop when
             // corresponding XML file created.
-            InstrumentsManager.Instance.CreatedInstrument.Push(instrument);
-            RemoveExistingOne(instrument);
-            string saveName = instrument.SaveName + ".xml";
+            InstrumentsManager.Instance.CreatedInstrument.Push(instrumentElement);
+            RemoveExistingOne(instrumentElement);
+            string saveName = instrumentElement.SaveName + ".xml";
             string directory = "";
             if (typeof(T) == typeof(Labware))
             {
+                FireChangeWareEvent(instrumentElement);
                 directory = _labwareDirectory;
             }
             else if (typeof(T) == typeof(Carrier))
             {
+                FireChangeWareEvent(instrumentElement);
                 directory = _carrierDirectory;
             }   
             else if (typeof(T) == typeof(Recipe))
@@ -276,7 +280,13 @@ namespace WorkstationController.Core.Utility
                 throw new ArgumentOutOfRangeException("T", typeof(T), "T must be Labware/Carrier/Recipe/LiquidClass");
             }
             string path = Path.Combine(directory, saveName);
-            instrument.Serialize(path);
+            instrumentElement.Serialize(path);
+        }
+
+        private void FireChangeWareEvent(object wareBase)
+        {
+            if (onWareChanged != null)
+                onWareChanged(this, new WareEditArgs((WareBase)wareBase));
         }
 
         private void RemoveExistingOne<T>(T instrument) where T :  IGUID

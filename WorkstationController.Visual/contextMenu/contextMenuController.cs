@@ -6,6 +6,7 @@ using System.Linq;
 using System.Text;
 using System.Windows;
 using WorkstationController.Core.Data;
+using WorkstationController.Core.Utility;
 using WorkstationController.VisualElement.contextMenu;
 using WorkstationController.VisualElement.Uitility;
 

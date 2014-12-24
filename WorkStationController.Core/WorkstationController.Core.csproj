@@ -73,6 +73,7 @@
     <Compile Include="Utility\ISerialization.cs" />
     <Compile Include="Utility\PropertyChangedNotifyHelper.cs" />
     <Compile Include="Utility\SerializationHelper.cs" />
+    <Compile Include="Utility\WareChangeArgs.cs" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="Properties\Resources.resx">

@@ -51,7 +51,7 @@ namespace WorkstationController.Control
 
         void _contextMenuController_onEditLabware(object sender, EventArgs e)
         {
-            LabwareEditArgs labEditArgs =  (LabwareEditArgs)e;
+            LabelChangeEventArgs labelChangeEvtArgs = (LabelChangeEventArgs)e;
         }
 
        
