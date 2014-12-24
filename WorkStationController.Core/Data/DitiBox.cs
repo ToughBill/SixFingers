@@ -11,7 +11,7 @@ namespace WorkstationController.Core.Data
         /// <summary> 
         /// if there are several tips on the Liha, for example 4 tips,  we
         /// will fetch tips from front to rear, unless we are going to fetch only one
-        /// then, we fetch the tip from rear.
+        /// then, we fetch the tip from rear to front.
         /// </summary>
         public int FrontStartPosition { get; set; }
         public int RearStartPosition { get; set; }

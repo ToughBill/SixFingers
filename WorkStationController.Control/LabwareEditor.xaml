@@ -5,9 +5,11 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:control="clr-namespace:WorkstationController.Control"
              mc:Ignorable="d" 
-             d:DesignHeight="380" d:DesignWidth="650">
+             MaxWidth="700"
+             d:DesignHeight="480" d:DesignWidth="650">
     <Grid>
         <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="Auto"/>
@@ -63,7 +65,7 @@
         <TextBlock Grid.Row="1" Grid.Column="2" Text="X" VerticalAlignment="Bottom" HorizontalAlignment="Center"/>
         <TextBlock Grid.Row="1" Grid.Column="4" Text="Y" VerticalAlignment="Bottom" HorizontalAlignment="Center"/>
         <Label Grid.Row="2" Grid.Column="0" Content="Dimension:"/>
-        <Label Grid.Row="2" Grid.Column="5" Content="(mm)"/>
+        
         <TextBox Grid.Row="2" Grid.Column="2" Text="{Binding Path=Dimension.XLength}"/>
         <TextBox Grid.Row="2" Grid.Column="4" Text="{Binding Path=Dimension.YLength}"/>
         <!--Wells number-->
@@ -87,10 +89,10 @@
         <TextBox Grid.Row="6" Grid.Column="4" Text="{Binding Path=WellsInfo.LastWellPositionY}"/>
         <!--ZValues-->
         <TextBlock Grid.Row="7" Grid.Column="4" Text="Z" VerticalAlignment="Bottom" HorizontalAlignment="Center"/>
-        <Label Grid.Row="8" Grid.Column="0" Content="Z-Travel" Grid.ColumnSpan="2" HorizontalContentAlignment="Right"/>
-        <Label Grid.Row="9" Grid.Column="0" Content="Z-Start" Grid.ColumnSpan="2" HorizontalContentAlignment="Right"/>
-        <Label Grid.Row="10" Grid.Column="0" Content="Z-Dispense" Grid.ColumnSpan="2" HorizontalContentAlignment="Right"/>
-        <Label Grid.Row="11" Grid.Column="0" Content="Z-Max" Grid.ColumnSpan="2" HorizontalContentAlignment="Right"/>
+        <Label Grid.Row="8" Grid.Column="0" Content="Z-Travel" Grid.ColumnSpan="2" HorizontalContentAlignment="Left"/>
+        <Label Grid.Row="9" Grid.Column="0" Content="Z-Start" Grid.ColumnSpan="2" HorizontalContentAlignment="Left"/>
+        <Label Grid.Row="10" Grid.Column="0" Content="Z-Dispense" Grid.ColumnSpan="2" HorizontalContentAlignment="Left"/>
+        <Label Grid.Row="11" Grid.Column="0" Content="Z-Max" Grid.ColumnSpan="2" HorizontalContentAlignment="Left"/>
         <Image Grid.Row="8" Grid.RowSpan="4" Grid.Column="2" Grid.ColumnSpan="1" Source="Resources/zvalues.png" Stretch="None"/>
         <TextBox Grid.Row="8" Grid.Column="4" Text="{Binding Path=ZValues.ZTravel}"/>
         <TextBox Grid.Row="9" Grid.Column="4" Text="{Binding Path=ZValues.ZStart}"/>
@@ -104,8 +106,11 @@
         <Button Grid.Row="10" Grid.Column="6" Content="move to"/>
         <Button Grid.Row="11" Grid.Column="5" Content="&lt;&lt;transfer"/>
         <Button Grid.Row="11" Grid.Column="6" Content="move to"/>
-        
-        <StackPanel Grid.Row="13" Grid.Column="0" Grid.ColumnSpan="7" Orientation="Horizontal" HorizontalAlignment="Right">
+        <Label Grid.Row="13" Content="WellRadius:" />
+        <TextBox Grid.Row="13" Grid.Column="2" Text="{Binding Path=WellsInfo.WellRadius}"/>
+        <Label Grid.Row="13" Grid.Column="5" Content="(Unit:" HorizontalAlignment="Right" />
+        <Label Grid.Row="13" Grid.Column="6" Content="0.1mm)"/>
+        <StackPanel Grid.Row="14" Grid.Column="0" Grid.ColumnSpan="7" Orientation="Horizontal" HorizontalAlignment="Right">
             <Button Width="150" Height="30" Content="Save" Margin="0,10,3,0" Click="OnSaveButtonClick"/>
         </StackPanel>
     </Grid>

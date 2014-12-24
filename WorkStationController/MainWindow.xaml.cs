@@ -125,6 +125,13 @@ namespace WorkstationController
                 // clear tab control binding
                 tabDynamic.DataContext = null;
 
+                //call dispose for the editor
+                object editor = ((Grid)tab.Content).Children[0];
+                if (typeof(IDisposable).IsAssignableFrom(editor.GetType()))
+                {
+                    ((IDisposable)editor).Dispose();
+                }
+
                 _tabItems.Remove(tab);
 
                 // bind tab control

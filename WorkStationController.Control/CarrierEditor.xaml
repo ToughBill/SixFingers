@@ -49,14 +49,13 @@
         <Label Grid.Row="2" Grid.Column="0" Content="Dimensions:" HorizontalContentAlignment="Right"/>
         <TextBox Grid.Row="2" Grid.Column="1" Margin="3,2,2,2" Text="{Binding Path=Dimension.XLength}"/>
         <TextBox Grid.Row="2" Grid.Column="2" Margin="3,2,2,2" Text="{Binding Path=Dimension.YLength}"/>
-        <Label Grid.Row="2" Grid.Column="3" Content="(mm)" HorizontalAlignment="Left" Width="38"/>
         <!--ReferenceOffset-->
         <TextBlock Grid.Row="3" Grid.Column="1" Text="X" VerticalAlignment="Bottom" HorizontalAlignment="Center"/>
         <TextBlock Grid.Row="3" Grid.Column="2" Text="Y" VerticalAlignment="Bottom" HorizontalAlignment="Center"/>
         <Label Grid.Row="4" Grid.Column="0" Content="Reference Offset:" HorizontalContentAlignment="Right"/>
         <TextBox Grid.Row="4" Grid.Column="1" Margin="3,2,2,2" Text="{Binding Path=XOffset}"/>
         <TextBox Grid.Row="4" Grid.Column="2" Margin="3,2,2,2" Text="{Binding Path=YOffset}"/>
-        <Label Grid.Row="4" Grid.Column="3" Content="(mm)" HorizontalAlignment="Left" Width="38"/>
+        
         <Grid Grid.Row="4" Grid.Column="4">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="1*"/>
@@ -87,8 +86,7 @@
         </DataGrid>
         <!--Allowed labware type-->
         <Label Grid.Row="6" Grid.Column="0" Content="Allowed Labware on this carrier:" HorizontalContentAlignment="Right"/>
-        <!--<ComboBox Grid.Row="6" Grid.Column="1" Grid.ColumnSpan="2" Width="150" HorizontalAlignment="Left"
-                  ItemsSource="{Binding Path=AllowedLabwareTypeNames}" SelectedIndex="0"/>-->
+        <Label Grid.Row="6" Grid.Column="4" Content="(Unit 0.1mm)" HorizontalAlignment="Left" />
         <ListBox Grid.Row="6" Grid.Column="1" Grid.RowSpan ="2" Grid.ColumnSpan="2" Name="lstAllowedLabwares" ItemsSource="{Binding}">
             <ListBox.ItemTemplate>
                 <DataTemplate>
