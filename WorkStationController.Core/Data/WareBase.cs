@@ -19,7 +19,7 @@ namespace WorkstationController.Core.Data
     {
         protected Guid      _id = Guid.Empty;
         protected string    _typeName = "<Need a name>";
-        protected string    _label = string.Empty;
+        
         protected Dimension _dimension = new Dimension();
 
         public event PropertyChangedEventHandler PropertyChanged = delegate { };
@@ -64,14 +64,7 @@ namespace WorkstationController.Core.Data
             }
         }
 
-        /// <summary>
-        /// Gets or sets the label of the ware
-        /// </summary>
-        public string Label
-        {
-            get { return this._label; }
-            set { PropertyChangedNotifyHelper.NotifyPropertyChanged<string>(ref this._label, value, this, "Label", this.PropertyChanged); }
-        }
+       
 
         /// <summary>
         /// Gets or sets the width and height of the ware

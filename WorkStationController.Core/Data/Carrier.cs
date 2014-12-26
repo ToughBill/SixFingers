@@ -237,7 +237,7 @@ namespace WorkstationController.Core.Data
         {
             Carrier newCarrier = new Carrier();
             newCarrier.TypeName = this.TypeName;
-            newCarrier.Label = "<Need a name>";
+            //newCarrier.Label = "<Need a name>";
             newCarrier.XOffset = this.XOffset;
             newCarrier.YOffset = this.YOffset;
             foreach (string allowedLabwareTypeName in this.AllowedLabwareTypeNames)

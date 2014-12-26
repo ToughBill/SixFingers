@@ -360,12 +360,18 @@ namespace WorkstationController
 
         private void lb_carriers_PreviewMouseLeftButtonDown(object sender, System.Windows.Input.MouseButtonEventArgs e)
         {
+            bool isDoubleClick = e.ClickCount > 1;
+            if (isDoubleClick)
+                return;
             Point pt = e.GetPosition(lb_carriers);
             OnLeftButtonDown(lb_carriers, pt);
         }
 
         private void lb_labwares_PreviewMouseLeftButtonDown(object sender, System.Windows.Input.MouseButtonEventArgs e)
         {
+            bool isDoubleClick = e.ClickCount > 1;
+            if (isDoubleClick)
+                return;
             Point pt = e.GetPosition(lb_labwares);
             OnLeftButtonDown(lb_labwares, pt);
         }

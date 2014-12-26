@@ -12,6 +12,7 @@ using System.Windows.Documents;
 using System.Diagnostics;
 using WorkstationController.Core.Data;
 using WorkstationController.VisualElement.ContextMenu;
+using WorkstationController.Core.Utility;
 
 namespace WorkstationController.VisualElement.Uitility
 {
@@ -112,6 +113,13 @@ namespace WorkstationController.VisualElement.Uitility
             _myCanvas.PreviewMouseRightButtonUp += _myCanvas_PreviewMouseRightButtonUp;
             _myCanvas.IsVisibleChanged += _myCanvas_IsVisibleChanged;
             _myCanvas.MouseMove += myCanvas_MouseMove;
+            InstrumentsManager.Instance.onWareChanged += Instance_onWareChanged;
+        }
+
+        void Instance_onWareChanged(object sender, EventArgs e)
+        {
+            WareBase wareBase = ((WareEditArgs)e).WareBase;
+            UpdateWare(wareBase);
         }
         private void InitializeWares(Recipe existRecipe)
         {
@@ -141,23 +149,25 @@ namespace WorkstationController.VisualElement.Uitility
         /// <param name="ware"></param>
         public void UpdateWare(WareBase ware)
         {
-            BasewareUIElement theUIElement = FindUIElement(ware.ID);
-            if (theUIElement == null)
+            List<BasewareUIElement> thisTypeUIElements = FindUIElement(ware.TypeName);
+            if (thisTypeUIElements.Count == 0)
                 return;
-            Carrier carrier = (Carrier)ware;
-            if(carrier != null)
+            if(ware.GetType() == typeof(Carrier))
             {
-                ReplaceCarrier((Carrier)carrier.Clone(), (CarrierUIElement)theUIElement);
+                Carrier carrier = (Carrier)ware;
+                thisTypeUIElements.ForEach(x => ReplaceCarrier((Carrier)carrier.Clone(), (CarrierUIElement)x));
             }
             else
             {
-                ReplaceLabware((Labware)ware,(LabwareUIElement)theUIElement);
+                Labware labware = (Labware)ware;
+                thisTypeUIElements.ForEach(x => ReplaceLabware((Labware)labware.Clone(), (LabwareUIElement)x));
             }
         }
 
         private void ReplaceLabware(Labware newLabware, LabwareUIElement labwareUIElement)
         {
             Labware oldLabware = (Labware)labwareUIElement.Ware;
+            newLabware.CarryInfo(oldLabware);
             newLabware.ParentCarrier = oldLabware.ParentCarrier;
             labwareUIElement = new LabwareUIElement(newLabware);
         }
@@ -175,16 +185,17 @@ namespace WorkstationController.VisualElement.Uitility
             carrierUIElement = new CarrierUIElement(newCarrier);
         }
 
-        private BasewareUIElement FindUIElement(Guid guid)
+        private List<BasewareUIElement> FindUIElement(string sTypeName)
         {
+            List<BasewareUIElement> baseUIElements = new List<BasewareUIElement>();
             foreach(BasewareUIElement baseUIElemenet in _myCanvas.Children)
             {
-                if(baseUIElemenet.Ware.ID == guid)
+                if(baseUIElemenet.Ware.TypeName == sTypeName)
                 {
-                    return baseUIElemenet;
+                    baseUIElements.Add(baseUIElemenet);
                 }
             }
-            return null;
+            return baseUIElements;
         }
 
         #endregion

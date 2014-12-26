@@ -56,7 +56,7 @@ namespace WorkstationController.Core.Data
         private Carrier     _parentCarrier = null;
         private WellsInfo   _wellsInfo = new WellsInfo();
         private ZValues     _zValues = new ZValues();
-        
+        protected string    _label = string.Empty;
 
         /// <summary>
         /// Background color
@@ -85,6 +85,18 @@ namespace WorkstationController.Core.Data
             set
             {
                 this.OnPropertyChanged<int>(ref this._siteID, value, "SiteID");
+            }
+        }
+
+        /// <summary>
+        /// Gets or sets the label of the ware
+        /// </summary>
+        public string Label
+        {
+            get { return this._label; }
+            set 
+            { 
+                this.OnPropertyChanged<string>(ref this._label, value, "Label");
             }
         }
 
@@ -245,7 +257,6 @@ namespace WorkstationController.Core.Data
         public object Clone()
         {
             Labware copy = new Labware();
-
             copy._label = "<Need a label>";
             copy._typeName = this.TypeName;
             copy._dimension = (Dimension)this.Dimension.Clone();
@@ -256,6 +267,17 @@ namespace WorkstationController.Core.Data
             copy._zValues = (ZValues)this._zValues.Clone();
 
             return copy;
+        }
+
+        /// <summary>
+        /// update the information which is NOT common
+        /// </summary>
+        /// <param name="templateLabware"></param>
+        public void CarryInfo(Labware templateLabware)
+        {
+            this.Label = templateLabware.Label;
+            this._parentCarrier = templateLabware.ParentCarrier;
+            this.SiteID = templateLabware.SiteID;
         }
 
         /// <summary>

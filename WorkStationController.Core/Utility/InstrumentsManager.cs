@@ -257,14 +257,15 @@ namespace WorkstationController.Core.Utility
             RemoveExistingOne(instrumentElement);
             string saveName = instrumentElement.SaveName + ".xml";
             string directory = "";
+            bool need2Update = false;
             if (typeof(T) == typeof(Labware))
             {
-                FireChangeWareEvent(instrumentElement);
+                need2Update = true;
                 directory = _labwareDirectory;
             }
             else if (typeof(T) == typeof(Carrier))
             {
-                FireChangeWareEvent(instrumentElement);
+                need2Update = true;
                 directory = _carrierDirectory;
             }   
             else if (typeof(T) == typeof(Recipe))
@@ -281,6 +282,8 @@ namespace WorkstationController.Core.Utility
             }
             string path = Path.Combine(directory, saveName);
             instrumentElement.Serialize(path);
+            if(need2Update)
+                FireChangeWareEvent(instrumentElement);
         }
 
         private void FireChangeWareEvent(object wareBase)
