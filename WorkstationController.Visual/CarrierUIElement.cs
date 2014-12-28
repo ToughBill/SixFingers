@@ -62,6 +62,10 @@ namespace WorkstationController.VisualElement
             {
                 return _carrier;
             }
+            set
+            {
+                _carrier = value;
+            }
         }
 
         /// <summary>

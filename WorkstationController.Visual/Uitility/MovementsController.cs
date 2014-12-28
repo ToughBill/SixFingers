@@ -168,8 +168,7 @@ namespace WorkstationController.VisualElement.Uitility
         {
             Labware oldLabware = (Labware)labwareUIElement.Ware;
             newLabware.CarryInfo(oldLabware);
-            newLabware.ParentCarrier = oldLabware.ParentCarrier;
-            labwareUIElement = new LabwareUIElement(newLabware);
+            labwareUIElement.Labware = newLabware;
         }
 
         private void ReplaceCarrier(Carrier newCarrier, CarrierUIElement carrierUIElement)
@@ -177,12 +176,18 @@ namespace WorkstationController.VisualElement.Uitility
             //remember the grid
             Carrier oldCarrier = (Carrier)carrierUIElement.Ware;
             newCarrier.GridID = oldCarrier.GridID;
-            foreach(Labware labware in oldCarrier.Labwares)
+            //foreach(Labware labware in oldCarrier.Labwares)
+            //{
+            //    labware.ParentCarrier = newCarrier;
+            //    newCarrier.Labwares.Add(labware);
+            //}
+            for (int i = 0; i < oldCarrier.Labwares.Count; i++ )
             {
+                Labware labware = oldCarrier.Labwares[i];
                 labware.ParentCarrier = newCarrier;
                 newCarrier.Labwares.Add(labware);
             }
-            carrierUIElement = new CarrierUIElement(newCarrier);
+            carrierUIElement.Carrier = newCarrier;
         }
 
         private List<BasewareUIElement> FindUIElement(string sTypeName)

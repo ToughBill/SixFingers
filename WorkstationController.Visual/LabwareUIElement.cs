@@ -58,6 +58,10 @@ namespace WorkstationController.VisualElement
             {
                 return _labware;
             }
+            set
+            {
+                _labware = value;
+            }
         }        
 
         /// <summary>
