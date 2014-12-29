@@ -49,9 +49,11 @@ namespace WorkstationController.Control
             this.Loaded += LayoutUserControl_Loaded;
         }
 
-        void _contextMenuController_onEditLabware(object sender, EventArgs e)
+        private void _contextMenuController_onEditLabware(object sender, EventArgs e)
         {
-            LabelChangeEventArgs labelChangeEvtArgs = (LabelChangeEventArgs)e;
+            LabwareEditArgs labwareEditArgs = (LabwareEditArgs)e;
+
+
         }
 
        

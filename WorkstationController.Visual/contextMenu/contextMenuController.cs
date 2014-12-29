@@ -83,6 +83,9 @@ namespace WorkstationController.VisualElement.ContextMenu
                 if( onEditCarrier != null)
                     onEditCarrier(this, new CarrierEditArgs(wareBaseClicked as Carrier));
             }
+
+            // Close context menu window
+            contextMenuForm.Hide();
         }
 
         void movementsController_onWareContextFired(object sender, EventArgs e)
