@@ -156,16 +156,16 @@ namespace WorkstationController.Core.Data
             _wellsInfo = new WellsInfo();
         }
 
-        static public Labware CreateFromSkeleton(LabwareSkeleton labwareSkeletonItem, Carrier parentCarrier = null)
+        static public Labware CreateFromTrait(LabwareTrait labwareTraitItem, Carrier parentCarrier = null)
         {
             // TODO: Complete member initialization
             List<Labware> labwares = new List<Labware>(InstrumentsManager.Instance.Labwares);
-            var baseLabware = labwares.Find(x => x.TypeName == labwareSkeletonItem.TypeName);
+            var baseLabware = labwares.Find(x => x.TypeName == labwareTraitItem.TypeName);
             if( baseLabware == null)
-                throw new Exception(string.Format("Cannot find the specified labware: ", labwareSkeletonItem.TypeName));
+                throw new Exception(string.Format("Cannot find the specified labware: ", labwareTraitItem.TypeName));
             var newLabware = (Labware)baseLabware.Clone();
-            newLabware.Label = labwareSkeletonItem.Label;
-            newLabware.SiteID = labwareSkeletonItem.SiteID;
+            newLabware.Label = labwareTraitItem.Label;
+            newLabware.SiteID = labwareTraitItem.SiteID;
             newLabware.ParentCarrier = parentCarrier;
             return newLabware;
 

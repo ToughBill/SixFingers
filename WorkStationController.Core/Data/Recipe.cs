@@ -12,12 +12,7 @@ namespace WorkstationController.Core.Data
     /// recipe describes a test of biology
     /// </summary>
     [Serializable]
-    public class Recipe : Layout, 
-        ISerialization, 
-        IDeserializationEx,
-        ISaveName,
-        INotifyPropertyChanged,
-        IGUID
+    public class Recipe : Layout,ISerialization, ICloneable
     {
         private string _recipeName;
         /// <summary>
@@ -29,15 +24,9 @@ namespace WorkstationController.Core.Data
 
         public void Serialize(string toXmlFile)
         {
-            GetSkeletonInfos();
+            GetTraitsInfo();
             SerializationHelper.Serialize(toXmlFile, this);
         }
-
-        /// <summary>
-        /// UID of the recipe
-        /// </summary>
-        [XmlAttribute]
-        public Guid ID { get; set; }
 
         /// <summary>
         /// Name of the recipe
@@ -52,10 +41,7 @@ namespace WorkstationController.Core.Data
             set
             {
                 _recipeName = value;
-                if (PropertyChanged != null)
-                {
-                    PropertyChanged(this, new PropertyChangedEventArgs("Name"));
-                }
+                SetProperty(ref _recipeName, value);
             }
         }
 
@@ -81,7 +67,6 @@ namespace WorkstationController.Core.Data
         /// </summary>
         public Recipe():base()
         {
-            this.ID = Guid.NewGuid();
             Scripts = new List<string>();
         }
 
@@ -93,18 +78,13 @@ namespace WorkstationController.Core.Data
         public static Recipe Create(string fromXmlFile)
         {
             Recipe recipe = SerializationHelper.Deserialize<Recipe>(fromXmlFile);
-            recipe._carriers = RestoreCarriersFromSkeleton(recipe._carrierSkeletons, recipe._labwareSkeletons);
+            recipe._carriers = RestoreCarriersFromTrait(recipe._carrierTraits, recipe._labwareTraits);
             return recipe;
         }
 
-        /// <summary>
-        /// post action - nothing
-        /// </summary>
-        public void PostAction()
+        public object Clone()
         {
-            _carriers = RestoreCarriersFromSkeleton(_carrierSkeletons, _labwareSkeletons);
+            throw new NotImplementedException();
         }
-
-        public event PropertyChangedEventHandler PropertyChanged;
     }
 }

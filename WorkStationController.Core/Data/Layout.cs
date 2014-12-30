@@ -1,10 +1,6 @@
 ﻿using System;
-using System.Collections.ObjectModel;
 using System.Collections.Generic;
-using System.IO;
-using System.Xml.Linq;
 using System.Xml.Serialization;
-using WorkstationController.Core.Utility;
 
 namespace WorkstationController.Core.Data
 {
@@ -12,46 +8,45 @@ namespace WorkstationController.Core.Data
     /// Definition of layout
     /// </summary>
     [Serializable]
-    public class Layout 
+    public class Layout : BindableBase
     {
         /// <summary>
         /// Carrier collection on layout
         /// </summary>
         protected List<Carrier> _carriers = new List<Carrier>();
-        
-        protected List<CarrierSkeleton> _carrierSkeletons;
-        protected List<LabwareSkeleton> _labwareSkeletons;
+        protected List<CarrierTrait> _carrierTraits;
+        protected List<LabwareTrait> _labwareTraits;
 
         /// <summary>
         /// carrier reference info
         /// </summary>
-        [XmlArray("CarrierSkeletons")]
-        [XmlArrayItem("CarrierSkeleton", typeof(CarrierSkeleton), IsNullable = false)]
-        public List<CarrierSkeleton> CarrierSkeletons
+        [XmlArray("CarrierTraits")]
+        [XmlArrayItem("CarrierTrait", typeof(CarrierTrait), IsNullable = false)]
+        public List<CarrierTrait> CarrierTraits
         {
             get
             {
-                return _carrierSkeletons;
+                return _carrierTraits;
             }
             set
             {
-                _carrierSkeletons = value;
+                SetProperty(ref _carrierTraits, value);
             }
         }
         /// <summary>
         /// labware reference info
         /// </summary>
-        [XmlArray("LabwareSkeletons")]
-        [XmlArrayItem("LabwareSkeleton", typeof(LabwareSkeleton), IsNullable = false)]
-        public List<LabwareSkeleton> LabwareSkeletons
+        [XmlArray("LabwareTraits")]
+        [XmlArrayItem("LabwareTrait", typeof(LabwareTrait), IsNullable = false)]
+        public List<LabwareTrait> LabwareTraits
         {
             get
             {
-                return _labwareSkeletons;
+                return _labwareTraits;
             }
             set
             {
-                _labwareSkeletons = value;
+                SetProperty(ref _labwareTraits, value);
             }
         }
 
@@ -68,7 +63,7 @@ namespace WorkstationController.Core.Data
             }
             set
             {
-                _carriers = value;
+                SetProperty(ref _carriers, value);
             }
         }
 
@@ -77,35 +72,32 @@ namespace WorkstationController.Core.Data
         /// </summary>
         public Layout()
         {
-           
-            CarrierSkeletons = new List<CarrierSkeleton>();
-            LabwareSkeletons = new List<LabwareSkeleton>();
+            CarrierTraits = new List<CarrierTrait>();
+            LabwareTraits = new List<LabwareTrait>();
         }
 
-       
-
-        protected static List<Carrier> RestoreCarriersFromSkeleton(List<CarrierSkeleton> carrierSkeletons, List<LabwareSkeleton> labwareSkeletons)
+        protected static List<Carrier> RestoreCarriersFromTrait(List<CarrierTrait> carrierTraits, List<LabwareTrait> labwareTraits)
         {
             List<Carrier> carriers = new List<Carrier>();
-            foreach(CarrierSkeleton carrierSkeletonItem in carrierSkeletons)
+            foreach(CarrierTrait carrierSkeletonItem in carrierTraits)
             {
                 carriers.Add(Carrier.CreateFromSkeleton(carrierSkeletonItem));
             }
-             RestoreLabwares(carriers,labwareSkeletons);
+             RestoreLabwares(carriers,labwareTraits);
              return carriers;
         }
 
-        protected static void RestoreLabwares(List<Carrier> carriers, List<LabwareSkeleton> labwareSkeletons)
+        protected static void RestoreLabwares(List<Carrier> carriers, List<LabwareTrait> labwareTraits)
         {
-            foreach (LabwareSkeleton labwareSkeleton in labwareSkeletons)
+            foreach (LabwareTrait labwareTrait in labwareTraits)
             {
-                var parentCarrier = carriers.Find(x => x.GridID == labwareSkeleton.GridID);
+                var parentCarrier = carriers.Find(x => x.GridID == labwareTrait.GridID);
                 if (parentCarrier == null)
                 {
                     //warning should be given here
                     continue;
                 }
-                Labware labware = Labware.CreateFromSkeleton(labwareSkeleton, parentCarrier);
+                Labware labware = Labware.CreateFromTrait(labwareTrait, parentCarrier);
                 parentCarrier.Labwares.Add(labware);
             }
         }
@@ -135,19 +127,18 @@ namespace WorkstationController.Core.Data
             {
                 throw new ArgumentNullException("carrier", "carrier must not be null.");
             }
-
             this._carriers.Remove(carrier);
         }
 
-        protected void GetSkeletonInfos()
+        protected void GetTraitsInfo()
         {
-            CarrierSkeletons.Clear();
-            LabwareSkeletons.Clear();
+            CarrierTraits.Clear();
+            LabwareTraits.Clear();
             foreach (Carrier carrier in _carriers)
             {
-                CarrierSkeletons.Add(new CarrierSkeleton(carrier));
+                CarrierTraits.Add(new CarrierTrait(carrier));
                 foreach(Labware labware in carrier.Labwares)
-                    LabwareSkeletons.Add(new LabwareSkeleton(labware));
+                    LabwareTraits.Add(new LabwareTrait(labware));
             }
         }
     }
@@ -156,13 +147,13 @@ namespace WorkstationController.Core.Data
     /// <summary>
     /// basic info to create the carrier
     /// </summary>
-    public class CarrierSkeleton
+    public class CarrierTrait
     {
         /// <summary>
         /// ctor
         /// </summary>
         /// <param name="carrier"></param>
-        public CarrierSkeleton(Carrier carrier)
+        public CarrierTrait(Carrier carrier)
         {
             TypeName = carrier.TypeName;
             GridID = carrier.GridID;
@@ -171,7 +162,7 @@ namespace WorkstationController.Core.Data
         /// <summary>
         /// make serializer happy
         /// </summary>
-        public CarrierSkeleton()
+        public CarrierTrait()
         {
 
         }
@@ -189,17 +180,17 @@ namespace WorkstationController.Core.Data
     /// <summary>
     /// basic info to create the labware
     /// </summary>
-    public class LabwareSkeleton
+    public class LabwareTrait
     {
         /// <summary>
         /// make serializer happy
         /// </summary>
-        public LabwareSkeleton()
+        public LabwareTrait()
         {
 
         }
 
-        public LabwareSkeleton(Labware labware)
+        public LabwareTrait(Labware labware)
         {
             // TODO: Complete member initialization
             TypeName = labware.TypeName;

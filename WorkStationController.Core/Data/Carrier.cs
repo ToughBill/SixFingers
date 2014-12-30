@@ -143,7 +143,7 @@ namespace WorkstationController.Core.Data
         /// </summary>
         /// <param name="buildInType"></param>
         /// <param name="grid"></param>
-        static public Carrier CreateFromSkeleton(CarrierSkeleton skeleton)
+        static public Carrier CreateFromSkeleton(CarrierTrait skeleton)
         {
             List<Carrier> carriers = new List<Carrier>(InstrumentsManager.Instance.Carriers);
             Carrier theCarrier = carriers.Find(x => x.TypeName == skeleton.TypeName);
