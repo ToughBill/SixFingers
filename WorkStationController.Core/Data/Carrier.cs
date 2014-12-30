@@ -215,14 +215,14 @@ namespace WorkstationController.Core.Data
         /// Serialize to a XML file
         /// </summary>
         /// <param name="toXmlFile">XML file for serialization</param>
-        public void Serialize(string toXmlFile)
+        public override void Serialize(string toXmlFile)
         {
             SerializationHelper.Serialize<Carrier>(toXmlFile, this);
         }
 
         #endregion
 
-        public object Clone()
+        public override object Clone()
         {
             Carrier newCarrier = new Carrier();
             newCarrier.TypeName = this.TypeName;
@@ -267,14 +267,6 @@ namespace WorkstationController.Core.Data
             _allowedLabwareTypeNames.Add(LabwareBuildInType.Plate24_2ML.ToString());
             _grid = undefinedGrid;
             TypeName = BuildInCarrierType.MP_3POS.ToString();
-        }
-
-        /// <summary>
-        /// post action - nothing
-        /// </summary>
-        public void PostAction()
-        {
-            
         }
 
     }

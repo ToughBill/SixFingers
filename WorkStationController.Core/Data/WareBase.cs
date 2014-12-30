@@ -22,7 +22,7 @@ namespace WorkstationController.Core.Data
         /// <summary>
         /// Gets or sets the typeName of the ware
         /// </summary>
-        public new string TypeName
+        public override string TypeName
         {
             get{ return _typeName; }
             set { SetProperty(ref _typeName, value); }
@@ -57,19 +57,7 @@ namespace WorkstationController.Core.Data
             return this._typeName;
         }
 
-        //public Guid ID
-        //{
-        //    get
-        //    {
-        //        throw new NotImplementedException();
-        //    }
-        //    set
-        //    {
-        //        throw new NotImplementedException();
-        //    }
-        //}
-
-        public object Clone()
+        public virtual object Clone()
         {
             throw new NotImplementedException();
         }

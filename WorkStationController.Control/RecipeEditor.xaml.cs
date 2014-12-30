@@ -52,10 +52,7 @@ namespace WorkstationController.Control
         private void _contextMenuController_onEditLabware(object sender, EventArgs e)
         {
             LabwareEditArgs labwareEditArgs = (LabwareEditArgs)e;
-
-
         }
-
        
         /// <summary>
         /// whether we allow other form select our wares
@@ -72,12 +69,6 @@ namespace WorkstationController.Control
             }
         }
 
-        #region bindings
-        public event PropertyChangedEventHandler PropertyChanged;
-  
-   
-            
-        #endregion
 
         private List<Carrier> GetCarriers()
         {

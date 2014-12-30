@@ -238,7 +238,7 @@ namespace WorkstationController.Core.Data
 
         #endregion
 
-        public object Clone()
+        public override object Clone()
         {
             Labware copy = new Labware();
             copy._label = "<Need a label>";
