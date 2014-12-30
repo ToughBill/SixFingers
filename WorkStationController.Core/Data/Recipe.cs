@@ -12,7 +12,7 @@ namespace WorkstationController.Core.Data
     /// recipe describes a test of biology
     /// </summary>
     [Serializable]
-    public class Recipe : Layout,ISerialization, ICloneable
+    public class Recipe : Layout
     {
         private string _recipeName;
         /// <summary>
@@ -22,7 +22,11 @@ namespace WorkstationController.Core.Data
         [XmlArrayItem("script ine", typeof(string), IsNullable = false)]
         public List<string> Scripts { get; set; }
 
-        public void Serialize(string toXmlFile)
+        /// <summary>
+        /// serialize
+        /// </summary>
+        /// <param name="toXmlFile"></param>
+        public override void Serialize(string toXmlFile)
         {
             GetTraitsInfo();
             SerializationHelper.Serialize(toXmlFile, this);
@@ -47,18 +51,14 @@ namespace WorkstationController.Core.Data
 
 
         /// <summary>
-        /// the name would be used in saveing & loading
+        /// the name would be used in saveing and loading
         /// </summary>
         [XmlIgnoreAttribute] 
-        public string SaveName
+        public override string SaveName
         {
             get
             {
                 return Name;
-            }
-            set
-            {
-                Name = value;
             }
         }
 
@@ -82,9 +82,26 @@ namespace WorkstationController.Core.Data
             return recipe;
         }
 
-        public object Clone()
+        public override string TypeName
+        {
+            get
+            {
+                return "Recipe";
+            }
+        }
+
+        public override object Clone()
         {
             throw new NotImplementedException();
+        }
+
+        public override T Deserialize<T>(string xmlFileName)
+        {
+            Object obj = (Object)base.Deserialize<T>(xmlFileName);
+            Recipe recipe = (Recipe)obj;
+            recipe._carriers = RestoreCarriersFromTrait(recipe._carrierTraits, recipe._labwareTraits);
+            obj = (Object)recipe;
+            return (T)obj;
         }
     }
 }

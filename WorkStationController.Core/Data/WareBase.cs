@@ -56,11 +56,7 @@ namespace WorkstationController.Core.Data
         {
             return this._typeName;
         }
-
-        public virtual object Clone()
-        {
-            throw new NotImplementedException();
-        }
+       
     }
 
     /// <summary>

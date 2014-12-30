@@ -8,7 +8,7 @@ namespace WorkstationController.Core.Data
     /// Definition of layout
     /// </summary>
     [Serializable]
-    public class Layout : BindableBase
+    public class Layout : PipettorElement
     {
         /// <summary>
         /// Carrier collection on layout

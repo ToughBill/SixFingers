@@ -9,22 +9,22 @@ namespace WorkstationController.Core.Utility
     public interface ISerialization
     {
         /// <summary>
-        /// Serialize object to an XML file
+        /// Serialize object to a XML file
         /// </summary>
         /// <param name="toXmlFile">XML file for saving object</param>
         void Serialize(string toXmlFile);
-        
-    }
-    /// <summary>
-    /// do extra work after standard deserialization
-    /// </summary>
-    public interface IDeserializationEx
-    {
-        void PostAction();
     }
 
+    public interface IDeserialization
+    {
+        /// <summary>
+        /// deserialize object from a XML file
+        /// </summary>
+        /// <param name="fromXmlFile"></param>
+        T Deserialize<T>(string fromXmlFile);
+    }
     /// <summary>
-    /// the name which used in saving & loading
+    /// the name which used in saving and loading
     /// </summary>
     public interface ISaveName
     {

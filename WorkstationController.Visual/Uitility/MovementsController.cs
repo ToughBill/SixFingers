@@ -113,7 +113,7 @@ namespace WorkstationController.VisualElement.Uitility
             _myCanvas.PreviewMouseRightButtonUp += _myCanvas_PreviewMouseRightButtonUp;
             _myCanvas.IsVisibleChanged += _myCanvas_IsVisibleChanged;
             _myCanvas.MouseMove += myCanvas_MouseMove;
-            InstrumentsManager.Instance.onWareChanged += Instance_onWareChanged;
+            PipettorElementManager.Instance.onWareChanged += Instance_onWareChanged;
         }
 
         void Instance_onWareChanged(object sender, EventArgs e)

@@ -19,7 +19,7 @@ namespace WorkstationController
     public partial class MainWindow : Window , IDisposable
     {
         #region Private members
-        private InstrumentsManager _instrumentsManager = InstrumentsManager.Instance;
+        private PipettorElementManager _instrumentsManager = PipettorElementManager.Instance;
         private List<Command> _supportedCommands = null;
 
         // Dynamic tab items
@@ -30,7 +30,7 @@ namespace WorkstationController
         /// <summary>
         /// Reference the InstrumentManager single instance
         /// </summary>
-        public InstrumentsManager InstrumentsManager
+        public PipettorElementManager InstrumentsManager
         {
             get
             {
@@ -215,7 +215,7 @@ namespace WorkstationController
         private void OnLabwareDeleteMenuItemClick(object sender, RoutedEventArgs e)
         {
             Labware selectedLW = (Labware)this.lb_labwares.SelectedItem;
-            InstrumentsManager.Instance.DeleteInstrument<Labware>(selectedLW.TypeName);
+            PipettorElementManager.Instance.DeletePipettorElement<Labware>(selectedLW.TypeName);
             DeleteTabItem(selectedLW.TypeName);
         }
         #endregion
@@ -258,7 +258,7 @@ namespace WorkstationController
             Carrier selectedCr = (Carrier)this.lb_carriers.SelectedItem;
             if (selectedCr == null)
                 return;
-            InstrumentsManager.Instance.DeleteInstrument<Carrier>(selectedCr.TypeName);
+            PipettorElementManager.Instance.DeletePipettorElement<Carrier>(selectedCr.TypeName);
             DeleteTabItem(selectedCr.TypeName);
         }
         #endregion
@@ -331,7 +331,7 @@ namespace WorkstationController
         private void OnLiquidClassDeleteMenuItemClick(object sender, RoutedEventArgs e)
         {
             LiquidClass selectedLC = (LiquidClass)this.lb_liquidclass.SelectedItem;
-            InstrumentsManager.Instance.DeleteInstrument<LiquidClass>(selectedLC.TypeName);
+            PipettorElementManager.Instance.DeletePipettorElement<LiquidClass>(selectedLC.TypeName);
             DeleteTabItem(selectedLC.TypeName);
         }
         #endregion

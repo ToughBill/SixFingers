@@ -159,7 +159,7 @@ namespace WorkstationController.Core.Data
         static public Labware CreateFromTrait(LabwareTrait labwareTraitItem, Carrier parentCarrier = null)
         {
             // TODO: Complete member initialization
-            List<Labware> labwares = new List<Labware>(InstrumentsManager.Instance.Labwares);
+            List<Labware> labwares = new List<Labware>(PipettorElementManager.Instance.Labwares);
             var baseLabware = labwares.Find(x => x.TypeName == labwareTraitItem.TypeName);
             if( baseLabware == null)
                 throw new Exception(string.Format("Cannot find the specified labware: ", labwareTraitItem.TypeName));
@@ -231,7 +231,7 @@ namespace WorkstationController.Core.Data
         /// Serialize a labware to a XML file
         /// </summary>
         /// <param name="toXmlFile"></param>
-        public void Serialize(string toXmlFile)
+        public override void Serialize(string toXmlFile)
         {
             SerializationHelper.Serialize<Labware>(toXmlFile, this);
         }
@@ -396,9 +396,6 @@ namespace WorkstationController.Core.Data
         private double      _lastWellPositionX;
         private double      _lastWellPositionY;
         private BottomShape _bottomShape;
-
-        private Point       _firstWellPosition;
-        private Point       _lastWellPosition;
 
         /// <summary>
         /// Gets or sets the radius of the well, in 1/10 millimetre(mm.)

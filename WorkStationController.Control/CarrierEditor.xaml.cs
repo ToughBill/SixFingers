@@ -36,7 +36,7 @@ namespace WorkstationController.Control
         {
             Carrier carrier = this.DataContext as Carrier;
             labwareCandidates = new ObservableCollection<LabwareCandidate>();
-            foreach (var labware in InstrumentsManager.Instance.Labwares)
+            foreach (var labware in PipettorElementManager.Instance.Labwares)
             {
                 labwareCandidates.Add(new LabwareCandidate(labware.TypeName, true));
             }
@@ -59,7 +59,7 @@ namespace WorkstationController.Control
                 throw new InvalidOperationException("DataContext of Carrier must be an instance of Carrier");
 
             carrier.AllowedLabwareTypeNames = new ObservableCollection<string>(labwareCandidates.Where(x => x.IsAllowed).Select(x => x.TypeName));
-            InstrumentsManager.Instance.SaveInstrument(carrier);
+            PipettorElementManager.Instance.SavePipettorElement(carrier);
         }
 
         private void btnAddSite_Click(object sender, RoutedEventArgs e)

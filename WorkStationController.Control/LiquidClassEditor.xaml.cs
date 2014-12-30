@@ -37,7 +37,7 @@ namespace WorkstationController.Control
             LiquidClass liquidClass = this.DataContext as LiquidClass;
             if (liquidClass == null)
                 throw new InvalidOperationException("DataContext of LiquiClassEditor must be an instance of LiquidClass");
-            InstrumentsManager.Instance.SaveInstrument(liquidClass);
+            PipettorElementManager.Instance.SavePipettorElement(liquidClass);
         }
     }
 }

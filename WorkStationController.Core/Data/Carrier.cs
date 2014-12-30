@@ -145,7 +145,7 @@ namespace WorkstationController.Core.Data
         /// <param name="grid"></param>
         static public Carrier CreateFromSkeleton(CarrierTrait skeleton)
         {
-            List<Carrier> carriers = new List<Carrier>(InstrumentsManager.Instance.Carriers);
+            List<Carrier> carriers = new List<Carrier>(PipettorElementManager.Instance.Carriers);
             Carrier theCarrier = carriers.Find(x => x.TypeName == skeleton.TypeName);
             if (theCarrier == null)
                 throw new Exception(string.Format("Cannot find the specified carrier: ", skeleton.TypeName));

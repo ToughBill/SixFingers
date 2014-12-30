@@ -58,7 +58,7 @@ namespace WorkstationController.Control
             Labware labware = this.DataContext as Labware;
             if (labware == null)
                 throw new InvalidOperationException("DataContext of LabwareEditor must be an instance of Labware");
-            InstrumentsManager.Instance.SaveInstrument(labware);
+            PipettorElementManager.Instance.SavePipettorElement(labware);
         }
     }
 }
