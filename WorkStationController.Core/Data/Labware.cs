@@ -45,33 +45,15 @@ namespace WorkstationController.Core.Data
     /// Data definition of a labware installed on the carrier
     /// </summary>
     [Serializable]
-    public class Labware : WareBase, 
-        ISerialization, 
-        INotifyPropertyChanged,
-        ICloneable,
-        IDeserializationEx
+    public class Labware : WareBase
     {
-        private Color       _backgroundColor = Colors.Gray;
         private int         _siteID = 0;
         private Carrier     _parentCarrier = null;
         private WellsInfo   _wellsInfo = new WellsInfo();
         private ZValues     _zValues = new ZValues();
         protected string    _label = string.Empty;
 
-        /// <summary>
-        /// Background color
-        /// </summary>
-        public Color BackgroundColor
-        {
-            get
-            {
-                return _backgroundColor;
-            }
-            set
-            {
-                this.OnPropertyChanged<Color>(ref this._backgroundColor, value, "BackgroundColor");
-            }
-        }
+ 
 
         /// <summary>
         /// The site on which the labware installed on the carrier, 1 based
@@ -84,7 +66,7 @@ namespace WorkstationController.Core.Data
             }
             set
             {
-                this.OnPropertyChanged<int>(ref this._siteID, value, "SiteID");
+                SetProperty(ref _siteID, value);
             }
         }
 
@@ -96,7 +78,7 @@ namespace WorkstationController.Core.Data
             get { return this._label; }
             set 
             { 
-                this.OnPropertyChanged<string>(ref this._label, value, "Label");
+                SetProperty(ref _label,value);
             }
         }
 
@@ -116,7 +98,9 @@ namespace WorkstationController.Core.Data
                     _parentCarrier.Labwares.Remove(this);
                 _parentCarrier = value;
                 if (value != null)
-                    this.OnPropertyChanged<Carrier>(ref this._parentCarrier, value, "ParentCarrier");
+                {
+                    SetProperty(ref _parentCarrier, value);
+                }
             }
         }
 
@@ -143,7 +127,7 @@ namespace WorkstationController.Core.Data
             }
             set
             {
-                this.OnPropertyChanged<WellsInfo>(ref this._wellsInfo, value, "WellsInfo");
+                SetProperty(ref _wellsInfo,value);
             }
         }
 
@@ -158,7 +142,7 @@ namespace WorkstationController.Core.Data
             }
             set
             {
-                this.OnPropertyChanged<ZValues>(ref this._zValues, value, "ZValues");
+                SetProperty(ref _zValues, value);
             }
         }
 

@@ -80,12 +80,12 @@ namespace WorkstationController
             if(control.DataContext is WareBase)
             {
                 WareBase ware = control.DataContext as WareBase;
-                tab.Tag = ware.ID;
+                tab.Tag = ware.TypeName;
             }
             else if (control.DataContext is LiquidClass)
             {
                 LiquidClass liquidClass = control.DataContext as LiquidClass;
-                tab.Tag = liquidClass.ID;
+                tab.Tag = liquidClass.TypeName;
             }
             else if(control.DataContext == null)     // Tempeorary fix of new a recipe tab item.
             {
@@ -94,9 +94,6 @@ namespace WorkstationController
  
             tab.HeaderTemplate = tabDynamic.FindResource("TabHeader") as DataTemplate;
 
-            //StackPanel stackpanel = new StackPanel();
-            //stackpanel.HorizontalAlignment = System.Windows.HorizontalAlignment.Left;
-            //stackpanel.Children.Add(control);
             Grid grid = new Grid();
             grid.Children.Add(control);
             tab.Content = grid;
@@ -111,7 +108,7 @@ namespace WorkstationController
             return tab;
         }
 
-        private void DeleteTabItem(Guid tag)
+        private void DeleteTabItem(string tag)
         {
             var item = tabDynamic.Items.Cast<TabItem>().Where(i => i.Tag.Equals(tag)).SingleOrDefault();
 
@@ -146,7 +143,7 @@ namespace WorkstationController
             }
         }
 
-        private bool ActivateEditingTab(Guid tag)
+        private bool ActivateEditingTab(string tag)
         {
             bool isEditing = false;
 
@@ -177,7 +174,7 @@ namespace WorkstationController
 
         private void btnDelete_Click(object sender, RoutedEventArgs e)
         {
-            Guid tabName = (Guid)(sender as Button).CommandParameter;
+            string tabName = (string)(sender as Button).CommandParameter;
             DeleteTabItem(tabName);
         }
         #endregion
@@ -191,7 +188,7 @@ namespace WorkstationController
         private void OnLabwareEditMenuItemClick(object sender, RoutedEventArgs e)
         {
             Labware selectedLW = (Labware)this.lb_labwares.SelectedItem;
-            if (this.ActivateEditingTab(selectedLW.ID))
+            if (this.ActivateEditingTab(selectedLW.TypeName))
                 return;
 
             LabwareEditor editor = new LabwareEditor();
@@ -218,8 +215,8 @@ namespace WorkstationController
         private void OnLabwareDeleteMenuItemClick(object sender, RoutedEventArgs e)
         {
             Labware selectedLW = (Labware)this.lb_labwares.SelectedItem;
-            InstrumentsManager.Instance.DeleteInstrument<Labware>(selectedLW.ID);
-            DeleteTabItem(selectedLW.ID);
+            InstrumentsManager.Instance.DeleteInstrument<Labware>(selectedLW.TypeName);
+            DeleteTabItem(selectedLW.TypeName);
         }
         #endregion
 
@@ -232,7 +229,7 @@ namespace WorkstationController
         private void OnCarrierEditMenuItemClick(object sender, RoutedEventArgs e)
         {
             Carrier selectedCr = (Carrier)this.lb_carriers.SelectedItem;
-            if (this.ActivateEditingTab(selectedCr.ID))
+            if (this.ActivateEditingTab(selectedCr.TypeName))
                 return;
 
             CarrierEditor editor = new CarrierEditor();
@@ -261,8 +258,8 @@ namespace WorkstationController
             Carrier selectedCr = (Carrier)this.lb_carriers.SelectedItem;
             if (selectedCr == null)
                 return;
-            InstrumentsManager.Instance.DeleteInstrument<Carrier>(selectedCr.ID);
-            DeleteTabItem(selectedCr.ID);
+            InstrumentsManager.Instance.DeleteInstrument<Carrier>(selectedCr.TypeName);
+            DeleteTabItem(selectedCr.TypeName);
         }
         #endregion
 
@@ -275,7 +272,7 @@ namespace WorkstationController
         private void OnRecipesEditMenuItemClick(object sender, RoutedEventArgs e)
         {
             Recipe selectedRecipe = (Recipe)this.lb_recipes.SelectedItem;
-            if (this.ActivateEditingTab(selectedRecipe.ID))
+            if (this.ActivateEditingTab(selectedRecipe.Name))
                 return;
 
             RecipeEditor editor = new RecipeEditor(selectedRecipe);
@@ -307,7 +304,7 @@ namespace WorkstationController
         private void OnLiquidClassEditMenuItemClick(object sender, RoutedEventArgs e)
         {
             LiquidClass selectedLC = (LiquidClass)this.lb_liquidclass.SelectedItem;
-            if (this.ActivateEditingTab(selectedLC.ID))
+            if (this.ActivateEditingTab(selectedLC.TypeName))
                 return;
 
             LiquidClassEditor editor = new LiquidClassEditor();
@@ -334,8 +331,8 @@ namespace WorkstationController
         private void OnLiquidClassDeleteMenuItemClick(object sender, RoutedEventArgs e)
         {
             LiquidClass selectedLC = (LiquidClass)this.lb_liquidclass.SelectedItem;
-            InstrumentsManager.Instance.DeleteInstrument<LiquidClass>(selectedLC.ID);
-            DeleteTabItem(selectedLC.ID);
+            InstrumentsManager.Instance.DeleteInstrument<LiquidClass>(selectedLC.TypeName);
+            DeleteTabItem(selectedLC.TypeName);
         }
         #endregion
 

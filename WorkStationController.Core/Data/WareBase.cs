@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
 using System.Text;
+using System.Windows.Media;
 using System.Xml.Serialization;
 using WorkstationController.Core.Utility;
 
@@ -12,59 +13,30 @@ namespace WorkstationController.Core.Data
     /// Carrier|Labware's common base
     /// </summary>
     [Serializable]
-    public abstract class WareBase : 
-        INotifyPropertyChanged,
-        ISaveName,
-        IGUID
+    public abstract class WareBase : PipettorElement,ICloneable
     {
-        protected Guid      _id = Guid.Empty;
         protected string    _typeName = "<Need a name>";
-        
         protected Dimension _dimension = new Dimension();
-
-        public event PropertyChangedEventHandler PropertyChanged = delegate { };
-
-        // Utility property changed notify method
-        protected void OnPropertyChanged<T>(ref T oldValue, T setValue, string propertyName)
-        {
-            PropertyChangedNotifyHelper.NotifyPropertyChanged<T>(ref oldValue, setValue, this, propertyName, this.PropertyChanged);
-        }
-
-        /// <summary>
-        /// UID of the ware
-        /// </summary>
-        public Guid ID
-        {
-            get { return this._id; }
-            set { this._id = value; }
-        }
+        protected Color _backgroundColor = Colors.Gray;
 
         /// <summary>
         /// Gets or sets the typeName of the ware
         /// </summary>
-        public string TypeName
+        public new string TypeName
         {
             get{ return _typeName; }
-            set{ PropertyChangedNotifyHelper.NotifyPropertyChanged<string>(ref this._typeName, value, this, "TypeName", this.PropertyChanged); }
+            set { SetProperty(ref _typeName, value); }
         }
 
         /// <summary>
-        /// the name would be used in saveing & loading
+        /// Background color
         /// </summary>
-        [XmlIgnoreAttribute] 
-        public string SaveName
+        public Color BackgroundColor
         {
-            get
-            {
-                return TypeName;
-            }
-            set
-            {
-                TypeName = value;
-            }
+            get { return _backgroundColor; }
+            set { SetProperty(ref _backgroundColor, value); }
         }
 
-       
 
         /// <summary>
         /// Gets or sets the width and height of the ware
@@ -72,17 +44,10 @@ namespace WorkstationController.Core.Data
         public Dimension Dimension
         {
             get{ return _dimension; }
-            set{ PropertyChangedNotifyHelper.NotifyPropertyChanged<Dimension>(ref this._dimension, value, this, "Dimension", this.PropertyChanged); }
+            set { SetProperty(ref _dimension, value); }
         }
 
-        /// <summary>
-        /// Default constructor
-        /// </summary>
-        public WareBase()
-        {
-            this._id = Guid.NewGuid();
-        }
-
+ 
         /// <summary>
         /// make binding happy
         /// </summary>
@@ -90,6 +55,23 @@ namespace WorkstationController.Core.Data
         public override string ToString()
         {
             return this._typeName;
+        }
+
+        //public Guid ID
+        //{
+        //    get
+        //    {
+        //        throw new NotImplementedException();
+        //    }
+        //    set
+        //    {
+        //        throw new NotImplementedException();
+        //    }
+        //}
+
+        public object Clone()
+        {
+            throw new NotImplementedException();
         }
     }
 

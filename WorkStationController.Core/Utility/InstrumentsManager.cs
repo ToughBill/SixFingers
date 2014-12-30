@@ -161,7 +161,7 @@ namespace WorkstationController.Core.Utility
             #region Load each instruments
             LoadInstrument<Labware>(this._labwareDirectory, this._labwares);
             LoadInstrument<Carrier>(this._carrierDirectory, this._carriers);
-            LoadInstrument<Recipe>(this._recpieDirectory, this._recipes);
+            //LoadInstrument<Recipe>(this._recpieDirectory, this._recipes);
             LoadInstrument<LiquidClass>(this._liquidClassDirectory, this._liquidClasses);
             #endregion
 
@@ -175,19 +175,16 @@ namespace WorkstationController.Core.Utility
         /// <param name="id">ID of the instrument instance</param>
         /// <param name="xmlFilePath">The XML file path of the instrument</param>
         /// <returns>If the instrument had been serialized, return true, otherwise return false</returns>
-        public bool FindInstrument<T>(Guid id, out string xmlFilePath)
+        public bool FindInstrument<T>(string elementName, out string xmlFilePath)
         {
-            if (id == null || id == Guid.Empty)
-                throw new ArgumentException("id could not be null of empty GUID", "id");
-
             bool bFound = false;
             xmlFilePath = string.Empty;
-
+            
             if(typeof(T) == typeof(Labware))
             {
                 try
                 {
-                    KeyValuePair<string, Labware> lw_kvp = this._labwares.First(kvp => kvp.Value.ID == id);
+                    KeyValuePair<string, Labware> lw_kvp = this._labwares.First(kvp => kvp.Value.TypeName == elementName);
                     xmlFilePath = lw_kvp.Key;
                     bFound = true;
                 }
@@ -200,7 +197,7 @@ namespace WorkstationController.Core.Utility
             {
                 try
                 {
-                    KeyValuePair<string, Carrier> ca_kvp = this._carriers.First(kvp => kvp.Value.ID == id);
+                    KeyValuePair<string, Carrier> ca_kvp = this._carriers.First(kvp => kvp.Value.TypeName == elementName);
                     xmlFilePath = ca_kvp.Key;
                     bFound = true;
                 }
@@ -213,7 +210,7 @@ namespace WorkstationController.Core.Utility
             {
                 try
                 {
-                    KeyValuePair<string, Recipe> lo_kvp = this._recipes.First(kvp => kvp.Value.ID == id);
+                    KeyValuePair<string, Recipe> lo_kvp = this._recipes.First(kvp => kvp.Value.Name == elementName);
                     xmlFilePath = lo_kvp.Key;
                     bFound = true;
                 }
@@ -226,7 +223,7 @@ namespace WorkstationController.Core.Utility
             {
                 try
                 {
-                    KeyValuePair<string, LiquidClass> lc_kvp = this._liquidClasses.First(kvp => kvp.Value.ID == id);
+                    KeyValuePair<string, LiquidClass> lc_kvp = this._liquidClasses.First(kvp => kvp.Value.TypeName == elementName);
                     xmlFilePath = lc_kvp.Key;
                     bFound = true;
                 }
@@ -249,13 +246,13 @@ namespace WorkstationController.Core.Utility
         /// </summary>
         /// <typeparam name="T"></typeparam>
         /// <param name="instrumentElement"></param>
-        public void SaveInstrument<T>(T instrumentElement) where T: ISaveName,ISerialization,IGUID
+        public void SaveInstrument<T>(T instrumentElement) where T: PipettorElement
         {
             // Push the in air instrument to InstrumentManager and this instrument will be pop when
             // corresponding XML file created.
             InstrumentsManager.Instance.CreatedInstrument.Push(instrumentElement);
             RemoveExistingOne(instrumentElement);
-            string saveName = instrumentElement.SaveName + ".xml";
+            string saveName = instrumentElement.TypeName + ".xml";
             string directory = "";
             bool need2Update = false;
             if (typeof(T) == typeof(Labware))
@@ -292,10 +289,10 @@ namespace WorkstationController.Core.Utility
                 onWareChanged(this, new WareEditArgs((WareBase)wareBase));
         }
 
-        private void RemoveExistingOne<T>(T instrument) where T :  IGUID
+        private void RemoveExistingOne<T>(T instrument) where T : PipettorElement
         {
             string xmlFilePath;
-            if (InstrumentsManager.Instance.FindInstrument<T>(instrument.ID, out xmlFilePath))
+            if (InstrumentsManager.Instance.FindInstrument<T>(instrument.TypeName, out xmlFilePath))
             {
                 File.Delete(xmlFilePath);
             }
@@ -306,10 +303,10 @@ namespace WorkstationController.Core.Utility
         /// </summary>
         /// <typeparam name="T">The type of the instrument</typeparam>
         /// <param name="id">The ID of the instrument</param>
-        public void DeleteInstrument<T>(Guid id)
+        public void DeleteInstrument<T>(string typeName)
         {
            string xmlFilePath = string.Empty;
-           if(FindInstrument<T>(id, out xmlFilePath))
+           if(FindInstrument<T>(typeName, out xmlFilePath))
            {
                File.Delete(xmlFilePath);
            }
@@ -426,7 +423,7 @@ namespace WorkstationController.Core.Utility
         /// <typeparam name="T"></typeparam>
         /// <param name="instrumtsXmlFileDirectory"></param>
         /// <param name="instruments"></param>
-        static internal void LoadInstrument<T>(string instrumtsXmlFileDirectory, Dictionary<string, T> instruments) where T : IDeserializationEx
+        static internal void LoadInstrument<T>(string instrumtsXmlFileDirectory, Dictionary<string, T> instruments) where T : PipettorElement
         {
             string[] instrumentXmlFiles = Directory.GetFiles(instrumtsXmlFileDirectory);
 
@@ -435,7 +432,6 @@ namespace WorkstationController.Core.Utility
                 if (Path.GetExtension(instrumentXmlFile).Equals(".xml"))
                 {
                     T instrument = SerializationHelper.Deserialize<T>(instrumentXmlFile);
-                    instrument.PostAction();
                     instruments.Add(instrumentXmlFile, instrument);
                 }
             }

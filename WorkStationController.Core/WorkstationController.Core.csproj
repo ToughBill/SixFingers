@@ -9,7 +9,7 @@
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>WorkstationController.Core</RootNamespace>
     <AssemblyName>WorkstationController.Core</AssemblyName>
-    <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <TargetFrameworkProfile />
   </PropertyGroup>
@@ -49,6 +49,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Data\ArmInfo.cs" />
+    <Compile Include="Data\BindBase.cs" />
     <Compile Include="Data\Carrier.cs" />
     <Compile Include="Data\Command.cs" />
     <Compile Include="Data\Config.cs" />
@@ -57,6 +58,7 @@
     <Compile Include="Data\Layout.cs" />
     <Compile Include="Data\LiquidClass.cs" />
     <Compile Include="Data\PipettingCommand.cs" />
+    <Compile Include="Data\PipettorElement.cs" />
     <Compile Include="Data\PumpInfo.cs" />
     <Compile Include="Data\Recipe.cs" />
     <Compile Include="Data\Script.cs" />

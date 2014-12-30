@@ -126,7 +126,7 @@ namespace WorkstationController.Control
         {
             List<Carrier> carriers = GetCarriers();
             _recipe.Carriers = carriers;
-            InstrumentsManager.Instance.SaveInstrument(_recipe);
+            //InstrumentsManager.Instance.SaveInstrument(_recipe);
         }
 
         #endregion

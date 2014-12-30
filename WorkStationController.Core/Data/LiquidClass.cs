@@ -10,13 +10,8 @@ namespace WorkstationController.Core.Data
     /// Data definition of liquid class
     /// </summary>
     [Serializable]
-    public class LiquidClass : 
-        ISerialization, 
-        INotifyPropertyChanged, 
-        ICloneable,
-        IDeserializationEx,
-        ISaveName,
-        IGUID
+    public class LiquidClass : PipettorElement,
+        ICloneable
     {
         #region private members for properties
         private string _typename = "<Need a name>";      

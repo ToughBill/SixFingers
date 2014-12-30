@@ -15,30 +15,19 @@ namespace WorkstationController.Core.Data
     /// Data definition of Carrier installed on worktable
     /// </summary>
     [Serializable]
-    public class Carrier : WareBase, ISerialization, 
-        INotifyPropertyChanged, 
-        ICloneable,
-        IDeserializationEx
+    public class Carrier : WareBase
     {
         public const int undefinedGrid = 0;
-
         private List<Labware>                   _labwares = new List<Labware>();                     // Labwares on the carrier
         private ObservableCollection<Site>      _sites = new ObservableCollection<Site>();           // sites for mounting labwares
         private ObservableCollection<string>    _allowedLabwareTypeNames = new ObservableCollection<string>();
 
-        private Color _backgroundColor = Colors.Gray;
+        
         private int   _xoffset         = default(int);
         private int   _yoffset         = default(int);
         private int   _grid            = 0;
 
-        /// <summary>
-        /// Background color
-        /// </summary>
-        public Color BackgroundColor
-        {
-            get { return _backgroundColor; }
-            set { this.OnPropertyChanged<Color>(ref this._backgroundColor, value, "BackgroundColor"); }
-        }
+
 
         /// <summary>
         /// The X offset of the left-top corner of carrier against the most left-top pin the carrier installed on
@@ -47,7 +36,7 @@ namespace WorkstationController.Core.Data
         public int XOffset
         {
             get { return this._xoffset; }
-            set { this.OnPropertyChanged<int>(ref this._xoffset, value, "XOffset"); }
+            set { SetProperty(ref _xoffset, value); }
         }
 
         /// <summary>
@@ -57,7 +46,7 @@ namespace WorkstationController.Core.Data
         public int YOffset
         {
             get { return this._yoffset; }
-            set { this.OnPropertyChanged<int>(ref this._yoffset, value, "YOffset"); }
+            set { SetProperty(ref _yoffset, value); }
         }
 
         /// <summary>
@@ -67,7 +56,7 @@ namespace WorkstationController.Core.Data
         public int GridID
         {
             get { return this._grid; }
-            set { this.OnPropertyChanged<int>(ref this._grid, value, "GridID"); }
+            set { SetProperty(ref _grid, value); }
         }
 
         /// <summary>
@@ -113,7 +102,7 @@ namespace WorkstationController.Core.Data
             }
             set
             {
-                _allowedLabwareTypeNames = value;
+                SetProperty(ref _allowedLabwareTypeNames, value);
             }
         }
 
