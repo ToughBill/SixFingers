@@ -161,7 +161,7 @@ namespace WorkstationController.Core.Utility
             #region Load each pipettorElements
             LoadPipettorElements<Labware>(this._labwareDirectory, this._labwares);
             LoadPipettorElements<Carrier>(this._carrierDirectory, this._carriers);
-            //LoadpipettorElement<Recipe>(this._recpieDirectory, this._recipes);
+            LoadPipettorElements<Recipe>(this._recpieDirectory, this._recipes);
             LoadPipettorElements<LiquidClass>(this._liquidClassDirectory, this._liquidClasses);
             #endregion
 
@@ -245,14 +245,14 @@ namespace WorkstationController.Core.Utility
         /// Save pipettorElement to its proper directory according to its type
         /// </summary>
         /// <typeparam name="T"></typeparam>
-        /// <param name="pipettorElementElement"></param>
-        public void SavePipettorElement<T>(T pipettorElementElement) where T: PipettorElement
+        /// <param name="pipettorElement"></param>
+        public void SavePipettorElement<T>(T pipettorElement) where T: PipettorElement
         {
             // Push the in air pipettorElement to pipettorElementManager and this pipettorElement will be pop when
             // corresponding XML file created.
-            PipettorElementManager.Instance.CreatedPipettorElement.Push(pipettorElementElement);
-            RemoveExistingOne(pipettorElementElement);
-            string saveName = pipettorElementElement.TypeName + ".xml";
+            PipettorElementManager.Instance.CreatedPipettorElement.Push(pipettorElement);
+            RemoveExistingOne(pipettorElement);
+            string saveName = pipettorElement.SaveName + ".xml";
             string directory = "";
             bool need2Update = false;
             if (typeof(T) == typeof(Labware))
@@ -278,9 +278,9 @@ namespace WorkstationController.Core.Utility
                 throw new ArgumentOutOfRangeException("T", typeof(T), "T must be Labware/Carrier/Recipe/LiquidClass");
             }
             string path = Path.Combine(directory, saveName);
-            pipettorElementElement.Serialize(path);
+            pipettorElement.Serialize(path);
             if(need2Update)
-                FireChangeWareEvent(pipettorElementElement);
+                FireChangeWareEvent(pipettorElement);
         }
 
         private void FireChangeWareEvent(object wareBase)
@@ -423,7 +423,7 @@ namespace WorkstationController.Core.Utility
         /// <typeparam name="T"></typeparam>
         /// <param name="elementsXmlFileDirectory"></param>
         /// <param name="pipettorElements"></param>
-        static internal void LoadPipettorElements<T>(string elementsXmlFileDirectory, Dictionary<string, T> pipettorElements) where T : PipettorElement,new()
+        static internal void LoadPipettorElements<T>(string elementsXmlFileDirectory, Dictionary<string, T> pipettorElements) where T : PipettorElement
         {
             string[] pipettorElementXmlFiles = Directory.GetFiles(elementsXmlFileDirectory);
 
@@ -432,7 +432,8 @@ namespace WorkstationController.Core.Utility
                 if (Path.GetExtension(pipettorElementXmlFile).Equals(".xml"))
                 {
                     T element = SerializationHelper.Deserialize<T>(pipettorElementXmlFile);
-                    
+                    element.DoExtraWork();
+                    pipettorElements.Add(pipettorElementXmlFile,element);
                 }
             }
         }

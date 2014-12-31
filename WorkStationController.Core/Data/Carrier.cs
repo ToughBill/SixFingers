@@ -139,18 +139,18 @@ namespace WorkstationController.Core.Data
         }
 
         /// <summary>
-        /// ctor
+        /// 
         /// </summary>
-        /// <param name="buildInType"></param>
-        /// <param name="grid"></param>
-        static public Carrier CreateFromSkeleton(CarrierTrait skeleton)
+        /// <param name="carrierTrait"></param>
+        /// <returns></returns>
+        static public Carrier CreateFromTrait(CarrierTrait carrierTrait)
         {
             List<Carrier> carriers = new List<Carrier>(PipettorElementManager.Instance.Carriers);
-            Carrier theCarrier = carriers.Find(x => x.TypeName == skeleton.TypeName);
+            Carrier theCarrier = carriers.Find(x => x.TypeName == carrierTrait.TypeName);
             if (theCarrier == null)
-                throw new Exception(string.Format("Cannot find the specified carrier: ", skeleton.TypeName));
+                throw new Exception(string.Format("Cannot find the specified carrier: ", carrierTrait.TypeName));
             Carrier newCarrier = (Carrier)theCarrier.Clone();
-            newCarrier.GridID = skeleton.GridID;
+            newCarrier.GridID = carrierTrait.GridID;
             return newCarrier;
         }
         
@@ -225,13 +225,12 @@ namespace WorkstationController.Core.Data
         public override object Clone()
         {
             Carrier newCarrier = new Carrier();
-            newCarrier.TypeName = this.TypeName;
-            //newCarrier.Label = "<Need a name>";
-            newCarrier.XOffset = this.XOffset;
-            newCarrier.YOffset = this.YOffset;
+            newCarrier.TypeName = _typeName;
+            newCarrier.BackgroundColor = _backgroundColor;
+            newCarrier.XOffset = _xoffset;
+            newCarrier.YOffset = _yoffset;
             foreach (string allowedLabwareTypeName in this.AllowedLabwareTypeNames)
                 newCarrier.AllowedLabwareTypeNames.Add(allowedLabwareTypeName);
-            newCarrier.Sites = new ObservableCollection<Site>();
             foreach (Site site in _sites)
                 newCarrier.Sites.Add(site.Clone() as Site);
             newCarrier.Dimension = _dimension.Clone() as Dimension;
@@ -269,6 +268,21 @@ namespace WorkstationController.Core.Data
             TypeName = BuildInCarrierType.MP_3POS.ToString();
         }
 
+
+        public void CarryInfo(Carrier exampleCarrier)
+        {
+            _typeName = exampleCarrier.TypeName;
+            _backgroundColor = exampleCarrier._backgroundColor;
+            XOffset = exampleCarrier.XOffset;
+            YOffset = exampleCarrier.YOffset;
+            _allowedLabwareTypeNames.Clear();
+            foreach (string allowedLabwareTypeName in exampleCarrier.AllowedLabwareTypeNames)
+                _allowedLabwareTypeNames.Add(allowedLabwareTypeName);
+            _sites.Clear();
+            foreach (Site site in exampleCarrier._sites)
+                _sites.Add(site.Clone() as Site);
+            _dimension = _dimension.Clone() as Dimension;
+        }
     }
 
     /// <summary>

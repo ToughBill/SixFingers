@@ -69,6 +69,16 @@ namespace WorkstationController.Control
             }
         }
 
+        /// <summary>
+        /// editing recipe
+        /// </summary>
+        public Recipe Recipe 
+        { 
+            get
+            {
+                return _recipe;
+            }
+        }
 
         private List<Carrier> GetCarriers()
         {
@@ -117,7 +127,7 @@ namespace WorkstationController.Control
         {
             List<Carrier> carriers = GetCarriers();
             _recipe.Carriers = carriers;
-            //InstrumentsManager.Instance.SaveInstrument(_recipe);
+            PipettorElementManager.Instance.SavePipettorElement(_recipe);
         }
 
         #endregion

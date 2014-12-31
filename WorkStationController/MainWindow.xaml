@@ -33,7 +33,7 @@
                     <ColumnDefinition Width="*"/>
                 </Grid.ColumnDefinitions>
                 
-                <!--Instruments selection-->
+                <!--Elements selection-->
                 <DockPanel Grid.Column="0">
                     <TabControl TabStripPlacement="Right" DockPanel.Dock="Top">
                         <TabItem Header="LABWARE" Background="Yellow" Height="30" Width="100">
@@ -213,7 +213,7 @@
                                         CommandParameter="{Binding RelativeSource={RelativeSource AncestorType={x:Type TabItem}}, Path=Tag}">
                                         <Image Source="/Resources/delete.gif" Height="11" Width="11"></Image>
                                     </Button>
-                                    <TextBlock Text="{Binding RelativeSource={RelativeSource AncestorType=TabItem}, Path=Content.Children[0].DataContext.TypeName}" />
+                                    <TextBlock Text="{Binding RelativeSource={RelativeSource AncestorType=TabItem}, Path=Content.Children[0].DataContext.SaveName}" />
                                 </DockPanel>
                             </DataTemplate>
                             <Style TargetType="TextBox">

@@ -81,7 +81,7 @@ namespace WorkstationController.Core.Data
             List<Carrier> carriers = new List<Carrier>();
             foreach(CarrierTrait carrierSkeletonItem in carrierTraits)
             {
-                carriers.Add(Carrier.CreateFromSkeleton(carrierSkeletonItem));
+                carriers.Add(Carrier.CreateFromTrait(carrierSkeletonItem));
             }
              RestoreLabwares(carriers,labwareTraits);
              return carriers;

@@ -19,7 +19,7 @@ namespace WorkstationController
     public partial class MainWindow : Window , IDisposable
     {
         #region Private members
-        private PipettorElementManager _instrumentsManager = PipettorElementManager.Instance;
+        private PipettorElementManager _pipettorElementManager = PipettorElementManager.Instance;
         private List<Command> _supportedCommands = null;
 
         // Dynamic tab items
@@ -30,11 +30,11 @@ namespace WorkstationController
         /// <summary>
         /// Reference the InstrumentManager single instance
         /// </summary>
-        public PipettorElementManager InstrumentsManager
+        public PipettorElementManager PipettorElementsManager
         {
             get
             {
-                return this._instrumentsManager;
+                return this._pipettorElementManager;
             }
         }
 
@@ -54,7 +54,7 @@ namespace WorkstationController
             InitializeComponent();
             try
             {
-                this._instrumentsManager.Initialize();
+                this._pipettorElementManager.Initialize();
             }
             catch(Exception ex)
             {
@@ -77,20 +77,21 @@ namespace WorkstationController
             TabItem tab = new TabItem();
             
             // Set the Tag of the tab as the UID of the instrument
-            if(control.DataContext is WareBase)
-            {
-                WareBase ware = control.DataContext as WareBase;
-                tab.Tag = ware.TypeName;
-            }
-            else if (control.DataContext is LiquidClass)
-            {
-                LiquidClass liquidClass = control.DataContext as LiquidClass;
-                tab.Tag = liquidClass.TypeName;
-            }
-            else if(control.DataContext == null)     // Tempeorary fix of new a recipe tab item.
-            {
-                tab.Tag = Guid.NewGuid();
-            }
+            tab.Tag = ((PipettorElement)control.DataContext).SaveName;
+            //if(control.DataContext is WareBase)
+            //{
+            //    WareBase ware = control.DataContext as WareBase;
+            //    tab.Tag = ware.TypeName;
+            //}
+            //else if (control.DataContext is LiquidClass)
+            //{
+            //    LiquidClass liquidClass = control.DataContext as LiquidClass;
+            //    tab.Tag = liquidClass.TypeName;
+            //}
+            //else if(control.DataContext == null)     // Tempeorary fix of new a recipe tab item.
+            //{
+            //    tab.Tag = Guid.NewGuid();
+            //}
  
             tab.HeaderTemplate = tabDynamic.FindResource("TabHeader") as DataTemplate;
 
@@ -276,13 +277,14 @@ namespace WorkstationController
                 return;
 
             RecipeEditor editor = new RecipeEditor(selectedRecipe);
+            editor.DataContext = selectedRecipe;
             this.AddTabItem(editor);
         }
 
         private void OnRecipesNewMenuItemClick(object sender, RoutedEventArgs e)
         {
             RecipeEditor editor = new RecipeEditor();
-            editor.DataContext = null;
+            editor.DataContext = editor.Recipe;
             this.AddTabItem(editor);
         }
 

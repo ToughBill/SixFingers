@@ -27,7 +27,6 @@ namespace WorkstationController.Core.Data
             get{ return _typeName; }
             set { SetProperty(ref _typeName, value); }
         }
-
         /// <summary>
         /// Background color
         /// </summary>

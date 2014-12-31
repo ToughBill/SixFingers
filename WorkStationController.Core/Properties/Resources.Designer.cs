@@ -97,6 +97,15 @@ namespace WorkstationController.Core.Properties {
         }
         
         /// <summary>
+        ///   查找类似 &lt;Need a label&gt; 的本地化字符串。
+        /// </summary>
+        internal static string LabelNotDefined {
+            get {
+                return ResourceManager.GetString("LabelNotDefined", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   查找类似 layoutFolder\\ 的本地化字符串。
         /// </summary>
         internal static string LayoutFolder {

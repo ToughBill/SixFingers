@@ -249,40 +249,30 @@ namespace WorkstationController.Core.Data
             copy._siteID = this._siteID;
             copy._wellsInfo = (WellsInfo)this._wellsInfo.Clone();
             copy._zValues = (ZValues)this._zValues.Clone();
-
             return copy;
         }
 
         /// <summary>
-        /// update the information which is NOT common
+        /// update the information which is common, very similar to clone
         /// </summary>
-        /// <param name="templateLabware"></param>
-        public void CarryInfo(Labware templateLabware)
+        /// <param name="exampleLabware"></param>
+        public void CarryInfo(Labware exampleLabware)
         {
-            this.Label = templateLabware.Label;
-            this._parentCarrier = templateLabware.ParentCarrier;
-            this.SiteID = templateLabware.SiteID;
+            _typeName = exampleLabware.TypeName;
+            _dimension = exampleLabware._dimension;
+            _backgroundColor = exampleLabware.BackgroundColor;
+            _wellsInfo = (WellsInfo)exampleLabware.WellsInfo.Clone();
+            _zValues = (ZValues)exampleLabware.ZValues.Clone();
         }
 
-        /// <summary>
-        /// post action - nothing
-        /// </summary>
-        public void PostAction()
-        {
-
-        }
     }
 
     /// <summary>
     /// Four z-heights used in pipetting
     /// </summary>
-    public class ZValues : INotifyPropertyChanged, ICloneable
+    [Serializable]
+    public class ZValues : BindableBase, ICloneable
     {
-        /// <summary>
-        /// PropertyChanged event
-        /// </summary>
-        public event PropertyChangedEventHandler PropertyChanged = delegate { };
-
         private int _zTravel;
         private int _zStart;
         private int _zMax;
@@ -300,7 +290,7 @@ namespace WorkstationController.Core.Data
             }
             set
             {
-                PropertyChangedNotifyHelper.NotifyPropertyChanged<int>(ref this._zTravel, value, this, "ZTravel", this.PropertyChanged);
+                SetProperty(ref _zTravel, value);
             }
         }
 
@@ -316,7 +306,7 @@ namespace WorkstationController.Core.Data
             }
             set
             {
-                PropertyChangedNotifyHelper.NotifyPropertyChanged<int>(ref this._zStart, value, this, "ZStart", this.PropertyChanged);
+                SetProperty(ref _zStart, value);
             }
         }
 
@@ -332,7 +322,7 @@ namespace WorkstationController.Core.Data
             }
             set
             {
-                PropertyChangedNotifyHelper.NotifyPropertyChanged<int>(ref this._zDispense, value, this, "ZDispense", this.PropertyChanged);   
+                SetProperty(ref _zDispense, value);
             }
         }
 
@@ -348,7 +338,7 @@ namespace WorkstationController.Core.Data
             }
             set
             {
-                PropertyChangedNotifyHelper.NotifyPropertyChanged<int>(ref this._zMax, value, this, "ZMax", this.PropertyChanged);   
+                SetProperty(ref _zMax, value);
             }
         }
 
@@ -384,10 +374,8 @@ namespace WorkstationController.Core.Data
     /// The well information on the labware
     /// </summary>
     [Serializable]
-    public class WellsInfo : INotifyPropertyChanged, ICloneable
+    public class WellsInfo : BindableBase, ICloneable
     {
-        public event PropertyChangedEventHandler PropertyChanged = delegate { };
-
         private int         _wellRadius;
         private int         _numberOfWellsX;
         private int         _numberOfWellsY;
@@ -408,7 +396,7 @@ namespace WorkstationController.Core.Data
             }
             set
             {
-                PropertyChangedNotifyHelper.NotifyPropertyChanged<int>(ref this._wellRadius, value, this, "WellRadius", this.PropertyChanged);   
+                SetProperty(ref _wellRadius, value);
             }
         }
 
@@ -423,7 +411,7 @@ namespace WorkstationController.Core.Data
             }
             set
             {
-                PropertyChangedNotifyHelper.NotifyPropertyChanged<int>(ref this._numberOfWellsX, value, this, "NumberOfWellsX", this.PropertyChanged);   
+                SetProperty(ref _numberOfWellsX, value);
             }
         }
 
@@ -438,7 +426,7 @@ namespace WorkstationController.Core.Data
             }
             set
             {
-                PropertyChangedNotifyHelper.NotifyPropertyChanged<int>(ref this._numberOfWellsY, value, this, "NumberOfWellsY", this.PropertyChanged); 
+                SetProperty(ref _numberOfWellsY, value);
             }
         }
 
@@ -453,7 +441,7 @@ namespace WorkstationController.Core.Data
             }
             set
             {
-                PropertyChangedNotifyHelper.NotifyPropertyChanged<double>(ref this._firstWellPositionX, value, this, "FirstWellPositionX", this.PropertyChanged);
+                SetProperty(ref _firstWellPositionX, value);
             }
         }
 
@@ -468,7 +456,7 @@ namespace WorkstationController.Core.Data
             }
             set
             {
-                PropertyChangedNotifyHelper.NotifyPropertyChanged<double>(ref this._firstWellPositionY, value, this, "FirstWellPositionY", this.PropertyChanged);
+                SetProperty(ref _firstWellPositionY, value);
             }
         }
 
@@ -483,7 +471,7 @@ namespace WorkstationController.Core.Data
             }
             set
             {
-                PropertyChangedNotifyHelper.NotifyPropertyChanged<double>(ref this._lastWellPositionX, value, this, "LastWellPositionX", this.PropertyChanged);
+                SetProperty(ref _lastWellPositionX, value);
             }
         }
 
@@ -498,7 +486,7 @@ namespace WorkstationController.Core.Data
             }
             set
             {
-                PropertyChangedNotifyHelper.NotifyPropertyChanged<double>(ref this._lastWellPositionY, value, this, "LastWellPositionY", this.PropertyChanged);
+                SetProperty(ref _lastWellPositionY, value);
             }
         }
 
@@ -513,7 +501,7 @@ namespace WorkstationController.Core.Data
             }
             set
             {
-                PropertyChangedNotifyHelper.NotifyPropertyChanged<BottomShape>(ref this._bottomShape, value, this, "BottomShape", this.PropertyChanged); 
+                SetProperty(ref _bottomShape, value);
             }
         }
 

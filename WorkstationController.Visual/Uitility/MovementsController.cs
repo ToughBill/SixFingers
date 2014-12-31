@@ -155,39 +155,25 @@ namespace WorkstationController.VisualElement.Uitility
             if(ware.GetType() == typeof(Carrier))
             {
                 Carrier carrier = (Carrier)ware;
-                thisTypeUIElements.ForEach(x => ReplaceCarrier((Carrier)carrier.Clone(), (CarrierUIElement)x));
+                thisTypeUIElements.ForEach(x => UpdateCarrier(carrier, (CarrierUIElement)x));
             }
             else
             {
                 Labware labware = (Labware)ware;
-                thisTypeUIElements.ForEach(x => ReplaceLabware((Labware)labware.Clone(), (LabwareUIElement)x));
+                thisTypeUIElements.ForEach(x => ReplaceLabware(labware, (LabwareUIElement)x));
             }
         }
 
-        private void ReplaceLabware(Labware newLabware, LabwareUIElement labwareUIElement)
+        private void ReplaceLabware(Labware exampleLabware, LabwareUIElement labwareUIElement)
         {
-            Labware oldLabware = (Labware)labwareUIElement.Ware;
-            newLabware.CarryInfo(oldLabware);
-            labwareUIElement.Labware = newLabware;
+            Labware currentLabware = labwareUIElement.Labware;
+            currentLabware.CarryInfo(exampleLabware);
         }
 
-        private void ReplaceCarrier(Carrier newCarrier, CarrierUIElement carrierUIElement)
+        private void UpdateCarrier(Carrier exampleCarrier, CarrierUIElement carrierUIElement)
         {
-            //remember the grid
-            Carrier oldCarrier = (Carrier)carrierUIElement.Ware;
-            newCarrier.GridID = oldCarrier.GridID;
-            //foreach(Labware labware in oldCarrier.Labwares)
-            //{
-            //    labware.ParentCarrier = newCarrier;
-            //    newCarrier.Labwares.Add(labware);
-            //}
-            for (int i = 0; i < oldCarrier.Labwares.Count; i++ )
-            {
-                Labware labware = oldCarrier.Labwares[i];
-                labware.ParentCarrier = newCarrier;
-                newCarrier.Labwares.Add(labware);
-            }
-            carrierUIElement.Carrier = newCarrier;
+            Carrier currentCarrier = carrierUIElement.Carrier;
+            currentCarrier.CarryInfo(exampleCarrier);
         }
 
         private List<BasewareUIElement> FindUIElement(string sTypeName)

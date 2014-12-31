@@ -54,7 +54,7 @@ namespace WorkstationController.Control
 
         private void OnSaveButtonClick(object sender, RoutedEventArgs e)
         {
-            // The DataContext must be LiquidClass
+            // The DataContext must be labware
             Labware labware = this.DataContext as Labware;
             if (labware == null)
                 throw new InvalidOperationException("DataContext of LabwareEditor must be an instance of Labware");
