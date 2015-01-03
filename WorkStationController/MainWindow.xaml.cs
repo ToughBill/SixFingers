@@ -7,6 +7,7 @@ using System.Windows.Controls;
 using System.Windows.Data;
 using System.Windows.Media;
 using WorkstationController.Control;
+using WorkstationController.Core;
 using WorkstationController.Core.Data;
 using WorkstationController.Core.Utility;
 using WorkstationController.VisualElement.Uitility;
