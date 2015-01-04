@@ -21,7 +21,7 @@ namespace WorkstationController.Core.Data
         /// <summary>
         /// Gets or sets the name of liquid class
         /// </summary>
-        [XmlAttribute]
+        [XmlElement]
         public override string TypeName 
         {
             get { return this._typename; }
@@ -98,7 +98,7 @@ namespace WorkstationController.Core.Data
     /// Aspiration pipetting parameters
     /// </summary>
     [Serializable]
-    public class AspirationPipetting : BindableBase,ISerialization, ICloneable
+    public class AspirationPipetting : BindableBase, ISerialization, ICloneable
     {
         #region private members for properties
         private int _aspirationSpeed = 0;

@@ -11,7 +11,8 @@ namespace WorkstationController.Core
     {
         public virtual void Serialize(string toXmlFile)
         {
-            throw new NotImplementedException();
+            // Do nothing
+            return;
         }
         public virtual string TypeName { get; set; }
         
@@ -23,12 +24,14 @@ namespace WorkstationController.Core
 
         public virtual void DoExtraWork()
         {
-            throw new NotImplementedException();
+            // Do nothing
+            return;
         }
 
         public virtual object Clone()
         {
-            throw new NotImplementedException();
+            // Do nothing
+            return null;
         }
     }
 }

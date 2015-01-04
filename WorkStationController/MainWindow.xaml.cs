@@ -53,15 +53,17 @@ namespace WorkstationController
         public MainWindow()
         {
             InitializeComponent();
+
             try
             {
                 this._pipettorElementManager.Initialize();
             }
             catch(Exception ex)
             {
-                MessageBox.Show(ex.Message, "启动失败！");
+                MessageBox.Show(ex.Message, Properties.Resources.StartupFailed);
                 return;
             }
+
             this._supportedCommands = Command.CreatSupportedCommands();
 
             // Set the data context of the dialog

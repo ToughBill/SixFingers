@@ -7,10 +7,12 @@
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
             <RowDefinition Height="8*"/>
             <RowDefinition Height="2"/>
             <RowDefinition Height="2*"/>
         </Grid.RowDefinitions>
+        <!--Menu-->
         <Menu Grid.Row="0">
             <MenuItem Header="File">
                 <MenuItem Header="Save">
@@ -24,8 +26,16 @@
             <MenuItem Header="Execute"></MenuItem>
             <MenuItem Header="Help"></MenuItem>
         </Menu>
+        <!--Toolbar-->
+        <ToolBar Grid.Row="1">
+            <Button Content="Save"/>
+            <Separator/>
+            <Button Content="Start"/>
+            <Button Content="Resume"/>
+            <Button Content="Stop"/>
+        </ToolBar>
         <!--Main control tabs-->
-        <Border BorderThickness="1" Grid.Row="1"  BorderBrush="Black">
+        <Border BorderThickness="1" Grid.Row="2"  BorderBrush="Black">
             <Grid>
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="230" MinWidth="230"/>
@@ -41,7 +51,7 @@
                                 <RotateTransform Angle="90"></RotateTransform>
                             </TabItem.LayoutTransform>
                             <DockPanel>
-                                <ListBox x:Name="lb_labwares" DockPanel.Dock="Top" ItemsSource="{Binding Path=InstrumentsManager.Labwares}" MouseDoubleClick="OnLabwaresMouseDoubleClick" PreviewMouseLeftButtonDown="lb_labwares_PreviewMouseLeftButtonDown">
+                                <ListBox x:Name="lb_labwares" DockPanel.Dock="Top" ItemsSource="{Binding Path=PipettorElementsManager.Labwares}" MouseDoubleClick="OnLabwaresMouseDoubleClick" PreviewMouseLeftButtonDown="lb_labwares_PreviewMouseLeftButtonDown">
                                     <ListBox.ItemTemplate>
                                         <DataTemplate>
                                             <TextBlock Text="{Binding Path=TypeName}" ToolTip="{Binding Path=TypeName}"/>
@@ -80,7 +90,7 @@
                                 <RotateTransform Angle="90"></RotateTransform>
                             </TabItem.LayoutTransform>
                             <DockPanel>
-                                <ListBox x:Name="lb_carriers" DockPanel.Dock="Top" ItemsSource="{Binding Path=InstrumentsManager.Carriers}" PreviewMouseLeftButtonDown="lb_carriers_PreviewMouseLeftButtonDown" MouseDoubleClick="OnCarriersMouseDoubleClick">
+                                <ListBox x:Name="lb_carriers" DockPanel.Dock="Top" ItemsSource="{Binding Path=PipettorElementsManager.Carriers}" PreviewMouseLeftButtonDown="lb_carriers_PreviewMouseLeftButtonDown" MouseDoubleClick="OnCarriersMouseDoubleClick">
                                     <ListBox.ItemTemplate>
                                         <DataTemplate>
                                             <TextBlock Text="{Binding Path=TypeName}" ToolTip="{Binding Path=TypeName}"/>
@@ -125,7 +135,7 @@
                                 <RotateTransform Angle="90"></RotateTransform>
                             </TabItem.LayoutTransform>
                             <DockPanel>
-                                <ListBox x:Name="lb_recipes" ItemsSource="{Binding Path=InstrumentsManager.Recipes}" DockPanel.Dock="Top" MouseDoubleClick="OnRecipesMouseDoubleClick">
+                                <ListBox x:Name="lb_recipes" ItemsSource="{Binding Path=PipettorElementsManager.Recipes}" DockPanel.Dock="Top" MouseDoubleClick="OnRecipesMouseDoubleClick">
                                     <ListBox.ItemTemplate>
                                         <DataTemplate>
                                             <TextBlock Text="{Binding Path=Name}" ToolTip="{Binding Path=Name}"/>
@@ -164,7 +174,7 @@
                                 <RotateTransform Angle="90"></RotateTransform>
                             </TabItem.LayoutTransform>
                             <DockPanel>
-                                <ListBox x:Name="lb_liquidclass" DockPanel.Dock="Top" ItemsSource="{Binding Path=InstrumentsManager.Recipes}" MouseDoubleClick="OnLiquidclassMouseDoubleClick">
+                                <ListBox x:Name="lb_liquidclass" DockPanel.Dock="Top" ItemsSource="{Binding Path=PipettorElementsManager.LiquidClasses}" MouseDoubleClick="OnLiquidclassMouseDoubleClick">
                                     <ListBox.ItemTemplate>
                                         <DataTemplate>
                                             <TextBlock Text="{Binding Path=TypeName}" ToolTip="{Binding Path=TypeName}"/>
@@ -230,12 +240,10 @@
                 </ScrollViewer>
             </Grid>
         </Border>
-
         <!--Splitter-->
-        <GridSplitter Grid.Row="2" ResizeDirection="Rows" Height="2" MinHeight="2" HorizontalAlignment="Stretch"/>
-
+        <GridSplitter Grid.Row="3" ResizeDirection="Rows" Height="2" MinHeight="2" HorizontalAlignment="Stretch"/>
         <!--Output-->
-        <Border Grid.Row="3" BorderThickness="1" BorderBrush="Black">
+        <Border Grid.Row="4" BorderThickness="1" BorderBrush="Black">
             <DockPanel>
                 <DockPanel DockPanel.Dock="Top" Background="LightGray">
                     <Label Content="Output"/>
