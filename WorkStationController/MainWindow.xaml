@@ -1,9 +1,10 @@
 ﻿<Window x:Class="WorkstationController.MainWindow"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:local="clr-namespace:WorkstationController"
         xmlns:control="clr-namespace:WorkstationController.Control;assembly=WorkstationController.Control"
         Title="Workstation Controller 0.1" Height="600" Width="1000"
-        WindowStartupLocation="CenterScreen" WindowState="Maximized" Closing="Window_Closing" Icon="Resources/logo.ico">
+        WindowStartupLocation="CenterScreen" WindowState="Maximized" Icon="Resources/logo.ico">
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"/>
@@ -15,7 +16,7 @@
         <!--Menu-->
         <Menu Grid.Row="0">
             <MenuItem Header="File">
-                <MenuItem Header="Save">
+                <MenuItem Header="Save" Command="local:MainWindow.SavePipettorElements">
                     <MenuItem.Icon>
                         <Image Source="/Resources/save.png" Height="20" Width="20"/>
                     </MenuItem.Icon>
@@ -28,7 +29,9 @@
         </Menu>
         <!--Toolbar-->
         <ToolBar Grid.Row="1">
-            <Button Content="Save"/>
+            <Button Command="local:MainWindow.SavePipettorElements" Margin="2">
+                <Image Source="/Resources/save.png" Height="20" Width="20"/>
+            </Button>
             <Separator/>
             <Button Content="Start"/>
             <Button Content="Resume"/>

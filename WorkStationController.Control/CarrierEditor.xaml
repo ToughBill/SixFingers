@@ -56,14 +56,11 @@
         <TextBox Grid.Row="4" Grid.Column="1" Margin="3,2,2,2" Text="{Binding Path=XOffset}"/>
         <TextBox Grid.Row="4" Grid.Column="2" Margin="3,2,2,2" Text="{Binding Path=YOffset}"/>
         
-        <Grid Grid.Row="4" Grid.Column="4">
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="1*"/>
-                <ColumnDefinition Width="0.2*"/>
-                <ColumnDefinition Width="1*"/>
-            </Grid.ColumnDefinitions>    
-            <Button Content="Add" Grid.Column="0" Name="btnAddSite" Click="btnAddSite_Click"/>
-            <Button Content="Remove" Grid.Column="2" HorizontalAlignment="Right" Name="btnRemoveSite" Click="btnRemoveSite_Click"/>
+        <Grid Grid.Row="4" Grid.Column="3" Grid.ColumnSpan="2">
+            <StackPanel HorizontalAlignment="Right" Orientation="Horizontal">
+                <Button Content="Add Site" Name="btnAddSite" Width="90" Click="btnAddSite_Click"/>
+                <Button Content="Remove Site" Name="btnRemoveSite" Width="90" Click="btnRemoveSite_Click" Margin="10,0,5,0"/>
+            </StackPanel>
         </Grid>
         <!--Labware Layout Grid-->
         <DataGrid Grid.Row="5" Grid.Column="0" Grid.ColumnSpan="5" Margin="3" AutoGenerateColumns="False" 

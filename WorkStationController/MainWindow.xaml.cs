@@ -5,6 +5,7 @@ using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
+using System.Windows.Input;
 using System.Windows.Media;
 using WorkstationController.Control;
 using WorkstationController.Core;
@@ -26,6 +27,35 @@ namespace WorkstationController
         // Dynamic tab items
         private List<TabItem> _tabItems = new List<TabItem>();
         private TabItem _tabAdd = new TabItem();
+        #endregion
+
+        #region Commands
+        private static RoutedUICommand _save_pipettorElements = null;
+
+        /// <summary>
+        /// Save command
+        /// </summary>
+        public static RoutedUICommand SavePipettorElements
+        {
+            get { return _save_pipettorElements; }
+        }
+
+        private void SavePipettorElements_Executed(object sender, ExecutedRoutedEventArgs e)
+        {
+
+        }
+
+        private void SavePipettorElements_CanExecute(object sender, CanExecuteRoutedEventArgs e)
+        {
+            e.CanExecute = this._tabItems.Count > 0;
+        }
+
+        static MainWindow()
+        {
+            InputGestureCollection ic_save_pipettorElements = new InputGestureCollection();
+            ic_save_pipettorElements.Add(new KeyGesture(Key.S, ModifierKeys.Control, "Ctrl+S"));
+            _save_pipettorElements = new RoutedUICommand("Save", "SavePipettorElements", typeof(MainWindow), ic_save_pipettorElements);
+        }
         #endregion
 
         /// <summary>
@@ -54,6 +84,7 @@ namespace WorkstationController
         {
             InitializeComponent();
 
+            // Initialize pipettor element manager
             try
             {
                 this._pipettorElementManager.Initialize();
@@ -64,11 +95,29 @@ namespace WorkstationController
                 return;
             }
 
+            // Initialize supported command
             this._supportedCommands = Command.CreatSupportedCommands();
 
             // Set the data context of the dialog
             this.DataContext = this;
+
+            // Event subscribe
+            this.Loaded += OnMainWindowLoaded;
+            this.Closing += OnMainWindowClosing;
         }
+
+        #region Event handler
+        private void OnMainWindowLoaded(object sender, RoutedEventArgs e)
+        {
+            // Commands binding
+            this.CommandBindings.Add(new CommandBinding(SavePipettorElements, this.SavePipettorElements_Executed, this.SavePipettorElements_CanExecute));
+        }
+
+        private void OnMainWindowClosing(object sender, System.ComponentModel.CancelEventArgs e)
+        {
+            this.Dispose();
+        }
+        #endregion
 
         #region Dynamic TabItem
         private TabItem AddTabItem(UserControl control)
@@ -81,24 +130,11 @@ namespace WorkstationController
             
             // Set the Tag of the tab as the UID of the instrument
             tab.Tag = ((PipettorElement)control.DataContext).SaveName;
-            //if(control.DataContext is WareBase)
-            //{
-            //    WareBase ware = control.DataContext as WareBase;
-            //    tab.Tag = ware.TypeName;
-            //}
-            //else if (control.DataContext is LiquidClass)
-            //{
-            //    LiquidClass liquidClass = control.DataContext as LiquidClass;
-            //    tab.Tag = liquidClass.TypeName;
-            //}
-            //else if(control.DataContext == null)     // Tempeorary fix of new a recipe tab item.
-            //{
-            //    tab.Tag = Guid.NewGuid();
-            //}
  
             tab.HeaderTemplate = tabDynamic.FindResource("TabHeader") as DataTemplate;
 
             Grid grid = new Grid();
+            grid.HorizontalAlignment = System.Windows.HorizontalAlignment.Left;
             grid.Children.Add(control);
             tab.Content = grid;
 
@@ -392,7 +428,7 @@ namespace WorkstationController
             return recipeEditor;
         }
 
-        #region dispose
+        #region Dispose
         /// <summary>
         /// dispose
         /// </summary>
@@ -402,13 +438,6 @@ namespace WorkstationController
             if (recipeEditor != null)
                 recipeEditor.Dispose();
         }
-        #endregion
-
-        private void Window_Closing(object sender, System.ComponentModel.CancelEventArgs e)
-        {
-            Dispose();
-        }
-
-   
+        #endregion      
     }
 }
