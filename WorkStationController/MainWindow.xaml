@@ -5,6 +5,9 @@
         xmlns:control="clr-namespace:WorkstationController.Control;assembly=WorkstationController.Control"
         Title="Workstation Controller 0.1" Height="600" Width="1000"
         WindowStartupLocation="CenterScreen" WindowState="Maximized" Icon="Resources/logo.ico">
+    <Window.Resources>
+        <Image x:Key="SaveIcon" x:Shared="False"  Source="/Resources/save.png" Height="20" Width="20"/>
+    </Window.Resources>
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"/>
@@ -16,11 +19,7 @@
         <!--Menu-->
         <Menu Grid.Row="0">
             <MenuItem Header="File">
-                <MenuItem Header="Save" Command="local:MainWindow.SavePipettorElements">
-                    <MenuItem.Icon>
-                        <Image Source="/Resources/save.png" Height="20" Width="20"/>
-                    </MenuItem.Icon>
-                </MenuItem>
+                <MenuItem Header="Save" Command="local:MainWindow.SavePipettorElements" Icon="{StaticResource SaveIcon}"/>
             </MenuItem>
             <MenuItem Header="Edit"></MenuItem>
             <MenuItem Header="View"></MenuItem>
@@ -29,9 +28,7 @@
         </Menu>
         <!--Toolbar-->
         <ToolBar Grid.Row="1">
-            <Button Command="local:MainWindow.SavePipettorElements" Margin="2">
-                <Image Source="/Resources/save.png" Height="20" Width="20"/>
-            </Button>
+            <Button Command="local:MainWindow.SavePipettorElements" Content="{StaticResource SaveIcon}" Margin="2"/>
             <Separator/>
             <Button Content="Start"/>
             <Button Content="Resume"/>
