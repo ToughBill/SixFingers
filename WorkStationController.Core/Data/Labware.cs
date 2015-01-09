@@ -47,13 +47,13 @@ namespace WorkstationController.Core.Data
     [Serializable]
     public class Labware : WareBase
     {
+        static private int DuplicateNumber = 1;
+
         private int         _siteID = 0;
         private Carrier     _parentCarrier = null;
         private WellsInfo   _wellsInfo = new WellsInfo();
         private ZValues     _zValues = new ZValues();
         protected string    _label = string.Empty;
-
- 
 
         /// <summary>
         /// The site on which the labware installed on the carrier, 1 based
@@ -242,7 +242,7 @@ namespace WorkstationController.Core.Data
         {
             Labware copy = new Labware();
             copy._label = "<Need a label>";
-            copy._typeName = this.TypeName;
+            copy._typeName = this.TypeName + "(" + DuplicateNumber++.ToString() + ")";
             copy._dimension = (Dimension)this.Dimension.Clone();
             copy._backgroundColor = this._backgroundColor;
             copy._parentCarrier = null;
