@@ -31,10 +31,17 @@ namespace WorkstationController
 
         #region Commands
         private static RoutedUICommand _save_pipettorElements = null;
+
+        // Script execute commands
         private static RoutedUICommand _start_script = null;
         private static RoutedUICommand _resume_script = null;
         private static RoutedUICommand _stop_script = null;
 
+        // Labware related commands
+        private static RoutedUICommand _edit_labware = null;
+        private static RoutedUICommand _new_labware = null;
+        private static RoutedUICommand _duplicate_labware = null;
+        private static RoutedUICommand _delete_labware = null;
 
         /// <summary>
         /// Save command
@@ -66,6 +73,38 @@ namespace WorkstationController
         public static RoutedUICommand StopScript
         {
             get { return _stop_script; }
+        }
+
+        /// <summary>
+        /// Edit Labware command
+        /// </summary>
+        public static RoutedUICommand EditLabware
+        {
+            get { return _edit_labware; }
+        }
+
+        /// <summary>
+        /// New Labware command
+        /// </summary>
+        public static RoutedUICommand NewLabware
+        {
+            get { return _new_labware; }
+        }
+
+        /// <summary>
+        /// Duplicate Labware command
+        /// </summary>
+        public static RoutedUICommand DuplicateLabware
+        {
+            get { return _duplicate_labware; }
+        }
+
+        /// <summary>
+        /// Delete Labware command
+        /// </summary>
+        public static RoutedUICommand DeleteLabware
+        {
+            get { return _delete_labware; }
         }
 
         private void SavePipettorElements_Executed(object sender, ExecutedRoutedEventArgs e)
@@ -117,6 +156,66 @@ namespace WorkstationController
                 return false;
         }
 
+        private void EditLabware_Executed(object sender, ExecutedRoutedEventArgs e)
+        {
+            Labware selectedLW = (Labware)this.lb_labwares.SelectedItem;
+            if (selectedLW == null || this.ActivateEditingTab(selectedLW.TypeName))
+                return;
+
+            LabwareEditor editor = new LabwareEditor();
+            editor.DataContext = selectedLW;
+            this.AddTabItem(editor);
+        }
+
+        private void EditLabware_CanExecute(object sender, CanExecuteRoutedEventArgs e)
+        {
+            e.CanExecute = this.HasLabwareSelected();
+        }
+
+        private void NewLabware_Executed(object sender, ExecutedRoutedEventArgs e)
+        {
+            Labware labware = new Labware();
+            LabwareEditor editor = new LabwareEditor();
+            editor.DataContext = labware;
+            this.AddTabItem(editor);
+        }
+
+        private void NewLabware_CanExecute(object sender, CanExecuteRoutedEventArgs e)
+        {
+            // New command is always enabled
+            e.CanExecute = true;
+        }
+
+        private void DuplicateLabware_Executed(object sender, ExecutedRoutedEventArgs e)
+        {
+            Labware labware = ((Labware)this.lb_labwares.SelectedItem).Clone() as Labware;
+            LabwareEditor editor = new LabwareEditor();
+            editor.DataContext = labware;
+            this.AddTabItem(editor);
+        }
+
+        private void DuplicateLabware_CanExecute(object sender, CanExecuteRoutedEventArgs e)
+        {
+            e.CanExecute = this.HasLabwareSelected();
+        }
+
+        private void DeleteLabware_Executed(object sender, ExecutedRoutedEventArgs e)
+        {
+            Labware selectedLW = (Labware)this.lb_labwares.SelectedItem;
+            PipettorElementManager.Instance.DeletePipettorElement<Labware>(selectedLW.TypeName);
+            DeleteTabItem(selectedLW.TypeName);
+        }
+
+        private void DeleteLabware_CanExecute(object sender, CanExecuteRoutedEventArgs e)
+        {
+            e.CanExecute = this.HasLabwareSelected();
+        }
+
+        private bool HasLabwareSelected()
+        {
+            return this.lb_labwares.SelectedItem != null && this.lb_labwares.SelectedIndex != -1;
+        }
+
         static MainWindow()
         {
             // Save command
@@ -124,10 +223,16 @@ namespace WorkstationController
             ic_save_pipettorElements.Add(new KeyGesture(Key.S, ModifierKeys.Control, "Ctrl+S"));
             _save_pipettorElements = new RoutedUICommand("Save", "SavePipettorElements", typeof(MainWindow), ic_save_pipettorElements);
 
-            // Start/Resume/Stop Script command
+            // Start/Resume/Stop Script commands
             _start_script = new RoutedUICommand("Start", "StartScript", typeof(MainWindow), null);
             _resume_script = new RoutedUICommand("Resume", "ResumeScript", typeof(MainWindow), null);
             _stop_script = new RoutedUICommand("Stop", "StopScript", typeof(MainWindow), null);
+
+            // Labware commands
+            _edit_labware = new RoutedUICommand("Edit Labware", "EditLabware", typeof(MainWindow), null);
+            _new_labware = new RoutedUICommand("New Labware", "NewLabware", typeof(MainWindow), null);
+            _duplicate_labware = new RoutedUICommand("Duplicate Labware", "DuplicateLabware", typeof(MainWindow), null);
+            _delete_labware = new RoutedUICommand("Delete Labware", "DeleteLabware", typeof(MainWindow), null);
         }
         #endregion
 
@@ -187,6 +292,10 @@ namespace WorkstationController
             this.CommandBindings.Add(new CommandBinding(StartScript, this.StartScript_Executed, this.StartScript_CanExecute));
             this.CommandBindings.Add(new CommandBinding(ResumeScript, this.ResumeScript_Executed, this.ResumeScript_CanExecute));
             this.CommandBindings.Add(new CommandBinding(StopScript, this.StopScript_Executed, this.StopScript_CanExecute));
+            this.CommandBindings.Add(new CommandBinding(EditLabware, this.EditLabware_Executed, this.EditLabware_CanExecute));
+            this.CommandBindings.Add(new CommandBinding(NewLabware, this.NewLabware_Executed, this.NewLabware_CanExecute));
+            this.CommandBindings.Add(new CommandBinding(DuplicateLabware, this.DuplicateLabware_Executed, this.DuplicateLabware_CanExecute));
+            this.CommandBindings.Add(new CommandBinding(DeleteLabware, this.DeleteLabware_Executed, this.DeleteLabware_CanExecute));
         }
 
         private void OnMainWindowClosing(object sender, System.ComponentModel.CancelEventArgs e)
@@ -337,47 +446,6 @@ namespace WorkstationController
         }
         #endregion
 
-        #region Labware context menu
-        private void OnLabwaresMouseDoubleClick(object sender, System.Windows.Input.MouseButtonEventArgs e)
-        {
-            this.OnLabwareEditMenuItemClick(sender, e);
-        }
-
-        private void OnLabwareEditMenuItemClick(object sender, RoutedEventArgs e)
-        {
-            Labware selectedLW = (Labware)this.lb_labwares.SelectedItem;
-            if (this.ActivateEditingTab(selectedLW.TypeName))
-                return;
-
-            LabwareEditor editor = new LabwareEditor();
-            editor.DataContext = selectedLW;
-            this.AddTabItem(editor);
-        }
-
-        private void OnLabwareNewMenuItemClick(object sender, RoutedEventArgs e)
-        {
-            Labware labware = new Labware();
-            LabwareEditor editor = new LabwareEditor();
-            editor.DataContext = labware;
-            this.AddTabItem(editor);
-        }
-
-        private void OnLabwareDuplicateMenuItemClick(object sender, RoutedEventArgs e)
-        {
-            Labware labware = ((Labware)this.lb_labwares.SelectedItem).Clone() as Labware;
-            LabwareEditor editor = new LabwareEditor();
-            editor.DataContext = labware;
-            this.AddTabItem(editor);
-        }
-
-        private void OnLabwareDeleteMenuItemClick(object sender, RoutedEventArgs e)
-        {
-            Labware selectedLW = (Labware)this.lb_labwares.SelectedItem;
-            PipettorElementManager.Instance.DeletePipettorElement<Labware>(selectedLW.TypeName);
-            DeleteTabItem(selectedLW.TypeName);
-        }
-        #endregion
-
         #region Carrier context menu
         private void OnCarriersMouseDoubleClick(object sender, System.Windows.Input.MouseButtonEventArgs e)
         {
@@ -525,10 +593,19 @@ namespace WorkstationController
 
         private void lb_labwares_PreviewMouseLeftButtonDown(object sender, System.Windows.Input.MouseButtonEventArgs e)
         {
+            Point pt = e.GetPosition(lb_labwares);
+
+            HitTestResult result = VisualTreeHelper.HitTest(this.lb_labwares, pt);
+            ListBoxItem lbi = VisualCommon.FindParent<ListBoxItem>(result.VisualHit);
+            if (lbi == null)
+            {
+                this.lb_labwares.UnselectAll();
+            }
+
             bool isDoubleClick = e.ClickCount > 1;
             if (isDoubleClick)
                 return;
-            Point pt = e.GetPosition(lb_labwares);
+
             OnLeftButtonDown(lb_labwares, pt);
         }
         #endregion

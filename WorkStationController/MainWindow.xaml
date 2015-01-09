@@ -59,31 +59,35 @@
                                 <RotateTransform Angle="90"></RotateTransform>
                             </TabItem.LayoutTransform>
                             <DockPanel>
-                                <ListBox x:Name="lb_labwares" DockPanel.Dock="Top" ItemsSource="{Binding Path=PipettorElementsManager.Labwares}" MouseDoubleClick="OnLabwaresMouseDoubleClick" PreviewMouseLeftButtonDown="lb_labwares_PreviewMouseLeftButtonDown">
+                                <ListBox x:Name="lb_labwares" DockPanel.Dock="Top" ItemsSource="{Binding Path=PipettorElementsManager.Labwares}" PreviewMouseLeftButtonDown="lb_labwares_PreviewMouseLeftButtonDown">
                                     <ListBox.ItemTemplate>
                                         <DataTemplate>
-                                            <TextBlock Text="{Binding Path=TypeName}" ToolTip="{Binding Path=TypeName}"/>
+                                            <TextBlock Text="{Binding Path=TypeName}" ToolTip="{Binding Path=TypeName}">
+                                                <TextBlock.InputBindings>
+                                                    <MouseBinding MouseAction="LeftDoubleClick" Command="local:MainWindow.EditLabware"/>
+                                                </TextBlock.InputBindings>
+                                            </TextBlock>
                                         </DataTemplate>
                                     </ListBox.ItemTemplate>
                                     <ListBox.ContextMenu>
                                         <ContextMenu>
-                                            <MenuItem Header="Edit..." Click="OnLabwareEditMenuItemClick">
+                                            <MenuItem Header="Edit..." Command="local:MainWindow.EditLabware">
                                                 <MenuItem.Icon>
                                                     <Image Source="/Resources/edit.png" Height="20" Width="20"/>
                                                 </MenuItem.Icon>
                                             </MenuItem>
-                                            <MenuItem Header="New..." Click="OnLabwareNewMenuItemClick">
+                                            <MenuItem Header="New..." Command="local:MainWindow.NewLabware">
                                                 <MenuItem.Icon>
                                                     <Image Source="/Resources/add.png" Height="20" Width="20"/>
                                                 </MenuItem.Icon>
                                             </MenuItem>
-                                            <MenuItem Header="Duplicate..." Click="OnLabwareDuplicateMenuItemClick">
+                                            <MenuItem Header="Duplicate..." Command="local:MainWindow.DuplicateLabware">
                                                 <MenuItem.Icon>
                                                     <Image Source="/Resources/duplicate.png" Height="20" Width="20"/>
                                                 </MenuItem.Icon>
                                             </MenuItem>
                                             <Separator/>
-                                            <MenuItem Header="Delete" Click="OnLabwareDeleteMenuItemClick">
+                                            <MenuItem Header="Delete" Command="local:MainWindow.DeleteLabware">
                                                 <MenuItem.Icon>
                                                     <Image Source="/Resources/delete.png" Height="20" Width="20"/>
                                                 </MenuItem.Icon>
