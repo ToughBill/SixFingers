@@ -133,6 +133,13 @@ namespace WorkstationController
  
             tab.HeaderTemplate = tabDynamic.FindResource("TabHeader") as DataTemplate;
 
+            // If a recipeEditor is added, subscribe its EditWare event
+            if(control is RecipeEditor)
+            {
+                RecipeEditor recipeEditor = control as RecipeEditor;
+                recipeEditor.EditWare += OnRecipeEditorEditWare;
+            }
+
             Grid grid = new Grid();
             grid.HorizontalAlignment = System.Windows.HorizontalAlignment.Left;
             grid.Children.Add(control);
@@ -146,6 +153,34 @@ namespace WorkstationController
             tabDynamic.SelectedItem = tab;
 
             return tab;
+        }
+
+        private void OnRecipeEditorEditWare(object sender, WareBase e)
+        {
+            if(e is Labware)
+            {
+                Labware labware = e as Labware;
+                if (this.ActivateEditingTab(labware.TypeName))
+                    return;
+
+                LabwareEditor editor = new LabwareEditor();
+                editor.DataContext = labware;
+                this.AddTabItem(editor);
+            }
+            else if(e is Carrier)
+            {
+                Carrier carrier = e as Carrier;
+                if (this.ActivateEditingTab(carrier.TypeName))
+                    return;
+
+                CarrierEditor editor = new CarrierEditor();
+                editor.DataContext = carrier;
+                this.AddTabItem(editor);
+            }
+            else
+            {
+                // Bad argument
+            }
         }
 
         private void DeleteTabItem(string tag)
@@ -163,12 +198,20 @@ namespace WorkstationController
                 tabDynamic.DataContext = null;
 
                 //call dispose for the editor
-                object editor = ((Grid)tab.Content).Children[0];
+                UserControl editor = (UserControl)(((Grid)tab.Content).Children[0]);
                 if (typeof(IDisposable).IsAssignableFrom(editor.GetType()))
                 {
                     ((IDisposable)editor).Dispose();
                 }
 
+                // If the editor is a RecipeEditor, unsubscribe its EditWare event
+                if(editor is RecipeEditor)
+                {
+                    RecipeEditor recipeEditor = editor as RecipeEditor;
+                    recipeEditor.EditWare -= this.OnRecipeEditorEditWare;
+                }
+
+                // Remove the tab
                 _tabItems.Remove(tab);
 
                 // bind tab control
@@ -199,7 +242,6 @@ namespace WorkstationController
 
             return isEditing;
         }
-
 
         private void OnCommandTabItemSelectionChanged(object sender, SelectionChangedEventArgs e)
         {

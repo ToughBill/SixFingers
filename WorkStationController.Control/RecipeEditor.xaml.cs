@@ -20,9 +20,10 @@ namespace WorkstationController.Control
     /// </summary>
     public partial class RecipeEditor : UserControl, IDisposable
     {
-        UIMovementsController           _uiController = null;
-        WareContextMenuController       _contextMenuController = null;
-        Recipe _recipe = null;
+        UIMovementsController     _uiController = null;
+        WareContextMenuController _contextMenuController = null;
+        Recipe                    _recipe = null;
+
         #region events
         public WareContextMenuController ContextMenuController 
         { 
@@ -31,6 +32,11 @@ namespace WorkstationController.Control
                 return _contextMenuController;
             }
         }
+
+        /// <summary>
+        /// Event of edit labware and carrier
+        /// </summary>
+        public event EventHandler<WareBase> EditWare = delegate { };
         #endregion
         /// <summary>
         /// Default constructor
@@ -41,8 +47,11 @@ namespace WorkstationController.Control
             _recipe = recipe;
             _worktable.SizeChanged += uiContainer_SizeChanged;
             _uiController = new UIMovementsController(_worktable, recipe);
+
             _contextMenuController = new WareContextMenuController(_uiController);
             _contextMenuController.onEditLabware += _contextMenuController_onEditLabware;
+            _contextMenuController.onEditCarrier += _contextMenuController_onEditCarrier;
+
             if (recipe == null)
                 _recipe = new Recipe();
 
@@ -52,6 +61,19 @@ namespace WorkstationController.Control
         private void _contextMenuController_onEditLabware(object sender, EventArgs e)
         {
             LabwareEditArgs labwareEditArgs = (LabwareEditArgs)e;
+            if(labwareEditArgs != null)
+            {
+                EditWare(this, labwareEditArgs.Labware);
+            }
+        }
+
+        private void _contextMenuController_onEditCarrier(object sender, EventArgs e)
+        {
+            CarrierEditArgs carrierEditArgs = (CarrierEditArgs)e;
+            if(carrierEditArgs != null)
+            {
+                EditWare(this, carrierEditArgs.Carrier);
+            }
         }
        
         /// <summary>
@@ -108,8 +130,6 @@ namespace WorkstationController.Control
             _uiController.CaptureMouse();
         }
 
-
-
         #region form events
         private void LayoutUserControl_Loaded(object sender, RoutedEventArgs e)
         {
@@ -121,7 +141,6 @@ namespace WorkstationController.Control
              OnContainerSizeChanged(new Size(500, 500)); //give default size
             _worktable.RenderSize = new Size(_worktable.RenderSize.Width + 1, _worktable.RenderSize.Height + 1); //force update
         }
-
 
         private void btnSave_Click(object sender, RoutedEventArgs e)
         {
@@ -170,8 +189,6 @@ namespace WorkstationController.Control
         }
 
         #endregion
-
-    
     }
 
     #region worktable render
