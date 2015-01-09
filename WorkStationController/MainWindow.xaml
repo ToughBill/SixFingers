@@ -7,6 +7,10 @@
         WindowStartupLocation="CenterScreen" WindowState="Maximized" Icon="Resources/logo.ico">
     <Window.Resources>
         <Image x:Key="SaveIcon" x:Shared="False"  Source="/Resources/save.png" Height="20" Width="20"/>
+
+        <Image x:Key="StartIcon" x:Shared="False"  Source="/Resources/run.png" Height="20" Width="20"/>
+        <Image x:Key="ResumeIcon" x:Shared="False"  Source="/Resources/resume.png" Height="20" Width="20"/>
+        <Image x:Key="StopIcon" x:Shared="False"  Source="/Resources/stop.png" Height="20" Width="20"/>
     </Window.Resources>
     <Grid>
         <Grid.RowDefinitions>
@@ -23,16 +27,20 @@
             </MenuItem>
             <MenuItem Header="Edit"></MenuItem>
             <MenuItem Header="View"></MenuItem>
-            <MenuItem Header="Execute"></MenuItem>
+            <MenuItem Header="Execute">
+                <MenuItem Command="local:MainWindow.StartScript" Icon="{StaticResource StartIcon}"/>
+                <MenuItem Command="local:MainWindow.ResumeScript" Icon="{StaticResource ResumeIcon}"/>
+                <MenuItem Command="local:MainWindow.StopScript" Icon="{StaticResource StopIcon}"/>
+            </MenuItem>
             <MenuItem Header="Help"></MenuItem>
         </Menu>
         <!--Toolbar-->
         <ToolBar Grid.Row="1">
-            <Button Command="local:MainWindow.SavePipettorElements" Content="{StaticResource SaveIcon}" Margin="2"/>
+            <Button Command="local:MainWindow.SavePipettorElements" Content="{StaticResource SaveIcon}" Margin="2" ToolTip="Save"/>
             <Separator/>
-            <Button Content="Start"/>
-            <Button Content="Resume"/>
-            <Button Content="Stop"/>
+            <Button Command="local:MainWindow.StartScript" Content="{StaticResource StartIcon}" Margin="2" ToolTip="Start Script"/>
+            <Button Command="local:MainWindow.ResumeScript" Content="{StaticResource ResumeIcon}" Margin="2" ToolTip="Resume Script"/>
+            <Button Command="local:MainWindow.StopScript" Content="{StaticResource StopIcon}" Margin="2" ToolTip="Stop Script"/>
         </ToolBar>
         <!--Main control tabs-->
         <Border BorderThickness="1" Grid.Row="2"  BorderBrush="Black">

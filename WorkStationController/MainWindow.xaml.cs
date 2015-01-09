@@ -31,6 +31,10 @@ namespace WorkstationController
 
         #region Commands
         private static RoutedUICommand _save_pipettorElements = null;
+        private static RoutedUICommand _start_script = null;
+        private static RoutedUICommand _resume_script = null;
+        private static RoutedUICommand _stop_script = null;
+
 
         /// <summary>
         /// Save command
@@ -38,6 +42,30 @@ namespace WorkstationController
         public static RoutedUICommand SavePipettorElements
         {
             get { return _save_pipettorElements; }
+        }
+
+        /// <summary>
+        /// Start Script command
+        /// </summary>
+        public static RoutedUICommand StartScript
+        {
+            get { return _start_script; }
+        }
+
+        /// <summary>
+        /// Resume Script command
+        /// </summary>
+        public static RoutedUICommand ResumeScript
+        {
+            get { return _resume_script; }
+        }
+
+        /// <summary>
+        /// Stop Script command
+        /// </summary>
+        public static RoutedUICommand StopScript
+        {
+            get { return _stop_script; }
         }
 
         private void SavePipettorElements_Executed(object sender, ExecutedRoutedEventArgs e)
@@ -50,11 +78,56 @@ namespace WorkstationController
             e.CanExecute = this._tabItems.Count > 0;
         }
 
+        private void StartScript_Executed(object sender, ExecutedRoutedEventArgs e)
+        {
+        }
+
+        private void StartScript_CanExecute(object sender, CanExecuteRoutedEventArgs e)
+        {
+            e.CanExecute = this.IsScriptExecuteCommandCanExecute();
+        }
+
+        private void ResumeScript_Executed(object sender, ExecutedRoutedEventArgs e)
+        {
+        }
+
+        private void ResumeScript_CanExecute(object sender, CanExecuteRoutedEventArgs e)
+        {
+            e.CanExecute = this.IsScriptExecuteCommandCanExecute();
+        }
+
+        private void StopScript_Executed(object sender, ExecutedRoutedEventArgs e)
+        {
+        }
+
+        private void StopScript_CanExecute(object sender, CanExecuteRoutedEventArgs e)
+        {
+            e.CanExecute = this.IsScriptExecuteCommandCanExecute();
+        }
+
+        private bool IsScriptExecuteCommandCanExecute()
+        {
+            if (this._tabItems.Count > 0)
+            {
+                // If the selected tab is a RecipeEditor
+                TabItem selectedTab = tabDynamic.SelectedItem as TabItem;
+                return ((Grid)selectedTab.Content).Children[0] is RecipeEditor;
+            }
+            else
+                return false;
+        }
+
         static MainWindow()
         {
+            // Save command
             InputGestureCollection ic_save_pipettorElements = new InputGestureCollection();
             ic_save_pipettorElements.Add(new KeyGesture(Key.S, ModifierKeys.Control, "Ctrl+S"));
             _save_pipettorElements = new RoutedUICommand("Save", "SavePipettorElements", typeof(MainWindow), ic_save_pipettorElements);
+
+            // Start/Resume/Stop Script command
+            _start_script = new RoutedUICommand("Start", "StartScript", typeof(MainWindow), null);
+            _resume_script = new RoutedUICommand("Resume", "ResumeScript", typeof(MainWindow), null);
+            _stop_script = new RoutedUICommand("Stop", "StopScript", typeof(MainWindow), null);
         }
         #endregion
 
@@ -111,6 +184,9 @@ namespace WorkstationController
         {
             // Commands binding
             this.CommandBindings.Add(new CommandBinding(SavePipettorElements, this.SavePipettorElements_Executed, this.SavePipettorElements_CanExecute));
+            this.CommandBindings.Add(new CommandBinding(StartScript, this.StartScript_Executed, this.StartScript_CanExecute));
+            this.CommandBindings.Add(new CommandBinding(ResumeScript, this.ResumeScript_Executed, this.ResumeScript_CanExecute));
+            this.CommandBindings.Add(new CommandBinding(StopScript, this.StopScript_Executed, this.StopScript_CanExecute));
         }
 
         private void OnMainWindowClosing(object sender, System.ComponentModel.CancelEventArgs e)

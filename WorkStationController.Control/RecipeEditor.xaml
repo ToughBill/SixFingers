@@ -9,14 +9,14 @@
              d:DesignHeight="500" d:DesignWidth="1000">
     <Grid>
         <Grid.RowDefinitions>
-            <RowDefinition Height="8*"/>
             <RowDefinition Height="1*"/>
+            <RowDefinition Height="8*"/>
         </Grid.RowDefinitions>
         <Grid.ColumnDefinitions>
             <ColumnDefinition/>
             <ColumnDefinition/>
         </Grid.ColumnDefinitions>
-        <GroupBox Header="Script" Grid.Row="0" Grid.Column="1" Margin="3">
+        <GroupBox Header="Script" Grid.Row="1" Grid.Column="1" Margin="3">
             <Grid>
                 <Grid.RowDefinitions>
                     <RowDefinition Height="8*"/>
@@ -29,18 +29,14 @@
                 </StackPanel>
             </Grid>
         </GroupBox>
-        <GroupBox Header="Layout" Grid.Row="0" Grid.Column="0" Margin="3">
+        <GroupBox Header="Layout" Grid.Row="1" Grid.Column="0" Margin="3">
             <local:WorktableGrid x:Name="_worktable" Background="LightYellow" VerticalAlignment="Stretch" HorizontalAlignment="Stretch" Margin="3"/>
         </GroupBox>
-        <StackPanel Grid.Row="1" Grid.Column="0" Orientation="Horizontal" HorizontalAlignment="Center">
-            <Button Content="RUN" Margin="10,10,5,10" MinWidth="80"/>
-            <Button Content="RESUME" Margin="10,10,5,10" MinWidth="80"/>
-            <Button Content="STOP" Margin="10,10,5,10" MinWidth="80"/>
-        </StackPanel>
-        <StackPanel Grid.Row="1" Grid.Column="1" Orientation="Horizontal" HorizontalAlignment="Right">
+        <!--Remove Save button-->
+        <!--<StackPanel Grid.Row="1" Grid.Column="1" Orientation="Horizontal" HorizontalAlignment="Right">
             <Button Content="SAVE" Margin="10,10,5,10" MinWidth="80" Name="btnSave" Click="btnSave_Click"/>
-        </StackPanel>
-        <TextBox Grid.Column="1" Name="txtRecipeName"  HorizontalAlignment="Left" Height="23" Margin="98,15.2,0,0" Grid.Row="1" TextWrapping="Wrap" Text="{Binding Path=Name, Mode=TwoWay}" VerticalAlignment="Top" Width="302"/>
-        <Label Content="Recipe Name:" Grid.Column="1" HorizontalAlignment="Left" Margin="10,13.2,0,0" Grid.Row="1" VerticalAlignment="Top" RenderTransformOrigin="1.292,0.297" Width="100"/>
+        </StackPanel>-->
+        <TextBox Grid.Row="0" Grid.Column="0" Name="txtRecipeName"  HorizontalAlignment="Left" Height="23" Margin="98,15.2,0,0" TextWrapping="Wrap" Text="{Binding Path=Name, Mode=TwoWay}" VerticalAlignment="Top" Width="302"/>
+        <Label Content="Recipe Name:"  Grid.Row="0" Grid.Column="0" HorizontalAlignment="Left" Margin="10,13.2,0,0" VerticalAlignment="Top" RenderTransformOrigin="1.292,0.297" Width="100"/>
     </Grid>
 </UserControl>
