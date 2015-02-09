@@ -242,7 +242,7 @@ namespace WorkstationController.Core.Data
         {
             Labware copy = new Labware();
             copy._label = "<Need a label>";
-            copy._typeName = this.TypeName + "(" + DuplicateNumber++.ToString() + ")";
+            copy._typeName = this.TypeName;
             copy._dimension = (Dimension)this.Dimension.Clone();
             copy._backgroundColor = this._backgroundColor;
             copy._parentCarrier = null;
