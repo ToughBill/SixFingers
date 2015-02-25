@@ -18,7 +18,7 @@ namespace WorkstationController
     /// <summary>
     /// Interaction logic for MainWindow.xaml
     /// </summary>
-    public partial class MainWindow : Window , IDisposable
+    public partial class MainWindow : Window
     {
         #region Private members
         private PipettorElementManager _pipettorElementManager = PipettorElementManager.Instance;
@@ -281,7 +281,6 @@ namespace WorkstationController
 
             // Event subscribe
             this.Loaded += OnMainWindowLoaded;
-            this.Closing += OnMainWindowClosing;
         }
 
         #region Event handler
@@ -296,11 +295,6 @@ namespace WorkstationController
             this.CommandBindings.Add(new CommandBinding(NewLabware, this.NewLabware_Executed, this.NewLabware_CanExecute));
             this.CommandBindings.Add(new CommandBinding(DuplicateLabware, this.DuplicateLabware_Executed, this.DuplicateLabware_CanExecute));
             this.CommandBindings.Add(new CommandBinding(DeleteLabware, this.DeleteLabware_Executed, this.DeleteLabware_CanExecute));
-        }
-
-        private void OnMainWindowClosing(object sender, System.ComponentModel.CancelEventArgs e)
-        {
-            this.Dispose();
         }
         #endregion
 
@@ -624,16 +618,6 @@ namespace WorkstationController
             return recipeEditor;
         }
 
-        #region Dispose
-        /// <summary>
-        /// dispose
-        /// </summary>
-        public void Dispose()
-        {
-            var recipeEditor = GetRecipeEditor();
-            if (recipeEditor != null)
-                recipeEditor.Dispose();
-        }
-        #endregion      
+  
     }
 }

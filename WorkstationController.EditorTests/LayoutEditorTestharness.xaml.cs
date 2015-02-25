@@ -25,13 +25,8 @@ namespace WorkstationController.EditorTests
         {
             InitializeComponent();
             this.Loaded += LayoutEditorTestharness_Loaded;
-            this.Closing += LayoutEditorTestharness_Closing;
         }
 
-        void LayoutEditorTestharness_Closing(object sender, System.ComponentModel.CancelEventArgs e)
-        {
-            layoutEditor.Dispose();
-        }
 
         void LayoutEditorTestharness_Loaded(object sender, RoutedEventArgs e)
         {

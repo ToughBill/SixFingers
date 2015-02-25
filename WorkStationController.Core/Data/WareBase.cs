@@ -55,7 +55,21 @@ namespace WorkstationController.Core.Data
         {
             return this._typeName;
         }
-       
+
+        /// <summary>
+        /// return the GridID
+        /// </summary>
+        public int GridID 
+        { 
+            get
+            {
+                if (this is Labware)
+                    return ((Labware)this).GridID;
+                else
+                    return ((Carrier)this).GridID;
+            }
+        
+        }
     }
 
     /// <summary>

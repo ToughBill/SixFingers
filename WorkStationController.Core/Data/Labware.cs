@@ -156,6 +156,14 @@ namespace WorkstationController.Core.Data
             _wellsInfo = new WellsInfo();
         }
 
+
+        public int GridID
+        {
+            get
+            {
+                return this.ParentCarrier.GridID;
+            }
+        }
         static public Labware CreateFromTrait(LabwareTrait labwareTraitItem, Carrier parentCarrier = null)
         {
             // TODO: Complete member initialization
