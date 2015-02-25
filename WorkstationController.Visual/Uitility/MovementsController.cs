@@ -1,17 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Windows.Media;
 using System.Windows.Controls;
-using System.Threading.Tasks;
-using System.ComponentModel;
 using System.Windows;
 using System.Windows.Input;
 using System.Windows.Documents;
 using System.Diagnostics;
 using WorkstationController.Core.Data;
-using WorkstationController.VisualElement.ContextMenu;
 using WorkstationController.Core.Utility;
 
 namespace WorkstationController.VisualElement.Uitility
@@ -27,6 +22,7 @@ namespace WorkstationController.VisualElement.Uitility
         private BasewareUIElement _selectedUIElement;
         private BasewareUIElement _uiElementCandidate;
         private bool enableMouseMove = true;
+        private LeftMouseState _leftMouseState = LeftMouseState.OnNothing;
         private bool otherFormNeedPickup = false;
         private DateTime lastClickTime = DateTime.MinValue;
         Vector relativeClickPosition2LeftTop = new Vector(-1, -1);
@@ -113,7 +109,33 @@ namespace WorkstationController.VisualElement.Uitility
             _myCanvas.PreviewMouseRightButtonUp += _myCanvas_PreviewMouseRightButtonUp;
             _myCanvas.IsVisibleChanged += _myCanvas_IsVisibleChanged;
             _myCanvas.MouseMove += myCanvas_MouseMove;
+            //_myCanvas.ContextMenuOpening += _myCanvas_ContextMenuOpening;
             PipettorElementManager.Instance.onWareChanged += Instance_onWareChanged;
+        }
+
+        void _myCanvas_ContextMenuOpening(object sender, ContextMenuEventArgs e)
+        {
+            _myCanvas.ContextMenu = BuildMenu();
+        }
+
+        private System.Windows.Controls.ContextMenu BuildMenu()
+        {
+            if (_leftMouseState == LeftMouseState.OnNothing)
+                return null;
+
+            System.Windows.Controls.ContextMenu theMenu = new System.Windows.Controls.ContextMenu();
+            MenuItem miEdit = new MenuItem();
+            miEdit.Header = "编辑";
+            miEdit.Checked += mia_Checked;
+            theMenu.Items.Add(miEdit);
+            _leftMouseState = LeftMouseState.OnNothing;
+            return theMenu;
+
+        }
+
+        void mia_Checked(object sender, RoutedEventArgs e)
+        {
+            MessageBox.Show("Edit item is clicked!");
         }
 
         void Instance_onWareChanged(object sender, EventArgs e)
@@ -193,32 +215,30 @@ namespace WorkstationController.VisualElement.Uitility
         #region context menu
         void _myCanvas_IsVisibleChanged(object sender, DependencyPropertyChangedEventArgs e)
         {
-             if (onWareContextMenuFired != null)
-                onWareContextMenuFired(this, new ContextEvtArgs(null, new Point(0,0), false));
+             //if (onWareContextMenuFired != null)
+             //   onWareContextMenuFired(this, new ContextEvtArgs(null, new Point(0,0), false));
         }
 
         void _myCanvas_PreviewMouseRightButtonUp(object sender, MouseButtonEventArgs e)
         {
             Point ptClick = e.GetPosition(_myCanvas);
             _selectedUIElement = FindSelectedUIElement(ptClick);
-            bool bNeed2Show = _selectedUIElement != null;
-            if (onWareContextMenuFired != null && bNeed2Show)
-            {
-                Point ptInScreen = _myCanvas.PointToScreen(ptClick);
-                onWareContextMenuFired(this, new ContextEvtArgs(_selectedUIElement.Ware, ptInScreen, bNeed2Show));
-            }
+            //bNeedShowContextMenu = _selectedUIElement != null;
+          
+          
+            //if (onWareContextMenuFired != null && bNeed2Show)
+            //{
+            //    Point ptInScreen = _myCanvas.PointToScreen(ptClick);
+            //    onWareContextMenuFired(this, new ContextEvtArgs(_selectedUIElement.Ware, ptInScreen, bNeed2Show));
+            //}
         }
+
+        
         #endregion
 
         #region select UIElement, and prepare move
         void myCanvas_PreviewMouseLeftButtonDown(object sender, MouseButtonEventArgs e)
         {
-            //fire context menu event
-            if (onWareContextMenuFired != null && _selectedUIElement!= null)
-            {
-                onWareContextMenuFired(this, new ContextEvtArgs(_selectedUIElement.Ware, new Point(0,0), false));
-            }
-
             UpdateLastClick();
          
             //select ui element
@@ -443,5 +463,12 @@ namespace WorkstationController.VisualElement.Uitility
             HighlightSiteInShadow(new Point(0, 0),"", false);
         }
         #endregion
+    }
+
+    public enum LeftMouseState
+    {
+        OnNothing = 0,
+        OnLabware = 1,
+        OnCarrier = 2
     }
 }

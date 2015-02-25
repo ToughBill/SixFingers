@@ -6,7 +6,7 @@
              xmlns:local="clr-namespace:WorkstationController.Control"
              xmlns:thirdparty="clr-namespace:WorkstationController.Control.ThirdParties"
              mc:Ignorable="d" 
-             d:DesignHeight="500" d:DesignWidth="1000" Width="1000">
+             d:DesignHeight="500" d:DesignWidth="1000" Width="auto">
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="1*"/>
@@ -14,7 +14,7 @@
         </Grid.RowDefinitions>
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="3*"/>
-            <ColumnDefinition Width="1*"/>
+            <ColumnDefinition Width="2*"/>
         </Grid.ColumnDefinitions>
         <GroupBox Header="Script" Grid.Row="1" Grid.Column="1" Margin="3">
             <Grid>

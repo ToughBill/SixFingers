@@ -315,7 +315,6 @@ namespace WorkstationController
             
             // Set the Tag of the tab as the UID of the instrument
             tab.Tag = ((PipettorElement)control.DataContext).SaveName;
- 
             tab.HeaderTemplate = tabDynamic.FindResource("TabHeader") as DataTemplate;
 
             // If a recipeEditor is added, subscribe its EditWare event
@@ -324,7 +323,7 @@ namespace WorkstationController
                 RecipeEditor recipeEditor = control as RecipeEditor;
                 recipeEditor.EditWare += OnRecipeEditorEditWare;
             }
-
+            control.Width = this.ActualWidth - 300;
             Grid grid = new Grid();
             grid.HorizontalAlignment = System.Windows.HorizontalAlignment.Left;
             grid.Children.Add(control);
@@ -332,7 +331,6 @@ namespace WorkstationController
 
             // insert tab at most left position
             _tabItems.Insert(0, tab);
-
             tabDynamic.DataContext = null;
             tabDynamic.DataContext = _tabItems;
             tabDynamic.SelectedItem = tab;

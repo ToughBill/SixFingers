@@ -10,7 +10,6 @@ using System.Windows.Media;
 using WorkstationController.Core.Data;
 using WorkstationController.Core.Utility;
 using WorkstationController.VisualElement;
-using WorkstationController.VisualElement.ContextMenu;
 using WorkstationController.VisualElement.Uitility;
 
 namespace WorkstationController.Control
@@ -18,20 +17,13 @@ namespace WorkstationController.Control
     /// <summary>
     /// Interaction logic for Layout.xaml
     /// </summary>
-    public partial class RecipeEditor : UserControl, IDisposable
+    public partial class RecipeEditor : UserControl
     {
         UIMovementsController     _uiController = null;
-        WareContextMenuController _contextMenuController = null;
         Recipe                    _recipe = null;
 
         #region events
-        public WareContextMenuController ContextMenuController 
-        { 
-            get
-            {
-                return _contextMenuController;
-            }
-        }
+   
 
         /// <summary>
         /// Event of edit labware and carrier
@@ -48,34 +40,14 @@ namespace WorkstationController.Control
             _worktable.SizeChanged += uiContainer_SizeChanged;
             _uiController = new UIMovementsController(_worktable, recipe);
 
-            _contextMenuController = new WareContextMenuController(_uiController);
-            _contextMenuController.onEditLabware += _contextMenuController_onEditLabware;
-            _contextMenuController.onEditCarrier += _contextMenuController_onEditCarrier;
-
+         
             if (recipe == null)
                 _recipe = new Recipe();
 
             this.Loaded += LayoutUserControl_Loaded;
         }
 
-        private void _contextMenuController_onEditLabware(object sender, EventArgs e)
-        {
-            LabwareEditArgs labwareEditArgs = (LabwareEditArgs)e;
-            if(labwareEditArgs != null)
-            {
-                EditWare(this, labwareEditArgs.Labware);
-            }
-        }
-
-        private void _contextMenuController_onEditCarrier(object sender, EventArgs e)
-        {
-            CarrierEditArgs carrierEditArgs = (CarrierEditArgs)e;
-            if(carrierEditArgs != null)
-            {
-                EditWare(this, carrierEditArgs.Carrier);
-            }
-        }
-       
+          
         /// <summary>
         /// whether we allow other form select our wares
         /// </summary>
@@ -173,12 +145,7 @@ namespace WorkstationController.Control
         }
         #endregion
 
-        #region dispose
-        public void Dispose()
-        {
-            _contextMenuController.Dispose();
-        }
-        #endregion
+
 
         #region control events
         private void uiController_onLabelPreviewChanged(object sender, EventArgs e)
