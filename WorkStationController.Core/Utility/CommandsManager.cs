@@ -2,10 +2,11 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Windows.Input;
 
 namespace WorkstationController.Core.Data
 {
-    class CommandsManager
+    public class CommandsManager
     {
 
         private static CommandsManager _instance = null;
@@ -24,5 +25,179 @@ namespace WorkstationController.Core.Data
                 return _instance;
             }
         }
+
+        private RoutedUICommand _save_pipettorElements = null;
+
+        // Script execute commands
+        private RoutedUICommand _start_script = null;
+        private RoutedUICommand _resume_script = null;
+        private RoutedUICommand _stop_script = null;
+
+        // Labware related commands
+        private RoutedUICommand _edit_labware = null;
+        private RoutedUICommand _new_labware = null;
+        private RoutedUICommand _duplicate_labware = null;
+        private RoutedUICommand _delete_labware = null;
+
+        // carrier related commands
+        private RoutedUICommand _edit_carrier = null;
+        private RoutedUICommand _new_carrier = null;
+        private RoutedUICommand _duplicate_carrier = null;
+        private RoutedUICommand _delete_carrier = null;
+
+
+        /// <summary>
+        /// Save command
+        /// </summary>
+        public RoutedUICommand SavePipettorElements
+        {
+            get 
+            {
+                return _save_pipettorElements; 
+            }
+            set
+            {
+                _save_pipettorElements = value;
+            }
+        }
+
+        /// <summary>
+        /// Start Script command
+        /// </summary>
+        public RoutedUICommand StartScript
+        {
+            get { return _start_script; }
+            set
+            {
+                _start_script = value;
+            }
+        }
+
+        /// <summary>
+        /// Resume Script command
+        /// </summary>
+        public RoutedUICommand ResumeScript
+        {
+            get { return _resume_script; }
+            set
+            {
+                _resume_script = value;
+            }
+        }
+
+        /// <summary>
+        /// Stop Script command
+        /// </summary>
+        public RoutedUICommand StopScript
+        {
+            get { return _stop_script; }
+            set
+            {
+                _stop_script = value;
+            }
+        }
+
+        #region labware related
+
+        /// <summary>
+        /// Edit Labware command
+        /// </summary>
+        public RoutedUICommand EditLabware
+        {
+            get { return _edit_labware; }
+            set
+            {
+                _edit_labware = value;
+            }
+        }
+
+        /// <summary>
+        /// New Labware command
+        /// </summary>
+        public RoutedUICommand NewLabware
+        {
+            get { return _new_labware; }
+            set
+            {
+                _new_labware = value;
+            }
+        }
+
+        /// <summary>
+        /// Duplicate Labware command
+        /// </summary>
+        public RoutedUICommand DuplicateLabware
+        {
+            get { return _duplicate_labware; }
+            set
+            {
+                _duplicate_labware = value;
+            }
+        }
+
+        /// <summary>
+        /// Delete Labware command
+        /// </summary>
+        public RoutedUICommand DeleteLabware
+        {
+            get { return _delete_labware; }
+            set
+            {
+                _delete_labware = value;
+            }
+        }
+
+        #endregion
+
+        #region carrier related
+
+        /// <summary>
+        /// Edit Carrier command
+        /// </summary>
+        public RoutedUICommand EditCarrier
+        {
+            get { return _edit_carrier; }
+            set
+            {
+                _edit_carrier = value;
+            }
+        }
+
+        /// <summary>
+        /// New Carrier command
+        /// </summary>
+        public RoutedUICommand NewCarrier
+        {
+            get { return _new_carrier; }
+            set
+            {
+                _new_carrier = value;
+            }
+        }
+
+        /// <summary>
+        /// Duplicate Carrier command
+        /// </summary>
+        public RoutedUICommand DuplicateCarrier
+        {
+            get { return _duplicate_carrier; }
+            set
+            {
+                _duplicate_carrier = value;
+            }
+        }
+
+        /// <summary>
+        /// Delete Carrier command
+        /// </summary>
+        public RoutedUICommand DeleteCarrier
+        {
+            get { return _delete_carrier; }
+            set
+            {
+                _delete_carrier = value;
+            }
+        }
+        #endregion
     }
 }

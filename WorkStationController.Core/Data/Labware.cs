@@ -156,14 +156,17 @@ namespace WorkstationController.Core.Data
             _wellsInfo = new WellsInfo();
         }
 
-
+        /// <summary>
+        /// the grid
+        /// </summary>
         public int GridID
         {
             get
             {
-                return this.ParentCarrier.GridID;
+                return ParentCarrier == null ? 1 : this.ParentCarrier.GridID;
             }
         }
+
         static public Labware CreateFromTrait(LabwareTrait labwareTraitItem, Carrier parentCarrier = null)
         {
             // TODO: Complete member initialization
@@ -176,7 +179,6 @@ namespace WorkstationController.Core.Data
             newLabware.SiteID = labwareTraitItem.SiteID;
             newLabware.ParentCarrier = parentCarrier;
             return newLabware;
-
         }
 
         /// <summary>
