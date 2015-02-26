@@ -21,7 +21,6 @@ namespace WorkstationController.VisualElement.Uitility
         private Point _ptClick;
         private BasewareUIElement _selectedUIElement;
         private BasewareUIElement _uiElementCandidate;
-        private bool enableMouseMove = true;
         private bool otherFormNeedPickup = false;
         private DateTime lastClickTime = DateTime.MinValue;
         Vector relativeClickPosition2LeftTop = new Vector(-1, -1);
@@ -106,9 +105,15 @@ namespace WorkstationController.VisualElement.Uitility
             _myCanvas.PreviewMouseLeftButtonDown += myCanvas_PreviewMouseLeftButtonDown;
             _myCanvas.PreviewMouseLeftButtonUp += myCanvas_PreviewMouseLeftButtonUp;
             _myCanvas.PreviewMouseRightButtonDown += _myCanvas_PreviewMouseRightButtonDown;
+            _myCanvas.PreviewMouseRightButtonUp += _myCanvas_PreviewMouseRightButtonUp;
             _myCanvas.IsVisibleChanged += _myCanvas_IsVisibleChanged;
             _myCanvas.MouseMove += myCanvas_MouseMove;
             PipettorElementManager.Instance.onWareChanged += Instance_onWareChanged;
+        }
+
+        void _myCanvas_PreviewMouseRightButtonUp(object sender, MouseButtonEventArgs e)
+        {
+            _selectedUIElement = null;
         }
 
         private System.Windows.Controls.ContextMenu BuildMenu(WareBase ware)
@@ -253,6 +258,7 @@ namespace WorkstationController.VisualElement.Uitility
        
         private void GetReady4Move(Point ptClick)
         {
+            Debug.WriteLine("GetReady4Move at time: {0}", DateTime.Now.ToString());
             _ptClick = ptClick;
             _selectedUIElement.Selected = true;
             RememberRelativePosition(_selectedUIElement);
@@ -300,6 +306,27 @@ namespace WorkstationController.VisualElement.Uitility
 
         #region move and mount
 
+        void myCanvas_MouseMove(object sender, MouseEventArgs e)
+        {
+            if (otherFormNeedPickup) //other form pick, don't allow mousemove
+                return;
+
+            Point ptMouse = e.GetPosition(_myCanvas);
+            if (e.LeftButton == MouseButtonState.Released)
+                return;
+
+            bool hasUIElement2Operate = _uiElementCandidate != null || _selectedUIElement != null;
+            if (!hasUIElement2Operate)
+                return;
+
+            if (_selectedUIElement is LabwareUIElement)
+            {
+                HighlightSiteInShadow(ptMouse, _selectedUIElement.Ware.TypeName);
+            }
+            ElectCandidate(); //we put the election here to avoid drawing wares out of worktable
+            UpdateSelectedElement(ptMouse);
+        }
+
         void myCanvas_PreviewMouseLeftButtonUp(object sender, MouseButtonEventArgs e)
         {
             _myCanvas.ReleaseMouseCapture();
@@ -309,12 +336,6 @@ namespace WorkstationController.VisualElement.Uitility
             if (_selectedUIElement == null)
                 return;
 
-            //if (ClickTooNear())
-            //{
-            //    _selectedUIElement.Selected = false;
-            //    _selectedUIElement = null;
-            //    return;
-            //}
 
             //pipetting commands need to highlight the labware
             if(otherFormNeedPickup)
@@ -332,37 +353,9 @@ namespace WorkstationController.VisualElement.Uitility
             _selectedUIElement = null;
         }
 
-        private bool ClickTooNear()
-        {
-            Point ptCurrent = Mouse.GetPosition(_myCanvas);
-            Point relativePos = new Point(ptCurrent.X - _ptClick.X,ptCurrent.Y - _ptClick.Y);
-            return relativePos.X * relativePos.X + relativePos.Y * relativePos.Y < 100;
-        }
-
+   
         
 
-        void myCanvas_MouseMove(object sender, MouseEventArgs e)
-        {
-            if (otherFormNeedPickup) //other form pick, don't allow mousemove
-                return;
-           
-            Point ptMouse = e.GetPosition(_myCanvas);
-            if (e.LeftButton == MouseButtonState.Released)
-                return;
-            if (!enableMouseMove)
-                return;
-
-            bool hasUIElement2Operate = _uiElementCandidate != null || _selectedUIElement != null;
-            if (!hasUIElement2Operate)
-                return;
-
-            if(_selectedUIElement is LabwareUIElement)
-            {
-                HighlightSiteInShadow(ptMouse, _selectedUIElement.Ware.TypeName);
-            }
-            ElectCandidate(); //we put the election here to avoid drawing wares out of worktable
-            UpdateSelectedElement(ptMouse);
-        }
         private void UpdateSelectedElement(Point ptCurrent)
         {
             //adjust position to its center position
