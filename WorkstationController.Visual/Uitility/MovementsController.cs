@@ -22,7 +22,6 @@ namespace WorkstationController.VisualElement.Uitility
         private BasewareUIElement _selectedUIElement;
         private BasewareUIElement _uiElementCandidate;
         private bool enableMouseMove = true;
-        private RightMouseState rightMouseState = RightMouseState.OnNothing;
         private bool otherFormNeedPickup = false;
         private DateTime lastClickTime = DateTime.MinValue;
         Vector relativeClickPosition2LeftTop = new Vector(-1, -1);
@@ -109,31 +108,28 @@ namespace WorkstationController.VisualElement.Uitility
             _myCanvas.PreviewMouseRightButtonDown += _myCanvas_PreviewMouseRightButtonDown;
             _myCanvas.IsVisibleChanged += _myCanvas_IsVisibleChanged;
             _myCanvas.MouseMove += myCanvas_MouseMove;
-            //_myCanvas.ContextMenuOpening += _myCanvas_ContextMenuOpening;
             PipettorElementManager.Instance.onWareChanged += Instance_onWareChanged;
         }
 
-        //void _myCanvas_ContextMenuOpening(object sender, ContextMenuEventArgs e)
-        //{
-        //    Debug.WriteLine("Context Menu Opening");
-        //    _myCanvas.ContextMenu = BuildMenu();
-        //}
-
-        private System.Windows.Controls.ContextMenu BuildMenu(int grid)
+        private System.Windows.Controls.ContextMenu BuildMenu(WareBase ware)
         {
             System.Windows.Controls.ContextMenu theMenu = new System.Windows.Controls.ContextMenu();
             MenuItem miEdit = new MenuItem();
             miEdit.Header = "编辑";
-            miEdit.DataContext = grid ;
+            miEdit.DataContext = ware;
             miEdit.Click += miEdit_Click;
             theMenu.Items.Add(miEdit);
-            rightMouseState = RightMouseState.OnNothing;
+            
             return theMenu;
         }
 
         void miEdit_Click(object sender, RoutedEventArgs e)
         {
-            MessageBox.Show("Edit item is clicked!");
+            WareBase ware = (WareBase)((MenuItem)sender).DataContext;
+            if (ware is Labware)
+                CommandsManager.EditLabware.Execute((Labware)ware, null);
+            else
+                CommandsManager.EditCarrier.Execute((Carrier)ware, null);
         }
 
         void Instance_onWareChanged(object sender, EventArgs e)
@@ -222,16 +218,7 @@ namespace WorkstationController.VisualElement.Uitility
             Debug.WriteLine("Right Mouse Down");
             Point ptClick = e.GetPosition(_myCanvas);
             _selectedUIElement = FindSelectedUIElement(ptClick);
-            if (_selectedUIElement == null)
-            {
-                rightMouseState = RightMouseState.OnNothing;
-                return;
-            }
-            else if (_selectedUIElement is LabwareUIElement)
-                rightMouseState = RightMouseState.OnLabware;
-            else
-                rightMouseState = RightMouseState.OnCarrier;
-            _myCanvas.ContextMenu = BuildMenu(_selectedUIElement.Ware.GridID);
+            _myCanvas.ContextMenu = BuildMenu(_selectedUIElement.Ware);
 
         }
 
@@ -241,7 +228,7 @@ namespace WorkstationController.VisualElement.Uitility
         #region select UIElement, and prepare move
         void myCanvas_PreviewMouseLeftButtonDown(object sender, MouseButtonEventArgs e)
         {
-            UpdateLastClick();
+            UpdateLastClickTime();
          
             //select ui element
             Point ptClick = e.GetPosition(_myCanvas);
@@ -282,7 +269,7 @@ namespace WorkstationController.VisualElement.Uitility
             }
         }
 
-        private void UpdateLastClick()
+        private void UpdateLastClickTime()
         {
             lastClickTime = DateTime.Now;
         }
@@ -322,6 +309,13 @@ namespace WorkstationController.VisualElement.Uitility
             if (_selectedUIElement == null)
                 return;
 
+            //if (ClickTooNear())
+            //{
+            //    _selectedUIElement.Selected = false;
+            //    _selectedUIElement = null;
+            //    return;
+            //}
+
             //pipetting commands need to highlight the labware
             if(otherFormNeedPickup)
                 return;
@@ -337,6 +331,15 @@ namespace WorkstationController.VisualElement.Uitility
             _selectedUIElement.Selected = false;
             _selectedUIElement = null;
         }
+
+        private bool ClickTooNear()
+        {
+            Point ptCurrent = Mouse.GetPosition(_myCanvas);
+            Point relativePos = new Point(ptCurrent.X - _ptClick.X,ptCurrent.Y - _ptClick.Y);
+            return relativePos.X * relativePos.X + relativePos.Y * relativePos.Y < 100;
+        }
+
+        
 
         void myCanvas_MouseMove(object sender, MouseEventArgs e)
         {
@@ -466,10 +469,5 @@ namespace WorkstationController.VisualElement.Uitility
         #endregion
     }
 
-    public enum RightMouseState
-    {
-        OnNothing = 0,
-        OnLabware = 1,
-        OnCarrier = 2
-    }
+ 
 }

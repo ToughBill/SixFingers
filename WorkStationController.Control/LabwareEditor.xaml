@@ -47,11 +47,11 @@
                 <Setter Property="Width" Value="120"/>
             </Style>
         </Grid.Resources>
-        
+
         <Label Grid.Row="0" Grid.Column="0" Content="TypeName: "/>
         <TextBox  Grid.Row="0" Grid.Column="2"  MinWidth="150" Height="30" Margin="3,2,0,2" VerticalContentAlignment="Center"
                     Text="{Binding Path=TypeName}"/>
-        
+
         <!--Color-->
         <StackPanel  Grid.Row="0" Grid.Column="4" Orientation="Horizontal">
             <TextBlock Text="Grid:" VerticalAlignment="Center"  Margin="5" HorizontalAlignment="Left"/>
@@ -61,11 +61,11 @@
             <TextBlock Text="Color:" VerticalAlignment="Center"  Margin="5" HorizontalAlignment="Left"/>
             <control:ColorPickerCombo x:Name="_colorPicker" HorizontalAlignment="Stretch" Margin="5" SelectedColor="{Binding Path=BackgroundColor, Mode=TwoWay}"/>
         </StackPanel>
-         <!--Dimension-->
+        <!--Dimension-->
         <TextBlock Grid.Row="1" Grid.Column="2" Text="X" VerticalAlignment="Bottom" HorizontalAlignment="Center"/>
         <TextBlock Grid.Row="1" Grid.Column="4" Text="Y" VerticalAlignment="Bottom" HorizontalAlignment="Center"/>
         <Label Grid.Row="2" Grid.Column="0" Content="Dimension:"/>
-        
+
         <TextBox Grid.Row="2" Grid.Column="2" Text="{Binding Path=Dimension.XLength}"/>
         <TextBox Grid.Row="2" Grid.Column="4" Text="{Binding Path=Dimension.YLength}"/>
         <!--Wells number-->
@@ -111,7 +111,7 @@
         <Label Grid.Row="13" Grid.Column="5" Content="(Unit:" HorizontalAlignment="Right" />
         <Label Grid.Row="13" Grid.Column="6" Content="0.1mm)"/>
         <StackPanel Grid.Row="14" Grid.Column="0" Grid.ColumnSpan="7" Orientation="Horizontal" HorizontalAlignment="Right">
-            <Button Width="150" Height="30" Content="Save" Margin="0,10,3,0" Click="OnSaveButtonClick"/>
+            <Button Width="124" Height="30" Content="Save" Margin="0,10,3,2" Click="OnSaveButtonClick"/>
         </StackPanel>
     </Grid>
 </UserControl>

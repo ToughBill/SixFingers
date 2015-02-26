@@ -4,52 +4,35 @@ using System.Linq;
 using System.Text;
 using System.Windows.Input;
 
-namespace WorkstationController.Core.Data
+namespace WorkstationController.Core.Utility
 {
     public class CommandsManager
     {
 
-        private static CommandsManager _instance = null;
-        /// <summary>
-        /// Gets the single insntace of CommandsManager
-        /// </summary>
-        public static CommandsManager Instance
-        {
-            get
-            {
-                if (_instance == null)
-                {
-                    _instance = new CommandsManager();
-                }
-
-                return _instance;
-            }
-        }
-
-        private RoutedUICommand _save_pipettorElements = null;
+        private static RoutedUICommand _save_pipettorElements = null;
 
         // Script execute commands
-        private RoutedUICommand _start_script = null;
-        private RoutedUICommand _resume_script = null;
-        private RoutedUICommand _stop_script = null;
+        private static RoutedUICommand _start_script = null;
+        private static RoutedUICommand _resume_script = null;
+        private static RoutedUICommand _stop_script = null;
 
         // Labware related commands
-        private RoutedUICommand _edit_labware = null;
-        private RoutedUICommand _new_labware = null;
-        private RoutedUICommand _duplicate_labware = null;
-        private RoutedUICommand _delete_labware = null;
+        private static RoutedUICommand _edit_labware = null;
+        private static RoutedUICommand _new_labware = null;
+        private static RoutedUICommand _duplicate_labware = null;
+        private static RoutedUICommand _delete_labware = null;
 
         // carrier related commands
-        private RoutedUICommand _edit_carrier = null;
-        private RoutedUICommand _new_carrier = null;
-        private RoutedUICommand _duplicate_carrier = null;
-        private RoutedUICommand _delete_carrier = null;
+        private static RoutedUICommand _edit_carrier = null;
+        private static RoutedUICommand _new_carrier = null;
+        private static RoutedUICommand _duplicate_carrier = null;
+        private static RoutedUICommand _delete_carrier = null;
 
 
         /// <summary>
         /// Save command
         /// </summary>
-        public RoutedUICommand SavePipettorElements
+        public static RoutedUICommand SavePipettorElements
         {
             get 
             {
@@ -64,7 +47,7 @@ namespace WorkstationController.Core.Data
         /// <summary>
         /// Start Script command
         /// </summary>
-        public RoutedUICommand StartScript
+        public static RoutedUICommand StartScript
         {
             get { return _start_script; }
             set
@@ -76,7 +59,7 @@ namespace WorkstationController.Core.Data
         /// <summary>
         /// Resume Script command
         /// </summary>
-        public RoutedUICommand ResumeScript
+        public static RoutedUICommand ResumeScript
         {
             get { return _resume_script; }
             set
@@ -88,7 +71,7 @@ namespace WorkstationController.Core.Data
         /// <summary>
         /// Stop Script command
         /// </summary>
-        public RoutedUICommand StopScript
+        public static RoutedUICommand StopScript
         {
             get { return _stop_script; }
             set
@@ -102,7 +85,7 @@ namespace WorkstationController.Core.Data
         /// <summary>
         /// Edit Labware command
         /// </summary>
-        public RoutedUICommand EditLabware
+        public static RoutedUICommand EditLabware
         {
             get { return _edit_labware; }
             set
@@ -114,7 +97,7 @@ namespace WorkstationController.Core.Data
         /// <summary>
         /// New Labware command
         /// </summary>
-        public RoutedUICommand NewLabware
+        public static RoutedUICommand NewLabware
         {
             get { return _new_labware; }
             set
@@ -126,7 +109,7 @@ namespace WorkstationController.Core.Data
         /// <summary>
         /// Duplicate Labware command
         /// </summary>
-        public RoutedUICommand DuplicateLabware
+        public static RoutedUICommand DuplicateLabware
         {
             get { return _duplicate_labware; }
             set
@@ -138,7 +121,7 @@ namespace WorkstationController.Core.Data
         /// <summary>
         /// Delete Labware command
         /// </summary>
-        public RoutedUICommand DeleteLabware
+        public static RoutedUICommand DeleteLabware
         {
             get { return _delete_labware; }
             set
@@ -154,7 +137,7 @@ namespace WorkstationController.Core.Data
         /// <summary>
         /// Edit Carrier command
         /// </summary>
-        public RoutedUICommand EditCarrier
+        public static RoutedUICommand EditCarrier
         {
             get { return _edit_carrier; }
             set
@@ -166,7 +149,7 @@ namespace WorkstationController.Core.Data
         /// <summary>
         /// New Carrier command
         /// </summary>
-        public RoutedUICommand NewCarrier
+        public static RoutedUICommand NewCarrier
         {
             get { return _new_carrier; }
             set
@@ -178,7 +161,7 @@ namespace WorkstationController.Core.Data
         /// <summary>
         /// Duplicate Carrier command
         /// </summary>
-        public RoutedUICommand DuplicateCarrier
+        public static RoutedUICommand DuplicateCarrier
         {
             get { return _duplicate_carrier; }
             set
@@ -190,7 +173,7 @@ namespace WorkstationController.Core.Data
         /// <summary>
         /// Delete Carrier command
         /// </summary>
-        public RoutedUICommand DeleteCarrier
+        public static RoutedUICommand DeleteCarrier
         {
             get { return _delete_carrier; }
             set

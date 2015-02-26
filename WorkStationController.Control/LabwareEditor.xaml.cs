@@ -48,6 +48,7 @@ namespace WorkstationController.Control
             Labware labware = this.DataContext as Labware;
             if (labware != null)
             {
+                //txtGrid.Text = labware.GridID.ToString();
                 this._colorPicker.SelectedColor = labware.BackgroundColor;
             }
         }

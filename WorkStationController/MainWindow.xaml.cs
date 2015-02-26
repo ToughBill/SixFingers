@@ -30,82 +30,7 @@ namespace WorkstationController
         #endregion
 
         #region Commands
-        private static RoutedUICommand _save_pipettorElements = null;
-
-        // Script execute commands
-        private static RoutedUICommand _start_script = null;
-        private static RoutedUICommand _resume_script = null;
-        private static RoutedUICommand _stop_script = null;
-
-        // Labware related commands
-        private static RoutedUICommand _edit_labware = null;
-        private static RoutedUICommand _new_labware = null;
-        private static RoutedUICommand _duplicate_labware = null;
-        private static RoutedUICommand _delete_labware = null;
-
-        /// <summary>
-        /// Save command
-        /// </summary>
-        public static RoutedUICommand SavePipettorElements
-        {
-            get { return _save_pipettorElements; }
-        }
-
-        /// <summary>
-        /// Start Script command
-        /// </summary>
-        public static RoutedUICommand StartScript
-        {
-            get { return _start_script; }
-        }
-
-        /// <summary>
-        /// Resume Script command
-        /// </summary>
-        public static RoutedUICommand ResumeScript
-        {
-            get { return _resume_script; }
-        }
-
-        /// <summary>
-        /// Stop Script command
-        /// </summary>
-        public static RoutedUICommand StopScript
-        {
-            get { return _stop_script; }
-        }
-
-        /// <summary>
-        /// Edit Labware command
-        /// </summary>
-        public static RoutedUICommand EditLabware
-        {
-            get { return _edit_labware; }
-        }
-
-        /// <summary>
-        /// New Labware command
-        /// </summary>
-        public static RoutedUICommand NewLabware
-        {
-            get { return _new_labware; }
-        }
-
-        /// <summary>
-        /// Duplicate Labware command
-        /// </summary>
-        public static RoutedUICommand DuplicateLabware
-        {
-            get { return _duplicate_labware; }
-        }
-
-        /// <summary>
-        /// Delete Labware command
-        /// </summary>
-        public static RoutedUICommand DeleteLabware
-        {
-            get { return _delete_labware; }
-        }
+      
 
         private void SavePipettorElements_Executed(object sender, ExecutedRoutedEventArgs e)
         {
@@ -172,19 +97,19 @@ namespace WorkstationController
             e.CanExecute = this.HasLabwareSelected();
         }
 
-        private void NewLabware_Executed(object sender, ExecutedRoutedEventArgs e)
-        {
-            Labware labware = new Labware();
-            LabwareEditor editor = new LabwareEditor();
-            editor.DataContext = labware;
-            this.AddTabItem(editor);
-        }
+        //private void NewLabware_Executed(object sender, ExecutedRoutedEventArgs e)
+        //{
+        //    Labware labware = new Labware();
+        //    LabwareEditor editor = new LabwareEditor();
+        //    editor.DataContext = labware;
+        //    this.AddTabItem(editor);
+        //}
 
-        private void NewLabware_CanExecute(object sender, CanExecuteRoutedEventArgs e)
-        {
-            // New command is always enabled
-            e.CanExecute = true;
-        }
+        //private void NewLabware_CanExecute(object sender, CanExecuteRoutedEventArgs e)
+        //{
+        //    // New command is always enabled
+        //    e.CanExecute = true;
+        //}
 
         private void DuplicateLabware_Executed(object sender, ExecutedRoutedEventArgs e)
         {
@@ -221,18 +146,25 @@ namespace WorkstationController
             // Save command
             InputGestureCollection ic_save_pipettorElements = new InputGestureCollection();
             ic_save_pipettorElements.Add(new KeyGesture(Key.S, ModifierKeys.Control, "Ctrl+S"));
-            _save_pipettorElements = new RoutedUICommand("Save", "SavePipettorElements", typeof(MainWindow), ic_save_pipettorElements);
+            CommandsManager.SavePipettorElements = new RoutedUICommand("Save", "SavePipettorElements", typeof(MainWindow), ic_save_pipettorElements);
 
             // Start/Resume/Stop Script commands
-            _start_script = new RoutedUICommand("Start", "StartScript", typeof(MainWindow), null);
-            _resume_script = new RoutedUICommand("Resume", "ResumeScript", typeof(MainWindow), null);
-            _stop_script = new RoutedUICommand("Stop", "StopScript", typeof(MainWindow), null);
+            CommandsManager.StartScript = new RoutedUICommand("Start", "StartScript", typeof(MainWindow), null);
+            CommandsManager.ResumeScript = new RoutedUICommand("Resume", "ResumeScript", typeof(MainWindow), null);
+            CommandsManager.StopScript = new RoutedUICommand("Stop", "StopScript", typeof(MainWindow), null);
 
             // Labware commands
-            _edit_labware = new RoutedUICommand("Edit Labware", "EditLabware", typeof(MainWindow), null);
-            _new_labware = new RoutedUICommand("New Labware", "NewLabware", typeof(MainWindow), null);
-            _duplicate_labware = new RoutedUICommand("Duplicate Labware", "DuplicateLabware", typeof(MainWindow), null);
-            _delete_labware = new RoutedUICommand("Delete Labware", "DeleteLabware", typeof(MainWindow), null);
+            CommandsManager.EditLabware = new RoutedUICommand("Edit Labware", "EditLabware", typeof(MainWindow), null);
+            CommandsManager.NewLabware = new RoutedUICommand("New Labware", "NewLabware", typeof(MainWindow), null);
+            CommandsManager.DuplicateLabware = new RoutedUICommand("Duplicate Labware", "DuplicateLabware", typeof(MainWindow), null);
+            CommandsManager.DeleteLabware = new RoutedUICommand("Delete Labware", "DeleteLabware", typeof(MainWindow), null);
+
+            // Carrier commands
+            CommandsManager.EditCarrier = new RoutedUICommand("Edit Carrier", "EditCarrier", typeof(MainWindow), null);
+            CommandsManager.NewCarrier = new RoutedUICommand("New Carrier", "NewCarrier", typeof(MainWindow), null);
+            CommandsManager.DuplicateCarrier = new RoutedUICommand("Duplicate Carrier", "DuplicateCarrier", typeof(MainWindow), null);
+            CommandsManager.DeleteCarrier = new RoutedUICommand("Delete Carrier", "DeleteCarrier", typeof(MainWindow), null);
+
         }
         #endregion
 
@@ -287,14 +219,14 @@ namespace WorkstationController
         private void OnMainWindowLoaded(object sender, RoutedEventArgs e)
         {
             // Commands binding
-            this.CommandBindings.Add(new CommandBinding(SavePipettorElements, this.SavePipettorElements_Executed, this.SavePipettorElements_CanExecute));
-            this.CommandBindings.Add(new CommandBinding(StartScript, this.StartScript_Executed, this.StartScript_CanExecute));
-            this.CommandBindings.Add(new CommandBinding(ResumeScript, this.ResumeScript_Executed, this.ResumeScript_CanExecute));
-            this.CommandBindings.Add(new CommandBinding(StopScript, this.StopScript_Executed, this.StopScript_CanExecute));
-            this.CommandBindings.Add(new CommandBinding(EditLabware, this.EditLabware_Executed, this.EditLabware_CanExecute));
-            this.CommandBindings.Add(new CommandBinding(NewLabware, this.NewLabware_Executed, this.NewLabware_CanExecute));
-            this.CommandBindings.Add(new CommandBinding(DuplicateLabware, this.DuplicateLabware_Executed, this.DuplicateLabware_CanExecute));
-            this.CommandBindings.Add(new CommandBinding(DeleteLabware, this.DeleteLabware_Executed, this.DeleteLabware_CanExecute));
+            this.CommandBindings.Add(new CommandBinding(CommandsManager.SavePipettorElements, this.SavePipettorElements_Executed, this.SavePipettorElements_CanExecute));
+            this.CommandBindings.Add(new CommandBinding(CommandsManager.StartScript, this.StartScript_Executed, this.StartScript_CanExecute));
+            this.CommandBindings.Add(new CommandBinding(CommandsManager.ResumeScript, this.ResumeScript_Executed, this.ResumeScript_CanExecute));
+            this.CommandBindings.Add(new CommandBinding(CommandsManager.StopScript, this.StopScript_Executed, this.StopScript_CanExecute));
+            this.CommandBindings.Add(new CommandBinding(CommandsManager.EditLabware, this.EditLabware_Executed, this.EditLabware_CanExecute));
+            //this.CommandBindings.Add(new CommandBinding(CommandsManager.Instance.NewLabware, this.NewLabware_Executed, this.NewLabware_CanExecute)); don't support new
+            this.CommandBindings.Add(new CommandBinding(CommandsManager.DuplicateLabware, this.DuplicateLabware_Executed, this.DuplicateLabware_CanExecute));
+            this.CommandBindings.Add(new CommandBinding(CommandsManager.DeleteLabware, this.DeleteLabware_Executed, this.DeleteLabware_CanExecute));
         }
         #endregion
 
