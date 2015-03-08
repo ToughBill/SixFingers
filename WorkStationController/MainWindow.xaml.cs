@@ -83,18 +83,18 @@ namespace WorkstationController
 
         private void EditLabware_Executed(object sender, ExecutedRoutedEventArgs e)
         {
-            Labware selectedLW = (Labware)this.lb_labwares.SelectedItem;
-            if (selectedLW == null || this.ActivateEditingTab(selectedLW.TypeName))
+            Labware selectedLabware = e.Parameter != null? (Labware)e.Parameter: (Labware)this.lb_labwares.SelectedItem;
+            if (selectedLabware == null || this.ActivateEditingTab(selectedLabware.TypeName))
                 return;
 
             LabwareEditor editor = new LabwareEditor();
-            editor.DataContext = selectedLW;
+            editor.DataContext = selectedLabware;
             this.AddTabItem(editor);
         }
 
         private void EditLabware_CanExecute(object sender, CanExecuteRoutedEventArgs e)
         {
-            e.CanExecute = this.HasLabwareSelected();
+            e.CanExecute = this.HasLabwareSelected() || e.Parameter is Labware;
         }
 
         //private void NewLabware_Executed(object sender, ExecutedRoutedEventArgs e)
@@ -141,6 +141,22 @@ namespace WorkstationController
             return this.lb_labwares.SelectedItem != null && this.lb_labwares.SelectedIndex != -1;
         }
 
+        private void EditCarrier_CanExecute(object sender, CanExecuteRoutedEventArgs e)
+        {
+            e.CanExecute = true;
+        }
+
+        private void EditCarrier_Executed(object sender, ExecutedRoutedEventArgs e)
+        {
+            Carrier selectedCarrier = (Carrier)e.Parameter;
+            if (selectedCarrier == null || this.ActivateEditingTab(selectedCarrier.TypeName))
+                return;
+
+            CarrierEditor editor = new CarrierEditor();
+            editor.DataContext = selectedCarrier;
+            this.AddTabItem(editor);
+        }
+
         static MainWindow()
         {
             // Save command
@@ -164,7 +180,6 @@ namespace WorkstationController
             CommandsManager.NewCarrier = new RoutedUICommand("New Carrier", "NewCarrier", typeof(MainWindow), null);
             CommandsManager.DuplicateCarrier = new RoutedUICommand("Duplicate Carrier", "DuplicateCarrier", typeof(MainWindow), null);
             CommandsManager.DeleteCarrier = new RoutedUICommand("Delete Carrier", "DeleteCarrier", typeof(MainWindow), null);
-
         }
         #endregion
 
@@ -227,7 +242,10 @@ namespace WorkstationController
             //this.CommandBindings.Add(new CommandBinding(CommandsManager.Instance.NewLabware, this.NewLabware_Executed, this.NewLabware_CanExecute)); don't support new
             this.CommandBindings.Add(new CommandBinding(CommandsManager.DuplicateLabware, this.DuplicateLabware_Executed, this.DuplicateLabware_CanExecute));
             this.CommandBindings.Add(new CommandBinding(CommandsManager.DeleteLabware, this.DeleteLabware_Executed, this.DeleteLabware_CanExecute));
+            this.CommandBindings.Add(new CommandBinding(CommandsManager.EditCarrier, this.EditCarrier_Executed, this.EditCarrier_CanExecute));
         }
+
+     
         #endregion
 
         #region Dynamic TabItem

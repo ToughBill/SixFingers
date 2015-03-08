@@ -78,6 +78,7 @@ namespace WorkstationController.VisualElement.Uitility
         {
             _myCanvas.CaptureMouse();
         }
+
         /// <summary>
         /// selected UI element
         /// </summary>
@@ -106,7 +107,6 @@ namespace WorkstationController.VisualElement.Uitility
             _myCanvas.PreviewMouseLeftButtonUp += myCanvas_PreviewMouseLeftButtonUp;
             _myCanvas.PreviewMouseRightButtonDown += _myCanvas_PreviewMouseRightButtonDown;
             _myCanvas.PreviewMouseRightButtonUp += _myCanvas_PreviewMouseRightButtonUp;
-            _myCanvas.IsVisibleChanged += _myCanvas_IsVisibleChanged;
             _myCanvas.MouseMove += myCanvas_MouseMove;
             PipettorElementManager.Instance.onWareChanged += Instance_onWareChanged;
         }
@@ -212,12 +212,6 @@ namespace WorkstationController.VisualElement.Uitility
 
         #endregion
         #region context menu
-        void _myCanvas_IsVisibleChanged(object sender, DependencyPropertyChangedEventArgs e)
-        {
-             //if (onWareContextMenuFired != null)
-             //   onWareContextMenuFired(this, new ContextEvtArgs(null, new Point(0,0), false));
-        }
-
         void _myCanvas_PreviewMouseRightButtonDown(object sender, MouseButtonEventArgs e)
         {
             Debug.WriteLine("Right Mouse Down");
@@ -226,8 +220,6 @@ namespace WorkstationController.VisualElement.Uitility
             _myCanvas.ContextMenu = BuildMenu(_selectedUIElement.Ware);
 
         }
-
-        
         #endregion
 
         #region select UIElement, and prepare move

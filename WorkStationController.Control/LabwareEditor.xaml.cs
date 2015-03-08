@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Text;
@@ -23,35 +24,20 @@ namespace WorkstationController.Control
     /// </summary>
     public partial class LabwareEditor : UserControl
     {
-        Labware _labware;
-        
         /// <summary>
         /// ctor
         /// </summary>
         public LabwareEditor()
         {
             InitializeComponent();
-            this.Loaded += LabwareUserControl_Loaded;
-        }
-
-        /// <summary>
-        /// ctor
-        /// </summary>
-        /// <param name="labware"></param>
-        public LabwareEditor(Labware labware):this()
-        {
-            _labware = labware;
-        }
-
-        void LabwareUserControl_Loaded(object sender, RoutedEventArgs e)
-        {
             Labware labware = this.DataContext as Labware;
-            if (labware != null)
-            {
-                //txtGrid.Text = labware.GridID.ToString();
-                this._colorPicker.SelectedColor = labware.BackgroundColor;
-            }
+            //AbsolutionRelativeXPositionConverter.offset = labware.GridID * Worktable.DistanceBetweenAdjacentPins;
+            //if( labware.ParentCarrier != null)
+            //{
+            //    labware.ParentCarrier.Sites[labware.SiteID-1].
+            //}
         }
+
 
         private void OnSaveButtonClick(object sender, RoutedEventArgs e)
         {
@@ -62,4 +48,38 @@ namespace WorkstationController.Control
             PipettorElementManager.Instance.SavePipettorElement(labware);
         }
     }
+
+
+    public class AbsolutionRelativeXPositionConverter : IValueConverter
+    {
+        public static int offset = 0;
+        public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            int relativeValue = int.Parse(value.ToString());
+            return relativeValue + offset;
+        }
+
+        public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            int absoluteValue = int.Parse(value.ToString());
+            return absoluteValue - offset;
+        }
+    }
+
+    public class AbsolutionRelativYPositionConverter : IValueConverter
+    {
+        public static int offset = 0;
+        public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            int relativeValue = int.Parse(value.ToString());
+            return relativeValue + offset;
+        }
+
+        public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            int absoluteValue = int.Parse(value.ToString());
+            return absoluteValue - offset;
+        }
+    }
+
 }

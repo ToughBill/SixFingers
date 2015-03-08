@@ -49,7 +49,7 @@ namespace WorkstationController.Core.Data
     {
         static private int DuplicateNumber = 1;
 
-        private int         _siteID = 0;
+        private int         _siteID = 1;
         private Carrier     _parentCarrier = null;
         private WellsInfo   _wellsInfo = new WellsInfo();
         private ZValues     _zValues = new ZValues();
@@ -155,6 +155,7 @@ namespace WorkstationController.Core.Data
             _dimension = new Dimension();
             _wellsInfo = new WellsInfo();
         }
+
 
         /// <summary>
         /// the grid
