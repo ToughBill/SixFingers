@@ -97,19 +97,19 @@ namespace WorkstationController
             e.CanExecute = this.HasLabwareSelected() || e.Parameter is Labware;
         }
 
-        //private void NewLabware_Executed(object sender, ExecutedRoutedEventArgs e)
-        //{
-        //    Labware labware = new Labware();
-        //    LabwareEditor editor = new LabwareEditor();
-        //    editor.DataContext = labware;
-        //    this.AddTabItem(editor);
-        //}
+        private void NewLabware_Executed(object sender, ExecutedRoutedEventArgs e)
+        {
+            Labware labware = new Labware();
+            LabwareEditor editor = new LabwareEditor();
+            editor.DataContext = labware;
+            this.AddTabItem(editor);
+        }
 
-        //private void NewLabware_CanExecute(object sender, CanExecuteRoutedEventArgs e)
-        //{
-        //    // New command is always enabled
-        //    e.CanExecute = true;
-        //}
+        private void NewLabware_CanExecute(object sender, CanExecuteRoutedEventArgs e)
+        {
+            // New command is always enabled
+            e.CanExecute = true;
+        }
 
         private void DuplicateLabware_Executed(object sender, ExecutedRoutedEventArgs e)
         {
@@ -238,10 +238,12 @@ namespace WorkstationController
             this.CommandBindings.Add(new CommandBinding(CommandsManager.StartScript, this.StartScript_Executed, this.StartScript_CanExecute));
             this.CommandBindings.Add(new CommandBinding(CommandsManager.ResumeScript, this.ResumeScript_Executed, this.ResumeScript_CanExecute));
             this.CommandBindings.Add(new CommandBinding(CommandsManager.StopScript, this.StopScript_Executed, this.StopScript_CanExecute));
+            
             this.CommandBindings.Add(new CommandBinding(CommandsManager.EditLabware, this.EditLabware_Executed, this.EditLabware_CanExecute));
-            //this.CommandBindings.Add(new CommandBinding(CommandsManager.Instance.NewLabware, this.NewLabware_Executed, this.NewLabware_CanExecute)); don't support new
+            this.CommandBindings.Add(new CommandBinding(CommandsManager.NewLabware, this.NewLabware_Executed, this.NewLabware_CanExecute)); 
             this.CommandBindings.Add(new CommandBinding(CommandsManager.DuplicateLabware, this.DuplicateLabware_Executed, this.DuplicateLabware_CanExecute));
             this.CommandBindings.Add(new CommandBinding(CommandsManager.DeleteLabware, this.DeleteLabware_Executed, this.DeleteLabware_CanExecute));
+            
             this.CommandBindings.Add(new CommandBinding(CommandsManager.EditCarrier, this.EditCarrier_Executed, this.EditCarrier_CanExecute));
         }
 

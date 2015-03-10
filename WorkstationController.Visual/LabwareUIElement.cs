@@ -104,7 +104,7 @@ namespace WorkstationController.VisualElement
             //draw wells
             int cols = _labware.WellsInfo.NumberOfWellsX;
             int rows = _labware.WellsInfo.NumberOfWellsY;
-            Vector vector = new Vector(xPos + wellDefaultOffsetToSiteMargin, yPos + wellDefaultOffsetToSiteMargin);
+            Vector vector = new Vector(xPos, yPos);
             for (int row = 0; row < rows; row++)
             {
                 for (int col = 0; col < cols; col++)
