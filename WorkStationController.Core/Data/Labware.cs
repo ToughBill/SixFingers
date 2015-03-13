@@ -54,7 +54,7 @@ namespace WorkstationController.Core.Data
         private WellsInfo   _wellsInfo = new WellsInfo();
         private ZValues     _zValues = new ZValues();
         protected string    _label = string.Empty;
-
+        private CoordinateInfo _coordinateInfo = null;
         /// <summary>
         /// The site on which the labware installed on the carrier, 1 based
         /// </summary>
@@ -131,26 +131,29 @@ namespace WorkstationController.Core.Data
             }
         }
 
-
+        /// <summary>
+        /// the coordinate of the labware on table
+        /// </summary>
+        [XmlIgnore]
         public CoordinateInfo CoordinateOnTable
         {
             get
             {
-                return GetCoordinateInfo();
+                _coordinateInfo = GetCoordinateInfo();
+                return _coordinateInfo;
             }
             set
             {
-                AdjustWellInfo(value);
+                SetProperty(ref _coordinateInfo, value);
             }
-
         }
 
-        private void AdjustWellInfo(CoordinateInfo coordinateInfo)
-        {
-            Vector offsetVec = GetTopLeftSiteVector();
-            coordinateInfo.Adjust(offsetVec);
-            _wellsInfo.UpdateCoordination(coordinateInfo);
-        }
+        //private void AdjustWellInfo(CoordinateInfo coordinateInfo)
+        //{
+        //    Vector offsetVec = GetTopLeftSiteVector();
+        //    coordinateInfo.Adjust(offsetVec);
+        //    _wellsInfo.UpdateCoordination(coordinateInfo);
+        //}
 
 
         private Vector GetTopLeftSiteVector()
@@ -177,7 +180,9 @@ namespace WorkstationController.Core.Data
         private CoordinateInfo GetCoordinateInfo()
         {
             Vector topLeftSite = GetTopLeftSiteVector();
-            return new CoordinateInfo(_wellsInfo, topLeftSite);
+            if(_coordinateInfo == null || _coordinateInfo.Offset != topLeftSite)
+                _coordinateInfo = new CoordinateInfo(_wellsInfo, topLeftSite);
+            return _coordinateInfo;
             
         }
 
@@ -436,18 +441,23 @@ namespace WorkstationController.Core.Data
     /// </summary>
     public class CoordinateInfo : BindableBase
     {
-        private double      _firstWellPositionX;
-        private double      _firstWellPositionY;
-        private double      _lastWellPositionX;
-        private double      _lastWellPositionY;
 
+
+        private WellsInfo _wellsInfo;
+        private Vector _offsetVec;
 
         public CoordinateInfo(WellsInfo wellsInfo,Vector offsetVec)
         {
-            _firstWellPositionX += offsetVec.X;
-            _firstWellPositionY += offsetVec.Y;
-            _lastWellPositionX += offsetVec.X;
-            _lastWellPositionY += offsetVec.Y;
+            _wellsInfo = wellsInfo;
+            _offsetVec = offsetVec;
+        }
+
+        public Vector Offset
+        {
+            get
+            {
+                return _offsetVec;
+            }
         }
 
         /// <summary>
@@ -457,11 +467,11 @@ namespace WorkstationController.Core.Data
         {
             get
             {
-                return _firstWellPositionX;
+                return _wellsInfo.FirstWellPositionX + _offsetVec.X;
             }
             set
             {
-                SetProperty(ref _firstWellPositionX, value);
+                _wellsInfo.FirstWellPositionX = value - _offsetVec.X;
             }
         }
 
@@ -472,11 +482,11 @@ namespace WorkstationController.Core.Data
         {
             get
             {
-                return _firstWellPositionY;
+                return _wellsInfo.FirstWellPositionY + _offsetVec.Y;
             }
             set
             {
-                SetProperty(ref _firstWellPositionY, value);
+                _wellsInfo.FirstWellPositionY = value - _offsetVec.Y;
             }
         }
 
@@ -487,11 +497,11 @@ namespace WorkstationController.Core.Data
         {
             get
             {
-                return _lastWellPositionX;
+                return _wellsInfo.LastWellPositionX + _offsetVec.X;
             }
             set
             {
-                SetProperty(ref _lastWellPositionX, value);
+                _wellsInfo.LastWellPositionX = value - _offsetVec.X;
             }
         }
 
@@ -502,21 +512,14 @@ namespace WorkstationController.Core.Data
         {
             get
             {
-                return _lastWellPositionY;
+                return _wellsInfo.LastWellPositionY + _offsetVec.Y;
             }
             set
             {
-                SetProperty(ref _lastWellPositionY, value);
+                _wellsInfo.LastWellPositionY = value - _offsetVec.Y;
             }
         }
-
-        internal void Adjust(Vector offsetVec)
-        {
-            FirstWellPositionX += offsetVec.X;
-            FirstWellPositionY += offsetVec.Y;
-            LastWellPositionX += offsetVec.X;
-            LastWellPositionY += offsetVec.Y;
-        }
+ 
     }
 
     /// <summary>

@@ -39,7 +39,7 @@
             <ColumnDefinition Width="*"/>
         </Grid.ColumnDefinitions>
         <Grid.Resources>
-            <control:AbsolutionRelativeXPositionConverter x:Key="PositionConverter" />
+           
             <Style x:Name="LabelStyle" TargetType="Label">
                 <Setter Property="VerticalContentAlignment" Value="Center"/>
             </Style>
@@ -91,10 +91,10 @@
         <Button Grid.Row="5" Grid.Column="6" Content="move to"/>
         <Button Grid.Row="6" Grid.Column="5" Content="&lt;&lt;transfer"/>
         <Button Grid.Row="6" Grid.Column="6" Content="move to"/>
-        <TextBox Grid.Row="5" Grid.Column="2" Text="{Binding Path=CoordinateInfo.FirstWellPositionX, Converter={StaticResource PositionConverter}}"/>
-        <TextBox Grid.Row="5" Grid.Column="4" Text="{Binding Path=CoordinateInfo.FirstWellPositionY, Converter={StaticResource PositionConverter}}"/>
-        <TextBox Grid.Row="6" Grid.Column="2" Text="{Binding Path=CoordinateInfo.LastWellPositionX, Converter={StaticResource PositionConverter}}"/>
-        <TextBox Grid.Row="6" Grid.Column="4" Text="{Binding Path=CoordinateInfo.LastWellPositionY, Converter={StaticResource PositionConverter}}"/>
+        <TextBox Grid.Row="5" Grid.Column="2" Text="{Binding Path=WellsInfo.FirstWellPositionX,UpdateSourceTrigger=LostFocus, Mode =TwoWay}"/>
+        <TextBox Grid.Row="5" Grid.Column="4" Text="{Binding Path=CoordinateOnTable.FirstWellPositionY, Mode =TwoWay}"/>
+        <TextBox Grid.Row="6" Grid.Column="2" Text="{Binding Path=CoordinateOnTable.LastWellPositionX, Mode =TwoWay}"/>
+        <TextBox Grid.Row="6" Grid.Column="4" Text="{Binding Path=CoordinateOnTable.LastWellPositionY, Mode =TwoWay}"/>
         <!--ZValues-->
         <TextBlock Grid.Row="7" Grid.Column="4" Text="Z" VerticalAlignment="Bottom" HorizontalAlignment="Center"/>
         <Label Grid.Row="8" Grid.Column="0" Content="Z-Travel" Grid.ColumnSpan="2" HorizontalContentAlignment="Left"/>
