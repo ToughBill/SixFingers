@@ -97,6 +97,8 @@ namespace WorkstationController.Control
         public void SuggestCandidate(WareBase wareBase)
         {
             var uiElement = UIElementFactory.CreateUIElement(wareBase, _worktable.Children);
+            int zIndex = uiElement is CarrierUIElement ? 10 : 20;
+            Grid.SetZIndex(uiElement, zIndex);
             _uiController.UIElementCandidate = uiElement;
             Mouse.OverrideCursor = Cursors.Hand;
             _uiController.CaptureMouse();
