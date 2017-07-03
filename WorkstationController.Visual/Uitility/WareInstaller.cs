@@ -41,7 +41,6 @@ namespace WorkstationController.VisualElement.Uitility
                 bool bFound = FindSuitableCarrier(position, labware.TypeName, container, ref carrierUIElement, ref siteID);
                 if(bFound)
                 {
-                    labware.ParentCarrier = carrierUIElement.Carrier;
                     labware.SiteID = siteID;
                 }
                 carrierUIElement.Carrier.AddLabware(labware);
