@@ -16,15 +16,14 @@ namespace WorkstationController.Core.Data
         /// Create the supported command list
         /// </summary>
         /// <returns>The supported command list</returns>
-        public static List<Command> CreatSupportedCommands()
+        public static List<string> CreatSupportedCommands()
         {
-            List<Command> commands = new List<Command>();
-
-            commands.Add(new Command("Aspiration", ""));
-            commands.Add(new Command("Dispense", ""));
-            commands.Add(new Command("Get DiTi", ""));
-            commands.Add(new Command("Drop DiTi", ""));
-
+            List<string> commands = new List<string>();
+            
+            commands.Add(Aspirate.Name);
+            commands.Add(Dispense.Name);
+            //commands.Add(new Command("Get DiTi", ""));
+            //commands.Add(new Command("Drop DiTi", ""));
             return commands;
         }
 
