@@ -22,7 +22,7 @@ namespace WorkstationController
     {
         #region Private members
         private PipettorElementManager _pipettorElementManager = PipettorElementManager.Instance;
-        private List<Command> _supportedCommands = null;
+        private List<string> _supportedCommands = null;
 
         // Dynamic tab items
         private List<TabItem> _tabItems = new List<TabItem>();
@@ -44,6 +44,10 @@ namespace WorkstationController
 
         private void StartScript_Executed(object sender, ExecutedRoutedEventArgs e)
         {
+            TabItem selectedTab = tabDynamic.SelectedItem as TabItem;
+            RecipeEditor recipeEditor = (RecipeEditor)((Grid)selectedTab.Content).Children[0];
+            recipeEditor.RunScript();
+
         }
 
         private void StartScript_CanExecute(object sender, CanExecuteRoutedEventArgs e)
@@ -197,7 +201,7 @@ namespace WorkstationController
         /// <summary>
         /// Gets the supported commands
         /// </summary>
-        public List<Command> SupportedCommands
+        public List<string> SupportedCommands
         {
             get { return this._supportedCommands; }
         }
