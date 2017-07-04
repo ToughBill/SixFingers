@@ -32,9 +32,12 @@
         <GroupBox Header="Layout" Grid.Row="1" Grid.Column="0" Margin="3">
             <local:WorktableGrid x:Name="_worktable" Background="LightYellow" VerticalAlignment="Stretch" HorizontalAlignment="Stretch" Margin="3"/>
         </GroupBox>
+        <Grid Grid.Column="1">
+            <Button Content="Save" Margin="10,10,5,10" MinWidth="80" Name="btnSave" Click="btnSave_Click"/>
+        </Grid>
         <!--Remove Save button-->
         <!--<StackPanel Grid.Row="1" Grid.Column="1" Orientation="Horizontal" HorizontalAlignment="Right">
-            <Button Content="SAVE" Margin="10,10,5,10" MinWidth="80" Name="btnSave" Click="btnSave_Click"/>
+            
         </StackPanel>-->
         <TextBox Grid.Row="0" Grid.Column="0" Name="txtRecipeName"  HorizontalAlignment="Left" Height="23" Margin="98,15.2,0,0" TextWrapping="Wrap" Text="{Binding Path=Name, Mode=TwoWay}" VerticalAlignment="Top" Width="302"/>
         <Label Content="Recipe Name:"  Grid.Row="0" Grid.Column="0" HorizontalAlignment="Left" Margin="10,13.2,0,0" VerticalAlignment="Top" RenderTransformOrigin="1.292,0.297" Width="100"/>

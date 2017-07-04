@@ -40,7 +40,6 @@ namespace WorkstationController.Control
             _worktable.SizeChanged += uiContainer_SizeChanged;
             _uiController = new UIMovementsController(_worktable, recipe);
 
-         
             if (recipe == null)
                 _recipe = new Recipe();
 
@@ -158,6 +157,24 @@ namespace WorkstationController.Control
         }
 
         #endregion
+
+        public void RunScript()
+        {
+            foreach(var uiElement in _worktable.Children)
+            {
+                if(uiElement is LabwareUIElement)
+                {
+                    LabwareUIElement labwareUIElement = (LabwareUIElement)uiElement;
+                    if(labwareUIElement.Label == "label2")
+                    {
+                        labwareUIElement.DispenseWellIDs.AddRange(new List<int>() { 1, 2 });
+                        labwareUIElement.InvalidateVisual();
+                    }
+                        
+                }
+
+            }
+        }
     }
 
     #region worktable render
