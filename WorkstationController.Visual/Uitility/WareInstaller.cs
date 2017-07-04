@@ -16,6 +16,13 @@ namespace WorkstationController.VisualElement.Uitility
             bool bValid = IsValid(baseUIElement, position, container);
             if (!bValid)
             {
+                if(baseUIElement is LabwareUIElement) //if labware has parent, let it back
+                {
+                    LabwareUIElement labwareUIElement = (LabwareUIElement)baseUIElement;
+                    if (labwareUIElement.Labware.ParentCarrier != null)
+                        return;
+                }
+
                 container.Children.Remove(baseUIElement);
                 if(baseUIElement is CarrierUIElement)
                 {
@@ -41,12 +48,33 @@ namespace WorkstationController.VisualElement.Uitility
                 bool bFound = FindSuitableCarrier(position, labware.TypeName, container, ref carrierUIElement, ref siteID);
                 if(bFound)
                 {
+                    if (labware.ParentCarrier != null)
+                        labware.ParentCarrier.Labwares.Remove(labware);
                     labware.SiteID = siteID;
                 }
                 carrierUIElement.Carrier.AddLabware(labware);
             }
             
         }
+
+        //private static bool NotMoved(Point position, Labware labware, Grid container)
+        //{
+        //    CarrierUIElement carrierUIElement;
+        //    foreach (UIElement uiElement in container.Children)
+        //    {
+        //        if (!(uiElement is CarrierUIElement))
+        //            continue;
+        //        carrierUIElement = uiElement as CarrierUIElement;
+        //        if(carrierUIElement.Carrier.Labwares.Contains(labware))
+        //        {
+        //            int siteID = CarrierUIElement.InvalidSiteIndex;
+        //            bool bFound = carrierUIElement.GetSiteIDAcceptsTheLabware(position, labware.TypeName, ref siteID);
+        //            if (bFound && siteID == labware.SiteID)
+        //                return true;
+        //        }
+        //    }
+        //    return false;
+        //}
 
         private static void RemoveUIElementsOnCarrier(Grid container, CarrierUIElement carrierUIElement)
         {

@@ -250,9 +250,13 @@ namespace WorkstationController.VisualElement.Uitility
        
         private void GetReady4Move(Point ptClick)
         {
-            Debug.WriteLine("GetReady4Move at time: {0}", DateTime.Now.ToString());
+            Debug.WriteLine(string.Format("GetReady4Move at time: {0}", DateTime.Now.ToString()));
             _ptClick = ptClick;
             _selectedUIElement.Selected = true;
+            if(_selectedUIElement is LabwareUIElement)
+            {
+                ((LabwareUIElement)_selectedUIElement).Moving = true;
+            }
             RememberRelativePosition(_selectedUIElement);
             ForgetLabwareParent();
             _myCanvas.CaptureMouse();
@@ -328,6 +332,10 @@ namespace WorkstationController.VisualElement.Uitility
             if (_selectedUIElement == null)
                 return;
 
+            if (_selectedUIElement is LabwareUIElement)
+            {
+                ((LabwareUIElement)_selectedUIElement).Moving = false;
+            }
 
             //pipetting commands need to highlight the labware
             if(otherFormNeedPickup)

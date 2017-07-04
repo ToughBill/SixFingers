@@ -20,7 +20,9 @@ namespace WorkstationController.VisualElement
         /// no well is selected;
         /// </summary>
         Labware _labware;
-
+        public List<int> AspirateWellIDs { get; set; }
+        public List<int> DispenseWellIDs { get; set; }
+        public bool Moving { get; set; }
         const int wellDefaultOffsetToSiteMargin = 120;
 
         /// <summary>
@@ -31,6 +33,8 @@ namespace WorkstationController.VisualElement
         {
             this._labware = labware;
             _children.Add(CreateViusal());
+            AspirateWellIDs = new List<int>();
+            DispenseWellIDs = new List<int>();
         }
         
         /// <summary>
@@ -109,8 +113,20 @@ namespace WorkstationController.VisualElement
             {
                 for (int col = 0; col < cols; col++)
                 {
+                    int wellID = col * rows + row + 1;
+                    Color wellColor = Colors.Black;
+                    if (AspirateWellIDs.Contains(wellID))
+                    {
+                        wellColor = Colors.Green;
+                    }
+
+                    if(DispenseWellIDs.Contains(wellID))
+                    {
+                        wellColor = Colors.Red;
+                    }
+
                     var position = _labware.GetPosition(row, col) + vector;
-                    VisualCommon.DrawCircle(position, _labware.WellsInfo.WellRadius, drawingContext,Colors.Black);
+                    VisualCommon.DrawCircle(position, _labware.WellsInfo.WellRadius, drawingContext, wellColor);
                 }
             }
             drawingContext.Close();
@@ -121,7 +137,7 @@ namespace WorkstationController.VisualElement
             int pinPos = (mapGrid - 1) * Worktable.DistanceBetweenAdjacentPins + (int)_worktable.FirstPinPosition.X;
             xPos = pinPos;
             yPos = (int)_worktable.FirstPinPosition.Y;
-            if (carrier != null)
+            if (carrier != null && (!Moving))
             {
                 xPos = pinPos - (carrier.XOffset);  //get carrier x start pos
                 yPos -= carrier.YOffset;
