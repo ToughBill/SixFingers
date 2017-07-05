@@ -5,7 +5,7 @@ using System.Text;
 
 namespace WorkstationController.Core.Data
 {
-    public class PipettingCommand
+    public class PipettingCommand : IPipettorCommand
     {
         List<int> _tipsIDUsed;
         List<int> _selectedWellIDs;
@@ -21,6 +21,7 @@ namespace WorkstationController.Core.Data
             bool isAspirate,
             int volumeUL)
         {
+            
             _tipsIDUsed = tipIDUsed;
             _selectedWellIDs = selectedWellIDs;
             _isAspirate = isAspirate;
@@ -76,5 +77,11 @@ namespace WorkstationController.Core.Data
             }
         }
 
+
+        public string Name
+        {
+            get;
+            set;
+        }
     }
 }

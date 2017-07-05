@@ -195,7 +195,7 @@ where T : class
         /// <param name="radius"></param>
         /// <param name="drawingContext"></param>
         /// <param name="color"></param>
-        public static void DrawCircle(Point position, int radius, DrawingContext drawingContext, Color color)
+        public static void DrawCircle(Point position, int radius, DrawingContext drawingContext, Color color, bool fill = false)
         {
             double xPixel = VisualCommon.Convert2PixelXUnit(position.X);
             double yPixel = VisualCommon.Convert2PixelYUnit(position.Y);
@@ -204,7 +204,8 @@ where T : class
             double rXPixel = VisualCommon.Convert2PixelXUnit(radius);
             double rYPixel = VisualCommon.Convert2PixelYUnit(radius);
             Brush brush = new SolidColorBrush(color);
-            drawingContext.DrawEllipse(null, new Pen(new SolidColorBrush(color), 1), new Point(xPixel, yPixel), rXPixel, rYPixel);
+            Brush fillBrush = fill ? brush : null;
+            drawingContext.DrawEllipse(fillBrush, new Pen(new SolidColorBrush(color), 1), new Point(xPixel, yPixel), rXPixel, rYPixel);
         }
 
         private static double GetXShift()

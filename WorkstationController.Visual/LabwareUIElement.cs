@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Timers;
 using System.Windows;
 using System.Windows.Media;
 using WorkstationController.Core.Data;
@@ -20,11 +21,25 @@ namespace WorkstationController.VisualElement
         /// no well is selected;
         /// </summary>
         Labware _labware;
+
+        /// <summary>
+        /// the wells to be aspirated from
+        /// </summary>
         public List<int> AspirateWellIDs { get; set; }
+
+        
+        /// <summary>
+        /// the wells to be dispensed to
+        /// </summary>
         public List<int> DispenseWellIDs { get; set; }
+
+        /// <summary>
+        /// whether the labware is being dragging
+        /// </summary>
         public bool Moving { get; set; }
         const int wellDefaultOffsetToSiteMargin = 120;
-
+        private bool blowUp = false;
+        private Timer timer = new Timer(1000);
         /// <summary>
         /// ctor
         /// </summary>
@@ -35,6 +50,21 @@ namespace WorkstationController.VisualElement
             _children.Add(CreateViusal());
             AspirateWellIDs = new List<int>();
             DispenseWellIDs = new List<int>();
+            timer.Elapsed += timer_Elapsed;
+            timer.Start();
+        }
+
+        void timer_Elapsed(object sender, ElapsedEventArgs e)
+        {
+            if(AspirateWellIDs.Count > 0 || DispenseWellIDs.Count > 0)
+            {
+                blowUp = !blowUp;
+                this.Dispatcher.Invoke(() =>
+                {
+                    InvalidateVisual();
+                });
+            }
+                
         }
         
         /// <summary>
@@ -115,18 +145,22 @@ namespace WorkstationController.VisualElement
                 {
                     int wellID = col * rows + row + 1;
                     Color wellColor = Colors.Black;
+
+                    bool bFill = false;
                     if (AspirateWellIDs.Contains(wellID))
                     {
                         wellColor = Colors.Green;
+                        bFill = true;
                     }
 
                     if(DispenseWellIDs.Contains(wellID))
                     {
                         wellColor = Colors.Red;
+                        bFill = true;
                     }
-
+                    bFill &= blowUp;
                     var position = _labware.GetPosition(row, col) + vector;
-                    VisualCommon.DrawCircle(position, _labware.WellsInfo.WellRadius, drawingContext, wellColor);
+                    VisualCommon.DrawCircle(position, _labware.WellsInfo.WellRadius, drawingContext, wellColor, bFill);
                 }
             }
             drawingContext.Close();

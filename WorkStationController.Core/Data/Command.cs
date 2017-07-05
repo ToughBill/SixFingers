@@ -11,7 +11,8 @@ namespace WorkstationController.Core.Data
     {
         private string _name       = string.Empty;
         private string _parameters = string.Empty;
-
+        static public string aspirate = "Aspirate";
+        static public string dispense = "Dispense";
         /// <summary>
         /// Create the supported command list
         /// </summary>
@@ -20,10 +21,8 @@ namespace WorkstationController.Core.Data
         {
             List<string> commands = new List<string>();
             
-            commands.Add(Aspirate.Name);
-            commands.Add(Dispense.Name);
-            //commands.Add(new Command("Get DiTi", ""));
-            //commands.Add(new Command("Drop DiTi", ""));
+            commands.Add(aspirate);
+            commands.Add(dispense);
             return commands;
         }
 

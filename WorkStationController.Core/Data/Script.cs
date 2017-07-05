@@ -10,7 +10,7 @@ namespace WorkstationController.Core.Data
     /// Script definition, that is a serise of Command instances.
     /// </summary>
     [Serializable]
-    public class Script : ObservableCollection<Command>
+    public class Script : ObservableCollection<IPipettorCommand>
     {
         /// <summary>
         /// Default constructor
@@ -23,7 +23,7 @@ namespace WorkstationController.Core.Data
         /// </summary>
         /// <param name="index">The zero-based index at which command should be inserted.</param>
         /// <param name="command">The command to insert</param>
-        public void InsertCommand(int index, Command command)
+        public void InsertCommand(int index, IPipettorCommand command)
         {
             this.Insert(index, command);
         }

@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Diagnostics;
 using System.Globalization;
+using System.Threading;
+using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
@@ -158,23 +160,22 @@ namespace WorkstationController.Control
 
         #endregion
 
-        public void RunScript()
+        public async void RunScript(List<IPipettorCommand> commands)
         {
-            foreach(var uiElement in _worktable.Children)
+            ScriptVisualizer scrpitVisualizer = new ScriptVisualizer(_worktable, commands);
+            for (int i = 0; i < commands.Count; i++)
             {
-                if(uiElement is LabwareUIElement)
-                {
-                    LabwareUIElement labwareUIElement = (LabwareUIElement)uiElement;
-                    if(labwareUIElement.Label == "label2")
-                    {
-                        labwareUIElement.DispenseWellIDs.AddRange(new List<int>() { 1, 2 });
-                        labwareUIElement.InvalidateVisual();
-                    }
-                        
-                }
-
+                scrpitVisualizer.ExecuteOneCommand();
+                await PutTaskDelay();
             }
+            scrpitVisualizer.Finish();
         }
+
+        async Task PutTaskDelay()
+        {
+            await Task.Delay(1000);
+
+        } 
     }
 
     #region worktable render

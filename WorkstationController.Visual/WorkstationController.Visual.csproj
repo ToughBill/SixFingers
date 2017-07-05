@@ -54,7 +54,7 @@
     <Compile Include="LabwareUIElementFixedSize.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Uitility\LabelChangeEventArgs.cs" />
-    <Compile Include="Uitility\ScriptParser.cs" />
+    <Compile Include="Uitility\ScriptVisualizer.cs" />
     <Compile Include="Uitility\WareInstaller.cs" />
     <Compile Include="Uitility\MovementsController.cs" />
     <Compile Include="Uitility\UIElementFactory.cs" />
