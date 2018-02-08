@@ -34,13 +34,13 @@ namespace WorkstationController.VisualElement.Uitility
             }
             
             int lineNum = 1;
-            List<PipettingCommand> pipettingCmds = new List<PipettingCommand>();
+            List<AdvancedPipettingCommand> pipettingCmds = new List<AdvancedPipettingCommand>();
             foreach(var command in commands)
             {
                 
-                if(command is PipettingCommand)
+                if(command is AdvancedPipettingCommand)
                 {
-                    PipettingCommand pipettingCmd = (PipettingCommand)command;
+                    AdvancedPipettingCommand pipettingCmd = (AdvancedPipettingCommand)command;
                     pipettingCmds.Add(pipettingCmd);
                     string label = pipettingCmd.LabwareLabel;
                     if(!_labwareUIElements.Exists(x=>x.Label == label))
@@ -70,9 +70,9 @@ namespace WorkstationController.VisualElement.Uitility
             }
             var currentCmd = _commands[currentCmdIndex];
             var currentUI = cmd_UIElement[currentCmd];
-            if(currentCmd is PipettingCommand)
+            if(currentCmd is AdvancedPipettingCommand)
             {
-                PipettingCommand pipettingCmd = (PipettingCommand)currentCmd;
+                AdvancedPipettingCommand pipettingCmd = (AdvancedPipettingCommand)currentCmd;
                 if(pipettingCmd.IsAspirate)
                 {
                     currentUI.AspirateWellIDs = pipettingCmd.SelectedWellIDs;

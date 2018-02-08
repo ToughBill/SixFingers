@@ -47,8 +47,6 @@ namespace WorkstationController.Core.Data
     [Serializable]
     public class Labware : WareBase
     {
-        static private int DuplicateNumber = 1;
-
         private int         _siteID = 1;
         private Carrier     _parentCarrier = null;
         private WellsInfo   _wellsInfo = new WellsInfo();
@@ -144,8 +142,19 @@ namespace WorkstationController.Core.Data
             }
             set
             {
-                SetProperty(ref _coordinateInfo, value);
+                //SetProperty(ref _coordinateInfo, value);
+                _coordinateInfo = value;
+                UpdateWellInfos();
             }
+        }
+
+        private void UpdateWellInfos()
+        {
+            Vector topLeftCurrentSite = GetTopLeftSiteVector();
+            WellsInfo.FirstWellPositionX = _coordinateInfo.FirstWellPositionX - topLeftCurrentSite.X;
+            WellsInfo.FirstWellPositionY = _coordinateInfo.FirstWellPositionY - topLeftCurrentSite.Y;
+            WellsInfo.LastWellPositionX = _coordinateInfo.LastWellPositionX - topLeftCurrentSite.X;
+            WellsInfo.LastWellPositionY = _coordinateInfo.LastWellPositionY - topLeftCurrentSite.Y;
         }
 
         //private void AdjustWellInfo(CoordinateInfo coordinateInfo)
@@ -162,9 +171,9 @@ namespace WorkstationController.Core.Data
                 return new Vector(0, 0);
             
             Worktable worktable = Configurations.Instance.Worktable;
-            int pinPos = (_parentCarrier.GridID - 1) * Worktable.DistanceBetweenAdjacentPins + (int)worktable.FirstPinPosition.X;
+            int pinPos = (_parentCarrier.GridID - 1) * Worktable.DistanceBetweenAdjacentPins + (int)worktable.TopLeftPinPosition.X;
             int xPos = pinPos;
-            int yPos = (int)worktable.FirstPinPosition.Y;
+            int yPos = (int)worktable.TopLeftPinPosition.Y;
             if (_parentCarrier != null)
             {
                 xPos = pinPos - (_parentCarrier.XOffset);  //get carrier x start pos

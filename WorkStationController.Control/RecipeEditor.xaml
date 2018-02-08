@@ -14,9 +14,9 @@
         </Grid.RowDefinitions>
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="3*"/>
-            <ColumnDefinition Width="2*"/>
+            <!--<ColumnDefinition Width="2*"/>-->
         </Grid.ColumnDefinitions>
-        <GroupBox Header="Script" Grid.Row="1" Grid.Column="1" Margin="3">
+        <!--<GroupBox Header="Script" Grid.Row="1" Grid.Column="1" Margin="3">
             <Grid>
                 <Grid.RowDefinitions>
                     <RowDefinition Height="8*"/>
@@ -28,13 +28,13 @@
                     <TextBox x:Name="_commandEditor" Margin="2" Width="149"/>
                 </StackPanel>
             </Grid>
-        </GroupBox>
+        </GroupBox>-->
         <GroupBox Header="Layout" Grid.Row="1" Grid.Column="0" Margin="3">
             <local:WorktableGrid x:Name="_worktable" Background="LightYellow" VerticalAlignment="Stretch" HorizontalAlignment="Stretch" Margin="3"/>
         </GroupBox>
-        <Grid Grid.Column="1">
+        <!--<Grid Grid.Column="1">
             <Button Content="Save" Margin="10,10,5,10" MinWidth="80" Name="btnSave" Click="btnSave_Click"/>
-        </Grid>
+        </Grid>-->
         <!--Remove Save button-->
         <!--<StackPanel Grid.Row="1" Grid.Column="1" Orientation="Horizontal" HorizontalAlignment="Right">
             

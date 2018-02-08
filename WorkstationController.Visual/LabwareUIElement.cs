@@ -147,13 +147,13 @@ namespace WorkstationController.VisualElement
                     Color wellColor = Colors.Black;
 
                     bool bFill = false;
-                    if (AspirateWellIDs.Contains(wellID))
+                    if (AspirateWellIDs != null && AspirateWellIDs.Contains(wellID))
                     {
                         wellColor = Colors.Green;
                         bFill = true;
                     }
 
-                    if(DispenseWellIDs.Contains(wellID))
+                    if (DispenseWellIDs != null && DispenseWellIDs.Contains(wellID))
                     {
                         wellColor = Colors.Red;
                         bFill = true;
@@ -168,9 +168,9 @@ namespace WorkstationController.VisualElement
 
         private void CalculatePositions(ref int xPos, ref int yPos, int mapGrid, Carrier carrier)
         {
-            int pinPos = (mapGrid - 1) * Worktable.DistanceBetweenAdjacentPins + (int)_worktable.FirstPinPosition.X;
+            int pinPos = (mapGrid - 1) * Worktable.DistanceBetweenAdjacentPins + (int)_worktable.TopLeftPinPosition.X;
             xPos = pinPos;
-            yPos = (int)_worktable.FirstPinPosition.Y;
+            yPos = (int)_worktable.TopLeftPinPosition.Y;
             if (carrier != null && (!Moving))
             {
                 xPos = pinPos - (carrier.XOffset);  //get carrier x start pos

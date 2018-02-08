@@ -5,23 +5,23 @@ using System.Text;
 
 namespace WorkstationController.Core.Data
 {
-    public class PipettingCommand : IPipettorCommand
+    public class AdvancedPipettingCommand : IPipettorCommand
     {
         List<int> _tipsIDUsed;
         List<int> _selectedWellIDs;
         bool _isAspirate;
-        int _volumeUL;
+        float _volumeUL;
         string _labwareLabel;
         LiquidClass _liquidClass;
         
-        public PipettingCommand(string labwareLabel,
+        public AdvancedPipettingCommand(string labwareLabel,
             List<int> tipIDUsed,
             List<int> selectedWellIDs,
             LiquidClass liquidClass,
             bool isAspirate,
-            int volumeUL)
+            float volumeUL)
         {
-            
+            Name = "AdvPipettingCommand";
             _tipsIDUsed = tipIDUsed;
             _selectedWellIDs = selectedWellIDs;
             _isAspirate = isAspirate;
@@ -29,7 +29,7 @@ namespace WorkstationController.Core.Data
             _labwareLabel = labwareLabel;
         }
 
-        public int VolumeUL
+        public float VolumeUL
         {
             get
             {
@@ -82,6 +82,27 @@ namespace WorkstationController.Core.Data
         {
             get;
             set;
+        }
+    }
+
+    public class BasicPipettingCommand : IPipettorCommand
+    {
+        bool _isAspirate;
+        float _volumeUL;
+        string _labwareLabel;
+        int _wellID;
+
+
+        public BasicPipettingCommand(string labware, int wellID, float volume, bool isAsp )
+        {
+            _labwareLabel = labware;
+            _wellID = wellID;
+            _volumeUL = volume;
+            _isAspirate = isAsp;
+        }
+        public string Name
+        {
+            get;set;
         }
     }
 }

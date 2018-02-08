@@ -4,7 +4,7 @@
         xmlns:local="clr-namespace:WorkstationController"
         xmlns:core="clr-namespace:WorkstationController.Core.Utility;assembly=WorkstationController.Core"
         xmlns:control="clr-namespace:WorkstationController.Control;assembly=WorkstationController.Control"
-        Title="Workstation Controller 0.1" Height="600" Width="1000"
+        Title="Workstation Controller 0.2" Height="600" Width="1000"
         WindowStartupLocation="CenterScreen" WindowState="Maximized" Icon="Resources/logo.ico">
     <Window.Resources>
         <Image x:Key="SaveIcon" x:Shared="False"  Source="/Resources/save.png" Height="20" Width="20"/>

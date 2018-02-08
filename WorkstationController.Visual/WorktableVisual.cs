@@ -53,20 +53,16 @@ namespace WorkstationController.VisualElement
         /// <param name="drawingContext"></param>
         private void DrawPinsSameGrid(int grid, DrawingContext drawingContext)
         {
-            Point ptStart = worktable.FirstPinPosition;
+            Point ptStart = worktable.TopLeftPinPosition;
             int offset = grid * Worktable.DistanceBetweenAdjacentPins;
-            int firstPinX = (int)ptStart.X + offset;
-            int firstPinY = (int)ptStart.Y;
-            DrawPin(firstPinX, firstPinY,worktable.FirstRowPinSize,drawingContext);
+            int topPinX = (int)ptStart.X + offset;
+            int topPinY = (int)ptStart.Y;
+            DrawPin(topPinX, topPinY,worktable.PinSize,drawingContext);
 
-            int secondPinX = firstPinX;
-            int secondPinY = worktable.SecondPinYPosition;
-            DrawPin(secondPinX, secondPinY, worktable.SecondRowPinSize, drawingContext);
-
-            int thirdPinX = firstPinX;
-            int thirdPinY = worktable.ThirdPinYPosition;
-            DrawPin(thirdPinX, thirdPinY, worktable.ThirdRowPinSize, drawingContext);
-            VisualCommon.DrawGridNumber(grid,firstPinX,drawingContext);
+            int bottomPinX = topPinX;
+            int bottomPinY = worktable.BottomLeftPinYPosition;
+            DrawPin(bottomPinX, bottomPinY, worktable.PinSize, drawingContext);
+            VisualCommon.DrawGridNumber(grid,topPinX,drawingContext);
         }
 
         /// <summary>

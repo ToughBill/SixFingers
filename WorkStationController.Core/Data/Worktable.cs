@@ -35,28 +35,16 @@ namespace WorkstationController.Core.Data
         /// <summary>
         /// first row pin, a little smaller
         /// </summary>
-        public Size FirstRowPinSize{ get; set; }
+        public Size PinSize{ get; set; }
 
-        /// <summary>
-        /// second, normally equal to the third.
-        /// </summary>
-        public Size SecondRowPinSize{ get; set; }
-
-        /// <summary>
-        /// third row, 
-        /// </summary>
-        public Size ThirdRowPinSize{ get; set; } 
-
-        /// <summary>
         /// Position of the left-top pin
         /// </summary>
-        public Point FirstPinPosition{ get; set; }
+        public Point TopLeftPinPosition{ get; set; }
 
         /// <summary>
         /// The pin's Y position of the second row, there are 3 rows of pin
         /// </summary>
-        public int SecondPinYPosition{ get; set; }
-        public int ThirdPinYPosition{ get; set; }
+        public int BottomLeftPinYPosition{ get; set; }
 
         /// <summary>
         /// Default constructor
@@ -76,21 +64,15 @@ namespace WorkstationController.Core.Data
         /// <param name="thirdPinYPos"></param>
         /// <param name="gridCount"></param>
         public Worktable(Size sz,
-            Size firstRowPinSize,
-            Size secondRowPinSize, 
-            Size thirdRowPinSize,
-            Point firstPinPos,
-            int secondPinYPos,
-            int thirdPinYPos,
+            Size pinSize,
+            Point topLeftPinPos,
+            int bottomLeftPintYPos,
             int gridCount)
         {
             Size = sz;
-            FirstRowPinSize = firstRowPinSize;
-            SecondRowPinSize = secondRowPinSize;
-            ThirdRowPinSize = thirdRowPinSize;
-            FirstPinPosition = firstPinPos;
-            SecondPinYPosition = secondPinYPos;
-            ThirdPinYPosition = thirdPinYPos;
+            PinSize = pinSize;
+            TopLeftPinPosition = topLeftPinPos;
+            BottomLeftPinYPosition = bottomLeftPintYPos;
             this.GridCount = gridCount;
         }
 

@@ -140,7 +140,7 @@ where T : class
         {
             get
             {
-                return GetXShift() + VisualCommon.Convert2PixelXUnit(Configurations.Instance.Worktable.FirstPinPosition.X);
+                return GetXShift() + VisualCommon.Convert2PixelXUnit(Configurations.Instance.Worktable.TopLeftPinPosition.X);
             }
         }
 
@@ -235,7 +235,7 @@ where T : class
         internal static int FindCorrespondingGrid(double xPixelOnCanvas)
         {
             double unitXPixels = VisualCommon.Convert2PixelXUnit(Worktable.DistanceBetweenAdjacentPins);
-            double startXmm = Configurations.Instance.Worktable.FirstPinPosition.X;
+            double startXmm = Configurations.Instance.Worktable.TopLeftPinPosition.X;
             double xPixelsOffset = VisualCommon.Convert2PixelXUnit(startXmm);
             int mapGrid = (int)(Math.Ceiling((xPixelOnCanvas - GetXShift() - xPixelsOffset) / unitXPixels + 0.5));
             return mapGrid;

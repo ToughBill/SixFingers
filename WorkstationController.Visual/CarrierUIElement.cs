@@ -96,6 +96,7 @@ namespace WorkstationController.VisualElement
             Brush grayBrush = new SolidColorBrush(Color.FromArgb(128, 200, 200, 200));
             Color border = _isSelected ? Colors.Blue : Colors.Black;
             VisualCommon.DrawRect(xPos, yPos, sz, drawingContext, border,grayBrush);
+            DrawGrid(this.Grid,drawingContext);
             
    
             //2 each site
@@ -121,6 +122,14 @@ namespace WorkstationController.VisualElement
             drawingContext.Close();
         }
 
+        private void DrawGrid(int grid, DrawingContext drawingContext)
+        {
+            int y = (int)Configurations.Instance.Worktable.Size.Height;
+            int x = GetGridXPosition(grid);
+            VisualCommon.DrawText(new Point(x, y), grid.ToString(), drawingContext);
+           
+        }
+
         private void BlowUp(ref Rect rc)
         {
             int blowUnit = (int)(15* VisualCommon.containerSize.Height/400.0);
@@ -132,7 +141,7 @@ namespace WorkstationController.VisualElement
 
         private int GetUnderneathPinXStart(int grid)
         {
-            return (int)(_worktable.FirstPinPosition.X + (grid - 1) * Worktable.DistanceBetweenAdjacentPins);
+            return (int)(_worktable.TopLeftPinPosition.X + (grid - 1) * Worktable.DistanceBetweenAdjacentPins);
         }
 
         /// <summary>
@@ -142,7 +151,12 @@ namespace WorkstationController.VisualElement
         /// <returns></returns>
         public int GetBoundingRectXStart(int grid)
         {
-            return (int)(_worktable.FirstPinPosition.X + (grid - 1) * Worktable.DistanceBetweenAdjacentPins - _carrier.XOffset);
+            return (int)(GetGridXPosition(grid) - _carrier.XOffset);
+        }
+
+        public int GetGridXPosition(int grid)
+        {
+            return (int)(_worktable.TopLeftPinPosition.X + (grid - 1) * Worktable.DistanceBetweenAdjacentPins);
         }
 
         /// <summary>
@@ -156,7 +170,7 @@ namespace WorkstationController.VisualElement
 
         private int GetBoundingRectYStart()
         {
-            return (int)(_worktable.FirstPinPosition.Y - _carrier.YOffset);
+            return (int)(_worktable.TopLeftPinPosition.Y - _carrier.YOffset);
         }
 
         internal void HighLightSiteInShadow(Point ptInCanvas,string labwareTypeName,bool bMouseMove = true)

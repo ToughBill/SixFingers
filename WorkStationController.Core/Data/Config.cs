@@ -70,10 +70,9 @@ namespace WorkstationController.Core.Data
         private Configurations()
         {
             Worktable = new Worktable(
-                                     new Size(6000, 3500),
-                                     new Size(5, 30),
-                                     new Size(5, 50),
-                                     new Size(5, 50), new Point(500, 500), 1500, 2500, 20);
+                                     new Size(10000, 3500),
+                                     new Size(50, 50),
+                                     new Point(0, 0), 2500, 38);
         }
     }
 }

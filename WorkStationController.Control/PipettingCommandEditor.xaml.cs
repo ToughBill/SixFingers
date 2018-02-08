@@ -24,7 +24,7 @@ namespace WorkstationController.Control
     {
         Labware _labware;
         bool bOk = false;
-        PipettingCommand pipettingCommand = null;
+        AdvancedPipettingCommand pipettingCommand = null;
         LabwareUIElementFixedSize labwareUIElement = null;
    
 
@@ -69,7 +69,7 @@ namespace WorkstationController.Control
                 SetInfo(strings.MustSelectSomeWell,Brushes.Red);
                 return;
             }
-            pipettingCommand = new PipettingCommand(_labware.Label,new List<int>(){1},
+            pipettingCommand = new AdvancedPipettingCommand(_labware.Label,new List<int>(){1},
                 labwareUIElement.SelectedWellIDs,
                 GetLiquidClass(), 
                 ((string)lblCommandName.Content) == strings.aspirate,volume);
@@ -104,7 +104,7 @@ namespace WorkstationController.Control
             }
         }
 
-        public PipettingCommand PipettingCommand
+        public AdvancedPipettingCommand PipettingCommand
         {
             get
             {

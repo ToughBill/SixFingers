@@ -23,10 +23,10 @@ namespace WorkstationController.Core.UnitTest
             Worktable worktable = new Worktable();
 
             worktable.Size = new Size(2000, 1000);
-            worktable.FirstRowPinSize = new Size(5, 10);
+            worktable.PinSize = new Size(5, 10);
             worktable.SecondRowPinSize = new Size(3, 8);
             worktable.ThirdRowPinSize = new Size(3, 8);
-            worktable.FirstPinPosition = new Point(100, 80);
+            worktable.TopLeftPinPosition = new Point(100, 80);
 
             worktable.SecondPinYPosition = 400;
             worktable.ThirdPinYPosition = 800;
@@ -40,7 +40,7 @@ namespace WorkstationController.Core.UnitTest
             Worktable worktable = Worktable.Create(this._xmlFileWorktablePath);
 
             Assert.AreEqual<Size>(worktable.Size, new Size(2000, 1000));
-            Assert.AreEqual<Point>(worktable.FirstPinPosition, new Point(100, 80));
+            Assert.AreEqual<Point>(worktable.TopLeftPinPosition, new Point(100, 80));
             Assert.AreEqual<double>(worktable.ThirdPinYPosition, 800);
         }
     }

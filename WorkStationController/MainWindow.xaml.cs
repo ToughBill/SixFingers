@@ -34,6 +34,11 @@ namespace WorkstationController
 
         private void SavePipettorElements_Executed(object sender, ExecutedRoutedEventArgs e)
         {
+            RecipeEditor recipeEditor = GetRecipeEditor();
+            if (recipeEditor == null)
+                return;
+            var recipe = recipeEditor.Recipe;
+            PipettorElementManager.Instance.SavePipettorElement(recipe);
 
         }
 
@@ -46,10 +51,10 @@ namespace WorkstationController
         {
             TabItem selectedTab = tabDynamic.SelectedItem as TabItem;
             RecipeEditor recipeEditor = (RecipeEditor)((Grid)selectedTab.Content).Children[0];
-            PipettingCommand pipettingCmd1 = new PipettingCommand("label1", new List<int>() { 1 }, new List<int>() { 1 }, new LiquidClass(), true, 100);
-            PipettingCommand pipettingCmd2 = new PipettingCommand("label1", new List<int>() { 1 }, new List<int>() { 9 }, new LiquidClass(), false, 100);
-            PipettingCommand pipettingCmd3 = new PipettingCommand("label1", new List<int>() { 1 }, new List<int>() { 2 }, new LiquidClass(), true, 100);
-            PipettingCommand pipettingCmd4 = new PipettingCommand("label1", new List<int>() { 1 }, new List<int>() { 10 }, new LiquidClass(), false, 100);
+            AdvancedPipettingCommand pipettingCmd1 = new AdvancedPipettingCommand("label1", new List<int>() { 1 }, new List<int>() { 1 }, new LiquidClass(), true, 100);
+            AdvancedPipettingCommand pipettingCmd2 = new AdvancedPipettingCommand("label1", new List<int>() { 1 }, new List<int>() { 9 }, new LiquidClass(), false, 100);
+            AdvancedPipettingCommand pipettingCmd3 = new AdvancedPipettingCommand("label1", new List<int>() { 1 }, new List<int>() { 2 }, new LiquidClass(), true, 100);
+            AdvancedPipettingCommand pipettingCmd4 = new AdvancedPipettingCommand("label1", new List<int>() { 1 }, new List<int>() { 10 }, new LiquidClass(), false, 100);
             List<IPipettorCommand> pipettingCmds = new List<IPipettorCommand>(){
                 pipettingCmd1,pipettingCmd2,
                 pipettingCmd3,pipettingCmd4

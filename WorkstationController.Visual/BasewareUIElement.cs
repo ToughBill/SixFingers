@@ -210,9 +210,9 @@ namespace WorkstationController.VisualElement
             else
                 carrier = (Carrier)_ware;
             int grid = carrier.GridID;
-            int pinPos = (grid - 1) * Worktable.DistanceBetweenAdjacentPins + (int)_worktable.FirstPinPosition.X;
+            int pinPos = (grid - 1) * Worktable.DistanceBetweenAdjacentPins + (int)_worktable.TopLeftPinPosition.X;
             int xPos = pinPos;
-            int yPos = (int)_worktable.FirstPinPosition.Y;
+            int yPos = (int)_worktable.TopLeftPinPosition.Y;
             xPos = pinPos - (carrier.XOffset);  //get carrier x start pos
             yPos -= carrier.YOffset;
 

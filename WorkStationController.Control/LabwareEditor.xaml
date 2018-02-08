@@ -87,11 +87,11 @@
         <TextBlock Grid.Row="4" Grid.Column="4" Text="Y" VerticalAlignment="Bottom" HorizontalAlignment="Center"/>
         <Label Grid.Row="5" Grid.Column="0" Content="(Well #1)"/>
         <Label Grid.Row="6" Grid.Column="0" Content="(Well #N)"/>
-        <Button Grid.Row="5" Grid.Column="5" Content="&lt;&lt;transfer"/>
-        <Button Grid.Row="5" Grid.Column="6" Content="move to"/>
-        <Button Grid.Row="6" Grid.Column="5" Content="&lt;&lt;transfer"/>
-        <Button Grid.Row="6" Grid.Column="6" Content="move to"/>
-        <TextBox Grid.Row="5" Grid.Column="2" Text="{Binding Path=WellsInfo.FirstWellPositionX,UpdateSourceTrigger=LostFocus, Mode =TwoWay}"/>
+        <Button Grid.Row="5" Grid.Column="5" Content="&lt;&lt;使用当前值"/>
+        <Button Grid.Row="5" Grid.Column="6" Content="移动到"/>
+        <Button Grid.Row="6" Grid.Column="5" Content="&lt;&lt;使用当前值"/>
+        <Button Grid.Row="6" Grid.Column="6" Content="移动到"/>
+        <TextBox Grid.Row="5" Grid.Column="2" Text="{Binding Path=CoordinateOnTable.FirstWellPositionX, Mode =TwoWay}"/>
         <TextBox Grid.Row="5" Grid.Column="4" Text="{Binding Path=CoordinateOnTable.FirstWellPositionY, Mode =TwoWay}"/>
         <TextBox Grid.Row="6" Grid.Column="2" Text="{Binding Path=CoordinateOnTable.LastWellPositionX, Mode =TwoWay}"/>
         <TextBox Grid.Row="6" Grid.Column="4" Text="{Binding Path=CoordinateOnTable.LastWellPositionY, Mode =TwoWay}"/>
@@ -106,20 +106,20 @@
         <TextBox Grid.Row="9" Grid.Column="4" Text="{Binding Path=ZValues.ZStart}"/>
         <TextBox Grid.Row="10" Grid.Column="4" Text="{Binding Path=ZValues.ZDispense}"/>
         <TextBox Grid.Row="11" Grid.Column="4" Text="{Binding Path=ZValues.ZMax}"/>
-        <Button Grid.Row="8" Grid.Column="5" Content="&lt;&lt;transfer"/>
-        <Button Grid.Row="8" Grid.Column="6" Content="move to"/>
-        <Button Grid.Row="9" Grid.Column="5" Content="&lt;&lt;transfer"/>
-        <Button Grid.Row="9" Grid.Column="6" Content="move to"/>
-        <Button Grid.Row="10" Grid.Column="5" Content="&lt;&lt;transfer"/>
-        <Button Grid.Row="10" Grid.Column="6" Content="move to"/>
-        <Button Grid.Row="11" Grid.Column="5" Content="&lt;&lt;transfer"/>
-        <Button Grid.Row="11" Grid.Column="6" Content="move to"/>
+        <Button Grid.Row="8" Grid.Column="5" Content="&lt;&lt;使用当前值"/>
+        <Button Grid.Row="8" Grid.Column="6" Content="移动到"/>
+        <Button Grid.Row="9" Grid.Column="5" Content="&lt;&lt;使用当前值"/>
+        <Button Grid.Row="9" Grid.Column="6" Content="移动到"/>
+        <Button Grid.Row="10" Grid.Column="5" Content="&lt;&lt;使用当前值"/>
+        <Button Grid.Row="10" Grid.Column="6" Content="移动到"/>
+        <Button Grid.Row="11" Grid.Column="5" Content="&lt;&lt;使用当前值"/>
+        <Button Grid.Row="11" Grid.Column="6" Content="移动到"/>
         <Label Grid.Row="13" Content="WellRadius:" />
         <TextBox Grid.Row="13" Grid.Column="2" Text="{Binding Path=WellsInfo.WellRadius}"/>
-        <Label Grid.Row="13" Grid.Column="5" Content="(Unit:" HorizontalAlignment="Right" />
+        <Label Grid.Row="13" Grid.Column="5" Content="(单位:" HorizontalAlignment="Right" />
         <Label Grid.Row="13" Grid.Column="6" Content="0.1mm)"/>
         <StackPanel Grid.Row="14" Grid.Column="0" Grid.ColumnSpan="7" Orientation="Horizontal" HorizontalAlignment="Right">
-            <Button Width="124" Height="30" Content="Save" Click="OnSaveButtonClick"/>
+            <Button Width="124" Height="30" Content="保存" Click="OnSaveButtonClick"/>
         </StackPanel>
     </Grid>
 </UserControl>

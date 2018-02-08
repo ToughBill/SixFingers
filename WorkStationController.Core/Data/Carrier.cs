@@ -271,6 +271,8 @@ namespace WorkstationController.Core.Data
 
         public void CarryInfo(Carrier exampleCarrier)
         {
+            if (exampleCarrier == this)
+                return;
             _typeName = exampleCarrier.TypeName;
             _backgroundColor = exampleCarrier._backgroundColor;
             XOffset = exampleCarrier.XOffset;

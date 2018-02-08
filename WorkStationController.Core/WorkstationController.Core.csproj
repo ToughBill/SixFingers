@@ -75,6 +75,7 @@
     <Compile Include="Utility\PipettorElementsManager.cs" />
     <Compile Include="Utility\ISerialization.cs" />
     <Compile Include="Utility\PropertyChangedNotifyHelper.cs" />
+    <Compile Include="Utility\ScriptParser.cs" />
     <Compile Include="Utility\SerializationHelper.cs" />
     <Compile Include="Utility\WareChangeArgs.cs" />
   </ItemGroup>
