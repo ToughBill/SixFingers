@@ -106,6 +106,7 @@ namespace WorkstationController
                 return;
 
             LabwareEditor editor = new LabwareEditor();
+            selectedLabware.CalculatePositionInLayout();
             editor.DataContext = selectedLabware;
             this.AddTabItem(editor);
         }
@@ -417,6 +418,9 @@ namespace WorkstationController
         private void OnCarrierEditMenuItemClick(object sender, RoutedEventArgs e)
         {
             Carrier selectedCr = (Carrier)this.lb_carriers.SelectedItem;
+            if (selectedCr == null)
+                return;
+
             if (this.ActivateEditingTab(selectedCr.TypeName))
                 return;
 
