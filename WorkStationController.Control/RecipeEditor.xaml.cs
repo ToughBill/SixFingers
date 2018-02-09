@@ -39,11 +39,12 @@ namespace WorkstationController.Control
         {
             InitializeComponent();
             _recipe = recipe;
-            _worktable.SizeChanged += uiContainer_SizeChanged;
-            _uiController = new UIMovementsController(_worktable, recipe);
-
             if (recipe == null)
                 _recipe = new Recipe();
+            _worktable.SizeChanged += uiContainer_SizeChanged;
+            _uiController = new UIMovementsController(_worktable, _recipe);
+
+           
 
             this.Loaded += LayoutUserControl_Loaded;
         }

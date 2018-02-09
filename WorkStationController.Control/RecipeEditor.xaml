@@ -39,7 +39,7 @@
         <!--<StackPanel Grid.Row="1" Grid.Column="1" Orientation="Horizontal" HorizontalAlignment="Right">
             
         </StackPanel>-->
-        <TextBox Grid.Row="0" Grid.Column="0" Name="txtRecipeName"  HorizontalAlignment="Left" Height="23" Margin="98,15.2,0,0" TextWrapping="Wrap" Text="{Binding Path=Name, Mode=TwoWay}" VerticalAlignment="Top" Width="302"/>
+        <TextBox Grid.Row="0" Grid.Column="0" Name="txtRecipeName"  HorizontalAlignment="Left" Height="23" Margin="98,15.2,0,0" TextWrapping="Wrap" Text="{Binding Path=Name, Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}" VerticalAlignment="Top" Width="302"/>
         <Label Content="Recipe Name:"  Grid.Row="0" Grid.Column="0" HorizontalAlignment="Left" Margin="10,13.2,0,0" VerticalAlignment="Top" RenderTransformOrigin="1.292,0.297" Width="100"/>
     </Grid>
 </UserControl>
