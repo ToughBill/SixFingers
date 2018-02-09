@@ -253,6 +253,9 @@ namespace WorkstationController.VisualElement.Uitility
         {
             Debug.WriteLine(string.Format("GetReady4Move at time: {0}", DateTime.Now.ToString()));
             _ptClick = ptClick;
+            if (_selectedUIElement == null)
+                return;
+
             _selectedUIElement.Selected = true;
             if(_selectedUIElement is LabwareUIElement)
             {

@@ -16,7 +16,7 @@
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="*"/>
             <ColumnDefinition Width="*"/>
-            <ColumnDefinition Width="*"/>
+            <ColumnDefinition Width="280"/>
         </Grid.ColumnDefinitions>
         <Grid Name="CommandName" Grid.Column="1">
             <Label Name="lblCommandName" Content="Aspirate" FontSize="18" HorizontalAlignment="Center" VerticalAlignment="Top"/>
@@ -33,9 +33,9 @@
         <Grid Name="container" Grid.Row ="1" Grid.RowSpan="3" Grid.Column="0" Grid.ColumnSpan="2" Background="LightYellow">
 
         </Grid>
-        <Button Name="btnOk" Content="Ok" Grid.Column="2" HorizontalAlignment="Left" Margin="208,186,0,0" Grid.Row="3" VerticalAlignment="Top" Width="80" Click="btnOk_Click"/>
-        <Button Name="btnAbort" Content="Abort" Grid.Column="2" HorizontalAlignment="Left" Margin="118,186,0,0" Grid.Row="3" VerticalAlignment="Top" Width="80" Click="btnAbort_Click"/>
+        <Button Name="btnOk" Content="Ok" Grid.Column="2" HorizontalAlignment="Left" Margin="190,186,0,0" Grid.Row="3" VerticalAlignment="Top" Width="80" Click="btnOk_Click"/>
+        <Button Name="btnAbort" Content="Abort" Grid.Column="2" HorizontalAlignment="Left" Margin="102,186,0,0" Grid.Row="3" VerticalAlignment="Top" Width="80" Click="btnAbort_Click"/>
         <Label Content="Hint:" Grid.Column="2" HorizontalAlignment="Left" Margin="4,21,0,0" Grid.Row="3" VerticalAlignment="Top"/>
-        <TextBox Name="txtInfo" Grid.Column="2" HorizontalAlignment="Left" Height="120" Margin="9,52,0,0" Grid.Row="3" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Width="276"/>
+        <TextBox Name="txtInfo" Grid.Column="2" HorizontalAlignment="Left" Height="120" Margin="9,52,0,0" Grid.Row="3" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Width="261"/>
     </Grid>
 </UserControl>

@@ -128,6 +128,7 @@ namespace WorkstationController.Core.Data
                 if (value != null)
                 {
                     SetProperty(ref _calibCarrier, value);
+                    CalculatePositionInLayout();
                 }
             }
         }
@@ -173,7 +174,6 @@ namespace WorkstationController.Core.Data
             set
             {
                 SetProperty(ref topLeftWellXPositionInLayout, value);
-                UpdateWellInfos();
             }
         }
 
@@ -187,7 +187,6 @@ namespace WorkstationController.Core.Data
             set
             {
                 SetProperty(ref topLeftWellYPositionInLayout, value);
-                UpdateWellInfos();
             }
         }
 
@@ -201,7 +200,6 @@ namespace WorkstationController.Core.Data
             set
             {
                 SetProperty(ref bottomRightWellXPositionInLayout, value);
-                UpdateWellInfos();
             }
         }
 
@@ -215,19 +213,18 @@ namespace WorkstationController.Core.Data
             set
             {
                 SetProperty(ref bottomRightWellYPositionInLayout, value);
-                UpdateWellInfos();
             }
         }
 
        
 
-        private void UpdateWellInfos()
+        public void UpdateWellInfos()
         {
             Vector topLeftCurrentSite = GetTopLeftSiteVector();
-            WellsInfo.FirstWellPositionX = topLeftWellXPositionInLayout - topLeftCurrentSite.X;
-            WellsInfo.FirstWellPositionY = topLeftWellYPositionInLayout - topLeftCurrentSite.Y;
-            WellsInfo.LastWellPositionX =  bottomRightWellXPositionInLayout - topLeftCurrentSite.X;
-            WellsInfo.LastWellPositionY =  bottomRightWellYPositionInLayout - topLeftCurrentSite.Y;
+            _wellsInfo.FirstWellPositionX = topLeftWellXPositionInLayout - topLeftCurrentSite.X;
+            _wellsInfo.FirstWellPositionY = topLeftWellYPositionInLayout - topLeftCurrentSite.Y;
+            _wellsInfo.LastWellPositionX = bottomRightWellXPositionInLayout - topLeftCurrentSite.X;
+            _wellsInfo.LastWellPositionY = bottomRightWellYPositionInLayout - topLeftCurrentSite.Y;
         }
 
         
@@ -236,7 +233,7 @@ namespace WorkstationController.Core.Data
         {
             get
             {
-                return ModifyCarriersToFirstGrid(PipettorElementManager.Instance.Carriers);
+                return PipettorElementManager.Instance.Carriers;
                 //return  ;
             }
         }
@@ -257,12 +254,12 @@ namespace WorkstationController.Core.Data
 
         private Vector GetTopLeftSiteVector()
         {
-            var referenceCarrier = _parentCarrier;
-            if (_parentCarrier == null)
+            var referenceCarrier = _calibCarrier;
+            if (_calibCarrier == null)
             {
-                if(_calibCarrier == null)
+                if(_parentCarrier == null)
                     return new Vector(0, 0);
-                referenceCarrier = _calibCarrier;
+                referenceCarrier = _parentCarrier;
             }
                 
             
@@ -313,10 +310,11 @@ namespace WorkstationController.Core.Data
         public void CalculatePositionInLayout()
         {
             Vector topLeftCurrentSite = GetTopLeftSiteVector();
-            topLeftWellXPositionInLayout = _wellsInfo.FirstWellPositionX + topLeftCurrentSite.X;
-            topLeftWellYPositionInLayout = _wellsInfo.FirstWellPositionY + topLeftCurrentSite.Y;
-            bottomRightWellXPositionInLayout = WellsInfo.LastWellPositionX + topLeftCurrentSite.X;
-            bottomRightWellYPositionInLayout = WellsInfo.LastWellPositionY + topLeftCurrentSite.Y;
+
+            TopLeftWellX = _wellsInfo.FirstWellPositionX + topLeftCurrentSite.X;
+            TopLeftWellY = _wellsInfo.FirstWellPositionY + topLeftCurrentSite.Y;
+            BottomRightWellX = WellsInfo.LastWellPositionX + topLeftCurrentSite.X;
+            BottomRightWellY = WellsInfo.LastWellPositionY + topLeftCurrentSite.Y;
         }
 
 
@@ -392,6 +390,8 @@ namespace WorkstationController.Core.Data
             return new Point(x, y);
         }
 
+
+      
 
         /// <summary>
         /// Create an instance of Labware from a XML file

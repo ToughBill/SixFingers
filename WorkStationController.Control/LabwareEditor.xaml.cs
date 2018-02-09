@@ -36,10 +36,22 @@ namespace WorkstationController.Control
             
         }
 
+       
+
         void LabwareEditor_Loaded(object sender, RoutedEventArgs e)
         {
             Labware labware = this.DataContext as Labware;
-                
+            var calibCarrier = labware.CalibCarrier;
+            int currentIndex = -1;
+            for(int i = 0; i< labware.AllCarriers.Count; i++)
+            {
+                if(labware.AllCarriers[i].TypeName == calibCarrier.TypeName)
+                {
+                    currentIndex = i;
+                    break;
+                }
+            }
+            cmbCalibCarrier.SelectedIndex = currentIndex;
         }
 
 
@@ -47,6 +59,7 @@ namespace WorkstationController.Control
         {
             // The DataContext must be labware
             Labware labware = this.DataContext as Labware;
+            labware.UpdateWellInfos();
             if (labware == null)
                 throw new InvalidOperationException("DataContext of LabwareEditor must be an instance of Labware");
             PipettorElementManager.Instance.SavePipettorElement(labware);

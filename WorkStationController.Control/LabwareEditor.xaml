@@ -72,9 +72,8 @@
         <!--Dimension-->
        
         <Label Grid.Row="2" Grid.Column="0" Content="校准载架:"/>
-
-        <ComboBox Grid.Row="2" Name="cmbCalibCarrier"
-                  ItemsSource="{Binding Path=AllCarriers}" SelectedItem="{Binding CalibCarrier}" Margin="5,0,5,0" Grid.Column="2">
+        <ComboBox Grid.Row="2"  Name="cmbCalibCarrier"
+                  ItemsSource="{Binding AllCarriers}" SelectedItem="{Binding CalibCarrier}" Margin="5,0,5,0" Grid.Column="2">
             <ComboBox.ItemTemplate>
                 <DataTemplate>
                     <Label Content="{Binding Path=TypeName}"/>
