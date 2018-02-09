@@ -276,8 +276,8 @@ namespace WorkstationController.Core.Data
                 yPos -= referenceCarrier.YOffset;
                 int siteIndex = _siteID - 1;
                 var site = referenceCarrier.Sites[siteIndex];
-                xPos += (int)site.XOffset;          //get site x start pos
-                yPos += (int)site.YOffset;
+                xPos += site.XOffset;          //get site x start pos
+                yPos += site.YOffset;
             }
             return new Vector(xPos, yPos);
         }
@@ -307,26 +307,16 @@ namespace WorkstationController.Core.Data
             _zValues = new ZValues();
             _dimension = new Dimension();
             _wellsInfo = new WellsInfo();
-            
-            if (_parentCarrier != null)
-                _calibCarrier = _parentCarrier;
-
-            
         }
 
-        public override void DoExtraWork()
-        {
-            base.DoExtraWork();
-            CalculatePositionInLayout();
-        }
 
         public void CalculatePositionInLayout()
         {
             Vector topLeftCurrentSite = GetTopLeftSiteVector();
-            TopLeftWellX = _wellsInfo.FirstWellPositionX + topLeftCurrentSite.X;
-            TopLeftWellY = _wellsInfo.FirstWellPositionY + topLeftCurrentSite.Y;
-            BottomRightWellX = WellsInfo.LastWellPositionX + topLeftCurrentSite.X;
-            BottomRightWellY = WellsInfo.LastWellPositionY + topLeftCurrentSite.Y;
+            topLeftWellXPositionInLayout = _wellsInfo.FirstWellPositionX + topLeftCurrentSite.X;
+            topLeftWellYPositionInLayout = _wellsInfo.FirstWellPositionY + topLeftCurrentSite.Y;
+            bottomRightWellXPositionInLayout = WellsInfo.LastWellPositionX + topLeftCurrentSite.X;
+            bottomRightWellYPositionInLayout = WellsInfo.LastWellPositionY + topLeftCurrentSite.Y;
         }
 
 
