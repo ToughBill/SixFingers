@@ -38,7 +38,7 @@ namespace WorkstationController.VisualElement.Uitility
         /// </summary>
         public event EventHandler onWareContextMenuFired;
         #endregion
-
+        Recipe workingRecipe;
         #region interface
         /// <summary>
         /// new UI element introduced from somewhere, nomarlly from listbox
@@ -102,6 +102,7 @@ namespace WorkstationController.VisualElement.Uitility
         {
             // TODO: Complete member initialization
             this._myCanvas = grid;
+            workingRecipe = existRecipe;
             InitializeWares(existRecipe);
             _myCanvas.PreviewMouseLeftButtonDown += myCanvas_PreviewMouseLeftButtonDown;
             _myCanvas.PreviewMouseLeftButtonUp += myCanvas_PreviewMouseLeftButtonUp;
@@ -346,8 +347,14 @@ namespace WorkstationController.VisualElement.Uitility
             //but for labware, we hope to install them by their center.
             Vector vecAdjust = new Vector();
             if(_selectedUIElement is CarrierUIElement)
+            {
+                var uiCarrierElement = _selectedUIElement as CarrierUIElement;
+                workingRecipe.AddCarrier(uiCarrierElement.Carrier);
                 vecAdjust = GetAdjustVector();// = e.GetPosition(_myCanvas) - relativeClickPosition2LeftTop;
+            }
+                
             WareInstaller.MountThis(_selectedUIElement, e.GetPosition(_myCanvas) - vecAdjust, _myCanvas);
+            
             DeHighlightAllSite();
             _selectedUIElement.Selected = false;
             _selectedUIElement = null;

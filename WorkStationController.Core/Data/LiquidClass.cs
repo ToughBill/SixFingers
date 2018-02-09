@@ -186,18 +186,18 @@ namespace WorkstationController.Core.Data
             }
         }
 
-        /// <summary>
-        /// Gets or sets the conditioning volume in unit of μl
-        /// </summary>
-        [XmlElement]
-        public int ConditioningVolume
-        {
-            get { return this._conditioningVolume; }
-            set
-            {
-                SetProperty(ref _conditioningVolume, value);
-            }
-        }
+        ///// <summary>
+        ///// Gets or sets the conditioning volume in unit of μl
+        ///// </summary>
+        //[XmlElement]
+        //public int ConditioningVolume
+        //{
+        //    get { return this._conditioningVolume; }
+        //    set
+        //    {
+        //        SetProperty(ref _conditioningVolume, value);
+        //    }
+        //}
 
         /// <summary>
         /// Default constructor

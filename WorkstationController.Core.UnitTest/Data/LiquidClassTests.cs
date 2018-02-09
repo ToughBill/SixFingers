@@ -22,7 +22,6 @@ namespace WorkstationController.Core.UnitTest
             liquidClass.TypeName = "LiquidClass Serialization Test";
 
             liquidClass.AspirationSinglePipetting.AspirationSpeed = 400;
-            liquidClass.AspirationSinglePipetting.ConditioningVolume = 100;
             liquidClass.AspirationSinglePipetting.Delay = 200;
             liquidClass.AspirationSinglePipetting.ExcessVolume = 20;
             liquidClass.AspirationSinglePipetting.LeadingAirgap = 15;
@@ -43,7 +42,6 @@ namespace WorkstationController.Core.UnitTest
             LiquidClass liquidClass = LiquidClass.Create(this._xmlFileLiquidClass);
 
             Assert.AreEqual<int>(liquidClass.AspirationSinglePipetting.AspirationSpeed, 400);
-            Assert.AreEqual<int>(liquidClass.AspirationSinglePipetting.ConditioningVolume, 100);
             Assert.AreEqual<int>(liquidClass.AspirationSinglePipetting.Delay, 200);
             Assert.AreEqual<int>(liquidClass.AspirationSinglePipetting.ExcessVolume, 20);
             Assert.AreEqual<int>(liquidClass.AspirationSinglePipetting.LeadingAirgap, 15);

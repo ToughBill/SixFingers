@@ -7,6 +7,7 @@ using WorkstationController.Core.Utility;
 using System.Windows.Media;
 using System.ComponentModel;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 
 namespace WorkstationController.Core.Data
 {
@@ -42,7 +43,7 @@ namespace WorkstationController.Core.Data
     }
 
     /// <summary>
-    /// Data definition of a labware installed on the carrier
+    /// Data definition of a labware mounted on carrier
     /// </summary>
     [Serializable]
     public class Labware : WareBase
@@ -52,7 +53,14 @@ namespace WorkstationController.Core.Data
         private WellsInfo   _wellsInfo = new WellsInfo();
         private ZValues     _zValues = new ZValues();
         protected string    _label = string.Empty;
-        private CoordinateInfo _coordinateInfo = null;
+    
+        private Carrier _calibCarrier;
+
+        private double topLeftWellXPositionInLayout;
+        private double topLeftWellYPositionInLayout;
+        private double bottomRightWellXPositionInLayout;
+        private double bottomRightWellYPositionInLayout;
+
         /// <summary>
         /// The site on which the labware installed on the carrier, 1 based
         /// </summary>
@@ -83,6 +91,7 @@ namespace WorkstationController.Core.Data
         /// <summary>
         /// On which carrier the labware mounts, can be null.
         /// </summary>
+        [XmlIgnore]
         public Carrier ParentCarrier
         {
             get
@@ -101,6 +110,28 @@ namespace WorkstationController.Core.Data
                 }
             }
         }
+
+
+        [XmlIgnore]
+        public Carrier CalibCarrier
+        {
+            get
+            {
+                return _calibCarrier;
+            }
+            set
+            {
+                //remove from the original carrier.
+                if (_calibCarrier != null)
+                    _calibCarrier.Labwares.Remove(this);
+                _calibCarrier = value;
+                if (value != null)
+                {
+                    SetProperty(ref _calibCarrier, value);
+                }
+            }
+        }
+
 
         //we need a more eligant way to force the OnPropertyChanged event fires.
         public void Refresh()
@@ -133,67 +164,125 @@ namespace WorkstationController.Core.Data
         /// the coordinate of the labware on table
         /// </summary>
         [XmlIgnore]
-        public CoordinateInfo CoordinateOnTable
+        public double TopLeftWellX
         {
             get
             {
-                _coordinateInfo = GetCoordinateInfo();
-                return _coordinateInfo;
+                return topLeftWellXPositionInLayout;
             }
             set
             {
-                //SetProperty(ref _coordinateInfo, value);
-                _coordinateInfo = value;
+                SetProperty(ref topLeftWellXPositionInLayout, value);
                 UpdateWellInfos();
             }
         }
 
+        [XmlIgnore]
+        public double TopLeftWellY
+        {
+            get
+            {
+                return topLeftWellYPositionInLayout;
+            }
+            set
+            {
+                SetProperty(ref topLeftWellYPositionInLayout, value);
+                UpdateWellInfos();
+            }
+        }
+
+        [XmlIgnore]
+        public double BottomRightWellX
+        {
+            get
+            {
+                return bottomRightWellXPositionInLayout;
+            }
+            set
+            {
+                SetProperty(ref bottomRightWellXPositionInLayout, value);
+                UpdateWellInfos();
+            }
+        }
+
+        [XmlIgnore]
+        public double BottomRightWellY
+        {
+            get
+            {
+                return bottomRightWellYPositionInLayout;
+            }
+            set
+            {
+                SetProperty(ref bottomRightWellYPositionInLayout, value);
+                UpdateWellInfos();
+            }
+        }
+
+       
+
         private void UpdateWellInfos()
         {
             Vector topLeftCurrentSite = GetTopLeftSiteVector();
-            WellsInfo.FirstWellPositionX = _coordinateInfo.FirstWellPositionX - topLeftCurrentSite.X;
-            WellsInfo.FirstWellPositionY = _coordinateInfo.FirstWellPositionY - topLeftCurrentSite.Y;
-            WellsInfo.LastWellPositionX = _coordinateInfo.LastWellPositionX - topLeftCurrentSite.X;
-            WellsInfo.LastWellPositionY = _coordinateInfo.LastWellPositionY - topLeftCurrentSite.Y;
+            WellsInfo.FirstWellPositionX = topLeftWellXPositionInLayout - topLeftCurrentSite.X;
+            WellsInfo.FirstWellPositionY = topLeftWellYPositionInLayout - topLeftCurrentSite.Y;
+            WellsInfo.LastWellPositionX =  bottomRightWellXPositionInLayout - topLeftCurrentSite.X;
+            WellsInfo.LastWellPositionY =  bottomRightWellYPositionInLayout - topLeftCurrentSite.Y;
         }
 
-        //private void AdjustWellInfo(CoordinateInfo coordinateInfo)
-        //{
-        //    Vector offsetVec = GetTopLeftSiteVector();
-        //    coordinateInfo.Adjust(offsetVec);
-        //    _wellsInfo.UpdateCoordination(coordinateInfo);
-        //}
+        
+        [XmlIgnore]
+        public ObservableCollection<Carrier> AllCarriers
+        {
+            get
+            {
+                return ModifyCarriersToFirstGrid(PipettorElementManager.Instance.Carriers);
+                //return  ;
+            }
+        }
+
+        private ObservableCollection<Carrier> ModifyCarriersToFirstGrid(ObservableCollection<Carrier> allCarriers)
+        {
+            ObservableCollection<Carrier> carriersOnGrid1 = new ObservableCollection<Carrier>();
+            foreach(var carrier in allCarriers)
+            {
+                var carrierMovedToFirst = carrier.Clone() as Carrier;
+                carrierMovedToFirst.GridID = 1;
+                carriersOnGrid1.Add(carrierMovedToFirst);
+            }
+            return carriersOnGrid1;
+        }
+
 
 
         private Vector GetTopLeftSiteVector()
         {
+            var referenceCarrier = _parentCarrier;
             if (_parentCarrier == null)
-                return new Vector(0, 0);
+            {
+                if(_calibCarrier == null)
+                    return new Vector(0, 0);
+                referenceCarrier = _calibCarrier;
+            }
+                
             
             Worktable worktable = Configurations.Instance.Worktable;
-            int pinPos = (_parentCarrier.GridID - 1) * Worktable.DistanceBetweenAdjacentPins + (int)worktable.TopLeftPinPosition.X;
-            int xPos = pinPos;
-            int yPos = (int)worktable.TopLeftPinPosition.Y;
-            if (_parentCarrier != null)
+            double pinPos = (referenceCarrier.GridID - 1) * Worktable.DistanceBetweenAdjacentPins + (int)worktable.TopLeftPinPosition.X;
+            double xPos = pinPos;
+            double yPos = worktable.TopLeftPinPosition.Y;
+            if (referenceCarrier != null)
             {
-                xPos = pinPos - (_parentCarrier.XOffset);  //get carrier x start pos
-                yPos -= _parentCarrier.YOffset;
+                xPos = pinPos - (referenceCarrier.XOffset);  //get carrier x start pos
+                yPos -= referenceCarrier.YOffset;
                 int siteIndex = _siteID - 1;
-                var site = _parentCarrier.Sites[siteIndex];
+                var site = referenceCarrier.Sites[siteIndex];
                 xPos += (int)site.XOffset;          //get site x start pos
                 yPos += (int)site.YOffset;
             }
             return new Vector(xPos, yPos);
         }
 
-        private CoordinateInfo GetCoordinateInfo()
-        {
-            Vector topLeftSite = GetTopLeftSiteVector();
-            if(_coordinateInfo == null || _coordinateInfo.Offset != topLeftSite)
-                _coordinateInfo = new CoordinateInfo(_wellsInfo, topLeftSite);
-            return _coordinateInfo;
-            
-        }
+        
 
         /// <summary>
         /// Liquid class related
@@ -218,7 +307,28 @@ namespace WorkstationController.Core.Data
             _zValues = new ZValues();
             _dimension = new Dimension();
             _wellsInfo = new WellsInfo();
+            
+            if (_parentCarrier != null)
+                _calibCarrier = _parentCarrier;
+
+            
         }
+
+        public override void DoExtraWork()
+        {
+            base.DoExtraWork();
+            CalculatePositionInLayout();
+        }
+
+        public void CalculatePositionInLayout()
+        {
+            Vector topLeftCurrentSite = GetTopLeftSiteVector();
+            TopLeftWellX = _wellsInfo.FirstWellPositionX + topLeftCurrentSite.X;
+            TopLeftWellY = _wellsInfo.FirstWellPositionY + topLeftCurrentSite.Y;
+            BottomRightWellX = WellsInfo.LastWellPositionX + topLeftCurrentSite.X;
+            BottomRightWellY = WellsInfo.LastWellPositionY + topLeftCurrentSite.Y;
+        }
+
 
 
         /// <summary>
@@ -238,7 +348,10 @@ namespace WorkstationController.Core.Data
             List<Labware> labwares = new List<Labware>(PipettorElementManager.Instance.Labwares);
             var baseLabware = labwares.Find(x => x.TypeName == labwareTraitItem.TypeName);
             if( baseLabware == null)
-                throw new Exception(string.Format("Cannot find the specified labware: ", labwareTraitItem.TypeName));
+            {
+                return null;
+            }
+                //throw new Exception(string.Format("Cannot find the specified labware: ", labwareTraitItem.TypeName));
             var newLabware = (Labware)baseLabware.Clone();
             newLabware.Label = labwareTraitItem.Label;
             newLabware.SiteID = labwareTraitItem.SiteID;
@@ -448,88 +561,88 @@ namespace WorkstationController.Core.Data
     /// <summary>
     /// for binding to UI element
     /// </summary>
-    public class CoordinateInfo : BindableBase
-    {
+    //public class CoordinateInfo : BindableBase
+    //{
 
 
-        private WellsInfo _wellsInfo;
-        private Vector _offsetVec;
+    //    private WellsInfo _wellsInfo;
+    //    private Vector _offsetVec;
 
-        public CoordinateInfo(WellsInfo wellsInfo,Vector offsetVec)
-        {
-            _wellsInfo = wellsInfo;
-            _offsetVec = offsetVec;
-        }
+    //    public CoordinateInfo(WellsInfo wellsInfo,Vector offsetVec)
+    //    {
+    //        _wellsInfo = wellsInfo;
+    //        _offsetVec = offsetVec;
+    //    }
 
-        public Vector Offset
-        {
-            get
-            {
-                return _offsetVec;
-            }
-        }
+    //    public Vector Offset
+    //    {
+    //        get
+    //        {
+    //            return _offsetVec;
+    //        }
+    //    }
 
-        /// <summary>
-        /// Gets or sets the X position of first well
-        /// </summary>
-        public double FirstWellPositionX
-        {
-            get
-            {
-                return _wellsInfo.FirstWellPositionX + _offsetVec.X;
-            }
-            set
-            {
-                _wellsInfo.FirstWellPositionX = value - _offsetVec.X;
-            }
-        }
+    //    /// <summary>
+    //    /// Gets or sets the X position of first well
+    //    /// </summary>
+    //    public double FirstWellPositionX
+    //    {
+    //        get
+    //        {
+    //            return _wellsInfo.FirstWellPositionX + _offsetVec.X;
+    //        }
+    //        set
+    //        {
+    //            _wellsInfo.FirstWellPositionX = value - _offsetVec.X;
+    //        }
+    //    }
 
-        /// <summary>
-        /// Gets or sets the Y position of first well
-        /// </summary>
-        public double FirstWellPositionY
-        {
-            get
-            {
-                return _wellsInfo.FirstWellPositionY + _offsetVec.Y;
-            }
-            set
-            {
-                _wellsInfo.FirstWellPositionY = value - _offsetVec.Y;
-            }
-        }
+    //    /// <summary>
+    //    /// Gets or sets the Y position of first well
+    //    /// </summary>
+    //    public double FirstWellPositionY
+    //    {
+    //        get
+    //        {
+    //            return _wellsInfo.FirstWellPositionY + _offsetVec.Y;
+    //        }
+    //        set
+    //        {
+    //            _wellsInfo.FirstWellPositionY = value - _offsetVec.Y;
+    //        }
+    //    }
 
-        /// <summary>
-        /// Gets or sets the X position of last well
-        /// </summary>
-        public double LastWellPositionX
-        {
-            get
-            {
-                return _wellsInfo.LastWellPositionX + _offsetVec.X;
-            }
-            set
-            {
-                _wellsInfo.LastWellPositionX = value - _offsetVec.X;
-            }
-        }
+    //    /// <summary>
+    //    /// Gets or sets the X position of last well
+    //    /// </summary>
+    //    public double LastWellPositionX
+    //    {
+    //        get
+    //        {
+    //            return _wellsInfo.LastWellPositionX + _offsetVec.X;
+    //        }
+    //        set
+    //        {
+    //            _wellsInfo.LastWellPositionX = value - _offsetVec.X;
+    //        }
+    //    }
 
-        /// <summary>
-        /// Gets or sets the Y position of last well
-        /// </summary>
-        public double LastWellPositionY
-        {
-            get
-            {
-                return _wellsInfo.LastWellPositionY + _offsetVec.Y;
-            }
-            set
-            {
-                _wellsInfo.LastWellPositionY = value - _offsetVec.Y;
-            }
-        }
+    //    /// <summary>
+    //    /// Gets or sets the Y position of last well
+    //    /// </summary>
+    //    public double LastWellPositionY
+    //    {
+    //        get
+    //        {
+    //            return _wellsInfo.LastWellPositionY + _offsetVec.Y;
+    //        }
+    //        set
+    //        {
+    //            _wellsInfo.LastWellPositionY = value - _offsetVec.Y;
+    //        }
+    //    }
  
-    }
+    //}
 
     /// <summary>
     /// The well information on the labware
@@ -537,7 +650,7 @@ namespace WorkstationController.Core.Data
     [Serializable]
     public class WellsInfo : BindableBase, ICloneable
     {
-        private int         _wellRadius;
+        private double _wellRadius;
         private int         _numberOfWellsX;
         private int         _numberOfWellsY;
         private double      _firstWellPositionX;
@@ -549,7 +662,7 @@ namespace WorkstationController.Core.Data
         /// <summary>
         /// Gets or sets the radius of the well, in 1/10 millimetre(mm.)
         /// </summary>
-        public int WellRadius
+        public double WellRadius
         {
             get
             {
@@ -680,7 +793,7 @@ namespace WorkstationController.Core.Data
                          double lastWellPosX, double lastWellPosY,
                          int xNum, int yNum, 
                          BottomShape shape, 
-                         int r)
+                         double r)
         {
             WellRadius = r;
             NumberOfWellsX = xNum;
@@ -701,12 +814,6 @@ namespace WorkstationController.Core.Data
                                  _wellRadius);
         }
 
-        internal void UpdateCoordination(CoordinateInfo coordinateInfo)
-        {
-            FirstWellPositionX = coordinateInfo.FirstWellPositionX;
-            FirstWellPositionY = coordinateInfo.FirstWellPositionY;
-            LastWellPositionX = coordinateInfo.LastWellPositionX;
-            LastWellPositionY = coordinateInfo.LastWellPositionY;
-        }
+        
     }
 }

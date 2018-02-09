@@ -22,10 +22,10 @@ namespace WorkstationController.Core.Data
         private ObservableCollection<Site>      _sites = new ObservableCollection<Site>();           // sites for mounting labwares
         private ObservableCollection<string>    _allowedLabwareTypeNames = new ObservableCollection<string>();
 
-        
-        private int   _xoffset         = default(int);
-        private int   _yoffset         = default(int);
-        private int   _grid            = 0;
+
+        private double _xoffset = default(double);
+        private double _yoffset = default(double);
+        private int _grid = 0;
 
 
 
@@ -33,7 +33,7 @@ namespace WorkstationController.Core.Data
         /// The X offset of the left-top corner of carrier against the most left-top pin the carrier installed on
         /// </summary>
         [XmlElement]
-        public int XOffset
+        public double XOffset
         {
             get { return this._xoffset; }
             set { SetProperty(ref _xoffset, value); }
@@ -43,7 +43,7 @@ namespace WorkstationController.Core.Data
         /// The Y offset of the left-top corner of carrier against the most left-top pin the carrier installed on
         /// </summary>
         [XmlElement]
-        public int YOffset
+        public double YOffset
         {
             get { return this._yoffset; }
             set { SetProperty(ref _yoffset, value); }
@@ -148,7 +148,8 @@ namespace WorkstationController.Core.Data
             List<Carrier> carriers = new List<Carrier>(PipettorElementManager.Instance.Carriers);
             Carrier theCarrier = carriers.Find(x => x.TypeName == carrierTrait.TypeName);
             if (theCarrier == null)
-                throw new Exception(string.Format("Cannot find the specified carrier: ", carrierTrait.TypeName));
+                return null;
+                //throw new Exception(string.Format("Cannot find the specified carrier: ", carrierTrait.TypeName));
             Carrier newCarrier = (Carrier)theCarrier.Clone();
             newCarrier.GridID = carrierTrait.GridID;
             return newCarrier;
@@ -240,10 +241,10 @@ namespace WorkstationController.Core.Data
 
         private void CreateTube13mm_16Pos()
         {
-            _dimension = new Data.Dimension(240, 3160);
+            _dimension = new Data.Dimension(24, 316);
             _xoffset = 120;
             _yoffset = 247;
-            Site site1 = new Site(0, 110, 0, 240, 3050, 1);
+            Site site1 = new Site(0, 11, 0, 24, 305, 1);
             _sites.Add(site1);
             _grid = undefinedGrid;
             _allowedLabwareTypeNames.Add(LabwareBuildInType.Tubes16Pos13_100MM.ToString());
@@ -254,11 +255,11 @@ namespace WorkstationController.Core.Data
         private void CreateMP_3POS() 
         {            
             _dimension = new Data.Dimension(1490, 3160);
-            _xoffset = 120;
-            _yoffset = 247;
-            Site site1 = new Site(55, 250, 0, 1270, 850, 1);
-            Site site2 = new Site(55, 1210, 0, 1270, 850, 2);
-            Site site3 = new Site(55, 2170, 0, 1270, 850, 3);
+            _xoffset = 12;
+            _yoffset = 24.7;
+            Site site1 = new Site(5.5, 25, 0, 127, 85.5, 1);
+            Site site2 = new Site(5.5, 121, 0, 127, 85.5, 2);
+            Site site3 = new Site(5.5, 217, 0, 127, 85.5, 3);
             _sites.Add(site1);
             _sites.Add(site2);
             _sites.Add(site3);

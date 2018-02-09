@@ -37,6 +37,7 @@ namespace WorkstationController.VisualElement.Uitility
             {
                 CarrierUIElement carrierUIElement = (CarrierUIElement)baseUIElement;
                 carrierUIElement.Grid = grid;
+
             }
 
             if(baseUIElement is LabwareUIElement)
@@ -160,7 +161,7 @@ namespace WorkstationController.VisualElement.Uitility
 
         private static bool IsOutofRange(int grid, CarrierUIElement carrierUIElement)
         {
-            int length = carrierUIElement.Dimension.XLength;
+            double length = carrierUIElement.Dimension.XLength;
             int gridsNeed =  (int)(Math.Ceiling(length / (double)Worktable.DistanceBetweenAdjacentPins));
             return  grid + gridsNeed - 1 > Configurations.Instance.Worktable.GridCount;
         }
@@ -171,8 +172,8 @@ namespace WorkstationController.VisualElement.Uitility
         public static bool IsOverlapped(Grid uiContainer, CarrierUIElement newCarrierUI,int newUICurGrid)
         {
             bool bOverlapped = false;
-            int newCarrierXStart = newCarrierUI.GetBoundingRectXStart(newUICurGrid);
-            int newCarrierXEnd = newCarrierXStart +  newCarrierUI.Dimension.XLength;
+            double newCarrierXStart = newCarrierUI.GetBoundingRectXStart(newUICurGrid);
+            double newCarrierXEnd = newCarrierXStart +  newCarrierUI.Dimension.XLength;
 
             foreach (UIElement uiElement in uiContainer.Children)
             {
@@ -182,9 +183,9 @@ namespace WorkstationController.VisualElement.Uitility
                 CarrierUIElement carrierUIElement = uiElement as CarrierUIElement;
                 if (carrierUIElement == newCarrierUI)
                     continue;
-                
-                int oldCarrierXStart = carrierUIElement.GetBoundingRectXStart();
-                int oldCarrierXEnd = oldCarrierXStart + carrierUIElement.Dimension.XLength;
+
+                double oldCarrierXStart = carrierUIElement.GetBoundingRectXStart();
+                double oldCarrierXEnd = oldCarrierXStart + carrierUIElement.Dimension.XLength;
                 bOverlapped = IsOverlapped(newCarrierXStart, newCarrierXEnd, oldCarrierXStart, oldCarrierXEnd);
                 if (bOverlapped)
                     break;
@@ -192,7 +193,7 @@ namespace WorkstationController.VisualElement.Uitility
             return bOverlapped;
         }
 
-        private static bool IsOverlapped(int newCarrierXStart, int newCarrierXEnd, int oldCarrierXStart, int oldCarrierXEnd)
+        private static bool IsOverlapped(double newCarrierXStart, double newCarrierXEnd, double oldCarrierXStart, double oldCarrierXEnd)
         {
             if (newCarrierXStart == oldCarrierXStart)
                 return true;
@@ -210,7 +211,7 @@ namespace WorkstationController.VisualElement.Uitility
 
         }
 
-        private static bool IsBetween(int test, int start, int end)
+        private static bool IsBetween(double test, double start, double end)
         {
             return test > start && test < end;
         }

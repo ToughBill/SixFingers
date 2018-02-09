@@ -132,7 +132,7 @@ namespace WorkstationController.VisualElement
 
         private void BlowUp(ref Rect rc)
         {
-            int blowUnit = (int)(15* VisualCommon.containerSize.Height/400.0);
+            int blowUnit = (int)(1.5* VisualCommon.containerSize.Height/400.0);
             rc.X -= blowUnit;
             rc.Y -= blowUnit;
             rc.Width += blowUnit*2;

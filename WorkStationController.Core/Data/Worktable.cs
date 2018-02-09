@@ -17,7 +17,7 @@ namespace WorkstationController.Core.Data
         /// <summary>
         /// Distance between adjacent pins in mm.
         /// </summary>
-        public const int DistanceBetweenAdjacentPins = 250;
+        public const int DistanceBetweenAdjacentPins = 25;
 
         /// <summary>
         /// The size of the worktable

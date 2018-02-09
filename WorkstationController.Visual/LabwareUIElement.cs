@@ -123,7 +123,7 @@ namespace WorkstationController.VisualElement
 
 
             //calculate positioon & draw border rectangle
-            int xPos = 0, yPos = 0;
+            double xPos = 0, yPos = 0;
             CalculatePositions(ref xPos, ref yPos, mapGrid, carrier);
             Size sz = new Size(_labware.Dimension.XLength, _labware.Dimension.YLength);
             Color border = NeedHighLight() ? Colors.Blue : Colors.Black;
@@ -166,11 +166,11 @@ namespace WorkstationController.VisualElement
             drawingContext.Close();
         }
 
-        private void CalculatePositions(ref int xPos, ref int yPos, int mapGrid, Carrier carrier)
+        private void CalculatePositions(ref double xPos, ref double yPos, int mapGrid, Carrier carrier)
         {
             int pinPos = (mapGrid - 1) * Worktable.DistanceBetweenAdjacentPins + (int)_worktable.TopLeftPinPosition.X;
             xPos = pinPos;
-            yPos = (int)_worktable.TopLeftPinPosition.Y;
+            yPos = _worktable.TopLeftPinPosition.Y;
             if (carrier != null && (!Moving))
             {
                 xPos = pinPos - (carrier.XOffset);  //get carrier x start pos

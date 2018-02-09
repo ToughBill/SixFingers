@@ -228,15 +228,15 @@ namespace WorkstationController
             InitializeComponent();
 
             // Initialize pipettor element manager
-            try
+            //try
             {
                 this._pipettorElementManager.Initialize();
             }
-            catch(Exception ex)
-            {
-                MessageBox.Show(ex.Message, Properties.Resources.StartupFailed);
-                return;
-            }
+            //catch(Exception ex)
+            //{
+            //    MessageBox.Show(ex.Message, Properties.Resources.StartupFailed);
+            //    return;
+            //}
 
             // Initialize supported command
             this._supportedCommands = Command.CreatSupportedCommands();

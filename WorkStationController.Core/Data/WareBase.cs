@@ -55,37 +55,19 @@ namespace WorkstationController.Core.Data
         {
             return this._typeName;
         }
-
-        /// <summary>
-        /// return the GridID
-        /// </summary>
-        public int GridID 
-        { 
-            get
-            {
-                if (this is Labware)
-                    return ((Labware)this).GridID;
-                else
-                    return ((Carrier)this).GridID;
-            }
-        
-        }
     }
 
     /// <summary>
     /// see before
     /// </summary>
-    public class Dimension : INotifyPropertyChanged, ICloneable
+    public class Dimension : BindableBase, ICloneable
     {
-        private int _xLength = 0;
-        private int _yLength = 0;
-
-        public event PropertyChangedEventHandler PropertyChanged = delegate { };
-        
+        private double _xLength = 0;
+        private double _yLength = 0;
         /// <summary>
         /// Gets or sets the X-length of the labware, in 1/10 millimetre(mm.)
         /// </summary>
-        public int XLength
+        public double XLength
         {
             get
             {
@@ -93,14 +75,14 @@ namespace WorkstationController.Core.Data
             }
             set
             {
-                PropertyChangedNotifyHelper.NotifyPropertyChanged<int>(ref this._xLength, value, this, "XLength", this.PropertyChanged);
+                SetProperty(ref _xLength, value);
             }
         }
 
         /// <summary>
         /// Gets or sets the Y-length of the labware, in 1/10 millimetre(mm.)
         /// </summary>
-        public int YLength
+        public double YLength
         {
             get
             {
@@ -108,7 +90,7 @@ namespace WorkstationController.Core.Data
             }
             set
             {
-                PropertyChangedNotifyHelper.NotifyPropertyChanged<int>(ref this._yLength, value, this, "YLength", this.PropertyChanged);
+                SetProperty(ref _yLength, value);
             }
         }
 
@@ -124,7 +106,7 @@ namespace WorkstationController.Core.Data
         /// </summary>
         /// <param name="x"></param>
         /// <param name="y"></param>
-        public Dimension(int x, int y)
+        public Dimension(double x, double y)
         {
             this._xLength = x;
             this._yLength = y;

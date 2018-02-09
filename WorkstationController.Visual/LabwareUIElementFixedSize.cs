@@ -181,7 +181,7 @@ namespace WorkstationController.VisualElement
         private MyDrawingVisual CreateWellVisual(Point position, int wellID, int totalCnt)
         {
             MyDrawingVisual drawingVisual = new MyDrawingVisual();
-            int radius = _labware.WellsInfo.WellRadius;
+            double radius = _labware.WellsInfo.WellRadius;
             Brush brush = Brushes.White;
             Size labwareSize = new Size(_labware.Dimension.XLength,_labware.Dimension.YLength);
             Point ptVisual = Physical2Visual(position, labwareSize, _boudingSize);

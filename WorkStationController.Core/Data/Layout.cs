@@ -81,7 +81,9 @@ namespace WorkstationController.Core.Data
             List<Carrier> carriers = new List<Carrier>();
             foreach(CarrierTrait carrierSkeletonItem in carrierTraits)
             {
-                carriers.Add(Carrier.CreateFromTrait(carrierSkeletonItem));
+                var carrier = Carrier.CreateFromTrait(carrierSkeletonItem); 
+                if(carrier != null)
+                    carriers.Add(carrier);
             }
              RestoreLabwares(carriers,labwareTraits);
              return carriers;
@@ -98,7 +100,8 @@ namespace WorkstationController.Core.Data
                     continue;
                 }
                 Labware labware = Labware.CreateFromTrait(labwareTrait, parentCarrier);
-                parentCarrier.Labwares.Add(labware);
+                if(labware != null)
+                    parentCarrier.Labwares.Add(labware);
             }
         }
 

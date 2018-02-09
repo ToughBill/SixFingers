@@ -122,7 +122,7 @@ where T : class
         /// <param name="y"></param>
         /// <param name="size"></param>
         /// <returns></returns>
-        public static Rect Physic2Visual(int x, int y, Size size)
+        public static Rect Physic2Visual(double x, double y, Size size)
         {
             double xPixel = VisualCommon.Convert2PixelXUnit(x);
             double yPixel = VisualCommon.Convert2PixelYUnit(y);
@@ -166,7 +166,7 @@ where T : class
         /// <param name="color"></param>
         /// <param name="brush"></param>
         /// <param name="thickness"></param>
-        public static void DrawRect(int x, int y, Size size, DrawingContext drawingContext, Color color, Brush brush = null, int thickness = 1)
+        public static void DrawRect(double x, double y, Size size, DrawingContext drawingContext, Color color, Brush brush = null, int thickness = 1)
         {
             Rect rc = Physic2Visual(x, y, size);
             if (brush == null)
@@ -195,7 +195,7 @@ where T : class
         /// <param name="radius"></param>
         /// <param name="drawingContext"></param>
         /// <param name="color"></param>
-        public static void DrawCircle(Point position, int radius, DrawingContext drawingContext, Color color, bool fill = false)
+        public static void DrawCircle(Point position, double radius, DrawingContext drawingContext, Color color, bool fill = false)
         {
             double xPixel = VisualCommon.Convert2PixelXUnit(position.X);
             double yPixel = VisualCommon.Convert2PixelYUnit(position.Y);

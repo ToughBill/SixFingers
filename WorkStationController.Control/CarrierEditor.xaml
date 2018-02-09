@@ -35,7 +35,7 @@
         </Grid.Resources>
         <!--Name-->
         <StackPanel Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="2" Orientation="Horizontal" HorizontalAlignment="Left" Width="236">
-            <Label Content="Carrier Name:"/>
+            <Label Content="载架名称:"/>
             <TextBox MinWidth="150" Margin="3,2,0,2" Text="{Binding Path=TypeName}"/>
         </StackPanel>
 
@@ -46,33 +46,33 @@
         <!--Dimensions-->
         <TextBlock Grid.Row="1" Grid.Column="1" Text="X" VerticalAlignment="Bottom" HorizontalAlignment="Center"/>
         <TextBlock Grid.Row="1" Grid.Column="2" Text="Y" VerticalAlignment="Bottom" HorizontalAlignment="Center"/>
-        <Label Grid.Row="2" Grid.Column="0" Content="Dimensions:" HorizontalContentAlignment="Right"/>
+        <Label Grid.Row="2" Grid.Column="0" Content="尺寸:" HorizontalContentAlignment="Right"/>
         <TextBox Grid.Row="2" Grid.Column="1" Margin="3,2,2,2" Text="{Binding Path=Dimension.XLength}"/>
         <TextBox Grid.Row="2" Grid.Column="2" Margin="3,2,2,2" Text="{Binding Path=Dimension.YLength}"/>
         <!--ReferenceOffset-->
         <TextBlock Grid.Row="3" Grid.Column="1" Text="X" VerticalAlignment="Bottom" HorizontalAlignment="Center"/>
         <TextBlock Grid.Row="3" Grid.Column="2" Text="Y" VerticalAlignment="Bottom" HorizontalAlignment="Center"/>
-        <Label Grid.Row="4" Grid.Column="0" Content="Reference Offset:" HorizontalContentAlignment="Right"/>
+        <Label Grid.Row="4" Grid.Column="0" Content="对锚点偏移:" HorizontalContentAlignment="Right"/>
         <TextBox Grid.Row="4" Grid.Column="1" Margin="3,2,2,2" Text="{Binding Path=XOffset}"/>
         <TextBox Grid.Row="4" Grid.Column="2" Margin="3,2,2,2" Text="{Binding Path=YOffset}"/>
         
         <Grid Grid.Row="4" Grid.Column="3" Grid.ColumnSpan="2">
             <StackPanel HorizontalAlignment="Right" Orientation="Horizontal">
-                <Button Content="Add Site" Name="btnAddSite" Width="90" Click="btnAddSite_Click"/>
-                <Button Content="Remove Site" Name="btnRemoveSite" Width="90" Click="btnRemoveSite_Click" Margin="10,0,5,0"/>
+                <Button Content="增加舱位" Name="btnAddSite" Width="90" Click="btnAddSite_Click"/>
+                <Button Content="减少舱位" Name="btnRemoveSite" Width="90" Click="btnRemoveSite_Click" Margin="10,0,5,0"/>
             </StackPanel>
         </Grid>
         <!--Labware Layout Grid-->
         <DataGrid Grid.Row="5" Grid.Column="0" Grid.ColumnSpan="5" Margin="3" AutoGenerateColumns="False" 
                   ItemsSource="{Binding Path=Sites}" FrozenColumnCount="1" CanUserResizeRows="False" CanUserAddRows="False">
             <DataGrid.Columns>
-                <DataGridTextColumn Header="Site" Binding="{Binding Path=ID}" IsReadOnly="True" CanUserResize="False" CanUserSort="False"/>
-                <DataGridTextColumn Header="X-Offset" MinWidth="90" Binding="{Binding Path=XOffset}"/>
-                <DataGridTextColumn Header="Y-Offset" MinWidth="90" Binding="{Binding Path=YOffset}"/>
-                <DataGridTextColumn Header="Z-Offset" MinWidth="90" Binding="{Binding Path=ZOffset}"/>
-                <DataGridTextColumn Header="X-Size" MinWidth="90" Binding="{Binding Path=XSize}"/>
-                <DataGridTextColumn Header="Y-Size" MinWidth="90" Binding="{Binding Path=YSize}"/>
-                <DataGridTemplateColumn Header="Shape" MinWidth="90">
+                <DataGridTextColumn Header="舱位ID" Binding="{Binding Path=ID}" IsReadOnly="True" CanUserResize="False" CanUserSort="False"/>
+                <DataGridTextColumn Header="X偏移" MinWidth="90" Binding="{Binding Path=XOffset}"/>
+                <DataGridTextColumn Header="Y偏移" MinWidth="90" Binding="{Binding Path=YOffset}"/>
+                <DataGridTextColumn Header="Z偏移" MinWidth="90" Binding="{Binding Path=ZOffset}"/>
+                <DataGridTextColumn Header="X尺寸" MinWidth="90" Binding="{Binding Path=XSize}"/>
+                <DataGridTextColumn Header="Y尺寸" MinWidth="90" Binding="{Binding Path=YSize}"/>
+                <DataGridTemplateColumn Header="形状" MinWidth="90">
                     <DataGridTemplateColumn.CellTemplate>
                         <DataTemplate>
                             <TextBlock Text="Rectangle"/>
@@ -82,8 +82,8 @@
             </DataGrid.Columns>
         </DataGrid>
         <!--Allowed labware type-->
-        <Label Grid.Row="6" Grid.Column="0" Content="Allowed Labware on this carrier:" HorizontalContentAlignment="Right"/>
-        <Label Grid.Row="6" Grid.Column="4" Content="(Unit 0.1mm)" HorizontalAlignment="Left" />
+        <Label Grid.Row="6" Grid.Column="0" Content="允许放置的器件:" HorizontalContentAlignment="Right"/>
+        <Label Grid.Row="6" Grid.Column="4" Content="(单位mm)" HorizontalAlignment="Left" />
         <ListBox Grid.Row="6" Grid.Column="1" Grid.RowSpan ="2" Grid.ColumnSpan="2" Name="lstAllowedLabwares" ItemsSource="{Binding}">
             <ListBox.ItemTemplate>
                 <DataTemplate>
@@ -92,8 +92,8 @@
             </ListBox.ItemTemplate>
         </ListBox>
         <!--Save button-->
-        <StackPanel Grid.Row="7" Grid.Column="2" Grid.ColumnSpan="3" HorizontalAlignment="Right" VerticalAlignment="Bottom" Height="35" Width="155">
-            <Button MinWidth="150" MinHeight="30" Content="Save" Margin="0,5,5,0" Click="OnSaveButtonClick"/>
+        <StackPanel Grid.Row="7" Grid.Column="2" Grid.ColumnSpan="3" HorizontalAlignment="Right" VerticalAlignment="Bottom" Height="35" Width="100">
+            <Button MinWidth="90" MinHeight="30" Content="保存" Margin="0,5,5,0" Click="OnSaveButtonClick"/>
         </StackPanel>
     </Grid>
 </UserControl>
