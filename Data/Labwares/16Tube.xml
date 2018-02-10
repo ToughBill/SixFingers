@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Labware xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <TypeName>16Tube</TypeName>
+  <BackgroundColor>
+    <A>160</A>
+    <R>128</R>
+    <G>128</G>
+    <B>128</B>
+    <ScA>0.627451</ScA>
+    <ScR>0.215860531</ScR>
+    <ScG>0.215860531</ScG>
+    <ScB>0.215860531</ScB>
+  </BackgroundColor>
+  <Dimension>
+    <XLength>24.9</XLength>
+    <YLength>305</YLength>
+  </Dimension>
+  <SiteID>1</SiteID>
+  <Label>label2</Label>
+  <WellsInfo>
+    <WellRadius>5</WellRadius>
+    <NumberOfWellsX>1</NumberOfWellsX>
+    <NumberOfWellsY>16</NumberOfWellsY>
+    <FirstWellPositionX>22</FirstWellPositionX>
+    <FirstWellPositionY>-3.5</FirstWellPositionY>
+    <LastWellPositionX>22</LastWellPositionX>
+    <LastWellPositionY>278.8</LastWellPositionY>
+    <BottomShape>Flat</BottomShape>
+  </WellsInfo>
+  <ZValues>
+    <ZTravel>0</ZTravel>
+    <ZStart>0</ZStart>
+    <ZDispense>0</ZDispense>
+    <ZMax>0</ZMax>
+  </ZValues>
+</Labware>

@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <Carrier xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
-  <TypeName>MP3</TypeName>
+  <TypeName>16Pos</TypeName>
   <BackgroundColor>
     <A>255</A>
     <R>128</R>
@@ -12,8 +12,8 @@
     <ScB>0.215860531</ScB>
   </BackgroundColor>
   <Dimension>
-    <XLength>149</XLength>
-    <YLength>295</YLength>
+    <XLength>24.9</XLength>
+    <YLength>316</YLength>
   </Dimension>
   <XOffset>0</XOffset>
   <YOffset>0</YOffset>
@@ -21,32 +21,15 @@
   <Labwares />
   <Sites>
     <Site>
-      <XOffset>5.5</XOffset>
+      <XOffset>3</XOffset>
       <YOffset>0</YOffset>
       <ZOffset>0</ZOffset>
-      <XSize>120</XSize>
-      <YSize>90</YSize>
+      <XSize>24</XSize>
+      <YSize>290</YSize>
       <ID>1</ID>
-    </Site>
-    <Site>
-      <XOffset>5.5</XOffset>
-      <YOffset>90</YOffset>
-      <ZOffset>0</ZOffset>
-      <XSize>120</XSize>
-      <YSize>90</YSize>
-      <ID>2</ID>
-    </Site>
-    <Site>
-      <XOffset>5.5</XOffset>
-      <YOffset>180</YOffset>
-      <ZOffset>0</ZOffset>
-      <XSize>120</XSize>
-      <YSize>90</YSize>
-      <ID>3</ID>
     </Site>
   </Sites>
   <AllowedLabwareTypeNames>
-    <AllowedLabwareTypeName>24Well</AllowedLabwareTypeName>
-    <AllowedLabwareTypeName>96WellPlate</AllowedLabwareTypeName>
+    <AllowedLabwareTypeName>16Tube</AllowedLabwareTypeName>
   </AllowedLabwareTypeNames>
 </Carrier>

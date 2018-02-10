@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Recipe xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  Name="123">
+  <TypeName>Recipe</TypeName>
+  <CarrierTraits>
+    <CarrierTrait>
+      <TypeName>MP3</TypeName>
+      <GridID>1</GridID>
+    </CarrierTrait>
+  </CarrierTraits>
+  <LabwareTraits>
+    <LabwareTrait>
+      <TypeName>96WellPlate</TypeName>
+      <GridID>1</GridID>
+      <SiteID>1</SiteID>
+      <Label>label1</Label>
+    </LabwareTrait>
+  </LabwareTraits>
+  <Script_x0020_text />
+</Recipe>
