@@ -235,7 +235,7 @@ namespace WorkstationController.Core.Data
             foreach (Site site in _sites)
                 newCarrier.Sites.Add(site.Clone() as Site);
             newCarrier.Dimension = _dimension.Clone() as Dimension;
-            newCarrier.GridID = undefinedGrid;
+            newCarrier.GridID = _grid;
             return newCarrier;
         }
 

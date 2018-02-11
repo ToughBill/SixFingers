@@ -61,6 +61,8 @@ namespace WorkstationController.Core.Data
         private double bottomRightWellXPositionInLayout;
         private double bottomRightWellYPositionInLayout;
 
+        private ObservableCollection<Carrier> _allCarriers = null;
+
         /// <summary>
         /// The site on which the labware installed on the carrier, 1 based
         /// </summary>
@@ -233,7 +235,18 @@ namespace WorkstationController.Core.Data
         {
             get
             {
-                return PipettorElementManager.Instance.Carriers;
+                if (_allCarriers == null)
+                {
+                    _allCarriers = new ObservableCollection<Carrier>();
+                    foreach(var carrier in PipettorElementManager.Instance.Carriers)
+                    {
+                        var modifyCarrier = carrier.Clone() as Carrier;
+                        modifyCarrier.GridID = 1;
+                        _allCarriers.Add(modifyCarrier);
+                    }
+                }
+                return _allCarriers;
+                
                 //return  ;
             }
         }
@@ -347,13 +360,28 @@ namespace WorkstationController.Core.Data
             return newLabware;
         }
 
+
+        ///<summary>
+        /// get physical position in worktable
+        /// </summary>
+        /// <param name="row"></param>
+        /// <param name="col"></param>
+        /// <returns></returns>
+        public Point GetPositionInWorktable(int row, int col)
+        {
+            Point ptInSite = GetPositionInSite(row, col);
+            var siteVector = GetTopLeftSiteVector();
+            return new Point(ptInSite.X + siteVector.X, ptInSite.Y + siteVector.Y);
+
+        }
+
         /// <summary>
         /// get physical position
         /// </summary>
         /// <param name="row"></param>
         /// <param name="col"></param>
         /// <returns></returns>
-        public Point GetPosition(int row, int col)
+        public Point GetPositionInSite(int row, int col)
         {
             if (col >= _wellsInfo.NumberOfWellsX)
                 throw new Exception("column index bigger or equal to the column count!");
