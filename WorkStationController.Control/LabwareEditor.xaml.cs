@@ -33,25 +33,36 @@ namespace WorkstationController.Control
         {
             InitializeComponent();
             this.Loaded += LabwareEditor_Loaded;
+            this.Unloaded += LabwareEditor_Unloaded;
             
         }
 
-       
+        void LabwareEditor_Unloaded(object sender, RoutedEventArgs e)
+        {
+            Labware labware = this.DataContext as Labware;
+            labware.UpdateWellInfos();
+        }
 
         void LabwareEditor_Loaded(object sender, RoutedEventArgs e)
         {
             Labware labware = this.DataContext as Labware;
-            var calibCarrier = labware.CalibCarrier;
-            int currentIndex = -1;
-            for(int i = 0; i< labware.AllCarriers.Count; i++)
+            int index = -1;
+            if(labware.ParentCarrier != null)
             {
-                if(labware.AllCarriers[i].TypeName == calibCarrier.TypeName)
+                int tempIndex = 0;
+                foreach(var carrier in labware.AllCarriers)
                 {
-                    currentIndex = i;
-                    break;
+                    if(carrier.TypeName == labware.ParentCarrier.TypeName)
+                    {
+                        index = tempIndex;
+                        break;
+                    }
                 }
+                if (index != -1)
+                    cmbCalibCarrier.SelectedIndex = index;
             }
-            cmbCalibCarrier.SelectedIndex = currentIndex;
+            labware.CalculatePositionInLayout();
+            
         }
 
 
@@ -59,9 +70,10 @@ namespace WorkstationController.Control
         {
             // The DataContext must be labware
             Labware labware = this.DataContext as Labware;
-            labware.UpdateWellInfos();
+            
             if (labware == null)
                 throw new InvalidOperationException("DataContext of LabwareEditor must be an instance of Labware");
+            labware.UpdateWellInfos();
             PipettorElementManager.Instance.SavePipettorElement(labware);
         }
     }
