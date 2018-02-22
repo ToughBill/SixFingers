@@ -158,7 +158,7 @@ namespace WorkstationController.VisualElement
                         wellColor = Colors.Red;
                         bFill = true;
                     }
-                    bFill &= blowUp;
+                    //bFill &= blowUp;
                     var position = _labware.GetPosition(row, col) + vector;
                     VisualCommon.DrawCircle(position, _labware.WellsInfo.WellRadius, drawingContext, wellColor, bFill);
                 }

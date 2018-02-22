@@ -61,8 +61,6 @@ namespace WorkstationController.Core.Data
         private double bottomRightWellXPositionInLayout;
         private double bottomRightWellYPositionInLayout;
 
-        private ObservableCollection<Carrier> _allCarriers = null;
-
         /// <summary>
         /// The site on which the labware installed on the carrier, 1 based
         /// </summary>
@@ -114,26 +112,25 @@ namespace WorkstationController.Core.Data
         }
 
 
-        [XmlIgnore]
-        public Carrier CalibCarrier
-        {
-            get
-            {
-                return _calibCarrier;
-            }
-            set
-            {
-                //remove from the original carrier.
-                if (_calibCarrier != null)
-                    _calibCarrier.Labwares.Remove(this);
-                _calibCarrier = value;
-                if (value != null)
-                {
-                    SetProperty(ref _calibCarrier, value);
-                    CalculatePositionInLayout();
-                }
-            }
-        }
+        //[XmlIgnore]
+        //public Carrier CalibCarrier
+        //{
+        //    get
+        //    {
+        //        return _calibCarrier;
+        //    }
+        //    set
+        //    {
+        //        //remove from the original carrier.
+        //        if (_calibCarrier != null)
+        //            _calibCarrier.Labwares.Remove(this);
+        //        _calibCarrier = value;
+        //        if (value != null)
+        //        {
+        //            SetProperty(ref _calibCarrier, value);
+        //        }
+        //    }
+        //}
 
 
         //we need a more eligant way to force the OnPropertyChanged event fires.
@@ -176,6 +173,7 @@ namespace WorkstationController.Core.Data
             set
             {
                 SetProperty(ref topLeftWellXPositionInLayout, value);
+                //UpdateWellInfos();
             }
         }
 
@@ -189,6 +187,7 @@ namespace WorkstationController.Core.Data
             set
             {
                 SetProperty(ref topLeftWellYPositionInLayout, value);
+                //UpdateWellInfos();
             }
         }
 
@@ -202,6 +201,7 @@ namespace WorkstationController.Core.Data
             set
             {
                 SetProperty(ref bottomRightWellXPositionInLayout, value);
+                //UpdateWellInfos();
             }
         }
 
@@ -215,6 +215,7 @@ namespace WorkstationController.Core.Data
             set
             {
                 SetProperty(ref bottomRightWellYPositionInLayout, value);
+                //UpdateWellInfos();
             }
         }
 
@@ -223,10 +224,10 @@ namespace WorkstationController.Core.Data
         public void UpdateWellInfos()
         {
             Vector topLeftCurrentSite = GetTopLeftSiteVector();
-            _wellsInfo.FirstWellPositionX = topLeftWellXPositionInLayout - topLeftCurrentSite.X;
-            _wellsInfo.FirstWellPositionY = topLeftWellYPositionInLayout - topLeftCurrentSite.Y;
-            _wellsInfo.LastWellPositionX = bottomRightWellXPositionInLayout - topLeftCurrentSite.X;
-            _wellsInfo.LastWellPositionY = bottomRightWellYPositionInLayout - topLeftCurrentSite.Y;
+            WellsInfo.FirstWellPositionX = topLeftWellXPositionInLayout - topLeftCurrentSite.X;
+            WellsInfo.FirstWellPositionY = topLeftWellYPositionInLayout - topLeftCurrentSite.Y;
+            WellsInfo.LastWellPositionX =  bottomRightWellXPositionInLayout - topLeftCurrentSite.X;
+            WellsInfo.LastWellPositionY =  bottomRightWellYPositionInLayout - topLeftCurrentSite.Y;
         }
 
         
@@ -235,18 +236,7 @@ namespace WorkstationController.Core.Data
         {
             get
             {
-                if (_allCarriers == null)
-                {
-                    _allCarriers = new ObservableCollection<Carrier>();
-                    foreach(var carrier in PipettorElementManager.Instance.Carriers)
-                    {
-                        var modifyCarrier = carrier.Clone() as Carrier;
-                        modifyCarrier.GridID = 1;
-                        _allCarriers.Add(modifyCarrier);
-                    }
-                }
-                return _allCarriers;
-                
+                return ModifyCarriersToFirstGrid(PipettorElementManager.Instance.Carriers);
                 //return  ;
             }
         }
@@ -267,15 +257,7 @@ namespace WorkstationController.Core.Data
 
         private Vector GetTopLeftSiteVector()
         {
-            var referenceCarrier = _calibCarrier;
-            if (_calibCarrier == null)
-            {
-                if(_parentCarrier == null)
-                    return new Vector(0, 0);
-                referenceCarrier = _parentCarrier;
-            }
-                
-            
+            var referenceCarrier = _parentCarrier;
             Worktable worktable = Configurations.Instance.Worktable;
             double pinPos = (referenceCarrier.GridID - 1) * Worktable.DistanceBetweenAdjacentPins + (int)worktable.TopLeftPinPosition.X;
             double xPos = pinPos;
@@ -286,8 +268,8 @@ namespace WorkstationController.Core.Data
                 yPos -= referenceCarrier.YOffset;
                 int siteIndex = _siteID - 1;
                 var site = referenceCarrier.Sites[siteIndex];
-                xPos += site.XOffset;          //get site x start pos
-                yPos += site.YOffset;
+                xPos += (int)site.XOffset;          //get site x start pos
+                yPos += (int)site.YOffset;
             }
             return new Vector(xPos, yPos);
         }
@@ -317,13 +299,22 @@ namespace WorkstationController.Core.Data
             _zValues = new ZValues();
             _dimension = new Dimension();
             _wellsInfo = new WellsInfo();
+            
+            if (_parentCarrier != null)
+                _calibCarrier = _parentCarrier;
+
+            
         }
 
+        //public override void DoExtraWork()
+        //{
+        //    base.DoExtraWork();
+        //    CalculatePositionInLayout();
+        //}
 
         public void CalculatePositionInLayout()
         {
             Vector topLeftCurrentSite = GetTopLeftSiteVector();
-
             TopLeftWellX = _wellsInfo.FirstWellPositionX + topLeftCurrentSite.X;
             TopLeftWellY = _wellsInfo.FirstWellPositionY + topLeftCurrentSite.Y;
             BottomRightWellX = WellsInfo.LastWellPositionX + topLeftCurrentSite.X;
@@ -360,28 +351,13 @@ namespace WorkstationController.Core.Data
             return newLabware;
         }
 
-
-        ///<summary>
-        /// get physical position in worktable
-        /// </summary>
-        /// <param name="row"></param>
-        /// <param name="col"></param>
-        /// <returns></returns>
-        public Point GetPositionInWorktable(int row, int col)
-        {
-            Point ptInSite = GetPositionInSite(row, col);
-            var siteVector = GetTopLeftSiteVector();
-            return new Point(ptInSite.X + siteVector.X, ptInSite.Y + siteVector.Y);
-
-        }
-
         /// <summary>
         /// get physical position
         /// </summary>
         /// <param name="row"></param>
         /// <param name="col"></param>
         /// <returns></returns>
-        public Point GetPositionInSite(int row, int col)
+        public Point GetPosition(int row, int col)
         {
             if (col >= _wellsInfo.NumberOfWellsX)
                 throw new Exception("column index bigger or equal to the column count!");
@@ -418,8 +394,6 @@ namespace WorkstationController.Core.Data
             return new Point(x, y);
         }
 
-
-      
 
         /// <summary>
         /// Create an instance of Labware from a XML file

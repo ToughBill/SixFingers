@@ -218,6 +218,9 @@ namespace WorkstationController.VisualElement.Uitility
             Debug.WriteLine("Right Mouse Down");
             Point ptClick = e.GetPosition(_myCanvas);
             _selectedUIElement = FindSelectedUIElement(ptClick);
+            if (_selectedUIElement == null)
+                return;
+
             _myCanvas.ContextMenu = BuildMenu(_selectedUIElement.Ware);
 
         }
