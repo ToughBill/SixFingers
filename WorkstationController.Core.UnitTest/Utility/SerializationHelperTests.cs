@@ -29,7 +29,7 @@ namespace WorkstationController.Core.UnitTest
             //labware.ZMax = 50;
 
             string xmlFileName = Path.Combine(UnitTestHelper.GetTestModuleDirectory(), "testresult", "LabwareSerializeTest.xml");
-
+            
             SerializationHelper.Serialize<Labware>(xmlFileName, labware);
             Labware labware_deserialized = SerializationHelper.Deserialize<Labware>(xmlFileName);
         }

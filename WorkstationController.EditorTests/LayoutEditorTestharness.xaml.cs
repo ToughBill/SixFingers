@@ -19,7 +19,7 @@ namespace WorkstationController.EditorTests
     /// </summary>
     public partial class LayoutEditorTestharness : Window
     {
-        RecipeEditor layoutEditor;
+        LayoutEditor layoutEditor;
         ObservableCollection<WareBase> wares = new ObservableCollection<WareBase>();
         public LayoutEditorTestharness()
         {
@@ -30,7 +30,7 @@ namespace WorkstationController.EditorTests
 
         void LayoutEditorTestharness_Loaded(object sender, RoutedEventArgs e)
         {
-            layoutEditor = new RecipeEditor();
+            layoutEditor = new LayoutEditor();
             //layoutEditor.ContextMenuController.onEditLabware += ContextMenu_onEditLabware;
             UserControlContainer.Children.Add(layoutEditor);
             CreateTwoLabwares();

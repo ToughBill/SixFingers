@@ -25,13 +25,13 @@ namespace WorkstationController.Core.Utility
         // Paths for each pipettorElements folder
         private string _labwareDirectory = string.Empty;
         private string _carrierDirectory = string.Empty;
-        private string _recpieDirectory = string.Empty;
+        private string _layoutDirectory = string.Empty;
         private string _liquidClassDirectory = string.Empty;
 
         // Dictionary<string, T> is for binding, Key (string) is the XML file path of the pipettorElement
         private Dictionary<string, Labware> _labwares = new Dictionary<string, Labware>();
         private Dictionary<string, Carrier> _carriers = new Dictionary<string, Carrier>();
-        private Dictionary<string, Recipe> _recipes = new Dictionary<string, Recipe>();
+        private Dictionary<string, Layout> _layouts = new Dictionary<string, Layout>();
         private Dictionary<string, LiquidClass> _liquidClasses = new Dictionary<string, LiquidClass>();
 
         // FileSystemWatchers for pipettorElement XML files
@@ -100,11 +100,11 @@ namespace WorkstationController.Core.Utility
         /// <summary>
         /// Gets the existing recipe definitions
         /// </summary>
-        public ObservableCollection<Recipe> Recipes
+        public ObservableCollection<Layout> Layouts
         {
             get
             {
-                return new ObservableCollection<Recipe>(this._recipes.Values);
+                return new ObservableCollection<Layout>(this._layouts.Values);
             }
         }
 
@@ -136,32 +136,32 @@ namespace WorkstationController.Core.Utility
             this._labwareDirectory = Path.Combine(currentDirectory, "Labwares");
             if(!Directory.Exists(this._labwareDirectory))
             {
-                throw new InvalidOperationException(string.Format(Properties.Resources.FolderNotExistsError, this._labwareDirectory));
+                Directory.CreateDirectory(_labwareDirectory);
             }
 
             this._carrierDirectory = Path.Combine(currentDirectory, "Carriers");
             if (!Directory.Exists(this._carrierDirectory))
             {
-                throw new InvalidOperationException(string.Format(Properties.Resources.FolderNotExistsError, this._carrierDirectory));
+                Directory.CreateDirectory(_carrierDirectory);
             }
 
-            this._recpieDirectory = Path.Combine(currentDirectory, "Recipes");
-            if (!Directory.Exists(this._recpieDirectory))
+            this._layoutDirectory = Path.Combine(currentDirectory, "Layouts");
+            if (!Directory.Exists(this._layoutDirectory))
             {
-                throw new InvalidOperationException(string.Format(Properties.Resources.FolderNotExistsError, this._recpieDirectory));
+                Directory.CreateDirectory(_layoutDirectory);
             }
 
             this._liquidClassDirectory = Path.Combine(currentDirectory, "LiquidClasses");
             if (!Directory.Exists(this._liquidClassDirectory))
             {
-                throw new InvalidOperationException(string.Format(Properties.Resources.FolderNotExistsError, this._liquidClassDirectory));
+                Directory.CreateDirectory(_liquidClassDirectory);
             }
             #endregion
 
             #region Load each pipettorElements
             LoadPipettorElements<Labware>(this._labwareDirectory, this._labwares);
             LoadPipettorElements<Carrier>(this._carrierDirectory, this._carriers);
-            LoadPipettorElements<Recipe>(this._recpieDirectory, this._recipes);
+            LoadPipettorElements<Layout>(this._layoutDirectory, this._layouts);
             LoadPipettorElements<LiquidClass>(this._liquidClassDirectory, this._liquidClasses);
             #endregion
 
@@ -206,11 +206,11 @@ namespace WorkstationController.Core.Utility
                     // If no matching, exception thrown and we catch it.
                 }
             }
-            else if (typeof(T) == typeof(Recipe))
+            else if (typeof(T) == typeof(Layout))
             {
                 try
                 {
-                    KeyValuePair<string, Recipe> lo_kvp = this._recipes.First(kvp => kvp.Value.Name == elementName);
+                    KeyValuePair<string, Layout> lo_kvp = this._layouts.First(kvp => kvp.Value.Name == elementName);
                     xmlFilePath = lo_kvp.Key;
                     bFound = true;
                 }
@@ -265,9 +265,9 @@ namespace WorkstationController.Core.Utility
                 need2Update = true;
                 directory = _carrierDirectory;
             }   
-            else if (typeof(T) == typeof(Recipe))
+            else if (typeof(T) == typeof(Layout))
             {
-                directory = _recpieDirectory;
+                directory = _layoutDirectory;
             }
             else if (typeof(T) == typeof(LiquidClass))
             {
@@ -275,7 +275,7 @@ namespace WorkstationController.Core.Utility
             }
             else
             {
-                throw new ArgumentOutOfRangeException("T", typeof(T), "T must be Labware/Carrier/Recipe/LiquidClass");
+                throw new ArgumentOutOfRangeException("T", typeof(T), "T must be Labware/Carrier/Layout/LiquidClass");
             }
             string path = Path.Combine(directory, saveName);
             pipettorElement.Serialize(path);
@@ -335,10 +335,10 @@ namespace WorkstationController.Core.Utility
 
             // Recipe XML files watcher
             this._fsw_recipe = new FileSystemWatcher();
-            this._fsw_recipe.Path = this._recpieDirectory;
+            this._fsw_recipe.Path = this._layoutDirectory;
             this._fsw_recipe.Filter = extFilter;
-            this._fsw_recipe.Created += OnRecipeXmlFileCreated;
-            this._fsw_recipe.Deleted += OnRecipeXmlFileDeleted;
+            this._fsw_recipe.Created += OnLayoutXmlFileCreated;
+            this._fsw_recipe.Deleted += OnnLayoutXmlFileDeleted;
 
             // LiquidClass XML files watcher
             this._fsw_liquidclass = new FileSystemWatcher();
@@ -387,17 +387,17 @@ namespace WorkstationController.Core.Utility
             this.PropertyChanged(this, new PropertyChangedEventArgs("Carriers"));
         }
 
-        private void OnRecipeXmlFileCreated(object sender, FileSystemEventArgs e)
+        private void OnLayoutXmlFileCreated(object sender, FileSystemEventArgs e)
         {
-            Recipe recipe = SerializationHelper.Deserialize<Recipe>(e.FullPath);
-            this._recipes.Add(e.FullPath, recipe);
-            this.PropertyChanged(this, new PropertyChangedEventArgs("Recipes"));
+            Layout layout = SerializationHelper.Deserialize<Layout>(e.FullPath);
+            this._layouts.Add(e.FullPath, layout);
+            this.PropertyChanged(this, new PropertyChangedEventArgs("Layouts"));
         }
 
-        private void OnRecipeXmlFileDeleted(object sender, FileSystemEventArgs e)
+        private void OnnLayoutXmlFileDeleted(object sender, FileSystemEventArgs e)
         {
-            this._recipes.Remove(e.FullPath);
-            this.PropertyChanged(this, new PropertyChangedEventArgs("Recipes"));
+            this._layouts.Remove(e.FullPath);
+            this.PropertyChanged(this, new PropertyChangedEventArgs("Layouts"));
         }
 
         private void OnLiquidClassXmlFileCreated(object sender, FileSystemEventArgs e)

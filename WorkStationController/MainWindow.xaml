@@ -139,7 +139,7 @@
                                 </ListBox>
                             </DockPanel>
                         </TabItem>
-                        <TabItem Header="动作" Background="GreenYellow" Height="30" Width="100">
+                        <TabItem Header="命令" Background="GreenYellow" Height="30" Width="100">
                             <TabItem.LayoutTransform>
                                 <RotateTransform Angle="90"></RotateTransform>
                             </TabItem.LayoutTransform>
@@ -150,7 +150,7 @@
                                 <RotateTransform Angle="90"></RotateTransform>
                             </TabItem.LayoutTransform>
                             <DockPanel>
-                                <ListBox x:Name="lb_recipes" ItemsSource="{Binding Path=PipettorElementsManager.Recipes}" DockPanel.Dock="Top" MouseDoubleClick="OnRecipesMouseDoubleClick">
+                                <ListBox x:Name="lb_layouts" ItemsSource="{Binding Path=PipettorElementsManager.Layouts}" DockPanel.Dock="Top" MouseDoubleClick="OnLayoutsMouseDoubleClick">
                                     <ListBox.ItemTemplate>
                                         <DataTemplate>
                                             <TextBlock Text="{Binding Path=Name}" ToolTip="{Binding Path=Name}"/>
@@ -158,23 +158,23 @@
                                     </ListBox.ItemTemplate>
                                     <ListBox.ContextMenu>
                                         <ContextMenu>
-                                            <MenuItem Header="Edit..." Click="OnRecipesEditMenuItemClick">
+                                            <MenuItem Header="Edit..." Click="OnLayoutsEditMenuItemClick">
                                                 <MenuItem.Icon>
                                                     <Image Source="/Resources/edit.png" Height="20" Width="20"/>
                                                 </MenuItem.Icon>
                                             </MenuItem>
-                                            <MenuItem Header="New..." Click="OnRecipesNewMenuItemClick">
+                                            <MenuItem Header="New..." Click="OnLayoutsNewMenuItemClick">
                                                 <MenuItem.Icon>
                                                     <Image Source="/Resources/add.png" Height="20" Width="20"/>
                                                 </MenuItem.Icon>
                                             </MenuItem>
-                                            <MenuItem Header="Duplicate..." Click="OnRecipesDuplicateMenuItemClick">
+                                            <MenuItem Header="Duplicate..." Click="OnLayoutsDuplicateMenuItemClick">
                                                 <MenuItem.Icon>
                                                     <Image Source="/Resources/duplicate.png" Height="20" Width="20"/>
                                                 </MenuItem.Icon>
                                             </MenuItem>
                                             <Separator/>
-                                            <MenuItem Header="Delete" Click="OnRecipesDeleteMenuItemClick">
+                                            <MenuItem Header="Delete" Click="OnLayoutsDeleteMenuItemClick">
                                                 <MenuItem.Icon>
                                                     <Image Source="/Resources/delete.png" Height="20" Width="20"/>
                                                 </MenuItem.Icon>

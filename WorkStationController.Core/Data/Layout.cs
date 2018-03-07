@@ -18,6 +18,7 @@ namespace WorkstationController.Core.Data
         protected List<CarrierTrait> _carrierTraits;
         protected List<LabwareTrait> _labwareTraits;
         protected DitiInfo _ditiInfo;
+        private string _name;
         /// <summary>
         /// carrier reference info
         /// </summary>
@@ -35,6 +36,19 @@ namespace WorkstationController.Core.Data
             }
         }
 
+
+        [XmlAttribute]
+        public string Name
+        {
+            get
+            {
+                return _name;
+            }
+            set
+            {
+                SetProperty(ref _name, value);
+            }
+        }
 
         /// <summary>
         /// tips info
@@ -217,6 +231,25 @@ namespace WorkstationController.Core.Data
             }
         }
 
+        /// <summary>
+        /// the name would be used in saveing and loading
+        /// </summary>
+        [XmlIgnoreAttribute]
+        public override string SaveName
+        {
+            get
+            {
+                return Name;
+            }
+        }
+
+        public override string TypeName
+        {
+            get
+            {
+                return "Layout";
+            }
+        }
 
         public override void DoExtraWork()
         {

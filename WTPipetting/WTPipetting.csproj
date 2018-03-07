@@ -64,8 +64,8 @@
     <Compile Include="StageControls\BarcodeDefForm.xaml.cs">
       <DependentUpon>BarcodeDefForm.xaml</DependentUpon>
     </Compile>
-    <Compile Include="StageControls\RecipeForm.xaml.cs">
-      <DependentUpon>RecipeForm.xaml</DependentUpon>
+    <Compile Include="StageControls\LayoutForm.xaml.cs">
+      <DependentUpon>LayoutForm.xaml</DependentUpon>
     </Compile>
     <Compile Include="StageControls\StepMonitorForm.xaml.cs">
       <DependentUpon>StepMonitorForm.xaml</DependentUpon>
@@ -101,7 +101,7 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="StageControls\RecipeForm.xaml">
+    <Page Include="StageControls\LayoutForm.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

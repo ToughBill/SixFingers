@@ -70,7 +70,7 @@ namespace WTPipetting.Navigation
 
         private void AddSteps()
         {
-            stageUserControls.Add(new  RecipeForm(Stage.SampleDef, this));
+            stageUserControls.Add(new  LayoutForm(Stage.SampleDef, this));
             stageUserControls.Add(new BarcodeDefForm(Stage.BarcodeDef, this));
             stageUserControls.Add(new StepMonitorForm(Stage.StepMonitor, this));
             RegisterCallbacks();

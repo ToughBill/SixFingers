@@ -34,10 +34,10 @@ namespace WorkstationController
 
         private void SavePipettorElements_Executed(object sender, ExecutedRoutedEventArgs e)
         {
-            RecipeEditor recipeEditor = GetRecipeEditor();
+            LayoutEditor recipeEditor = GetRecipeEditor();
             if (recipeEditor == null)
                 return;
-            var recipe = recipeEditor.Recipe;
+            var recipe = recipeEditor.Layout;
             PipettorElementManager.Instance.SavePipettorElement(recipe);
 
         }
@@ -50,7 +50,7 @@ namespace WorkstationController
         private void StartScript_Executed(object sender, ExecutedRoutedEventArgs e)
         {
             TabItem selectedTab = tabDynamic.SelectedItem as TabItem;
-            RecipeEditor recipeEditor = (RecipeEditor)((Grid)selectedTab.Content).Children[0];
+            LayoutEditor recipeEditor = (LayoutEditor)((Grid)selectedTab.Content).Children[0];
             AdvancedPipettingCommand pipettingCmd1 = new AdvancedPipettingCommand("label1", new List<int>() { 1 }, new List<int>() { 1 }, new LiquidClass(), true, 100);
             AdvancedPipettingCommand pipettingCmd2 = new AdvancedPipettingCommand("label1", new List<int>() { 1 }, new List<int>() { 9 }, new LiquidClass(), false, 100);
             AdvancedPipettingCommand pipettingCmd3 = new AdvancedPipettingCommand("label1", new List<int>() { 1 }, new List<int>() { 2 }, new LiquidClass(), true, 100);
@@ -93,7 +93,7 @@ namespace WorkstationController
             {
                 // If the selected tab is a RecipeEditor
                 TabItem selectedTab = tabDynamic.SelectedItem as TabItem;
-                return ((Grid)selectedTab.Content).Children[0] is RecipeEditor;
+                return ((Grid)selectedTab.Content).Children[0] is LayoutEditor;
             }
             else
                 return false;
@@ -283,9 +283,9 @@ namespace WorkstationController
             tab.HeaderTemplate = tabDynamic.FindResource("TabHeader") as DataTemplate;
 
             // If a recipeEditor is added, subscribe its EditWare event
-            if(control is RecipeEditor)
+            if(control is LayoutEditor)
             {
-                RecipeEditor recipeEditor = control as RecipeEditor;
+                LayoutEditor recipeEditor = control as LayoutEditor;
                 recipeEditor.EditWare += OnRecipeEditorEditWare;
             }
             control.Width = this.ActualWidth - 300;
@@ -353,9 +353,9 @@ namespace WorkstationController
                 }
 
                 // If the editor is a RecipeEditor, unsubscribe its EditWare event
-                if(editor is RecipeEditor)
+                if(editor is LayoutEditor)
                 {
-                    RecipeEditor recipeEditor = editor as RecipeEditor;
+                    LayoutEditor recipeEditor = editor as LayoutEditor;
                     recipeEditor.EditWare -= this.OnRecipeEditorEditWare;
                 }
 
@@ -398,7 +398,7 @@ namespace WorkstationController
             if(items.Count > 0 && items[0] is TabItem)
             {
                 TabItem tabitem = (TabItem)items[0];
-                RecipeEditor layoutEditor = ((Grid)tabitem.Content).Children[0] as RecipeEditor;
+                LayoutEditor layoutEditor = ((Grid)tabitem.Content).Children[0] as LayoutEditor;
             }
         }
 
@@ -455,38 +455,38 @@ namespace WorkstationController
         }
         #endregion
 
-        #region Recipes context menu
-        private void OnRecipesMouseDoubleClick(object sender, System.Windows.Input.MouseButtonEventArgs e)
+        #region Layout context menu
+        private void OnLayoutsMouseDoubleClick(object sender, System.Windows.Input.MouseButtonEventArgs e)
         {
-            this.OnRecipesEditMenuItemClick(sender, e);
+            this.OnLayoutsEditMenuItemClick(sender, e);
         }
 
-        private void OnRecipesEditMenuItemClick(object sender, RoutedEventArgs e)
+        private void OnLayoutsEditMenuItemClick(object sender, RoutedEventArgs e)
         {
-            Recipe selectedRecipe = (Recipe)this.lb_recipes.SelectedItem;
-            if (selectedRecipe == null)
+            Layout selectedLayout = (Layout)this.lb_layouts.SelectedItem;
+            if (selectedLayout == null)
                 return;
 
-            if (this.ActivateEditingTab(selectedRecipe.Name))
+            if (this.ActivateEditingTab(selectedLayout.Name))
                 return;
 
-            RecipeEditor editor = new RecipeEditor(selectedRecipe);
-            editor.DataContext = selectedRecipe;
+            LayoutEditor editor = new LayoutEditor(selectedLayout);
+            editor.DataContext = selectedLayout;
             this.AddTabItem(editor);
         }
 
-        private void OnRecipesNewMenuItemClick(object sender, RoutedEventArgs e)
+        private void OnLayoutsNewMenuItemClick(object sender, RoutedEventArgs e)
         {
-            RecipeEditor editor = new RecipeEditor();
-            editor.DataContext = editor.Recipe;
+            LayoutEditor editor = new LayoutEditor();
+            editor.DataContext = editor.Layout;
             this.AddTabItem(editor);
         }
 
-        private void OnRecipesDuplicateMenuItemClick(object sender, RoutedEventArgs e)
+        private void OnLayoutsDuplicateMenuItemClick(object sender, RoutedEventArgs e)
         {
         }
 
-        private void OnRecipesDeleteMenuItemClick(object sender, RoutedEventArgs e)
+        private void OnLayoutsDeleteMenuItemClick(object sender, RoutedEventArgs e)
         {
         }
         #endregion
@@ -536,7 +536,7 @@ namespace WorkstationController
         private void OnLeftButtonDown(ListBox listBox, Point pt)
         {
             TabItem tabitem = (TabItem)tabDynamic.SelectedItem;
-            RecipeEditor recipeEditor = GetRecipeEditor();
+            LayoutEditor recipeEditor = GetRecipeEditor();
             if (recipeEditor == null)
                 return;
 
@@ -579,13 +579,13 @@ namespace WorkstationController
         }
         #endregion
 
-        private RecipeEditor GetRecipeEditor()
+        private LayoutEditor GetRecipeEditor()
         {
             //TabItem tabitem = (TabItem)tabDynamic.SelectedItem;
-            RecipeEditor recipeEditor = null;
+            LayoutEditor recipeEditor = null;
             foreach (TabItem tabItem in tabDynamic.Items)
             {
-                recipeEditor = ((Grid)tabItem.Content).Children[0] as RecipeEditor;
+                recipeEditor = ((Grid)tabItem.Content).Children[0] as LayoutEditor;
                 if (recipeEditor != null)
                     break;
             }

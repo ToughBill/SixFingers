@@ -38,7 +38,7 @@ namespace WorkstationController.VisualElement.Uitility
         /// </summary>
         public event EventHandler onWareContextMenuFired;
         #endregion
-        Recipe workingRecipe;
+        Layout workingLayout;
         #region interface
         /// <summary>
         /// new UI element introduced from somewhere, nomarlly from listbox
@@ -97,13 +97,13 @@ namespace WorkstationController.VisualElement.Uitility
         /// ctor, control the grid
         /// </summary>
         /// <param name="grid"></param>
-        /// <param name="existRecipe"></param>
-        public UIMovementsController(System.Windows.Controls.Grid grid,Recipe existRecipe)
+        /// <param name="existLayout"></param>
+        public UIMovementsController(System.Windows.Controls.Grid grid,Layout existLayout)
         {
             // TODO: Complete member initialization
             this._myCanvas = grid;
-            workingRecipe = existRecipe;
-            InitializeWares(existRecipe);
+            workingLayout = existLayout;
+            InitializeWares(existLayout);
             _myCanvas.PreviewMouseLeftButtonDown += myCanvas_PreviewMouseLeftButtonDown;
             _myCanvas.PreviewMouseLeftButtonUp += myCanvas_PreviewMouseLeftButtonUp;
             _myCanvas.PreviewMouseRightButtonDown += _myCanvas_PreviewMouseRightButtonDown;
@@ -143,12 +143,12 @@ namespace WorkstationController.VisualElement.Uitility
             WareBase wareBase = ((WareEditArgs)e).WareBase;
             UpdateWare(wareBase);
         }
-        private void InitializeWares(Recipe existRecipe)
+        private void InitializeWares(Layout layout)
         {
-            if (existRecipe == null)
+            if (layout == null)
                 return;
 
-            foreach(Carrier carrier in existRecipe.Carriers)
+            foreach(Carrier carrier in layout.Carriers)
             {
                 foreach(Labware labware in carrier.Labwares)
                 {
@@ -355,7 +355,7 @@ namespace WorkstationController.VisualElement.Uitility
             if(_selectedUIElement is CarrierUIElement)
             {
                 var uiCarrierElement = _selectedUIElement as CarrierUIElement;
-                workingRecipe.AddCarrier(uiCarrierElement.Carrier);
+                workingLayout.AddCarrier(uiCarrierElement.Carrier);
                 vecAdjust = GetAdjustVector();// = e.GetPosition(_myCanvas) - relativeClickPosition2LeftTop;
             }
                 

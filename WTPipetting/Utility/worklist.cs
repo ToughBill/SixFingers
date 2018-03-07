@@ -41,7 +41,21 @@ namespace SaintX.Utility
         {
             
             int smpCnt = GlobalVars.Instance.SampleCount;
-            return new List<PipettingInfo>();
+
+            List<PipettingInfo> pipettingInfos = new List<PipettingInfo>();
+            bool isReagent = (stepDef.SourceLabware.ToLower().Contains("reagent"));
+            for (int i = 0; i < smpCnt; i++ )
+            {
+                int srcWell = 1;
+                string srcLabware = stepDef.SourceLabware;
+                if(!isReagent)
+                {
+                    CalculateLabwareAndWellPosition(ref srcLabware,ref srcWell);
+                }
+                PipettingInfo pipettingInfo = new PipettingInfo(stepDef.SourceLabware, 1, stepDef.Volume, stepDef.DestLabware, i + 1, stepDef.LiquidClass);
+                pipettingInfos.Add(pipettingInfo);
+            }
+            return pipettingInfos;
             //Dictionary<string, List<int>> assay_wellIDs = new Dictionary<string,List<int>>();
             //for(int i = 0; i < smpCnt; i++)
             //{
@@ -105,6 +119,11 @@ namespace SaintX.Utility
           
         }
 
+        private void CalculateLabwareAndWellPosition(ref string srcLabware, ref int srcWell)
+        {
+            
+        }
+
        
 
         private List<PipettingInfo> GetPipettingInfosBatch(List<int> sourceWellIDs,
@@ -137,7 +156,7 @@ namespace SaintX.Utility
                         sourceWellIDs[j],
                         volumeThisTime,
                         stepDef.DestLabware,
-                        dstWellIDs[j]));
+                        dstWellIDs[j],"water"));
                 }
             }
             return pipettingInfos;
@@ -191,14 +210,16 @@ namespace SaintX.Utility
         public double volume;
         public string dstLabware;
         public int dstWellID;
+        public string liquidClass;
 
-        public PipettingInfo(string srcLabware, int srcWellID, double volume, string dstLabware, int dstWellID)
+        public PipettingInfo(string srcLabware, int srcWellID, double volume, string dstLabware, int dstWellID, string liquidClass)
         {
             this.srcLabware = srcLabware;
             this.srcWellID = srcWellID;
             this.volume = volume;
             this.dstLabware = dstLabware;
             this.dstWellID = dstWellID;
+            this.liquidClass = liquidClass;
         }
     }
 }
