@@ -61,30 +61,30 @@ namespace WorkstationController.EditorTests
         {
             Labware labware1 = new Labware();
             labware1.ZValues = new ZValues(360, 625, 665, 1610);
-            labware1.Dimension = new Dimension(250, 3050);
+            labware1.Dimension = new Dimension(25, 305);
             labware1.Label = "lab1";
             labware1.SiteID = 1;
-            labware1.WellsInfo = new WellsInfo(0, -32, 0, 2788, 1, 16, BottomShape.Flat, 50);
+            labware1.WellsInfo = new WellsInfo(0, -3.2, 0, 278.8, 1, 16, BottomShape.Flat, 5);
             labware1.TypeName = LabwareBuildInType.Tubes16Pos13_100MM.ToString();
             labware1.BackgroundColor = Color.FromArgb(255, 255, 0, 0);
             labware1.ParentCarrier = null;
 
             Labware labware2 = new Labware();
             labware2.ZValues = new ZValues(360, 625, 665, 1610);
-            labware2.Dimension = new Dimension(1270, 855);
+            labware2.Dimension = new Dimension(127, 85.5);
             labware2.Label = "lab2";
             labware2.SiteID = 1;
-            labware2.WellsInfo = new WellsInfo(24, 29 ,1014, 609, 12, 8, BottomShape.Flat, 33);
+            labware2.WellsInfo = new WellsInfo(2.4, 2.9 ,101.4, 60.9, 12, 8, BottomShape.Flat, 3.3);
             labware2.TypeName = LabwareBuildInType.Plate96_05ML.ToString();
             labware2.BackgroundColor = Color.FromArgb(255, 255, 0, 0);
             labware2.ParentCarrier = null;
 
             Labware labware3 = new Labware();
             labware3.ZValues = new ZValues(360, 625, 665, 1610);
-            labware3.Dimension = new Dimension(1270, 855);
+            labware3.Dimension = new Dimension(127, 85.5);
             labware3.Label = "lab3";
             labware3.SiteID = 1;
-            labware3.WellsInfo = new WellsInfo(24, 29,1014, 609, 6, 4, BottomShape.Flat, 60);
+            labware3.WellsInfo = new WellsInfo(2.4, 2.9,101.4, 60.9, 6, 4, BottomShape.Flat, 6.0);
             labware3.TypeName = LabwareBuildInType.Plate24_2ML.ToString();
             labware3.BackgroundColor = Color.FromArgb(255, 100,255, 0);
             labware3.ParentCarrier = null;
@@ -103,10 +103,10 @@ namespace WorkstationController.EditorTests
         {
             Labware labware = new Labware();
             labware.ZValues = new ZValues(360, 625, 665, 1610);
-            labware.Dimension = new Dimension(240, 3050);
+            labware.Dimension = new Dimension(25, 305);
             labware.TypeName = "lab1";
             labware.SiteID = 1;
-            labware.WellsInfo = new WellsInfo(0, -32,0, 2788, 1, 16, BottomShape.Flat, 50);
+            labware.WellsInfo = new WellsInfo(0, -3.2,0, 278.8, 1, 16, BottomShape.Flat, 50);
             labware.TypeName = LabwareBuildInType.Tubes16Pos13_100MM.ToString();
             labware.BackgroundColor = Color.FromArgb(255, 255, 0, 0);
             labware.ParentCarrier = null;

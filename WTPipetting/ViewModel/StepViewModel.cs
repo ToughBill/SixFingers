@@ -16,14 +16,13 @@ namespace WTPipetting
         public StepViewModel()
         {
             string sDataFolder =  FolderHelper.GetImageFolder();
-            //BitmapImage scan = new BitmapImage(new Uri(sDataFolder + "sampleDef.png"));
+            BitmapImage sampleDef = new BitmapImage(new Uri(sDataFolder + "sampleDef.png"));
             BitmapImage barcodeDef = new BitmapImage(new Uri(sDataFolder + "barcodeDef.jpg"));
-            BitmapImage tick = new BitmapImage(new Uri(sDataFolder + "genScript.jpg"));
-            BitmapImage selection = new BitmapImage(new Uri(sDataFolder + "selection.jpg"));
-            stepDescs.Add(new StepDesc("方法选择", selection, Stage.Selection));
-            //stepDescs.Add(new StepDesc("样品定义", scan, Stage.AssayDef));
+            BitmapImage genScript = new BitmapImage(new Uri(sDataFolder + "genScript.jpg"));
+
+            stepDescs.Add(new StepDesc("样品定义", sampleDef, Stage.SampleDef));
             stepDescs.Add(new StepDesc("条码设置", barcodeDef, Stage.BarcodeDef));
-            stepDescs.Add(new StepDesc("运行实验", tick, Stage.StepMonitor));
+            stepDescs.Add(new StepDesc("运行实验", genScript, Stage.StepMonitor));
         }
 
         public ObservableCollection<StepDesc> StepsModel
@@ -42,8 +41,7 @@ namespace WTPipetting
 
     public enum Stage
     {
-        Selection = 0,
-        //AssayDef = 1,
+        SampleDef = 0,
         BarcodeDef = 1,
         StepMonitor = 2
     };

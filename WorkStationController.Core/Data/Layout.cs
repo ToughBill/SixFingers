@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Xml.Serialization;
+using WorkstationController.Core.Utility;
 
 namespace WorkstationController.Core.Data
 {
@@ -16,7 +17,7 @@ namespace WorkstationController.Core.Data
         protected List<Carrier> _carriers = new List<Carrier>();
         protected List<CarrierTrait> _carrierTraits;
         protected List<LabwareTrait> _labwareTraits;
-
+        protected DitiInfo _ditiInfo;
         /// <summary>
         /// carrier reference info
         /// </summary>
@@ -33,11 +34,36 @@ namespace WorkstationController.Core.Data
                 SetProperty(ref _carrierTraits, value);
             }
         }
+
+
+        /// <summary>
+        /// tips info
+        /// </summary>
+        [XmlElement]
+        public DitiInfo DitiInfo
+        {
+            get
+            {
+                return _ditiInfo;
+            }
+            set
+            {
+                SetProperty(ref _ditiInfo, value);
+            }
+        }
+
+
+        public static Layout Create(string fromXmlFile)
+        {
+            Layout layout = SerializationHelper.Deserialize<Layout>(fromXmlFile);
+            layout._carriers = RestoreCarriersFromTrait(layout._carrierTraits, layout._labwareTraits);
+            //ConstrainTipInfo(recipe);
+            return layout;
+        }
+
         /// <summary>
         /// labware reference info
         /// </summary>
-        [XmlArray("LabwareTraits")]
-        [XmlArrayItem("LabwareTrait", typeof(LabwareTrait), IsNullable = false)]
         public List<LabwareTrait> LabwareTraits
         {
             get
@@ -74,7 +100,53 @@ namespace WorkstationController.Core.Data
         {
             CarrierTraits = new List<CarrierTrait>();
             LabwareTraits = new List<LabwareTrait>();
+            _ditiInfo = new DitiInfo();
         }
+
+        public override void Serialize(string toXmlFile)
+        {
+            GetTraitsInfo();
+            ConstrainTipInfo(this);
+            SerializationHelper.Serialize(toXmlFile, this);
+        }
+
+        internal static void ConstrainTipInfo(Layout layout)
+        {
+            var tipsInfo = layout.DitiInfo.DitiInfoItems;
+            List<DitiInfoItem> constrainedTipsInfo = new List<DitiInfoItem>();
+            if (tipsInfo == null)
+                return;
+            //add value for the diti labware without this information
+            foreach (var labaretraits in layout._labwareTraits)
+            {
+                if (!tipsInfo.Exists( x=>x.label ==  labaretraits.Label))
+                {
+                    constrainedTipsInfo.Add( new DitiInfoItem(labaretraits.Label, 96));
+                }
+            }
+            foreach (var tipInfo in tipsInfo)
+            {
+                LabwareTrait labwareTrait = layout._labwareTraits.Find(x => x.Label == tipInfo.label);
+                if (Labware.IsDiti(labwareTrait.TypeName))
+                {
+                    constrainedTipsInfo.Add(tipInfo);
+                }
+            }
+
+            layout.DitiInfo.DitiInfoItems = constrainedTipsInfo;
+            if (layout.DitiInfo.CurrentDitiLabware == "")
+            {
+                if (constrainedTipsInfo.Count == 0)
+                    return;
+                foreach(var tipInfo in constrainedTipsInfo)
+                {
+                    layout.DitiInfo.CurrentDitiLabware = tipInfo.label;
+                    break;
+                }
+            }
+
+        }
+
 
         protected static List<Carrier> RestoreCarriersFromTrait(List<CarrierTrait> carrierTraits, List<LabwareTrait> labwareTraits)
         {
@@ -143,6 +215,13 @@ namespace WorkstationController.Core.Data
                 foreach(Labware labware in carrier.Labwares)
                     LabwareTraits.Add(new LabwareTrait(labware));
             }
+        }
+
+
+        public override void DoExtraWork()
+        {
+            base.DoExtraWork();
+            _carriers = RestoreCarriersFromTrait(_carrierTraits, _labwareTraits);
         }
     }
 

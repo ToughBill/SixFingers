@@ -133,9 +133,28 @@ namespace WorkstationController.Core.Data
                 case BuildInCarrierType.Tube13mm_16POS:
                     CreateTube13mm_16Pos();
                     break;
+                case  BuildInCarrierType.Diti:
+                    CreateDiti();
+                    break;
                 default:
                     break;
             }
+        }
+
+        private void CreateDiti()
+        {
+            _dimension = new Data.Dimension(149, 316);
+            _xoffset = 12;
+            _yoffset = 24.7;
+            Site site1 = new Site(5.5, 25, 0, 127, 85.5, 1);
+            Site site2 = new Site(5.5, 121, 0, 127, 85.5, 2);
+            Site site3 = new Site(5.5, 217, 0, 127, 85.5, 3);
+            _sites.Add(site1);
+            _sites.Add(site2);
+            _sites.Add(site3);
+            _allowedLabwareTypeNames.Add(LabwareBuildInType.Diti1000.ToString());
+            _grid = undefinedGrid;
+            TypeName = BuildInCarrierType.Diti.ToString();
         }
 
         /// <summary>
@@ -242,8 +261,8 @@ namespace WorkstationController.Core.Data
         private void CreateTube13mm_16Pos()
         {
             _dimension = new Data.Dimension(24, 316);
-            _xoffset = 120;
-            _yoffset = 247;
+            _xoffset = 12;
+            _yoffset = 24.7;
             Site site1 = new Site(0, 11, 0, 24, 305, 1);
             _sites.Add(site1);
             _grid = undefinedGrid;
@@ -254,7 +273,7 @@ namespace WorkstationController.Core.Data
         // Will be replaced by xml
         private void CreateMP_3POS() 
         {            
-            _dimension = new Data.Dimension(1490, 3160);
+            _dimension = new Data.Dimension(149, 316);
             _xoffset = 12;
             _yoffset = 24.7;
             Site site1 = new Site(5.5, 25, 0, 127, 85.5, 1);
@@ -295,7 +314,8 @@ namespace WorkstationController.Core.Data
     {
         MP_3POS = 0,
         Tube13mm_16POS = 1,
-        WashStation = 2
+        Diti = 2,
+        WashStation = 3
     }
 
     /// <summary>

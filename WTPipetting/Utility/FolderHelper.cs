@@ -44,19 +44,15 @@ namespace WTPipetting.Utility
             return sOutputFolder;
         }
 
-        static public string GetDataFolder()
-        {
-            return GetExeParentFolder() + "Data\\";
-        }
 
         public static string GetImageFolder()
         {
             return GetExeParentFolder() + "Images\\";
         }
 
-        internal static string GetProtocolDefinitionXml()
+        internal static string GetProtocolFolder()
         {
-            return GetDataFolder() + "protocol1.xml";
+            return GetExeParentFolder() + "Protocols\\";
         }
 
         internal static void WriteVariable(string file, string s)
@@ -127,5 +123,7 @@ namespace WTPipetting.Utility
                 CopyFolder(strZiPath, strToPath + "\\" + strFolderName);
             }
         }
+
+        
     }
 }

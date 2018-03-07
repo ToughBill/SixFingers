@@ -8,6 +8,8 @@ using System.Windows.Controls;
 using System.Windows.Media;
 using WTPipetting.Data;
 using WTPipetting.Interfaces;
+using WTPipetting.StageControls;
+using WTPipetting.Utility;
 
 namespace WTPipetting.Navigation
 {
@@ -56,7 +58,7 @@ namespace WTPipetting.Navigation
     {
         public event EventHandler onStageChanged;
         protected bool preventUI = false;
-        protected Stage farthestStage = Stage.Selection;
+        protected Stage farthestStage = Stage.SampleDef;
         
         private ListBox lstSteps = null;
         protected List<BaseUserControl> stageUserControls = new List<BaseUserControl>();
@@ -68,10 +70,9 @@ namespace WTPipetting.Navigation
 
         private void AddSteps()
         {
-            //stageUserControls.Add(new ProtocolSelection(Stage.Selection, this));
-            ////stageUserControls.Add(new AssayDefinition(Stage.AssayDef, this));
-            //stageUserControls.Add(new BarcodeDefinition(Stage.BarcodeDef, this));
-            //stageUserControls.Add(new StepMonitor(Stage.StepMonitor, this));
+            stageUserControls.Add(new  RecipeForm(Stage.SampleDef, this));
+            stageUserControls.Add(new BarcodeDefForm(Stage.BarcodeDef, this));
+            stageUserControls.Add(new StepMonitorForm(Stage.StepMonitor, this));
             RegisterCallbacks();
         }
 

@@ -16,6 +16,7 @@ namespace WorkstationController.Core.Data
         private string _typename = "<Need a name>";      
         private AspirationPipetting _aspirationSinglePipetting = new AspirationPipetting();
         private DispensePipetting _dispenseSinglePipetting = new DispensePipetting();
+        private DispensePipetting _dispenseMultiPipetting = new DispensePipetting();
         #endregion
 
         /// <summary>
@@ -27,6 +28,20 @@ namespace WorkstationController.Core.Data
             get { return this._typename; }
             set { SetProperty(ref _typename, value); }
         }
+
+        /// <summary>
+        /// Gets the dispense multiple pipetting parameters
+        /// </summary>
+        [XmlElement]
+        public DispensePipetting DispenseMultiPipetting
+        {
+            get { return this._dispenseMultiPipetting; }
+            set
+            {
+                SetProperty(ref _dispenseMultiPipetting, value);
+            }
+        }
+
 
 
         /// <summary>

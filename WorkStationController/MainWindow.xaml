@@ -22,25 +22,25 @@
         </Grid.RowDefinitions>
         <!--Menu-->
         <Menu Grid.Row="0">
-            <MenuItem Header="File">
+            <MenuItem Header="文件">
                 <MenuItem Header="Save" Command="core:CommandsManager.SavePipettorElements" Icon="{StaticResource SaveIcon}"/>
             </MenuItem>
-            <MenuItem Header="Edit"></MenuItem>
-            <MenuItem Header="View"></MenuItem>
-            <MenuItem Header="Execute">
+            <MenuItem Header="编辑"></MenuItem>
+            <MenuItem Header="视图"></MenuItem>
+            <MenuItem Header="执行">
                 <MenuItem Command="core:CommandsManager.StartScript" Icon="{StaticResource StartIcon}"/>
                 <MenuItem Command="core:CommandsManager.ResumeScript" Icon="{StaticResource ResumeIcon}"/>
                 <MenuItem Command="core:CommandsManager.StopScript" Icon="{StaticResource StopIcon}"/>
             </MenuItem>
-            <MenuItem Header="Help"></MenuItem>
+            <MenuItem Header="帮助"></MenuItem>
         </Menu>
         <!--Toolbar-->
         <ToolBar Grid.Row="1">
-            <Button Command="core:CommandsManager.SavePipettorElements" Content="{StaticResource SaveIcon}" Margin="2" ToolTip="Save"/>
+            <Button Command="core:CommandsManager.SavePipettorElements" Content="{StaticResource SaveIcon}" Margin="2" ToolTip="保存"/>
             <Separator/>
-            <Button Command="core:CommandsManager.StartScript" Content="{StaticResource StartIcon}" Margin="2" ToolTip="Start Script"/>
-            <Button Command="core:CommandsManager.ResumeScript" Content="{StaticResource ResumeIcon}" Margin="2" ToolTip="Resume Script"/>
-            <Button Command="core:CommandsManager.StopScript" Content="{StaticResource StopIcon}" Margin="2" ToolTip="Stop Script"/>
+            <Button Command="core:CommandsManager.StartScript" Content="{StaticResource StartIcon}" Margin="2" ToolTip="开始脚本"/>
+            <Button Command="core:CommandsManager.ResumeScript" Content="{StaticResource ResumeIcon}" Margin="2" ToolTip="恢复脚本"/>
+            <Button Command="core:CommandsManager.StopScript" Content="{StaticResource StopIcon}" Margin="2" ToolTip="停止脚本"/>
         </ToolBar>
         <!--Main control tabs-->
         <Border BorderThickness="1" Grid.Row="2"  BorderBrush="Black">
@@ -54,7 +54,7 @@
                 <!--Elements selection-->
                 <DockPanel Grid.Column="0">
                     <TabControl TabStripPlacement="Right" DockPanel.Dock="Top">
-                        <TabItem Header="LABWARE" Background="Yellow" Height="30" Width="100">
+                        <TabItem Header="器件" Background="Yellow" Height="30" Width="100">
                             <TabItem.LayoutTransform>
                                 <RotateTransform Angle="90"></RotateTransform>
                             </TabItem.LayoutTransform>
@@ -100,7 +100,7 @@
                                 </ListBox>
                             </DockPanel>
                         </TabItem>
-                        <TabItem Header="CARRIERS" Background="LightBlue" Height="30" Width="100">
+                        <TabItem Header="载架" Background="LightBlue" Height="30" Width="100">
                             <TabItem.LayoutTransform>
                                 <RotateTransform Angle="90"></RotateTransform>
                             </TabItem.LayoutTransform>
@@ -139,13 +139,13 @@
                                 </ListBox>
                             </DockPanel>
                         </TabItem>
-                        <TabItem Header="COMMANDS" Background="GreenYellow" Height="30" Width="100">
+                        <TabItem Header="动作" Background="GreenYellow" Height="30" Width="100">
                             <TabItem.LayoutTransform>
                                 <RotateTransform Angle="90"></RotateTransform>
                             </TabItem.LayoutTransform>
                             <ListBox x:Name="_commandsListbox" ItemsSource="{Binding Path=SupportedCommands}"/>
                         </TabItem>
-                        <TabItem Header="RECIPES" Background="Coral" Height="30" Width="100">
+                        <TabItem Header="布局" Background="Coral" Height="30" Width="100">
                             <TabItem.LayoutTransform>
                                 <RotateTransform Angle="90"></RotateTransform>
                             </TabItem.LayoutTransform>
@@ -184,7 +184,7 @@
                                 </ListBox>
                             </DockPanel>
                         </TabItem>
-                        <TabItem Header="LIQUID CLASSES" Background="Violet" Height="30" Width="100">
+                        <TabItem Header="液体类型" Background="Violet" Height="30" Width="100">
                             <TabItem.LayoutTransform>
                                 <RotateTransform Angle="90"></RotateTransform>
                             </TabItem.LayoutTransform>

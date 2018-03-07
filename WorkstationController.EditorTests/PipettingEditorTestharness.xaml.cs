@@ -31,11 +31,11 @@ namespace WorkstationController.EditorTests
         {
             Labware labware1 = new Labware();
             labware1.ZValues = new ZValues(360, 625, 665, 1610);
-            labware1.Dimension = new Dimension(1270, 855);
+            labware1.Dimension = new Dimension(127, 85.5);
             labware1.TypeName = "16Pos Tubes";
             labware1.Label = "lab1";
             labware1.SiteID = 1;
-            labware1.WellsInfo = new WellsInfo(144, 115, 990 + 144, 745, 12, 8, BottomShape.Flat, 40);
+            labware1.WellsInfo = new WellsInfo(14.4, 11.5, 99 + 14.4, 74.5, 12, 8, BottomShape.Flat, 4);
             labware1.TypeName = LabwareBuildInType.Plate96_05ML.ToString();
             labware1.BackgroundColor = Color.FromArgb(255, 255, 0, 0);
             labware1.ParentCarrier = null;

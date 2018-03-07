@@ -56,9 +56,12 @@ namespace WorkstationController.Core.Data
         {
             Recipe recipe = SerializationHelper.Deserialize<Recipe>(fromXmlFile);
             recipe._carriers = RestoreCarriersFromTrait(recipe._carrierTraits, recipe._labwareTraits);
+            //ConstrainTipInfo(recipe);
             return recipe;
         }
 
+       
+       
 
         #region override base
 
@@ -66,11 +69,7 @@ namespace WorkstationController.Core.Data
         /// serialize
         /// </summary>
         /// <param name="toXmlFile"></param>
-        public override void Serialize(string toXmlFile)
-        {
-            GetTraitsInfo();
-            SerializationHelper.Serialize(toXmlFile, this);
-        }
+       
 
         public override string TypeName
         {
@@ -97,10 +96,7 @@ namespace WorkstationController.Core.Data
             throw new NotImplementedException();
         }
 
-        public override void DoExtraWork()
-        {
-            _carriers = RestoreCarriersFromTrait(_carrierTraits, _labwareTraits);
-        }
+       
         #endregion
     }
 }

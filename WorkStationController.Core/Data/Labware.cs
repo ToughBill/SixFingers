@@ -18,7 +18,8 @@ namespace WorkstationController.Core.Data
     {
         Tubes16Pos13_100MM = 0,
         Plate96_05ML = 1,
-        Plate24_2ML  = 2
+        Diti1000 = 2,
+        Plate24_2ML  = 3
     }
 
     /// <summary>
@@ -445,6 +446,11 @@ namespace WorkstationController.Core.Data
             _zValues = (ZValues)exampleLabware.ZValues.Clone();
         }
 
+
+        internal static bool IsDiti(string typeName)
+        {
+            return typeName.Contains(strings.DitiKeyName);
+        }
     }
 
     /// <summary>

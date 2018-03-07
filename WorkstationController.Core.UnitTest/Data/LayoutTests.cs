@@ -13,27 +13,38 @@ namespace WorkstationController.Core.UnitTest
     {
         private string _xmlFileWithCarrierPath = string.Empty;
         private string _xmlFileWithoutCarrierPath = string.Empty;
+        private string _xmlFileWithDitiInfo = string.Empty;
 
         [TestInitialize]
         public void Initialization()
         {
             this._xmlFileWithCarrierPath = Path.Combine(UnitTestHelper.GetTestModuleDirectory(), "testresult", "LayoutSerializeWithCarriersTest.xml");
             this._xmlFileWithoutCarrierPath = Path.Combine(UnitTestHelper.GetTestModuleDirectory(), "testresult", "LayoutSerializeNoCarriersTest.xml");
+            _xmlFileWithDitiInfo = Path.Combine(UnitTestHelper.GetTestModuleDirectory(), "testresult", "LayoutwithDitiInfo.xml");
         }
+
+        [TestMethod]
+        public void LayoutWithDitiInfo()
+        {
+            Layout layout = new Layout();
+            layout.Serialize(_xmlFileWithDitiInfo);
+        }
+
+
 
         [TestMethod]
         public void LayoutSerializeToXmlFileNoCarriersTest()
         {
-            Recipe layout = new Recipe();
-            layout.Name = "LayoutSerializeTest";
+            Layout layout = new Layout();
+            //layout.Name = "LayoutSerializeTest";
             layout.Serialize(this._xmlFileWithoutCarrierPath);
         }
 
         [TestMethod]
         public void LayoutSerializeToXmlFileWithCarriersTest()
         {
-            Recipe layout = new Recipe();
-            layout.Name = "LayoutSerializeTest";
+            Layout layout = new Layout();
+            //layout.Name = "LayoutSerializeTest";
 
             #region Add Carrier1
             Carrier carrier1 = new Carrier();
@@ -134,12 +145,12 @@ namespace WorkstationController.Core.UnitTest
         public void LayoutDeserializeFromXmlFileTest()
         {
             // With Carrier
-            Recipe layoutWithCarrier = Recipe.Create(this._xmlFileWithCarrierPath);
-            Assert.AreEqual<int>(layoutWithCarrier.Carriers.Count, 2);
+            Layout layoutWithCarrier = Layout.Create(this._xmlFileWithCarrierPath);
+            Assert.AreEqual<int>(2,layoutWithCarrier.CarrierTraits.Count);
 
             // Without Carrier
-            Recipe layoutWihtoutCarrier = Recipe.Create(this._xmlFileWithoutCarrierPath);
-            Assert.AreEqual<int>(layoutWihtoutCarrier.Carriers.Count, 0);
+            Layout layoutWihtoutCarrier = Layout.Create(this._xmlFileWithoutCarrierPath);
+            Assert.AreEqual<int>(0, layoutWihtoutCarrier.CarrierTraits.Count);
         }
     }
 }

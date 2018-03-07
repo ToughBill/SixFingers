@@ -113,7 +113,7 @@ namespace SaintX.Utility
             string assayName = "")
         {
             List<string> strs = new List<string>();
-            double tipType = int.Parse(stepDef.TipType);
+            double tipType = 1000;//int.Parse(stepDef.TipType);
             double maxVolumePerTip = tipType * 0.9;
             double volumeThisStep = stepDef.Volume;
             int nTotalTimes = (int)Math.Ceiling(volumeThisStep / maxVolumePerTip);

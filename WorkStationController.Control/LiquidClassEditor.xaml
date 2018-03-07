@@ -90,7 +90,7 @@
                     </Border>
                 </Grid>
             </TabItem>
-            <TabItem Header="Dispense">
+            <TabItem Header="分配">
                 <Grid>
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="120"/>
@@ -104,20 +104,33 @@
                         <RowDefinition Height="Auto"/>
                         <RowDefinition Height="Auto"/>
                     </Grid.RowDefinitions>
-                    <Label Grid.Row="0" Grid.Column="1" Content="Single Pipetting"/>
-                    <Label Grid.Row="1" Grid.Column="0" Content="Dispense Speed:" HorizontalContentAlignment="Right"/>
-                    <Label Grid.Row="2" Grid.Column="0" Content="Delay:" HorizontalContentAlignment="Right"/>
-                    <TextBlock Grid.Row="3" Grid.Column="0" Text="Trailing Airgap after each Dispense:" TextWrapping="Wrap" TextAlignment="Right" Margin="0,0,5,0"/>
+                    <Label Grid.Row="0" Grid.Column="1" Content="单次"/>
+                    <Label Grid.Row="0" Grid.Column="2" Content="多次"/>
+                    <Label Grid.Row="1" Grid.Column="0" Content="喷液速度:" HorizontalContentAlignment="Right"/>
+                    <Label Grid.Row="2" Grid.Column="0" Content="延时:" HorizontalContentAlignment="Right"/>
+                    <TextBlock Grid.Row="3" Grid.Column="0" Text="尾隙:" TextWrapping="Wrap" TextAlignment="Right" Margin="0,0,5,0"/>
                     <StackPanel Grid.Row="1" Grid.Column="1" Orientation="Horizontal" Margin="3,0">
                         <TextBox x:Name="tb_dispenseSpeed" Text="{Binding Path=DispenseSinglePipetting.DispenseSpeed}" MinWidth="70" Margin="2"/>
+                        <Label Content="μl / s"/>
+                    </StackPanel>
+                    <StackPanel Grid.Row="1" Grid.Column="2" Orientation="Horizontal" Margin="3,0">
+                        <TextBox x:Name="tb_multidispenseSpeed" Text="{Binding Path=DispenseMultiPipetting.DispenseSpeed}" MinWidth="70" Margin="2"/>
                         <Label Content="μl / s"/>
                     </StackPanel>
                     <StackPanel Grid.Row="2" Grid.Column="1" Orientation="Horizontal" Margin="3,0">
                         <TextBox x:Name="tb_dispenseDelay" Text="{Binding Path=DispenseSinglePipetting.Delay}" MinWidth="70" Margin="2"/>
                         <Label Content="ms"/>
                     </StackPanel>
+                    <StackPanel Grid.Row="2" Grid.Column="2" Orientation="Horizontal" Margin="3,0">
+                        <TextBox x:Name="tb_multiDispenseDelay" Text="{Binding Path=DispenseMultiPipetting.Delay}" MinWidth="70" Margin="2"/>
+                        <Label Content="ms"/>
+                    </StackPanel>
+                 
                     <StackPanel Grid.Row="3" Grid.Column="1" Orientation="Horizontal" VerticalAlignment="Center">
-                        <CheckBox x:Name="chk_trailingAirGapAfterDispense" IsChecked="{Binding Path=DispenseSinglePipetting.TrailingAirgapAfterDispense}"  Content="yes" Margin="5,0,0,0"/>
+                        <CheckBox x:Name="chk_trailingAirGapAfterDispense" IsChecked="{Binding Path=DispenseSinglePipetting.TrailingAirgapAfterDispense}"  Content="是" Margin="5,0,0,0"/>
+                    </StackPanel>
+                    <StackPanel Grid.Row="3" Grid.Column="2" Orientation="Horizontal" VerticalAlignment="Center">
+                        <CheckBox x:Name="chk_multiTrailingAirGapAfterDispense" IsChecked="{Binding Path=DispenseMultiPipetting.TrailingAirgapAfterDispense}"  Content="是" Margin="5,0,0,0"/>
                     </StackPanel>
                 </Grid>
             </TabItem>
@@ -125,7 +138,7 @@
 
         <!--Buttons-->
         <StackPanel Grid.Row="2" Orientation="Horizontal" HorizontalAlignment="Right">
-            <Button x:Name="btn_save" Content="Save" Click="OnBtnSaveClick" Margin="5" MinWidth="150"/>
+            <Button x:Name="btn_save" Content="保存" Click="OnBtnSaveClick" Margin="5" MinWidth="150"/>
         </StackPanel>
     </Grid>
 </UserControl>

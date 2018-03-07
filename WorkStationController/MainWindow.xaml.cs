@@ -106,10 +106,7 @@ namespace WorkstationController
                 return;
 
             LabwareEditor editor = new LabwareEditor();
-            
             selectedLabware.CalculatePositionInLayout();
-            if (selectedLabware.ParentCarrier != null)
-                selectedLabware.CalibCarrier = selectedLabware.ParentCarrier.Clone() as Carrier;
             editor.DataContext = selectedLabware;
             this.AddTabItem(editor);
         }

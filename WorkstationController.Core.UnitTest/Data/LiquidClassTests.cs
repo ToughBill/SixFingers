@@ -28,10 +28,13 @@ namespace WorkstationController.Core.UnitTest
             liquidClass.AspirationSinglePipetting.SystemTrailingAirgap = 10;
             liquidClass.AspirationSinglePipetting.TrailingAirgap = 50;
 
+            liquidClass.DispenseMultiPipetting.DispenseSpeed = 400;
+            liquidClass.DispenseMultiPipetting.Delay = 250;
+            liquidClass.DispenseMultiPipetting.TrailingAirgapAfterDispense = true;
 
             liquidClass.DispenseSinglePipetting.DispenseSpeed = 300;
             liquidClass.DispenseSinglePipetting.Delay = 150;
-            liquidClass.DispenseSinglePipetting.TrailingAirgapAfterDispense = true;
+            liquidClass.DispenseSinglePipetting.TrailingAirgapAfterDispense = false;
 
             liquidClass.Serialize(this._xmlFileLiquidClass);
         }
@@ -50,7 +53,9 @@ namespace WorkstationController.Core.UnitTest
 
             Assert.AreEqual<int>(liquidClass.DispenseSinglePipetting.DispenseSpeed, 300);
             Assert.AreEqual<int>(liquidClass.DispenseSinglePipetting.Delay, 150);
-            Assert.AreEqual<bool>(liquidClass.DispenseSinglePipetting.TrailingAirgapAfterDispense, true);
+            Assert.AreEqual<bool>(false,liquidClass.DispenseSinglePipetting.TrailingAirgapAfterDispense);
+
+            Assert.AreEqual<bool>(true, liquidClass.DispenseMultiPipetting.TrailingAirgapAfterDispense);
         }
     }
 }

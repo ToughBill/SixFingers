@@ -12,7 +12,13 @@ namespace WorkstationController.Core.UnitTest
         public static string GetTestModuleDirectory()
         {
             string testDllPath = Assembly.GetExecutingAssembly().Location;
-            return Path.GetDirectoryName(testDllPath);
+            string folder = Path.GetDirectoryName(testDllPath);
+            if(!Directory.Exists(folder))
+                Directory.CreateDirectory(folder);
+            string testResultFolder = folder + "testresult\\";
+            if (!Directory.Exists(testResultFolder))
+                Directory.CreateDirectory(testResultFolder);
+            return folder;
         }
     }
 }
