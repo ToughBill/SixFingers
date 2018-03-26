@@ -92,7 +92,7 @@ namespace WorkstationController.Core.Data
 
 
         /// <summary>
-        /// Gets the labware collection on layout, don't serialize this
+        /// Gets the carrier collection on layout, don't serialize this
         /// </summary>
         [XmlIgnoreAttribute] 
         public List<Carrier> Carriers
@@ -106,6 +106,7 @@ namespace WorkstationController.Core.Data
                 SetProperty(ref _carriers, value);
             }
         }
+
 
         /// <summary>
         /// Default constructor
@@ -255,6 +256,26 @@ namespace WorkstationController.Core.Data
         {
             base.DoExtraWork();
             _carriers = RestoreCarriersFromTrait(_carrierTraits, _labwareTraits);
+        }
+
+        public Labware FindLabware(string label)
+        {
+            Labware theOne;
+            foreach(var carrier in _carriers)
+            {
+                theOne = carrier.Labwares.Find(x => x.Label == label);
+                if (theOne != null)
+                    return theOne;
+            }
+            return null;
+        }
+
+        public System.Windows.Point GetDitiPosition()
+        {
+            var labware = FindLabware("Waste");
+            if (labware == null)
+                throw new NoLabwareException("Waste");
+            return labware.GetPosition(1);
         }
     }
 

@@ -40,6 +40,7 @@
     <Reference Include="System" />
     <Reference Include="System.Data" />
     <Reference Include="System.Drawing" />
+    <Reference Include="System.Windows" />
     <Reference Include="System.Windows.Forms" />
     <Reference Include="System.Xml" />
     <Reference Include="Microsoft.CSharp" />
@@ -61,6 +62,12 @@
     </ApplicationDefinition>
     <Compile Include="Data\PanelViewModel.cs" />
     <Compile Include="Data\SampleInfo.cs" />
+    <Compile Include="Hardware\HardwareController.cs" />
+    <Compile Include="Hardware\IHardwareDevice.cs" />
+    <Compile Include="Hardware\ILiha.cs" />
+    <Compile Include="Hardware\Liha.cs" />
+    <Compile Include="Hardware\Pump.cs" />
+    <Compile Include="Hardware\Roma.cs" />
     <Compile Include="StageControls\BarcodeDefForm.xaml.cs">
       <DependentUpon>BarcodeDefForm.xaml</DependentUpon>
     </Compile>
@@ -79,7 +86,7 @@
     <Compile Include="Utility\Helper.cs" />
     <Compile Include="Utility\ProtocolManager.cs" />
     <Compile Include="Utility\SerializationHelper.cs" />
-    <Compile Include="Utility\worklist.cs" />
+    <Compile Include="Hardware\Worklist.cs" />
     <Compile Include="ViewModel\StepViewModel.cs" />
     <Compile Include="ViewModel\viewModelbase.cs" />
     <Page Include="MainWindow.xaml">

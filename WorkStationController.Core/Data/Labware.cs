@@ -352,6 +352,17 @@ namespace WorkstationController.Core.Data
             return newLabware;
         }
 
+        public Point GetPosition(int wellID)
+        {
+            int maxWellCnt = _wellsInfo.NumberOfWellsX * _wellsInfo.NumberOfWellsY;
+            if (wellID > maxWellCnt)
+                throw new WellOfoutRange(this.Label, maxWellCnt);
+            int col = (wellID - 1) / _wellsInfo.NumberOfWellsY;
+            int row = (wellID - 1) % _wellsInfo.NumberOfWellsY;
+            return GetPosition(row, col);
+        }
+
+
         /// <summary>
         /// get physical position
         /// </summary>
@@ -556,91 +567,7 @@ namespace WorkstationController.Core.Data
         }
     }
 
-    /// <summary>
-    /// for binding to UI element
-    /// </summary>
-    //public class CoordinateInfo : BindableBase
-    //{
-
-
-    //    private WellsInfo _wellsInfo;
-    //    private Vector _offsetVec;
-
-    //    public CoordinateInfo(WellsInfo wellsInfo,Vector offsetVec)
-    //    {
-    //        _wellsInfo = wellsInfo;
-    //        _offsetVec = offsetVec;
-    //    }
-
-    //    public Vector Offset
-    //    {
-    //        get
-    //        {
-    //            return _offsetVec;
-    //        }
-    //    }
-
-    //    /// <summary>
-    //    /// Gets or sets the X position of first well
-    //    /// </summary>
-    //    public double FirstWellPositionX
-    //    {
-    //        get
-    //        {
-    //            return _wellsInfo.FirstWellPositionX + _offsetVec.X;
-    //        }
-    //        set
-    //        {
-    //            _wellsInfo.FirstWellPositionX = value - _offsetVec.X;
-    //        }
-    //    }
-
-    //    /// <summary>
-    //    /// Gets or sets the Y position of first well
-    //    /// </summary>
-    //    public double FirstWellPositionY
-    //    {
-    //        get
-    //        {
-    //            return _wellsInfo.FirstWellPositionY + _offsetVec.Y;
-    //        }
-    //        set
-    //        {
-    //            _wellsInfo.FirstWellPositionY = value - _offsetVec.Y;
-    //        }
-    //    }
-
-    //    /// <summary>
-    //    /// Gets or sets the X position of last well
-    //    /// </summary>
-    //    public double LastWellPositionX
-    //    {
-    //        get
-    //        {
-    //            return _wellsInfo.LastWellPositionX + _offsetVec.X;
-    //        }
-    //        set
-    //        {
-    //            _wellsInfo.LastWellPositionX = value - _offsetVec.X;
-    //        }
-    //    }
-
-    //    /// <summary>
-    //    /// Gets or sets the Y position of last well
-    //    /// </summary>
-    //    public double LastWellPositionY
-    //    {
-    //        get
-    //        {
-    //            return _wellsInfo.LastWellPositionY + _offsetVec.Y;
-    //        }
-    //        set
-    //        {
-    //            _wellsInfo.LastWellPositionY = value - _offsetVec.Y;
-    //        }
-    //    }
- 
-    //}
+    
 
     /// <summary>
     /// The well information on the labware

@@ -49,6 +49,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Data\DitiInfo.cs" />
+    <Compile Include="Data\Exceptions.cs" />
     <Compile Include="Data\IPipettorCommand.cs" />
     <Compile Include="Data\BindBase.cs" />
     <Compile Include="Data\ArmInfo.cs" />
