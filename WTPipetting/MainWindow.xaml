@@ -25,14 +25,7 @@
         </ListBox>
         <Grid Name="userControlHost" Grid.Column="0" Grid.Row="1" Grid.ColumnSpan="2"  HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
         </Grid>
-        <StackPanel Grid.Column="0" Grid.Row="1">
-            <Button Name="btnDitiSetting" Click="btnDitiSetting_Click">
-                <StackPanel>
-                    <Image Source="Images\diti.jpg"></Image>
-                    <TextBlock HorizontalAlignment="Center"> 枪头设置</TextBlock>
-                </StackPanel>
-            </Button>
-        </StackPanel>
+        
         <Menu Height="24" Grid.Column="3" HorizontalAlignment="Right" Name="menu1"  VerticalAlignment="Top" Width="48" Margin="0,1,0,0">
             <MenuItem Header="帮助" FontFamily="SimSun" FontSize="14" TabIndex="7">
                 <MenuItem Header="关于" Command="Help"/>

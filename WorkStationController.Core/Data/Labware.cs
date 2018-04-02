@@ -260,7 +260,11 @@ namespace WorkstationController.Core.Data
         {
             var referenceCarrier = _parentCarrier;
             Worktable worktable = Configurations.Instance.Worktable;
-            double pinPos = (referenceCarrier.GridID - 1) * Worktable.DistanceBetweenAdjacentPins + (int)worktable.TopLeftPinPosition.X;
+            int needGridCnt = 0;
+            if (referenceCarrier != null)
+                needGridCnt =  referenceCarrier.GridID - 1;
+
+            double pinPos = needGridCnt * Worktable.DistanceBetweenAdjacentPins + (int)worktable.TopLeftPinPosition.X;
             double xPos = pinPos;
             double yPos = worktable.TopLeftPinPosition.Y;
             if (referenceCarrier != null)
