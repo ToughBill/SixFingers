@@ -1,0 +1,42 @@
+﻿<bb:BaseUserControl x:Class="WTPipetting.StageControls.BarcodeDefForm"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:wfi = "clr-namespace:System.Windows.Forms.Integration;assembly=WindowsFormsIntegration"
+             xmlns:wf ="clr-namespace:System.Windows.Forms;assembly=System.Windows.Forms" 
+             xmlns:bb="clr-namespace:WTPipetting.Navigation"
+             mc:Ignorable="d" 
+             d:DesignHeight="600" d:DesignWidth="600">
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="30"/>
+            <RowDefinition Height="6*"/>
+            <RowDefinition Height="2*"/>
+        </Grid.RowDefinitions>
+        <StackPanel>
+            <Label>设置条码：</Label>
+        </StackPanel>
+        <Grid Grid.Row="1">
+            
+            <wfi:WindowsFormsHost>
+                <wf:DataGridView x:Name="dataGridView" AllowUserToAddRows="False" EditMode="EditProgrammatically" AllowUserToResizeRows="False" AllowUserToResizeColumns="False"/>
+            </wfi:WindowsFormsHost>
+        </Grid>
+        <Grid Grid.Row="2">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="1*"/>
+                <RowDefinition Height="3*"/>
+            </Grid.RowDefinitions>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*"></ColumnDefinition>
+                <ColumnDefinition Width="100"></ColumnDefinition>
+            </Grid.ColumnDefinitions>
+            <TextBox Grid.Row="1" Grid.Column="0"   HorizontalAlignment="Stretch" Margin="0,0,0,10"  Name="txtInfo" VerticalAlignment="Stretch" MaxLines="4" TabIndex="4" TextWrapping="Wrap" VerticalScrollBarVisibility="Auto" IsReadOnly="True" />
+            <Label Content="信息:"  Height="34" HorizontalAlignment="Left" Name="label6" VerticalAlignment="Top" Width="50" Margin="0,0,0,0" />
+            <Grid Grid.Column="1" Grid.Row="1">
+                <Button Name="btnConfirm" VerticalAlignment="Bottom" Margin="0,0,0,10" Width="80" Height="30" Click="btnConfirm_Click">确定</Button>
+            </Grid>
+        </Grid>
+    </Grid>
+</bb:BaseUserControl>
