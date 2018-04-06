@@ -333,7 +333,10 @@ namespace WorkstationController
 
         private void DeleteTabItem(string tag)
         {
-            var item = tabDynamic.Items.Cast<TabItem>().Where(i => i.Tag.Equals(tag)).SingleOrDefault();
+            var validTags = tabDynamic.Items.Cast<TabItem>().Where(i => i.Tag.Equals(tag));
+            if (validTags.Count() > 1)
+                throw new Exception("有重名设置！");
+            var item = validTags.SingleOrDefault();
 
             TabItem tab = item as TabItem;
 

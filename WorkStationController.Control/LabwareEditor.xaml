@@ -124,7 +124,8 @@
         <Label Grid.Row="13" Grid.Column="5" Content="(单位:" HorizontalAlignment="Right" />
         <Label Grid.Row="13" Grid.Column="6" Content="mm)"/>
         <StackPanel Grid.Row="14" Grid.Column="0" Grid.ColumnSpan="7" Orientation="Horizontal" HorizontalAlignment="Right">
-            <Button Width="124" Height="30" Content="保存" Click="OnSaveButtonClick"/>
+            <Button Width="60" Height="30" Content="运动控制" Click="OnMoveControlBtnClick"/>
+            <Button Width="60" Height="30" Content="保存" Click="OnSaveButtonClick"/>
         </StackPanel>
     </Grid>
 </UserControl>

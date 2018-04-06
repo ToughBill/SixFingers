@@ -76,5 +76,10 @@ namespace WorkstationController.Control
             labware.UpdateWellInfos();
             PipettorElementManager.Instance.SavePipettorElement(labware);
         }
+
+        private void OnMoveControlBtnClick(object sender, RoutedEventArgs e)
+        {
+
+        }
     }
 }

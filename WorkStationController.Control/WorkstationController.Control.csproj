@@ -56,6 +56,9 @@
     <Reference Include="PresentationFramework" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="MoveControlForm.xaml.cs">
+      <DependentUpon>MoveControlForm.xaml</DependentUpon>
+    </Compile>
     <Compile Include="PipettingCommandEditor.xaml.cs">
       <DependentUpon>PipettingCommandEditor.xaml</DependentUpon>
     </Compile>
@@ -79,6 +82,10 @@
     <Compile Include="ThirdParties\ListViewDragDropManager\DragAdorner.cs" />
     <Compile Include="ThirdParties\ListViewDragDropManager\ListViewDragDropManager.cs" />
     <Compile Include="ThirdParties\ListViewDragDropManager\MouseUtilities.cs" />
+    <Page Include="MoveControlForm.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="PipettingCommandEditor.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
