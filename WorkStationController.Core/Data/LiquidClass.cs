@@ -42,7 +42,17 @@ namespace WorkstationController.Core.Data
             }
         }
 
-
+        public override string SaveName
+        {
+            get
+            {
+                return this._typename;
+            }
+            set
+            {
+                this._typename = value;
+            }
+        }
 
         /// <summary>
         /// Gets the aspiration single pipetting parameters

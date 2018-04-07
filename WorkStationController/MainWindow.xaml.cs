@@ -34,13 +34,14 @@ namespace WorkstationController
 
         private void SavePipettorElements_Executed(object sender, ExecutedRoutedEventArgs e)
         {
-            LayoutEditor recipeEditor = GetRecipeEditor();
-            if (recipeEditor == null)
+            LayoutEditor layoutEditor = GetLayoutEditor();
+            if (layoutEditor == null)
                 return;
-            var recipe = recipeEditor.Layout;
-            PipettorElementManager.Instance.SavePipettorElement(recipe);
-
+            var layout = layoutEditor.Layout;
+            PipettorElementManager.Instance.SavePipettorElement(layout);
         }
+
+        
 
         private void SavePipettorElements_CanExecute(object sender, CanExecuteRoutedEventArgs e)
         {
@@ -285,8 +286,9 @@ namespace WorkstationController
             // If a recipeEditor is added, subscribe its EditWare event
             if(control is LayoutEditor)
             {
-                LayoutEditor recipeEditor = control as LayoutEditor;
-                recipeEditor.EditWare += OnRecipeEditorEditWare;
+                LayoutEditor layoutEditor = control as LayoutEditor;
+                layoutEditor.ParentTab = tab;
+                layoutEditor.EditWare += OnLayoutEditorEditWare;
             }
             control.Width = this.ActualWidth - 300;
             Grid grid = new Grid();
@@ -303,7 +305,7 @@ namespace WorkstationController
             return tab;
         }
 
-        private void OnRecipeEditorEditWare(object sender, WareBase e)
+        private void OnLayoutEditorEditWare(object sender, WareBase e)
         {
             if(e is Labware)
             {
@@ -359,7 +361,7 @@ namespace WorkstationController
                 if(editor is LayoutEditor)
                 {
                     LayoutEditor recipeEditor = editor as LayoutEditor;
-                    recipeEditor.EditWare -= this.OnRecipeEditorEditWare;
+                    recipeEditor.EditWare -= this.OnLayoutEditorEditWare;
                 }
 
                 // Remove the tab
@@ -380,8 +382,16 @@ namespace WorkstationController
         private bool ActivateEditingTab(string tag)
         {
             bool isEditing = false;
-
-            var item = tabDynamic.Items.Cast<TabItem>().Where(i => i.Tag.Equals(tag)).SingleOrDefault();
+            TabItem item = null;
+            try
+            {
+                var validTabs = tabDynamic.Items.Cast<TabItem>().Where(i => i.Tag.Equals(tag));
+                item = validTabs.SingleOrDefault();
+            }
+            catch(Exception ex)
+            {
+                return false;
+            }
 
             TabItem tabItem = item as TabItem;
 
@@ -392,6 +402,17 @@ namespace WorkstationController
             }
 
             return isEditing;
+        }
+        private void AddInfo(string sInfo, bool error = false)
+        {
+            rtb_Output.SelectionBrush = error ? Brushes.Red : Brushes.Black;
+            rtb_Output.AppendText(sInfo);
+            rtb_Output.ScrollToEnd();
+        }
+
+        private void AddErrorInfo(string sInfo)
+        {
+            AddInfo(sInfo, true);
         }
 
         private void OnCommandTabItemSelectionChanged(object sender, SelectionChangedEventArgs e)
@@ -470,12 +491,12 @@ namespace WorkstationController
             if (selectedLayout == null)
                 return;
 
-            if (this.ActivateEditingTab(selectedLayout.Name))
+            if (this.ActivateEditingTab(selectedLayout.SaveName))
                 return;
 
-            LayoutEditor editor = new LayoutEditor(selectedLayout);
+            LayoutEditor editor = new LayoutEditor(selectedLayout, AddErrorInfo);
             editor.DataContext = selectedLayout;
-            this.AddTabItem(editor);
+            var tabItem = this.AddTabItem(editor);
         }
 
         private void OnLayoutsNewMenuItemClick(object sender, RoutedEventArgs e)
@@ -539,7 +560,7 @@ namespace WorkstationController
         private void OnLeftButtonDown(ListBox listBox, Point pt)
         {
             TabItem tabitem = (TabItem)tabDynamic.SelectedItem;
-            LayoutEditor recipeEditor = GetRecipeEditor();
+            LayoutEditor recipeEditor = GetLayoutEditor();
             if (recipeEditor == null)
                 return;
 
@@ -582,17 +603,17 @@ namespace WorkstationController
         }
         #endregion
 
-        private LayoutEditor GetRecipeEditor()
+        private LayoutEditor GetLayoutEditor()
         {
             //TabItem tabitem = (TabItem)tabDynamic.SelectedItem;
-            LayoutEditor recipeEditor = null;
+            LayoutEditor layoutEditor = null;
             foreach (TabItem tabItem in tabDynamic.Items)
             {
-                recipeEditor = ((Grid)tabItem.Content).Children[0] as LayoutEditor;
-                if (recipeEditor != null)
+                layoutEditor = ((Grid)tabItem.Content).Children[0] as LayoutEditor;
+                if (layoutEditor != null)
                     break;
             }
-            return recipeEditor;
+            return layoutEditor;
         }
 
   

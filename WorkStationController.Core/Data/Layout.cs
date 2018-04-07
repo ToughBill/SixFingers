@@ -18,7 +18,7 @@ namespace WorkstationController.Core.Data
         protected List<CarrierTrait> _carrierTraits;
         protected List<LabwareTrait> _labwareTraits;
         protected DitiInfo _ditiInfo;
-        private string _name;
+        private string _saveName;
         /// <summary>
         /// carrier reference info
         /// </summary>
@@ -37,18 +37,18 @@ namespace WorkstationController.Core.Data
         }
 
 
-        [XmlAttribute]
-        public string Name
-        {
-            get
-            {
-                return _name;
-            }
-            set
-            {
-                SetProperty(ref _name, value);
-            }
-        }
+        //[XmlAttribute]
+        //public string Name
+        //{
+        //    get
+        //    {
+        //        return _name;
+        //    }
+        //    set
+        //    {
+        //        SetProperty(ref _name, value);
+        //    }
+        //}
 
         /// <summary>
         /// tips info
@@ -240,7 +240,11 @@ namespace WorkstationController.Core.Data
         {
             get
             {
-                return Name;
+                return _saveName;
+            }
+            set
+            {
+                SetProperty(ref _saveName, value);
             }
         }
 

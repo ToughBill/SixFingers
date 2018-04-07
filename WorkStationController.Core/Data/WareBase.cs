@@ -36,6 +36,18 @@ namespace WorkstationController.Core.Data
             set { SetProperty(ref _backgroundColor, value); }
         }
 
+        public override string SaveName
+        {
+            get
+            {
+                return _typeName;
+            }
+            set
+            {
+                TypeName = value;
+            }
+        }
+        
 
         /// <summary>
         /// Gets or sets the width and height of the ware

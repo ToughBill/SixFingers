@@ -75,29 +75,13 @@ namespace WorkstationController.Control
                     ShowWarning(strings.LabelAlreadyExist);
                     return;
                 }
-#if DEBUG
-                Debug.WriteLine("before set!");
-                DumpDebugInfo();
-#endif
                 _theOne.Label = s;
-#if DEBUG
-                
-                DumpDebugInfo();
-                Debug.WriteLine("after set!");
-#endif      
+
             }
             this.Close();
         }
 
-        private void DumpDebugInfo()
-        {
-            Debug.WriteLine("current labwareUI hash: {0}", _theOne.GetHashCode());
-            //foreach(var element in carrierUIElements)
-            //{
-            //    Debug.WriteLine("Label: " +  element.Carrier.Labwares[0].Label);
-            //    Debug.WriteLine("HashCode:{0}", element.Carrier.Labwares[0].GetHashCode());
-            //}
-        }
+     
 
         private void ShowWarning(string s)
         {

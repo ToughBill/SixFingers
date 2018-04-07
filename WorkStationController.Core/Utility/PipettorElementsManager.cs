@@ -98,7 +98,7 @@ namespace WorkstationController.Core.Utility
 
 
         /// <summary>
-        /// Gets the existing recipe definitions
+        /// Gets the existing layout definitions
         /// </summary>
         public ObservableCollection<Layout> Layouts
         {
@@ -210,7 +210,7 @@ namespace WorkstationController.Core.Utility
             {
                 try
                 {
-                    KeyValuePair<string, Layout> lo_kvp = this._layouts.First(kvp => kvp.Value.Name == elementName);
+                    KeyValuePair<string, Layout> lo_kvp = this._layouts.First(kvp => kvp.Value.SaveName == elementName);
                     xmlFilePath = lo_kvp.Key;
                     bFound = true;
                 }
