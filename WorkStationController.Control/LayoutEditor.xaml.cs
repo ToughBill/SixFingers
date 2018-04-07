@@ -19,7 +19,7 @@ namespace WorkstationController.Control
     /// <summary>
     /// Interaction logic for Layout.xaml
     /// </summary>
-    public partial class LayoutEditor : UserControl
+    public partial class LayoutEditor : BaseEditor
     {
         UIMovementsController     _uiController = null;
         //Recipe                    _recipe = null;
@@ -31,20 +31,19 @@ namespace WorkstationController.Control
         /// Event of edit labware and carrier
         /// </summary>
         public event EventHandler<WareBase> EditWare = delegate { };
-        public delegate void OnErrorHappened(string errMsg);
-        RichTextBox rtbInfo;
-        OnErrorHappened onErrorHappened;
+       
         #endregion
         /// <summary>
         /// Default constructor
         /// </summary>
-        public LayoutEditor(Layout layout = null, OnErrorHappened errorHint = null)
+        public LayoutEditor(Layout layout = null, NewInformationHandler newInfoHandler = null)
+            : base(newInfoHandler)
         {
             InitializeComponent();
             _layout = layout;
             if (_layout == null)
                 _layout = new Layout();
-            this.onErrorHappened = errorHint;
+           
             _worktable.SizeChanged += uiContainer_SizeChanged;
             _uiController = new UIMovementsController(_worktable, _layout);
             _uiController.onLabelPreviewChanged += uiController_onLabelPreviewChanged;
@@ -129,9 +128,9 @@ namespace WorkstationController.Control
             if(_layout.SaveName == "" || _layout.SaveName.Contains("<") || _layout.SaveName.Contains(">"))
             {
                 string errMsg = "未为layout设置名称！";
-                if(onErrorHappened != null)
+                if(newInfoHandler != null)
                 {
-                    onErrorHappened("errMsg");
+                    newInfoHandler(errMsg,true);
                 }
                 else
                 {
@@ -141,7 +140,15 @@ namespace WorkstationController.Control
             List<Carrier> carriers = GetCarriers();
             _layout.Carriers = carriers;
             ParentTab.Tag = _layout.SaveName;
-            PipettorElementManager.Instance.SavePipettorElement(_layout);
+            try
+            {
+                PipettorElementManager.Instance.SavePipettorElement(_layout);
+            }
+            catch(Exception ex)
+            {
+                 if (newInfoHandler != null)
+                    newInfoHandler(ex.Message, true);
+            }
         }
 
      

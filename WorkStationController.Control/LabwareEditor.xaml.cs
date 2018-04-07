@@ -24,12 +24,13 @@ namespace WorkstationController.Control
     /// <summary>
     /// Interaction logic for LabwareUserControl.xaml
     /// </summary>
-    public partial class LabwareEditor : UserControl
+    public partial class LabwareEditor : BaseEditor
     {
         /// <summary>
         /// ctor
         /// </summary>
-        public LabwareEditor()
+        public LabwareEditor(NewInformationHandler newInfoHandler)
+            :base(newInfoHandler)
         {
             InitializeComponent();
             this.Loaded += LabwareEditor_Loaded;
@@ -74,7 +75,16 @@ namespace WorkstationController.Control
             if (labware == null)
                 throw new InvalidOperationException("DataContext of LabwareEditor must be an instance of Labware");
             labware.UpdateWellInfos();
-            PipettorElementManager.Instance.SavePipettorElement(labware);
+            try
+            {
+                PipettorElementManager.Instance.SavePipettorElement(labware);
+            }
+            catch(Exception ex)
+            {
+                if (newInfoHandler != null)
+                    newInfoHandler(ex.Message, true);
+            }
+            
         }
 
         private void OnMoveControlBtnClick(object sender, RoutedEventArgs e)

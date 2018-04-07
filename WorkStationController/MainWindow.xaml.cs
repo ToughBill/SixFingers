@@ -106,7 +106,7 @@ namespace WorkstationController
             if (selectedLabware == null || this.ActivateEditingTab(selectedLabware.TypeName))
                 return;
 
-            LabwareEditor editor = new LabwareEditor();
+            LabwareEditor editor = new LabwareEditor(AddInfo);
             selectedLabware.CalculatePositionInLayout();
             editor.DataContext = selectedLabware;
             this.AddTabItem(editor);
@@ -120,7 +120,7 @@ namespace WorkstationController
         private void NewLabware_Executed(object sender, ExecutedRoutedEventArgs e)
         {
             Labware labware = new Labware();
-            LabwareEditor editor = new LabwareEditor();
+            LabwareEditor editor = new LabwareEditor(AddInfo);
             editor.DataContext = labware;
             this.AddTabItem(editor);
         }
@@ -134,7 +134,7 @@ namespace WorkstationController
         private void DuplicateLabware_Executed(object sender, ExecutedRoutedEventArgs e)
         {
             Labware labware = ((Labware)this.lb_labwares.SelectedItem).Clone() as Labware;
-            LabwareEditor editor = new LabwareEditor();
+            LabwareEditor editor = new LabwareEditor(AddInfo);
             editor.DataContext = labware;
             this.AddTabItem(editor);
         }
@@ -172,7 +172,7 @@ namespace WorkstationController
             if (selectedCarrier == null || this.ActivateEditingTab(selectedCarrier.TypeName))
                 return;
 
-            CarrierEditor editor = new CarrierEditor();
+            CarrierEditor editor = new CarrierEditor(AddInfo);
             editor.DataContext = selectedCarrier;
             this.AddTabItem(editor);
         }
@@ -313,7 +313,7 @@ namespace WorkstationController
                 if (this.ActivateEditingTab(labware.TypeName))
                     return;
 
-                LabwareEditor editor = new LabwareEditor();
+                LabwareEditor editor = new LabwareEditor(AddInfo);
                 editor.DataContext = labware;
                 this.AddTabItem(editor);
             }
@@ -323,7 +323,7 @@ namespace WorkstationController
                 if (this.ActivateEditingTab(carrier.TypeName))
                     return;
 
-                CarrierEditor editor = new CarrierEditor();
+                CarrierEditor editor = new CarrierEditor(AddInfo);
                 editor.DataContext = carrier;
                 this.AddTabItem(editor);
             }
@@ -448,7 +448,7 @@ namespace WorkstationController
             if (this.ActivateEditingTab(selectedCr.TypeName))
                 return;
 
-            CarrierEditor editor = new CarrierEditor();
+            CarrierEditor editor = new CarrierEditor(AddInfo);
             editor.DataContext = selectedCr;
             this.AddTabItem(editor);
         }
@@ -456,7 +456,7 @@ namespace WorkstationController
         private void OnCarrierNewMenuItemClick(object sender, RoutedEventArgs e)
         {
             Carrier carrier = new Carrier();
-            CarrierEditor editor = new CarrierEditor();
+            CarrierEditor editor = new CarrierEditor(AddInfo);
             editor.DataContext = carrier;
             this.AddTabItem(editor);
         }
@@ -464,7 +464,7 @@ namespace WorkstationController
         private void OnCarrierDuplicateMenuItemClick(object sender, RoutedEventArgs e)
         {
             Carrier carrier = ((Carrier)this.lb_carriers.SelectedItem).Clone() as Carrier;
-            CarrierEditor editor = new CarrierEditor();
+            CarrierEditor editor = new CarrierEditor(AddInfo);
             editor.DataContext = carrier;
             this.AddTabItem(editor);
         }
@@ -494,7 +494,7 @@ namespace WorkstationController
             if (this.ActivateEditingTab(selectedLayout.SaveName))
                 return;
 
-            LayoutEditor editor = new LayoutEditor(selectedLayout, AddErrorInfo);
+            LayoutEditor editor = new LayoutEditor(selectedLayout,AddInfo);
             editor.DataContext = selectedLayout;
             var tabItem = this.AddTabItem(editor);
         }
@@ -527,7 +527,7 @@ namespace WorkstationController
             if (this.ActivateEditingTab(selectedLC.TypeName))
                 return;
 
-            LiquidClassEditor editor = new LiquidClassEditor();
+            LiquidClassEditor editor = new LiquidClassEditor(AddInfo);
             editor.DataContext = selectedLC;
             this.AddTabItem(editor);
         }
@@ -535,7 +535,7 @@ namespace WorkstationController
         private void OnLiquidClassNewMenuItemClick(object sender, RoutedEventArgs e)
         {
             LiquidClass liquidClass = new LiquidClass();
-            LiquidClassEditor editor = new LiquidClassEditor();
+            LiquidClassEditor editor = new LiquidClassEditor(AddInfo);
             editor.DataContext = liquidClass;
             this.AddTabItem(editor);
         }
@@ -543,7 +543,7 @@ namespace WorkstationController
         private void OnLiquidClassDuplicateMenuItemClick(object sender, RoutedEventArgs e)
         {
             LiquidClass liquidClass = ((LiquidClass)this.lb_liquidclass.SelectedItem).Clone() as LiquidClass;
-            LiquidClassEditor editor = new LiquidClassEditor();
+            LiquidClassEditor editor = new LiquidClassEditor(AddInfo);
             editor.DataContext = liquidClass;
             this.AddTabItem(editor);
         }

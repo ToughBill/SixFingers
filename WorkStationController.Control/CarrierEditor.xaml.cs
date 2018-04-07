@@ -20,13 +20,14 @@ namespace WorkstationController.Control
     /// <summary>
     /// Interaction logic for CarrierEditor.xaml
     /// </summary>
-    public partial class CarrierEditor : UserControl
+    public partial class CarrierEditor : BaseEditor
     {
         private ObservableCollection<LabwareCandidate> labwareCandidates;
         /// <summary>
         /// ctor
         /// </summary>
-        public CarrierEditor()
+        public CarrierEditor(NewInformationHandler newInfoHandler)
+            :base(newInfoHandler)
         {
             InitializeComponent();
             this.Loaded += CarrierEditor_Loaded;
@@ -56,17 +57,40 @@ namespace WorkstationController.Control
             // The DataContext must be Carrier
             Carrier carrier = this.DataContext as Carrier;
             if (carrier == null)
-                throw new InvalidOperationException("DataContext of Carrier must be an instance of Carrier");
+            {
+                if (newInfoHandler != null)
+                {
+                    newInfoHandler("找不到Carrier类型的上下文！");
+                    return;
+                }
 
-            carrier.AllowedLabwareTypeNames = new ObservableCollection<string>(labwareCandidates.Where(x => x.IsAllowed).Select(x => x.TypeName));
-            PipettorElementManager.Instance.SavePipettorElement(carrier);
+            }
+            try
+            {
+                carrier.AllowedLabwareTypeNames = new ObservableCollection<string>(labwareCandidates.Where(x => x.IsAllowed).Select(x => x.TypeName));
+                PipettorElementManager.Instance.SavePipettorElement(carrier);
+            }
+            catch (Exception ex)
+            {
+                if (newInfoHandler != null)
+                    newInfoHandler(ex.Message, true);
+            }
+
+            
         }
 
         private void btnAddSite_Click(object sender, RoutedEventArgs e)
         {
             Carrier carrier = this.DataContext as Carrier;
             if (carrier == null)
-                throw new InvalidOperationException("DataContext of Carrier must be an instance of Carrier");
+            {
+                if (newInfoHandler != null)
+                {
+                    newInfoHandler("找不到Carrier类型的上下文！");
+                    return;
+                }
+                    
+            }
             int existSiteCnt = carrier.Sites.Count;
             Site newSite = new Site();
             if (existSiteCnt > 0)
@@ -79,7 +103,14 @@ namespace WorkstationController.Control
         {
             Carrier carrier = this.DataContext as Carrier;
             if (carrier == null)
-                throw new InvalidOperationException("DataContext of Carrier must be an instance of Carrier");
+            {
+                if (newInfoHandler != null)
+                {
+                    newInfoHandler("找不到Carrier类型的上下文！");
+                    return;
+                }
+
+            }
             int carrierCnt = carrier.Sites.Count;
             if (carrierCnt == 0)
                 return;

@@ -21,12 +21,14 @@ namespace WorkstationController.Control
     /// <summary>
     /// Interaction logic for LiquidClassEditor.xaml
     /// </summary>
-    public partial class LiquidClassEditor : UserControl
+    public partial class LiquidClassEditor : BaseEditor
     {
+        
         /// <summary>
         /// Default constructor
         /// </summary>
-        public LiquidClassEditor()
+        public LiquidClassEditor(NewInformationHandler newInfoHandler)
+            :base(newInfoHandler)
         {
             InitializeComponent();
         }
@@ -37,7 +39,16 @@ namespace WorkstationController.Control
             LiquidClass liquidClass = this.DataContext as LiquidClass;
             if (liquidClass == null)
                 throw new InvalidOperationException("DataContext of LiquiClassEditor must be an instance of LiquidClass");
-            PipettorElementManager.Instance.SavePipettorElement(liquidClass);
+            try
+            {
+                PipettorElementManager.Instance.SavePipettorElement(liquidClass);
+            }
+            catch(Exception ex)
+            {
+                 if (newInfoHandler != null)
+                    newInfoHandler(ex.Message, true);
+            }
+
         }
     }
 }
