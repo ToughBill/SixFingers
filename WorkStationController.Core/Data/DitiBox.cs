@@ -5,7 +5,7 @@ using System.Text;
 
 namespace WorkstationController.Core.Data
 {
-    class DitiBox : Labware
+    public class DitiBox : Labware
     {
         public const string typeName = "DitiBox";
         /// <summary> 

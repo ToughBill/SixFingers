@@ -124,9 +124,55 @@ namespace WorkstationController.VisualElement.Uitility
             miEdit.Header = "编辑";
             miEdit.DataContext = ware;
             miEdit.Click += miEdit_Click;
+            if (ware is Labware)
+            {
+                if(((Labware)ware).IsDitiBox)
+                {
+                    AddSetCurrentMenu(ware, theMenu);
+                    AddSetDitiPositionMenu(ware, theMenu);
+                }
+            }
             theMenu.Items.Add(miEdit);
             
             return theMenu;
+        }
+
+        private void AddSetDitiPositionMenu(WareBase ware, ContextMenu theMenu)
+        {
+            MenuItem menuItem = new MenuItem();
+            menuItem.Header = "设置Diti位置";
+            menuItem.DataContext = ware;
+            menuItem.Click += SetDitiPosition_Click;
+            theMenu.Items.Add(menuItem);
+        }
+
+        private void AddSetCurrentMenu(WareBase ware,ContextMenu theMenu)
+        {
+            MenuItem menuItem = new MenuItem();
+            menuItem.Header = "设为当前";
+            menuItem.DataContext = ware;
+            menuItem.Click += SetAsCurrentDitiMenuItem_Click;
+            theMenu.Items.Add(menuItem);
+        }
+
+        void SetAsCurrentDitiMenuItem_Click(object sender, RoutedEventArgs e)
+        {
+            WareBase ware = (WareBase)((MenuItem)sender).DataContext;
+            if (ware is Labware)
+            {
+                  if(((Labware)ware).IsDitiBox)
+                      CommandsManager.SetAsCurrentDiti.Execute((Labware)ware, null);
+            }
+        }
+
+        void SetDitiPosition_Click(object sender, RoutedEventArgs e)
+        {
+            WareBase ware = (WareBase)((MenuItem)sender).DataContext;
+            if (ware is Labware)
+            {
+                if (((Labware)ware).IsDitiBox)
+                    CommandsManager.SetDitiPosition.Execute((Labware)ware, null);
+            }
         }
 
         void miEdit_Click(object sender, RoutedEventArgs e)

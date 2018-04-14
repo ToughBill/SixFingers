@@ -124,7 +124,7 @@ namespace WorkstationController.Control
 
         private void btnSave_Click(object sender, RoutedEventArgs e)
         {
-            if(_layout.SaveName == "" || _layout.SaveName.Contains("<") || _layout.SaveName.Contains(">"))
+            if (_layout.SaveName == null || _layout.SaveName == "" || _layout.SaveName.Contains("<") || _layout.SaveName.Contains(">"))
             {
                 string errMsg = "未为layout设置名称！";
                 if(newInfoHandler != null)

@@ -250,7 +250,7 @@ namespace WorkstationController.Core.Utility
         {
             // Push the in air pipettorElement to pipettorElementManager and this pipettorElement will be pop when
             // corresponding XML file created.
-            if (pipettorElement.SaveName == "" || pipettorElement.SaveName.Contains("<") || pipettorElement.SaveName.Contains(">"))
+            if (pipettorElement.SaveName ==null || pipettorElement.SaveName == "" || pipettorElement.SaveName.Contains("<") || pipettorElement.SaveName.Contains(">"))
                 throw new Exception("名称非法！");
             PipettorElementManager.Instance.CreatedPipettorElement.Push(pipettorElement);
             RemoveExistingOne(pipettorElement);

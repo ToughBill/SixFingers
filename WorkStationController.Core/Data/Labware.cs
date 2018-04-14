@@ -112,6 +112,15 @@ namespace WorkstationController.Core.Data
             }
         }
 
+
+        public bool IsDitiBox
+        {
+            get
+            {
+                return _typeName.Contains("Diti") && !_typeName.Contains("Carrier");
+            }
+        }
+
         [XmlIgnore]
         public override string SaveName
         {

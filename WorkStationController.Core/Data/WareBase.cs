@@ -36,6 +36,7 @@ namespace WorkstationController.Core.Data
             set { SetProperty(ref _backgroundColor, value); }
         }
 
+        [XmlIgnore]
         public override string SaveName
         {
             get

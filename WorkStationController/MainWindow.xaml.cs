@@ -112,11 +112,52 @@ namespace WorkstationController
             this.AddTabItem(editor);
         }
 
+
+        private void SetAsCurrentDiti_Executed(object sender,ExecutedRoutedEventArgs e )
+        {
+
+        }
+
+        private void SetDitiPosition_Executed(object sender, ExecutedRoutedEventArgs e)
+        {
+            Labware labware = e.Parameter as Labware;
+            DitiEditor ditiEditor = new DitiEditor(labware);
+            ditiEditor.ShowDialog();
+        }
      
        
         private void EditLabware_CanExecute(object sender, CanExecuteRoutedEventArgs e)
         {
             e.CanExecute = this.HasLabwareSelected() || e.Parameter is Labware;
+        }
+
+        private void SetAsCurrentDiti_CanExecute(object sender, CanExecuteRoutedEventArgs e)
+        {
+            if (e.Parameter is Labware)
+            {
+                Labware labware = e.Parameter as Labware;
+                if (labware.IsDitiBox)
+                {
+                    e.CanExecute = true;
+                    return;
+                }
+            }
+            e.CanExecute = false;
+
+        }
+
+        private void SetDitiPosition_CanExecute(object sender, CanExecuteRoutedEventArgs e)
+        {
+            if (e.Parameter is Labware)
+            {
+                Labware labware = e.Parameter as Labware;
+                if (labware.IsDitiBox)
+                {
+                    e.CanExecute = true;
+                    return;
+                }
+            }
+            e.CanExecute = false;
         }
 
         private void NewLabware_Executed(object sender, ExecutedRoutedEventArgs e)
@@ -197,6 +238,9 @@ namespace WorkstationController
             CommandsManager.DuplicateLabware = new RoutedUICommand("Duplicate Labware", "DuplicateLabware", typeof(MainWindow), null);
             CommandsManager.DeleteLabware = new RoutedUICommand("Delete Labware", "DeleteLabware", typeof(MainWindow), null);
 
+            //diti commands
+            CommandsManager.SetAsCurrentDiti = new RoutedUICommand("Set as current diti box","SetAsCurrentDiti",typeof(MainWindow),null);
+            CommandsManager.SetDitiPosition = new RoutedUICommand("Set diti position", "SetDitiPosition", typeof(MainWindow), null);
             // Carrier commands
             CommandsManager.EditCarrier = new RoutedUICommand("Edit Carrier", "EditCarrier", typeof(MainWindow), null);
             CommandsManager.NewCarrier = new RoutedUICommand("New Carrier", "NewCarrier", typeof(MainWindow), null);
@@ -265,7 +309,12 @@ namespace WorkstationController
             this.CommandBindings.Add(new CommandBinding(CommandsManager.NewLabware, this.NewLabware_Executed, this.NewLabware_CanExecute)); 
             this.CommandBindings.Add(new CommandBinding(CommandsManager.DuplicateLabware, this.DuplicateLabware_Executed, this.DuplicateLabware_CanExecute));
             this.CommandBindings.Add(new CommandBinding(CommandsManager.DeleteLabware, this.DeleteLabware_Executed, this.DeleteLabware_CanExecute));
-            
+
+
+            this.CommandBindings.Add(new CommandBinding(CommandsManager.SetAsCurrentDiti, this.SetAsCurrentDiti_Executed, this.EditLabware_CanExecute));
+            this.CommandBindings.Add(new CommandBinding(CommandsManager.SetDitiPosition, this.SetDitiPosition_Executed, this.NewLabware_CanExecute)); 
+
+
             this.CommandBindings.Add(new CommandBinding(CommandsManager.EditCarrier, this.EditCarrier_Executed, this.EditCarrier_CanExecute));
         }
 
@@ -502,7 +551,7 @@ namespace WorkstationController
 
         private void OnLayoutsNewMenuItemClick(object sender, RoutedEventArgs e)
         {
-            LayoutEditor editor = new LayoutEditor();
+            LayoutEditor editor = new LayoutEditor(null, AddInfo);
             editor.DataContext = editor.Layout;
             this.AddTabItem(editor);
         }

@@ -22,6 +22,10 @@ namespace WorkstationController.Core.Utility
         private static RoutedUICommand _duplicate_labware = null;
         private static RoutedUICommand _delete_labware = null;
 
+        //diti related commands
+        private static RoutedUICommand _set_currentDiti = null;
+        private static RoutedUICommand _set_DitiPosition = null;
+
         // carrier related commands
         private static RoutedUICommand _edit_carrier = null;
         private static RoutedUICommand _new_carrier = null;
@@ -91,6 +95,26 @@ namespace WorkstationController.Core.Utility
             set
             {
                 _edit_labware = value;
+            }
+        }
+
+
+        public static RoutedUICommand SetAsCurrentDiti
+        {
+            get { return _set_currentDiti; }
+            set
+            {
+                _set_currentDiti = value;
+            }
+        }
+
+
+        public static RoutedUICommand SetDitiPosition
+        {
+            get { return _set_DitiPosition; }
+            set
+            {
+                _set_DitiPosition = value;
             }
         }
 

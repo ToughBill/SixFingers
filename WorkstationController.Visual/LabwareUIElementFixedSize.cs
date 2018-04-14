@@ -143,7 +143,8 @@ namespace WorkstationController.VisualElement
             int colIndex = index / _labware.WellsInfo.NumberOfWellsY;
             int rowID = id - colIndex * _labware.WellsInfo.NumberOfWellsY;
             int colID = colIndex + 1;
-            return string.Format("{0}-{1}", colID, rowID);
+            char rowDesc = (char)('A' + rowID - 1);
+            return string.Format("{0}{1}",rowDesc,colID);
         }
 
         private void UpdateContainerSize(Size newSize)
