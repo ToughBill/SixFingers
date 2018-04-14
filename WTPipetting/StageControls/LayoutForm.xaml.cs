@@ -117,6 +117,7 @@ namespace WTPipetting.StageControls
             {
                 throw new Exception("样品数量必须大于0！");
             }
+            GlobalVars.Instance.SampleCount = smpCnt;
 
             //check whether labwares exist
             var selectedProtocol = _protocols[lstProtocols.SelectedIndex];
@@ -124,7 +125,7 @@ namespace WTPipetting.StageControls
             Layout selectedLayout = (Layout)this.lb_layouts.SelectedItem;
             ProtocolManager.Instance.CheckLayoutMatchProtocol(selectedLayout, selectedProtocol);
             ProtocolManager.Instance.CheckLiquidExists(PipettorElementManager.Instance.LiquidClasses, selectedProtocol);
-            
+            GlobalVars.Instance.selectedLayout = selectedLayout;
         }
 
         private void btnDitiSetting_Click(object sender, RoutedEventArgs e)

@@ -19,7 +19,7 @@
     <DebugSymbols>true</DebugSymbols>
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
-    <OutputPath>bin\Debug\</OutputPath>
+    <OutputPath>..\bin\Debug\</OutputPath>
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
@@ -44,6 +44,7 @@
       <HintPath>..\packages\SharpDX.DirectInput.4.1.0-ci184\lib\net45\SharpDX.DirectInput.dll</HintPath>
     </Reference>
     <Reference Include="System" />
+    <Reference Include="System.Configuration" />
     <Reference Include="System.Data" />
     <Reference Include="System.Drawing" />
     <Reference Include="System.Windows" />
@@ -68,6 +69,8 @@
     </ApplicationDefinition>
     <Compile Include="Data\PanelViewModel.cs" />
     <Compile Include="Data\SampleInfo.cs" />
+    <Compile Include="Driver\DebugDriver.cs" />
+    <Compile Include="Driver\RSPDriver.cs" />
     <Compile Include="Hardware\HardwareController.cs" />
     <Compile Include="Hardware\IHardwareDevice.cs" />
     <Compile Include="Hardware\ILiha.cs" />
@@ -147,6 +150,7 @@
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>strings.Designer.cs</LastGenOutput>
     </EmbeddedResource>
+    <None Include="packages.config" />
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>

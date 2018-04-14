@@ -24,7 +24,7 @@ namespace WTPipetting.Hardware
         public void Init()
         {
             Liha.Init();
-            Roma.Init();
+            //Roma.Init();
         }
     }
 }

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using WTPipetting.Data;
+using WorkstationController.Core.Data;
 
 namespace WTPipetting.Utility
 {
@@ -54,6 +55,19 @@ namespace WTPipetting.Utility
             }
         }
 
+        Layout _selectedLayout;
+        public Layout selectedLayout
+        {
+            get 
+            {
+                return _selectedLayout;
+            }
+            set 
+            {
+                _selectedLayout = value;
+            }
+
+        }
 
 
         public Stage FarthestStage { get; set; }

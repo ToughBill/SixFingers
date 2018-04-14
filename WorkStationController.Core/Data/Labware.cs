@@ -357,6 +357,13 @@ namespace WorkstationController.Core.Data
             return GetPosition(row, col);
         }
 
+        public Point GetAbsPosition(int wellID)
+        {
+            Point point = GetPosition(wellID);
+            point.X += TopLeftWellX;
+            point.Y += TopLeftWellY;
+            return point;
+        }
 
         /// <summary>
         /// get physical position

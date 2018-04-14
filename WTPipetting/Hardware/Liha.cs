@@ -5,6 +5,8 @@ using System.Text;
 using System.Threading.Tasks;
 using WorkstationController.Core.Data;
 using WorkstationController.Core.Managements;
+using MotorDriver;
+using System.Windows.Forms;
 
 namespace WTPipetting.Hardware
 {
@@ -13,12 +15,21 @@ namespace WTPipetting.Hardware
         Pump pump;
         Layout layout;
         TipManagement tipManagement;
+        //RSPDriver motoDriver = new RSPDriver();
+        DebugDriver motoDriver = new DebugDriver();
+        float _currentx = 0;
+        float _currenty = 0;
+        float _currentz = 0;
         public void Init()
         {
             pump = new Pump();
-            pump.Init();
+            //pump.Init();
             tipManagement = new TipManagement(layout);
-            
+            motoDriver.InitLeft();
+
+            _currentx = 0;
+            _currenty = 0;
+            _currentz = 0;
         }
 
         public Liha(Layout layout)
@@ -28,22 +39,30 @@ namespace WTPipetting.Hardware
 
         public void Move2AbsolutePosition(float x, float y, float z)
         {
-            throw new NotImplementedException();
+            //throw new NotImplementedException();
+
+            _currentx = x;
+            _currenty = y;
+            _currentz = z;
+            motoDriver.MoveLeftAbsolute(_currentx, _currenty, _currentz);
         }
 
         public void MoveXAbs(float x)
         {
-            throw new NotImplementedException();
+            _currentx = x;
+            motoDriver.MoveLeftAbsolute(_currentx, _currenty, _currentz);
         }
 
         public void MoveYAbs(float y)
         {
-            throw new NotImplementedException();
+            _currenty = y;
+            motoDriver.MoveLeftAbsolute(_currentx, _currenty, _currentz);
         }
 
         public void MoveZAbs(float z)
         {
-            throw new NotImplementedException();
+            _currentz = z;
+            motoDriver.MoveLeftAbsolute(_currentx, _currenty, _currentz);
         }
 
         public void MoveRelativeX(float x, float speed)
@@ -87,17 +106,23 @@ namespace WTPipetting.Hardware
 
         public void Aspirate(double volume, string liquidClass)
         {
-            throw new NotImplementedException();
+            //throw new NotImplementedException();
+            //MessageBox.Show("Aspirate " + volume + " " + liquidClass);
         }
 
         public void Dispense(double volume, string liquidClass)
         {
-            throw new NotImplementedException();
+            //throw new NotImplementedException();
+            //MessageBox.Show("Dispense " + volume + " " + liquidClass);
         }
 
         internal void Move2AbsolutePosition(System.Windows.Point position)
         {
-            throw new NotImplementedException();
+            //throw new NotImplementedException();
+            _currentx = (float)position.X;
+            _currenty = (float)position.Y;
+            //_currentz = z;
+            motoDriver.MoveLeftAbsolute(_currentx, _currenty, _currentz);
         }
 
         

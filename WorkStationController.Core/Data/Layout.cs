@@ -274,6 +274,36 @@ namespace WorkstationController.Core.Data
             return null;
         }
 
+        public Carrier FindCarrierByLabware(string label)
+        {
+            Labware theOne;
+            foreach(var carrier in _carriers)
+            {
+                theOne = carrier.Labwares.Find(x => x.Label == label);
+                if (theOne != null)
+                    return carrier;
+            }
+            return null;
+        }
+        public System.Windows.Point GetPosition(Carrier carrier, Labware labware, int wellID)
+        {
+            double dxCarrier = carrier.XOffset;
+            double dyCarrier = carrier.YOffset;
+
+            //txtInfo.Dispatcher.Invoke(System.Windows.Threading.DispatcherPriority.Normal,
+            //new Action(
+            //delegate()
+            //{
+            //    //txtInfo.Text += strMessage + "\r\n";
+            //    labware.CalculatePositionInLayout();
+            //}
+            //));
+            //var position = labware.GetPosition(wellID);
+            //position.X += dxCarrier;
+            //position.Y += dyCarrier;
+            var position = labware.GetAbsPosition(wellID);            
+            return position;
+        }
         public System.Windows.Point GetDitiPosition()
         {
             var labware = FindLabware("Waste");
