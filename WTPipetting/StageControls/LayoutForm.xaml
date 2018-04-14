@@ -38,10 +38,10 @@
                 </StackPanel>
             </StackPanel>
             <Label Margin="0,10,0,0">实验布局：</Label>
-            <ListBox x:Name="lb_layouts" ItemsSource="{Binding Path=PipettorElementsManager.Layouts}" SelectionChanged="lb_layouts_SelectionChanged" DockPanel.Dock="Top" >
+            <ListBox x:Name="lb_layouts" ItemsSource="{Binding Path=PipettorElementsManager.Layouts}" SelectionChanged="lb_layouts_SelectionChanged" >
                 <ListBox.ItemTemplate>
                     <DataTemplate>
-                        <TextBlock Text="{Binding Path=Name}"/>
+                        <TextBlock Text="{Binding Path=SaveName}"/>
                     </DataTemplate>
                 </ListBox.ItemTemplate>
             </ListBox>

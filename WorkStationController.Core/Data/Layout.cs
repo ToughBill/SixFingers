@@ -235,7 +235,7 @@ namespace WorkstationController.Core.Data
         /// <summary>
         /// the name would be used in saveing and loading
         /// </summary>
-        [XmlIgnoreAttribute]
+        [XmlElement]
         public override string SaveName
         {
             get

@@ -47,12 +47,12 @@ namespace WTPipetting.Utility
 
         public static string GetImageFolder()
         {
-            return GetExeParentFolder() + "Images\\";
+            return GetExeFolder() + "Images\\";
         }
 
         internal static string GetProtocolFolder()
         {
-            return GetExeParentFolder() + "Protocols\\";
+            return GetExeFolder() + "Protocols\\";
         }
 
         internal static void WriteVariable(string file, string s)
