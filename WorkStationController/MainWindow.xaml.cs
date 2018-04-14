@@ -51,7 +51,7 @@ namespace WorkstationController
         private void StartScript_Executed(object sender, ExecutedRoutedEventArgs e)
         {
             TabItem selectedTab = tabDynamic.SelectedItem as TabItem;
-            LayoutEditor recipeEditor = (LayoutEditor)((Grid)selectedTab.Content).Children[0];
+            LayoutEditor layoutEditor = (LayoutEditor)((Grid)selectedTab.Content).Children[0];
             AdvancedPipettingCommand pipettingCmd1 = new AdvancedPipettingCommand("label1", new List<int>() { 1 }, new List<int>() { 1 }, new LiquidClass(), true, 100);
             AdvancedPipettingCommand pipettingCmd2 = new AdvancedPipettingCommand("label1", new List<int>() { 1 }, new List<int>() { 9 }, new LiquidClass(), false, 100);
             AdvancedPipettingCommand pipettingCmd3 = new AdvancedPipettingCommand("label1", new List<int>() { 1 }, new List<int>() { 2 }, new LiquidClass(), true, 100);
@@ -61,7 +61,7 @@ namespace WorkstationController
                 pipettingCmd3,pipettingCmd4
             };
 
-            recipeEditor.RunScript(pipettingCmds);
+            layoutEditor.RunScript(pipettingCmds);
 
         }
 
@@ -112,6 +112,8 @@ namespace WorkstationController
             this.AddTabItem(editor);
         }
 
+     
+       
         private void EditLabware_CanExecute(object sender, CanExecuteRoutedEventArgs e)
         {
             e.CanExecute = this.HasLabwareSelected() || e.Parameter is Labware;
@@ -287,7 +289,6 @@ namespace WorkstationController
             if(control is LayoutEditor)
             {
                 LayoutEditor layoutEditor = control as LayoutEditor;
-                layoutEditor.ParentTab = tab;
                 layoutEditor.EditWare += OnLayoutEditorEditWare;
             }
             control.Width = this.ActualWidth - 300;

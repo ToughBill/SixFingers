@@ -37,7 +37,7 @@
         <!--Name-->
         <StackPanel Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="2" Orientation="Horizontal" HorizontalAlignment="Left" Width="236">
             <Label Content="载架名称:"/>
-            <TextBox MinWidth="150" Margin="3,2,0,2" Text="{Binding Path=TypeName}"/>
+            <TextBox MinWidth="150" Margin="3,2,0,2"  Text="{Binding Path=SaveName, Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}"/>
         </StackPanel>
 
         <!--Color-->

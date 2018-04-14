@@ -293,7 +293,7 @@ namespace WorkstationController.VisualElement.Uitility
                     return;
                 }
             }
-            Point ptIElementInCanvase = baseUIElement.GetLeftTopPositionInCanvas();
+            Point ptIElementInCanvase = baseUIElement.GetReferencePositionInCanvas();
             relativeClickPosition2LeftTop = _ptClick - ptIElementInCanvase;
         }
 
@@ -350,13 +350,13 @@ namespace WorkstationController.VisualElement.Uitility
 
 
             //here is very tricky, for Carrier, we hope to install them by topleft, 
-            //but for labware, we hope to install them by their center.
+            //but for labware, we hope to install them by mouse position.
             Vector vecAdjust = new Vector();
             if(_selectedUIElement is CarrierUIElement)
             {
                 var uiCarrierElement = _selectedUIElement as CarrierUIElement;
                 workingLayout.AddCarrier(uiCarrierElement.Carrier);
-                vecAdjust = GetAdjustVector();// = e.GetPosition(_myCanvas) - relativeClickPosition2LeftTop;
+                vecAdjust = GetAdjustVector();
             }
                 
             WareInstaller.MountThis(_selectedUIElement, e.GetPosition(_myCanvas) - vecAdjust, _myCanvas);
@@ -371,14 +371,14 @@ namespace WorkstationController.VisualElement.Uitility
 
         private void UpdateSelectedElement(Point ptCurrent)
         {
-            //adjust position to its center position
+            //adjust position to its topleft position
             Vector vectorAdjust = GetAdjustVector();
             ptCurrent -= vectorAdjust;
             _selectedUIElement.SetDragPosition(ptCurrent);
-            UpdateLabwareUIElements(_selectedUIElement, ptCurrent);
+            UpdateCarrierGrid(_selectedUIElement, ptCurrent);
         }
 
-        private void UpdateLabwareUIElements(BasewareUIElement _selectedUIElement, Point ptCurrent)
+        private void UpdateCarrierGrid(BasewareUIElement _selectedUIElement, Point ptCurrent)
         {
             if (!(_selectedUIElement is CarrierUIElement))
                 return;
@@ -396,7 +396,6 @@ namespace WorkstationController.VisualElement.Uitility
             foreach (Labware labware in carrier.Labwares)
             {
                 labware.Refresh();
-                Debug.WriteLine("{0} labware hash:{1}", DateTime.Now.ToShortTimeString(), labware.GetHashCode());
             }
         }
 

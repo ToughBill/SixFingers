@@ -212,6 +212,7 @@ namespace WorkstationController.VisualElement
             return siteIndex;
         }
 
+   
         /// <summary>
         /// find a site which can accept the labware
         /// </summary>

@@ -53,8 +53,7 @@ namespace WorkstationController.Control
 
        
 
-        public TabItem ParentTab { get; set; }
-          
+      
         /// <summary>
         /// whether we allow other form select our wares
         /// </summary>
@@ -139,7 +138,7 @@ namespace WorkstationController.Control
             }
             List<Carrier> carriers = GetCarriers();
             _layout.Carriers = carriers;
-            ParentTab.Tag = _layout.SaveName;
+            
             try
             {
                 PipettorElementManager.Instance.SavePipettorElement(_layout);

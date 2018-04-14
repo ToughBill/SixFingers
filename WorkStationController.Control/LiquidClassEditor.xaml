@@ -16,7 +16,7 @@
         <StackPanel Grid.Row="0" Orientation="Horizontal" HorizontalAlignment="Left">
             <Label Content="液体类名:" Margin="3"/>
             <Border Margin="3" BorderThickness="1" BorderBrush="Black">
-                <TextBox x:Name="tb_liquidClassName" Text="{Binding Path=TypeName}"  MinWidth="100"/>
+                <TextBox x:Name="tb_liquidClassName" Text="{Binding Path=SaveName, Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}"  MinWidth="100"/>
             </Border>
         </StackPanel>
 

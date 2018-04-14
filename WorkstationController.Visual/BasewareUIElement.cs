@@ -202,7 +202,7 @@ namespace WorkstationController.VisualElement
             InvalidateVisual();
         }
 
-        internal Point GetLeftTopPositionInCanvas()
+        internal Point GetReferencePositionInCanvas()
         {
             Carrier carrier = null;
             if (_ware is Labware)
