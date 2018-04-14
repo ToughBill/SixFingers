@@ -26,7 +26,24 @@ namespace WorkstationController.Core.Data
         public override string TypeName 
         {
             get { return this._typename; }
-            set { SetProperty(ref _typename, value); }
+            set { 
+                SetProperty(ref _typename, value);
+                
+            }
+        }
+
+
+        [XmlIgnore]
+        public override string SaveName
+        {
+            get
+            {
+                return this._typename;
+            }
+            set
+            {
+                SetProperty(ref _typename, value);
+            }
         }
 
         /// <summary>
@@ -42,17 +59,7 @@ namespace WorkstationController.Core.Data
             }
         }
 
-        public override string SaveName
-        {
-            get
-            {
-                return this._typename;
-            }
-            set
-            {
-                this._typename = value;
-            }
-        }
+       
 
         /// <summary>
         /// Gets the aspiration single pipetting parameters

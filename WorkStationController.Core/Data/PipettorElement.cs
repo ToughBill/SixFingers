@@ -17,8 +17,9 @@ namespace WorkstationController.Core
         public virtual string TypeName { get; set; }
 
 
-        public virtual string SaveName { get; set; }
-       
+        public virtual string SaveName
+        { get; set; }
+
         public virtual void DoExtraWork()
         {
             // Do nothing

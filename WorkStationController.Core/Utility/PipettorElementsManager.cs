@@ -273,7 +273,7 @@ namespace WorkstationController.Core.Utility
             }
             else if (typeof(T) == typeof(LiquidClass))
             {
-                directory = _labwareDirectory;
+                directory = _liquidClassDirectory;
             }
             else
             {

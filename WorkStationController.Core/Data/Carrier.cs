@@ -157,6 +157,19 @@ namespace WorkstationController.Core.Data
             TypeName = BuildInCarrierType.Diti.ToString();
         }
 
+        [XmlIgnore]
+        public override string SaveName
+        {
+            get
+            {
+                return base._typeName;
+            }
+            set
+            {
+                SetProperty(ref base._typeName, value);
+            }
+        }
+
         /// <summary>
         /// 
         /// </summary>

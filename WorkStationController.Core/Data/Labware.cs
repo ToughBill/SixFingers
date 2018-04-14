@@ -112,27 +112,18 @@ namespace WorkstationController.Core.Data
             }
         }
 
-
-        //[XmlIgnore]
-        //public Carrier CalibCarrier
-        //{
-        //    get
-        //    {
-        //        return _calibCarrier;
-        //    }
-        //    set
-        //    {
-        //        //remove from the original carrier.
-        //        if (_calibCarrier != null)
-        //            _calibCarrier.Labwares.Remove(this);
-        //        _calibCarrier = value;
-        //        if (value != null)
-        //        {
-        //            SetProperty(ref _calibCarrier, value);
-        //        }
-        //    }
-        //}
-
+        [XmlIgnore]
+        public override string SaveName
+        {
+            get
+            {
+                return base._typeName;
+            }
+            set
+            {
+                SetProperty(ref base._typeName,value);
+            }
+        }
 
         //we need a more eligant way to force the OnPropertyChanged event fires.
         public void Refresh()
