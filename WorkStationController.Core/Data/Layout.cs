@@ -273,6 +273,17 @@ namespace WorkstationController.Core.Data
             }
             return null;
         }
+        public Labware FindLabwareByType(string TypeName)
+        {
+            Labware theOne;
+            foreach (var carrier in _carriers)
+            {
+                theOne = carrier.Labwares.Find(x => x.TypeName == TypeName);
+                if (theOne != null)
+                    return theOne;
+            }
+            return null;
+        }
 
         public Carrier FindCarrierByLabware(string label)
         {

@@ -149,10 +149,10 @@ namespace WTPipetting.Hardware
 
                 myBackThread.Message("Dispense " + pipettingInfo.volume + " " + pipettingInfo.liquidClass);
 
-                System.Windows.Point pt = layout.GetDitiPosition(); //here need to fix
-                if (CheckStop())
-                    break;
-                hardwareController.Liha.Move2AbsolutePosition(position);
+                //System.Windows.Point pt = layout.GetDitiPosition(); //here need to fix
+                //if (CheckStop())
+                //    break;
+                //hardwareController.Liha.Move2AbsolutePosition(position);
 
                 if (CheckStop())
                     break;
