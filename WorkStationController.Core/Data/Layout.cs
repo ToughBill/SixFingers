@@ -124,8 +124,32 @@ namespace WorkstationController.Core.Data
             ConstrainTipInfo(this);
             SerializationHelper.Serialize(toXmlFile, this);
         }
-
         internal static void ConstrainTipInfo(Layout layout)
+        {
+            List<DitiInfoItem> ditiInfoItems = new List<DitiInfoItem>();
+            DitiInfo ditiInfo = null;
+            foreach (Carrier carrier in layout.Carriers )
+            {
+                if (carrier.TypeName == "DitiCarrier")
+                {
+
+                    string currentDiti = "";
+                    if (carrier.Labwares.Count > 0)
+                        currentDiti = carrier.Labwares[0].Label;
+                    foreach (Labware labware in carrier.Labwares)
+                    {
+                        //LabwareTraits.Add(new LabwareTrait(labware));
+                        DitiInfoItem ditiItem = new DitiInfoItem(labware.Label, 96);
+                        ditiInfoItems.Add(ditiItem);
+                    }
+                    if (ditiInfo == null)
+                        ditiInfo = new DitiInfo(currentDiti, ditiInfoItems);
+                    //continue;
+                }
+            }
+            layout.DitiInfo = ditiInfo;
+        }
+        internal static void ConstrainTipInfo_back(Layout layout)
         {
             var tipsInfo = layout.DitiInfo.DitiInfoItems;
             List<DitiInfoItem> constrainedTipsInfo = new List<DitiInfoItem>();
