@@ -325,21 +325,10 @@ namespace WorkstationController.Core.Data
             double dxCarrier = carrier.XOffset;
             double dyCarrier = carrier.YOffset;
 
-            //txtInfo.Dispatcher.Invoke(System.Windows.Threading.DispatcherPriority.Normal,
-            //new Action(
-            //delegate()
-            //{
-            //    //txtInfo.Text += strMessage + "\r\n";
-            //    labware.CalculatePositionInLayout();
-            //}
-            //));
-            //var position = labware.GetPosition(wellID);
-            //position.X += dxCarrier;
-            //position.Y += dyCarrier;
             var position = labware.GetAbsPosition(wellID);            
             return position;
         }
-        public System.Windows.Point GetDitiPosition()
+        public System.Windows.Point GetWastePosition()
         {
             var labware = FindLabware("Waste");
             if (labware == null)

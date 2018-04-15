@@ -115,7 +115,17 @@ namespace WorkstationController
 
         private void SetAsCurrentDiti_Executed(object sender,ExecutedRoutedEventArgs e )
         {
-
+            LayoutEditor layoutEditor = GetLayoutEditor();
+            if (layoutEditor == null)
+            {
+                AddErrorInfo("找不到布局！");
+                return;
+            }
+            Layout layout = layoutEditor.Layout;
+            DitiInfo ditiInfo = layout.DitiInfo;
+            Labware labware = e.Parameter as Labware;
+            ditiInfo.CurrentDitiLabware = labware.Label;
+            this.InvalidateVisual();
         }
 
         private void SetDitiPosition_Executed(object sender, ExecutedRoutedEventArgs e)

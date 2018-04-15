@@ -50,8 +50,8 @@ namespace WorkstationController.VisualElement
                 {
                     labware.CalculatePositionInLayout();
                     var position = labware.GetAbsPosition(96);
-
-                    VisualCommon.DrawCircle(position, 26, drawingContext, Colors.Red, true);
+                    position.X += 18;
+                    VisualCommon.DrawCircle(position, 6, drawingContext, Colors.Red, true);
                 }
             }
             
