@@ -120,9 +120,19 @@ namespace WorkstationController
 
         private void SetDitiPosition_Executed(object sender, ExecutedRoutedEventArgs e)
         {
+            LayoutEditor layoutEditor = GetLayoutEditor();
+            if (layoutEditor == null)
+            {
+                AddErrorInfo("找不到布局！");
+                return;
+            }
             Labware labware = e.Parameter as Labware;
-            DitiEditor ditiEditor = new DitiEditor(labware);
+            DitiEditor ditiEditor = new DitiEditor(labware,layoutEditor.Layout);
             ditiEditor.ShowDialog();
+            if(!ditiEditor.SetOk)
+                return;
+            var ditibox = layoutEditor.Layout.DitiInfo.DitiInfoItems.Find(x => x.label == labware.Label);
+            ditibox.count = ditiEditor.RemainTipCount;
         }
      
        
@@ -610,8 +620,8 @@ namespace WorkstationController
         private void OnLeftButtonDown(ListBox listBox, Point pt)
         {
             TabItem tabitem = (TabItem)tabDynamic.SelectedItem;
-            LayoutEditor recipeEditor = GetLayoutEditor();
-            if (recipeEditor == null)
+            LayoutEditor layoutEditor = GetLayoutEditor();
+            if (layoutEditor == null)
                 return;
 
             HitTestResult result = VisualTreeHelper.HitTest(listBox, pt);
@@ -622,7 +632,7 @@ namespace WorkstationController
             if (index == -1)
                 return;
 
-            recipeEditor.SuggestCandidate((WareBase)listBox.Items[index]);
+            layoutEditor.SuggestCandidate((WareBase)listBox.Items[index]);
         }
 
         private void lb_carriers_PreviewMouseLeftButtonDown(object sender, System.Windows.Input.MouseButtonEventArgs e)

@@ -122,7 +122,7 @@ namespace WorkstationController.VisualElement
             }
 
 
-            //calculate positioon & draw border rectangle
+            //calculate position & draw border rectangle
             double xPos = 0, yPos = 0;
             CalculatePositions(ref xPos, ref yPos, mapGrid, carrier);
             Size sz = new Size(_labware.Dimension.XLength, _labware.Dimension.YLength);

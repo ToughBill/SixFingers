@@ -26,20 +26,28 @@ namespace WorkstationController.Control
     public partial class DitiEditor : Window
     {
         Labware _labware;
+        Layout _layout;
         LabwareUIElementFixedSize labwareUIElement = null;
-        public DitiEditor(Labware selectedLabware)
+
+        public DitiEditor(Labware selectedLabware,Layout layout)
         {
+            _layout = layout;
             _labware = selectedLabware;
             InitializeComponent();
             this.Loaded += DitiEidtor_Loaded;
+            SetOk = false;
         }
 
-   
+        public bool SetOk { get; set; }
+        public int RemainTipCount { get; set; }
         void DitiEidtor_Loaded(object sender, RoutedEventArgs e)
         {
             this.Width = 600;
             this.Height = 550;
             labwareUIElement = new LabwareUIElementFixedSize(_labware, new Size(container.ActualWidth, container.ActualHeight));
+            var ditiInfo = _layout.DitiInfo.DitiInfoItems.Find(x=>x.label == _labware.Label) ;
+            if (ditiInfo != null)
+                labwareUIElement.SelectedWellIDs = new List<int>(){96 - ditiInfo.count + 1};
             container.Children.Add(labwareUIElement);
         }
 
@@ -50,6 +58,8 @@ namespace WorkstationController.Control
                 SetInfo(strings.MustSelectSomeWell, Brushes.Red);
                 return;
             }
+            RemainTipCount = 96-labwareUIElement.SelectedWellIDs.First()+1;
+            SetOk = true;
             this.Close();
         }
 

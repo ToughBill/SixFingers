@@ -115,7 +115,7 @@ namespace WorkstationController.Control
         {
             //to do, replace it by load the worktable from a xml
             txtLayoutName.DataContext = _layout;
-            _worktable.AttachWorktableVisual();
+            _worktable.AttachWorktableVisual(_layout);
             _worktable.MouseMove += uiContainer_MouseMove;
             _worktable.UpdateLayout();
              OnContainerSizeChanged(new Size(500, 500)); //give default size
@@ -214,9 +214,9 @@ namespace WorkstationController.Control
     {
         WorktableVisual worktableVisual = null;
 
-        public void AttachWorktableVisual()
+        public void AttachWorktableVisual(Layout layout)
         {
-            this.worktableVisual = new WorktableVisual();
+            this.worktableVisual = new WorktableVisual(layout);
         }
 
         protected override void OnRender(System.Windows.Media.DrawingContext dc)

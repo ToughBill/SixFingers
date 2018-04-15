@@ -25,7 +25,8 @@ namespace WorkstationController.VisualElement
         private readonly Color defaultCircleColor = Colors.DarkGray;
         private Rect _tightBoundingRect;
         private SingleSelection _singleSelection;
-        private MultiSelection _multiSelection;
+        //private MultiSelection _multiSelection;
+        List<int> _selectedWellIDs = new List<int>();
         /// <summary>
         /// ctor
         /// </summary>
@@ -37,30 +38,44 @@ namespace WorkstationController.VisualElement
             UpdateContainerSize(boundingSize);
             AddWellVisuals();
             _singleSelection = new SingleSelection(wellVisuals, _tightBoundingRect, _labware);
-            _multiSelection = new MultiSelection(wellVisuals);
-            //this.MouseMove += LabwareUIElementFixedSize_MouseMove;
-            this.MouseLeftButtonDown += LabwareUIElementFixedSize_MouseLeftButtonDown;
             this.MouseMove += LabwareUIElementFixedSize_MouseMove;
             this.MouseUp += LabwareUIElementFixedSize_MouseUp;
         }
-        void LabwareUIElementFixedSize_MouseLeftButtonDown(object sender, System.Windows.Input.MouseButtonEventArgs e)
+      
+        void LabwareUIElementFixedSize_MouseUp(object sender, MouseButtonEventArgs e)
         {
             Point pt = e.GetPosition(this);
-            _multiSelection.OnLeftButtonDown(pt);
-            _singleSelection.OnLeftButtonDown(pt);
+            _singleSelection.OnLeftButtonUp(pt);
+            UpdateSelectedWellIDs();
             InvalidateVisual();
         }
 
-        void LabwareUIElementFixedSize_MouseUp(object sender, MouseButtonEventArgs e)
+        private void UpdateSelectedWellIDs()
         {
-            _multiSelection.OnLeftButtonUp(e.GetPosition(this));
+            _selectedWellIDs.Clear();
+            foreach (MyDrawingVisual drawingVisual in wellVisuals)
+            {
+                if (drawingVisual.State == WellState.Selected)
+                {
+                    _selectedWellIDs.Add(drawingVisual.ID);
+                }
+            }
+        }
+
+        private void InvalidateSelectedWells()
+        {
+            foreach (var ID in _selectedWellIDs)
+            {
+                var theWell = wellVisuals.Find(x => x.ID == ID);
+                theWell.State = WellState.Selected;
+            }
             InvalidateVisual();
         }
+
 
         void LabwareUIElementFixedSize_MouseMove(object sender, MouseEventArgs e)
         {
             Point pt = e.GetPosition(this);
-            _multiSelection.OnMouseMove(pt);
             _singleSelection.OnMouseMove(pt);
             InvalidateVisual();
         }
@@ -73,10 +88,7 @@ namespace WorkstationController.VisualElement
         {
             base.OnRender(drawingContext);
             DrawBorder(drawingContext);
-            if(_multiSelection.IsValid)
-            {
-                DrawRect(_multiSelection.Rect, Colors.Blue, drawingContext);
-            }
+           
             foreach(MyDrawingVisual drawingVisual in wellVisuals)
             {
                 DrawCircle(drawingVisual.Position,
@@ -107,17 +119,16 @@ namespace WorkstationController.VisualElement
         {
             get
             {
-                List<int> selected = new List<int>();
-                foreach (MyDrawingVisual drawingVisual in wellVisuals)
-                {
-                    if (drawingVisual.State == WellState.Selected)
-                    {
-                        selected.Add(drawingVisual.ID);
-                    }
-                }
-                return selected;
+                return _selectedWellIDs;
+            }
+            set
+            {
+                _selectedWellIDs = value;
+                InvalidateSelectedWells();
             }
         }
+
+     
        
 
         private Color GetStateColor(WellState state)
@@ -316,7 +327,7 @@ namespace WorkstationController.VisualElement
             return (colID - 1) * _labware.WellsInfo.NumberOfWellsY + rowID;
         }
 
-        public void OnLeftButtonDown(Point pt)
+        public void OnLeftButtonUp(Point pt)
         {
             if (_selectedWell != null)
                 _selectedWell.State = WellState.Normal;

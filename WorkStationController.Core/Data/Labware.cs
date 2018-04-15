@@ -117,7 +117,7 @@ namespace WorkstationController.Core.Data
         {
             get
             {
-                return _typeName.Contains("Diti") && !_typeName.Contains("Carrier");
+                return _typeName.Contains("Diti");
             }
         }
 
@@ -369,8 +369,9 @@ namespace WorkstationController.Core.Data
         public Point GetAbsPosition(int wellID)
         {
             Point point = GetPosition(wellID);
-            point.X += TopLeftWellX;
-            point.Y += TopLeftWellY;
+            Vector topLeftCurrentSite = GetTopLeftSiteVector();
+            point.X += topLeftCurrentSite.X;
+            point.Y += topLeftCurrentSite.Y;
             return point;
         }
 

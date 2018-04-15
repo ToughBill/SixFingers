@@ -11,12 +11,12 @@ namespace WorkstationController.VisualElement.Uitility
 {
     class WareInstaller
     {
-        public static void MountThis(BasewareUIElement baseUIElement, Point position, Grid container)
+        public static void MountThis(BasewareUIElement baseUIElement, Point position, Grid container, Layout workingLayout)
         {
             bool bValid = IsValid(baseUIElement, position, container);
             if (!bValid)
             {
-                if(baseUIElement is LabwareUIElement) //if labware has parent, let it back
+                if(baseUIElement is LabwareUIElement) //if labware has parent, let it go back
                 {
                     LabwareUIElement labwareUIElement = (LabwareUIElement)baseUIElement;
                     if (labwareUIElement.Labware.ParentCarrier != null)
@@ -52,11 +52,24 @@ namespace WorkstationController.VisualElement.Uitility
                     if (labware.ParentCarrier != null)
                         labware.ParentCarrier.Labwares.Remove(labware);
                     labware.SiteID = siteID;
+                    if(labware.IsDitiBox)
+                    {
+                        var ditiInfo = workingLayout.DitiInfo.DitiInfoItems.Find(x => x.label == labware.Label);
+                        if(ditiInfo == null)
+                        {
+                            workingLayout.DitiInfo.DitiInfoItems.Add(new DitiInfoItem(labware.Label, 96));
+                        }
+                    }
                 }
                 carrierUIElement.Carrier.AddLabware(labware);
             }
             
         }
+
+        
+
+         
+        
 
         //private static bool NotMoved(Point position, Labware labware, Grid container)
         //{

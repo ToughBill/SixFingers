@@ -17,19 +17,20 @@ namespace WorkstationController.VisualElement
         /// Worktable data
         /// </summary>
         private Worktable worktable;
-        
+        private Layout layout;
         /// <summary>
         /// Default constructor
         /// </summary>
-        public WorktableVisual()
+        public WorktableVisual(Layout layout)
         {
+            this.layout = layout;
             if (Configurations.Instance.Worktable == null)
                 throw new Exception("Worktable cannot be null");
             this.worktable = Configurations.Instance.Worktable; 
         }
 
         /// <summary>
-        /// Draw the worktable with pins
+        /// Draw the worktable with pins, and the current DitiBox
         /// </summary>
         /// <param name="drawingContext"></param>
         public void Draw(DrawingContext drawingContext)
@@ -39,6 +40,21 @@ namespace WorkstationController.VisualElement
                 DrawPinsSameGrid(i, drawingContext);
             }
             DrawBorder(worktable.Size,drawingContext);
+
+            //if(layout.DitiInfo.DitiInfoItems.Count !=)
+            string currentDitiLabel = layout.DitiInfo.CurrentDitiLabware;
+            if(currentDitiLabel != "")
+            {
+                Labware labware = layout.FindLabware(currentDitiLabel);
+                if(labware != null)
+                {
+                    labware.CalculatePositionInLayout();
+                    var position = labware.GetAbsPosition(96);
+
+                    VisualCommon.DrawCircle(position, 26, drawingContext, Colors.Red, true);
+                }
+            }
+            
         }
 
         private void DrawBorder(Size size, DrawingContext drawingContext)

@@ -404,8 +404,8 @@ namespace WorkstationController.VisualElement.Uitility
                 workingLayout.AddCarrier(uiCarrierElement.Carrier);
                 vecAdjust = GetAdjustVector();
             }
-                
-            WareInstaller.MountThis(_selectedUIElement, e.GetPosition(_myCanvas) - vecAdjust, _myCanvas);
+
+            WareInstaller.MountThis(_selectedUIElement, e.GetPosition(_myCanvas) - vecAdjust, _myCanvas, workingLayout);
             
             DeHighlightAllSite();
             _selectedUIElement.Selected = false;
