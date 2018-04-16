@@ -4,6 +4,7 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using WorkstationController.Core.Data;
 using WTPipetting.Data;
 
 namespace WTPipetting.Utility
@@ -57,6 +58,10 @@ namespace WTPipetting.Utility
 
         internal void CheckLayoutMatchProtocol(WorkstationController.Core.Data.Layout selectedLayout, Protocol selectedProtocol)
         {
+            var labware = selectedLayout.FindLabwareByType("Waste");
+            if (labware == null)
+                throw new NoLabwareException("找不到枪头废弃槽！");
+
             var stepsDefinition = selectedProtocol.StepsDefinition;
             List<string> labwareNames = new List<string>();
             foreach(var carrier in selectedLayout.Carriers)

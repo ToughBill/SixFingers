@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Carrier xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <TypeName>DitiCarrier</TypeName>
+  <SaveName>DitiCarrier</SaveName>
+  <BackgroundColor>
+    <A>255</A>
+    <R>230</R>
+    <G>230</G>
+    <B>250</B>
+    <ScA>1</ScA>
+    <ScR>0.791298</ScR>
+    <ScG>0.791298</ScG>
+    <ScB>0.9559733</ScB>
+  </BackgroundColor>
+  <Dimension>
+    <XLength>149</XLength>
+    <YLength>316</YLength>
+  </Dimension>
+  <XOffset>12</XOffset>
+  <YOffset>24.7</YOffset>
+  <GridID>7</GridID>
+  <Labwares />
+  <Sites>
+    <Site>
+      <XOffset>5.5</XOffset>
+      <YOffset>25</YOffset>
+      <ZOffset>0</ZOffset>
+      <XSize>127</XSize>
+      <YSize>85.5</YSize>
+      <ID>1</ID>
+    </Site>
+    <Site>
+      <XOffset>5.5</XOffset>
+      <YOffset>121</YOffset>
+      <ZOffset>0</ZOffset>
+      <XSize>127</XSize>
+      <YSize>85.5</YSize>
+      <ID>2</ID>
+    </Site>
+    <Site>
+      <XOffset>5.5</XOffset>
+      <YOffset>217</YOffset>
+      <ZOffset>0</ZOffset>
+      <XSize>127</XSize>
+      <YSize>85.5</YSize>
+      <ID>3</ID>
+    </Site>
+  </Sites>
+  <AllowedLabwareTypeNames>
+    <AllowedLabwareTypeName>Diti</AllowedLabwareTypeName>
+  </AllowedLabwareTypeNames>
+</Carrier>

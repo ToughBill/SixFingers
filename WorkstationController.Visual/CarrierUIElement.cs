@@ -93,9 +93,10 @@ namespace WorkstationController.VisualElement
             int yPos = GetBoundingRectYStart();
             Size sz = new Size(_carrier.Dimension.XLength, _carrier.Dimension.YLength);
 
-            Brush grayBrush = new SolidColorBrush(Color.FromArgb(128, 200, 200, 200));
+            Brush backGroundBrush = new SolidColorBrush(Color.FromArgb(128, _carrier.BackgroundColor.B, _carrier.BackgroundColor.G, _carrier.BackgroundColor.R));
+            
             Color border = _isSelected ? Colors.Blue : Colors.Black;
-            VisualCommon.DrawRect(xPos, yPos, sz, drawingContext, border,grayBrush);
+            VisualCommon.DrawRect(xPos, yPos, sz, drawingContext, border, backGroundBrush);
             DrawGrid(this.Grid,drawingContext);
             
    

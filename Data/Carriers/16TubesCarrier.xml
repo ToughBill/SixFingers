@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Carrier xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <TypeName>16TubesCarrier</TypeName>
+  <BackgroundColor>
+    <A>255</A>
+    <R>128</R>
+    <G>128</G>
+    <B>128</B>
+    <ScA>1</ScA>
+    <ScR>0.215860531</ScR>
+    <ScG>0.215860531</ScG>
+    <ScB>0.215860531</ScB>
+  </BackgroundColor>
+  <Dimension>
+    <XLength>24</XLength>
+    <YLength>316</YLength>
+  </Dimension>
+  <XOffset>12</XOffset>
+  <YOffset>24.7</YOffset>
+  <GridID>6</GridID>
+  <Labwares />
+  <Sites>
+    <Site>
+      <XOffset>0</XOffset>
+      <YOffset>11</YOffset>
+      <ZOffset>0</ZOffset>
+      <XSize>24</XSize>
+      <YSize>305</YSize>
+      <ID>1</ID>
+    </Site>
+    <Site>
+      <XOffset>0</XOffset>
+      <YOffset>0</YOffset>
+      <ZOffset>0</ZOffset>
+      <XSize>0</XSize>
+      <YSize>0</YSize>
+      <ID>2</ID>
+    </Site>
+  </Sites>
+  <AllowedLabwareTypeNames>
+    <AllowedLabwareTypeName>16Wells</AllowedLabwareTypeName>
+  </AllowedLabwareTypeNames>
+</Carrier>

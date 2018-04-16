@@ -1,0 +1,7 @@
+步骤描述,源器件,体积（μL）,目标器件,液体类型
+加试剂1,label1,300,label2,water
+加样品,label1,200,label2,water
+加试剂2,label1,100,label2,water
+去废液1,label1,600,label2,water
+加试剂3,label1,400,label2,water
+加试剂4,label1,200,label2,water

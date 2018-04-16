@@ -93,14 +93,10 @@ namespace WTPipetting.Hardware
 
         public void DropTip()
         {
-            var labware = layout.FindLabwareByType("Waste");
-            if (labware == null)
-                throw new NoLabwareException(labware.Label);
+            var labware = layout.FindLabwareByType("Waste"); 
             var position = labware.GetPosition(1);
             Move2AbsolutePosition(position);
             //drop the tip
-
-           
         }
 
 

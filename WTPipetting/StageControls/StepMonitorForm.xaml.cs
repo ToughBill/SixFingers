@@ -135,8 +135,6 @@ namespace WTPipetting.StageControls
             new Action(
             delegate()
             {
-                //CalcShowResult();
-                //pbw.Close();
                 txtInfo.Text += "Move " + position.X + " " + position.Y + "\r\n";
             }
             ));
@@ -148,10 +146,6 @@ namespace WTPipetting.StageControls
                 return;
             }
             wkList = new Worklist();
-
-            //wkList.textinfo = txtInfo;
-
-
             MyBackThread myBackThread = wkList.Init();
             myBackThread.OnWorkerStart += new MyBackThread.OnWorkerMethodStartDelegate(OnWorkerMethodStart);
             myBackThread.OnWorkerComplete += new MyBackThread.OnWorkerMethodCompleteDelegate(OnWorkerMethodComplete);

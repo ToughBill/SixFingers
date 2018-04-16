@@ -58,6 +58,23 @@ namespace WTPipetting.StageControls
             this.DataContext = this;
             lb_layouts.SelectedIndex = 0;
             lstProtocols.SelectedIndex = 0;
+   
+        }
+
+        private void CheckDitiBox(Layout layout)
+        {
+            string sCurrentDitiLabware = layout.DitiInfo.CurrentDitiLabware;
+            var labware = layout.FindLabware(sCurrentDitiLabware);
+            if(labware == null)
+            {
+                SetInfo(string.Format("找不到标签号为:{0}的一次性枪头盒！", sCurrentDitiLabware));
+                return;
+            }
+            if(!labware.IsDitiBox)
+            {
+                SetInfo(string.Format("标签号为:{0}的器件不是枪头盒！", sCurrentDitiLabware));
+                return;
+            }
         }
 
         private void lb_layouts_SelectionChanged(object sender, SelectionChangedEventArgs e)
@@ -66,7 +83,7 @@ namespace WTPipetting.StageControls
             Layout selectedLayout = (Layout)this.lb_layouts.SelectedItem;
             if (selectedLayout == null)
                 return;
-
+            CheckDitiBox(selectedLayout);
             LayoutEditor editor = new LayoutEditor(selectedLayout);
             editor.DataContext = selectedLayout;
             recipeParent.Children.Add(editor);

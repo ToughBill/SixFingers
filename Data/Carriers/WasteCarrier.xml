@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Carrier xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <TypeName>WasteCarrier</TypeName>
+  <SaveName>WasteCarrier</SaveName>
+  <BackgroundColor>
+    <A>255</A>
+    <R>75</R>
+    <G>0</G>
+    <B>130</B>
+    <ScA>1</ScA>
+    <ScR>0.0703601</ScR>
+    <ScG>0</ScG>
+    <ScB>0.223227978</ScB>
+  </BackgroundColor>
+  <Dimension>
+    <XLength>149</XLength>
+    <YLength>316</YLength>
+  </Dimension>
+  <XOffset>12</XOffset>
+  <YOffset>24.7</YOffset>
+  <GridID>7</GridID>
+  <Labwares />
+  <Sites>
+    <Site>
+      <XOffset>5.5</XOffset>
+      <YOffset>25</YOffset>
+      <ZOffset>0</ZOffset>
+      <XSize>127</XSize>
+      <YSize>85.5</YSize>
+      <ID>1</ID>
+    </Site>
+  </Sites>
+  <AllowedLabwareTypeNames>
+    <AllowedLabwareTypeName>Waste</AllowedLabwareTypeName>
+  </AllowedLabwareTypeNames>
+</Carrier>

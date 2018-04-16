@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Labware xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <TypeName>Waste</TypeName>
+  <SaveName>Waste</SaveName>
+  <BackgroundColor>
+    <A>255</A>
+    <R>128</R>
+    <G>128</G>
+    <B>128</B>
+    <ScA>1</ScA>
+    <ScR>0.215860531</ScR>
+    <ScG>0.215860531</ScG>
+    <ScB>0.215860531</ScB>
+  </BackgroundColor>
+  <Dimension>
+    <XLength>0</XLength>
+    <YLength>0</YLength>
+  </Dimension>
+  <SiteID>1</SiteID>
+  <Label />
+  <WellsInfo>
+    <WellRadius>45</WellRadius>
+    <NumberOfWellsX>1</NumberOfWellsX>
+    <NumberOfWellsY>1</NumberOfWellsY>
+    <FirstWellPositionX>45</FirstWellPositionX>
+    <FirstWellPositionY>45</FirstWellPositionY>
+    <LastWellPositionX>45</LastWellPositionX>
+    <LastWellPositionY>45</LastWellPositionY>
+    <BottomShape>Flat</BottomShape>
+  </WellsInfo>
+  <ZValues>
+    <ZTravel>500</ZTravel>
+    <ZStart>600</ZStart>
+    <ZDispense>700</ZDispense>
+    <ZMax>800</ZMax>
+  </ZValues>
+</Labware>
