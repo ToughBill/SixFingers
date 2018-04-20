@@ -69,14 +69,7 @@
     </ApplicationDefinition>
     <Compile Include="Data\PanelViewModel.cs" />
     <Compile Include="Data\SampleInfo.cs" />
-    <Compile Include="Driver\DebugDriver.cs" />
-    <Compile Include="Driver\RSPDriver.cs" />
     <Compile Include="Hardware\HardwareController.cs" />
-    <Compile Include="Hardware\IHardwareDevice.cs" />
-    <Compile Include="Hardware\ILiha.cs" />
-    <Compile Include="Hardware\Liha.cs" />
-    <Compile Include="Hardware\Pump.cs" />
-    <Compile Include="Hardware\Roma.cs" />
     <Compile Include="StageControls\BarcodeDefForm.xaml.cs">
       <DependentUpon>BarcodeDefForm.xaml</DependentUpon>
     </Compile>
@@ -168,6 +161,10 @@
     <Resource Include="Images\guidePost.png" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\SKHardwareController\SKHardwareController.csproj">
+      <Project>{d694a181-fca1-452d-ae1e-7062eade83a8}</Project>
+      <Name>SKHardwareController</Name>
+    </ProjectReference>
     <ProjectReference Include="..\WorkStationController.Control\WorkstationController.Control.csproj">
       <Project>{789bb44f-d2c3-4a2a-8262-34214d65d9d0}</Project>
       <Name>WorkstationController.Control</Name>
@@ -183,6 +180,13 @@
   </ItemGroup>
   <ItemGroup>
     <Resource Include="Images\diti.jpg" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Resources\run.png" />
+    <Resource Include="Resources\stop.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Resources\pause.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

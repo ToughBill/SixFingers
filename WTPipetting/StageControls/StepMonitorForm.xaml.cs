@@ -25,20 +25,20 @@ namespace WTPipetting.StageControls
     /// </summary>
     public partial class StepMonitorForm : BaseUserControl
     {   
-        public string textLog = "You are in runing mode";
+      
         Worklist wkList = new Worklist();
         private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
+        ObservableCollection<StepDefinitionWithProgressInfo> stepsDefWithProgressInfo;
+        RunState runState = RunState.Start;
         public StepMonitorForm(Stage stage, BaseHost host)
             : base(stage, host)
         {
             InitializeComponent();
-            txtInfo.Text = textLog;
         }
 
 
         protected override void Initialize()
         {
-            txtInfo.Text = textLog;
             base.Initialize();
             InitStepsInfo();
         }
@@ -46,7 +46,7 @@ namespace WTPipetting.StageControls
         private void InitStepsInfo()
         {
             var stepsDef = ProtocolManager.Instance.SelectedProtocol.StepsDefinition;
-            ObservableCollection<StepDefinitionWithProgressInfo> stepsDefWithProgressInfo = new ObservableCollection<StepDefinitionWithProgressInfo>();
+            stepsDefWithProgressInfo = new ObservableCollection<StepDefinitionWithProgressInfo>();
             //timeEstimation = new TimeEstimation();
             
             stepsDefWithProgressInfo.Clear();
@@ -60,110 +60,119 @@ namespace WTPipetting.StageControls
             lvProtocol.ItemsSource = stepsDefWithProgressInfo;
         }
 
-
-
-        private void OnWorkerMethodStart(string tempName, string currentTemplate, int curIndex)
+        private void ChangeBackGroudColor(int nStep, bool isStart)
         {
-
-            //lvwArrayTemplate.Dispatcher.Invoke(System.Windows.Threading.DispatcherPriority.Normal,
-            //new Action(
-            //delegate()
-            //{
-            //    if (CurIndex == 0)
-            //    {
-
-            //        List<string> lists = LoadStrListFromFile(currentTemplate);
-            //        LoadToTemplateView(lists);
-            //        txtTemplateName.Content = tempName;
-            //        txtTemplatePath.Content = currentTemplate;
-            //    }
-            //    //CalcShowResult();
-            //    lvwArrayTemplate.SelectedIndex = curIndex;
-            //    //pbw.Close();
-            //}
-            //));
-        }
-
-        private void OnWorkerMethodComplete(double[,] measureResultData, int curIndex)
-        {
-            //CurIndex = curIndex;
-            ////this.measureResultData = measureResultData;
-            //for (int i = 0; i < 12; i++)
-            //{
-            //    this.measureResultData[curIndex, i] = measureResultData[curIndex, i];
-
-            //}
-            //this.measureResultData[curIndex, 0] = curIndex;//序号
-
-            //txtInfo.Dispatcher.Invoke(System.Windows.Threading.DispatcherPriority.Normal,
-            //new Action(
-            //delegate()
-            //{
-            //    CalcShowResult();
-            //    //pbw.Close();
-            //}
-            //));
-
-            // myLabel.Dispatcher.Invoke(System.Windows.Threading.DispatcherPriority.Normal,
-            //new Action(
-            //delegate()
-            //{
-            //    myLabel.Content = message;
-            //}
-            //));
-
-        }
-
-        private void OnTemplateComplete(string tempName, string currentTemplate)
-        {
-        }
-
-
-        public void OnMessage(string strMessage)
-        {
-            txtInfo.Dispatcher.Invoke(System.Windows.Threading.DispatcherPriority.Normal,
-            new Action(
-            delegate()
+            foreach (var thisStepWithProgressInfo in stepsDefWithProgressInfo)
             {
-                txtInfo.Text += strMessage + "\r\n";
+                if (isStart)
+                {
+                    thisStepWithProgressInfo.IsWorking = thisStepWithProgressInfo.LineNumber == nStep;
+                    thisStepWithProgressInfo.IsFinished = thisStepWithProgressInfo.LineNumber < nStep;
+                }
+                else
+                {
+                    thisStepWithProgressInfo.IsWorking = false;
+                    thisStepWithProgressInfo.IsFinished = thisStepWithProgressInfo.LineNumber <= nStep;
+                }
             }
-            ));
         }
-        public void OnMoveTo(Point position)
+        
+
+       
+        private async Task RunProtocol()
         {
-            txtInfo.Dispatcher.Invoke(System.Windows.Threading.DispatcherPriority.Normal,
-            new Action(
-            delegate()
-            {
-                txtInfo.Text += "Move " + position.X + " " + position.Y + "\r\n";
-            }
-            ));
-        }
-        private void btnStart_Click(object sender, RoutedEventArgs e)
-        {
-            if (wkList!=null && wkList.IsRunning())
-            {
-                return;
-            }
             wkList = new Worklist();
-            MyBackThread myBackThread = wkList.Init();
-            myBackThread.OnWorkerStart += new MyBackThread.OnWorkerMethodStartDelegate(OnWorkerMethodStart);
-            myBackThread.OnWorkerComplete += new MyBackThread.OnWorkerMethodCompleteDelegate(OnWorkerMethodComplete);
-            myBackThread.OnMoveTo += new MyBackThread.OnMoveToDelegate(OnMoveTo);
-            myBackThread.OnMessage += new MyBackThread.OnMessageDelegate(OnMessage);
-            myBackThread.OnTemplateComplete += new MyBackThread.OnWorkerMethodTemplateCompleteDelegate(OnTemplateComplete);
-
-            wkList.Execute(GlobalVars.Instance.selectedLayout);
+            wkList.OnCriticalErrorHappened += wkList_OnCriticalErrorHappened;
+            wkList.OnStepChanged += wkList_OnStepChanged;
+            this.IsEnabled = false;
+            await Task.Run(() =>
+            {
+                wkList.Execute(GlobalVars.Instance.selectedLayout);
+            });
+            this.IsEnabled = true;
+           
         }
 
-        private void btnPause_Click(object sender, RoutedEventArgs e)
+
+        #region event handler
+        void wkList_OnStepChanged(int currentStep, bool isStart)
         {
-            wkList.Pause();
+            this.Dispatcher.Invoke(() => {
+                ChangeBackGroudColor(currentStep, isStart);
+            });
+           
         }
+
+        void wkList_OnCriticalErrorHappened(object sender, string e)
+        {
+            this.Dispatcher.Invoke(() =>
+            {
+                SetErrorInfo(e);
+            });
+        }
+        #endregion
+
+
+        void SetErrorInfo(string info)
+        {
+            txtInfo.Text = info;
+            txtInfo.Foreground = Brushes.Red;
+        }
+
+        void UpdateInfo(string info)
+        {
+            txtInfo.Text = info;
+            txtInfo.Foreground = Brushes.Black;
+        }
+
+        private void btnRunPause_Click(object sender, RoutedEventArgs e)
+        {
+            if(runState == RunState.Start)
+            {
+                RunProtocol();
+                ChangeRunState(RunState.Pause);
+            }
+            else if(runState == RunState.Pause)
+            {
+                ChangeRunState(RunState.Resume);
+                wkList.PauseResume();
+            }
+            else
+            {
+                ChangeRunState(RunState.Pause);
+                wkList.PauseResume();
+            }
+        }
+
+        private void ChangeRunState(RunState nextState)
+        {
+            if (nextState == RunState.Pause)
+            {
+                btnStartPause.Content = parentGrid.FindResource("PauseIcon");
+                runPause.Text = "暂停";
+            }
+            else
+            {
+                runPause.Text = "恢复";
+                btnStartPause.Content = parentGrid.FindResource("StartIcon");
+            }
+            runState = nextState;
+        }
+     
+
 
         private void btnStop_Click(object sender, RoutedEventArgs e)
         {
             wkList.Stop();
         }
+
+        
     }
+
+    enum RunState
+    {
+        Start,
+        Pause,
+        Resume
+    };
 }

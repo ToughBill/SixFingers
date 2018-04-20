@@ -61,7 +61,7 @@ namespace WorkstationController.Core.Data
         private double topLeftWellYPositionInLayout;
         private double bottomRightWellXPositionInLayout;
         private double bottomRightWellYPositionInLayout;
-
+        public const string WasteLabel = "Waste";
         /// <summary>
         /// The site on which the labware installed on the carrier, 1 based
         /// </summary>

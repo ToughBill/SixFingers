@@ -18,6 +18,15 @@ namespace WorkstationController.Core.Data
 
     }
 
+    public class CriticalException : Exception
+    {
+        public string Description { get; set; }
+        public CriticalException(string desc)
+        {
+            Description = desc;
+        }
+    }
+
 
     public class WellOfoutRange:Exception
     {

@@ -27,12 +27,7 @@
                             <ColumnDefinition></ColumnDefinition>
                             <ColumnDefinition></ColumnDefinition>
                         </Grid.ColumnDefinitions>
-                        <Button Name="btnDitiSetting" Click="btnDitiSetting_Click">
-                            <StackPanel>
-                                <Image Source="Images/diti.jpg"></Image>
-                                <TextBlock HorizontalAlignment="Center"> 枪头设置</TextBlock>
-                            </StackPanel>
-                        </Button>
+                        
                     </Grid>
 
                 </StackPanel>

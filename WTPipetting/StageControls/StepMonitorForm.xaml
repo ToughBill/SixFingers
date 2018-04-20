@@ -3,21 +3,44 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+                 
              mc:Ignorable="d" 
               xmlns:bb="clr-namespace:WTPipetting.Navigation"
              d:DesignHeight="600" d:DesignWidth="800">
-    <Grid>
+    
+    <Grid Name="parentGrid">
+        <Grid.Resources>
+            <Image x:Key="StartIcon"   Source="/Resources/run.png" Height="48" Width="48"/>
+            <Image x:Key="PauseIcon"   Source="/Resources/pause.png" Height="48" Width="48"/>
+            <Image x:Key="StopIcon"   Source="/Resources/stop.png" Height="48" Width="48"/>
+        </Grid.Resources>
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="4*"/>
             <ColumnDefinition Width="1.5*"/>
         </Grid.ColumnDefinitions>
         <Grid.RowDefinitions>
-            <RowDefinition Height="*"/>
+          
             <RowDefinition Height="*"/>
             <RowDefinition Height="300"/>
-            <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
-        <StackPanel Grid.Row="1" Grid.Column="0" Grid.RowSpan="2">
+        <StackPanel Grid.Row="2" Grid.Column="1">
+            <StackPanel Orientation="Horizontal">
+                <TextBlock Name="runPause" Margin="14,0,0,0">运行</TextBlock>
+                <TextBlock Margin="28,0,0,0">停止</TextBlock>
+            </StackPanel>
+            
+            
+            <StackPanel Orientation="Horizontal">
+
+                <Button   Name="btnStartPause"  HorizontalAlignment="Left" VerticalAlignment="Top"  Click="btnRunPause_Click">
+                    <DynamicResource ResourceKey="StartIcon" ></DynamicResource>
+                </Button>
+
+                <Button Content="{StaticResource StopIcon}"  Name="btnStop"  HorizontalAlignment="Left"  VerticalAlignment="Top"  Click="btnStop_Click"/>
+            </StackPanel>
+        </StackPanel>
+      
+        <StackPanel Grid.Column="0" Grid.RowSpan="2">
             <Label Content="实验流程：" Margin="4,4,4,4"/>
             <ListView Name="lvProtocol" FontSize="14" FontFamily="SimSun" Margin="0,0,0,0" >
                 <ListView.View >
@@ -44,7 +67,7 @@
                 </ListView.ItemContainerStyle>
             </ListView>
         </StackPanel>
-        <Grid Name="timeInfo" Grid.Row="1" Grid.Column="1">
+        <Grid Name="timeInfo" Grid.Row="0" Grid.Column="1">
             <StackPanel VerticalAlignment="Top" Margin="0,20,0,0">
                 <StackPanel Orientation="Horizontal">
                     <Label  Content ="总用时：" HorizontalAlignment="Left" Margin="0,0,0,0" VerticalAlignment="Center"/>
@@ -57,12 +80,10 @@
                 
             </StackPanel>
         </Grid>
-        <Button Content="Start" Name="btnStart" Grid.Column="1" HorizontalAlignment="Left" Margin="125,64,0,0" Grid.Row="2" VerticalAlignment="Top" Width="75" Click="btnStart_Click"/>
-        <Button Content="Pause" Name="btnPause" Grid.Column="1" HorizontalAlignment="Left" Margin="125,141,0,0" Grid.Row="2" VerticalAlignment="Top" Width="75" Click="btnPause_Click"/>
-        <Button Content="Stop" Name="btnStop" Grid.Column="1" HorizontalAlignment="Left" Margin="125,212,0,0" Grid.Row="2" VerticalAlignment="Top" Width="75" Click="btnStop_Click"/>
 
-        <StackPanel Grid.Row="3" Grid.Column="0" Grid.RowSpan="2">
-            <TextBox Grid.Row="3" Grid.Column="0"   HorizontalAlignment="Stretch" Margin="10,10,0,100"  Name="txtInfo"  VerticalAlignment="Stretch" MaxLines="100" TabIndex="4" TextWrapping="Wrap" VerticalScrollBarVisibility="Auto" IsReadOnly="True" Height="200" />
+
+        <StackPanel Grid.Row="2" Grid.Column="0" Grid.RowSpan="2">
+            <TextBox  Grid.Column="0"   HorizontalAlignment="Stretch" Margin="10,10,10,0"  Name="txtInfo"  VerticalAlignment="Stretch" MaxLines="100" TabIndex="4" TextWrapping="Wrap" VerticalScrollBarVisibility="Auto" IsReadOnly="True" Height="250" />
         </StackPanel>
     </Grid>
 </bb:BaseUserControl>

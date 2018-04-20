@@ -32,6 +32,16 @@ namespace WorkstationController.Core.Managements
             }
         }
 
+        public int CurrentDitiID
+        {
+            get
+            {
+                var ditiInfo = _layout.DitiInfo;
+                DitiInfoItem ditiInfoItem = ditiInfo.DitiInfoItems.Find(x => x.label == ditiInfo.CurrentDitiLabware);
+                return ditiInfoItem.count;
+            }
+        }
+
         
         public Dictionary<LabwareTrait,List<int>> GetTip(int cnt)
         {

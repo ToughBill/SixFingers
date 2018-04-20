@@ -58,7 +58,7 @@ namespace WTPipetting.Utility
 
         internal void CheckLayoutMatchProtocol(WorkstationController.Core.Data.Layout selectedLayout, Protocol selectedProtocol)
         {
-            var labware = selectedLayout.FindLabwareByType("Waste");
+            var labware = selectedLayout.FindLabwareByType(Labware.WasteLabel);
             if (labware == null)
                 throw new NoLabwareException("找不到枪头废弃槽！");
 
