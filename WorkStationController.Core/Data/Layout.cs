@@ -330,10 +330,10 @@ namespace WorkstationController.Core.Data
         }
         public System.Windows.Point GetWastePosition()
         {
-            var labware = FindLabware(Labware.WasteLabel);
+            var labware = FindLabwareByType(Labware.WasteLabel);
             if (labware == null)
                 throw new NoLabwareException(Labware.WasteLabel);
-            return labware.GetPosition(1);
+            return labware.GetAbsPosition(1);
         }
     }
 

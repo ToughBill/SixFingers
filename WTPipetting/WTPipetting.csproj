@@ -99,7 +99,6 @@
       <DependentUpon>App.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="Data\BindableBase.cs" />
     <Compile Include="Utility\GlobalVars.cs" />
     <Compile Include="Data\Protocol.cs" />
     <Compile Include="MainWindow.xaml.cs">

@@ -33,6 +33,7 @@ namespace WTPipetting.StageControls
         public StepMonitorForm(Stage stage, BaseHost host)
             : base(stage, host)
         {
+            log.Info("StepMonitorForm");
             InitializeComponent();
         }
 
@@ -98,6 +99,7 @@ namespace WTPipetting.StageControls
         void wkList_OnStepChanged(int currentStep, bool isStart)
         {
             this.Dispatcher.Invoke(() => {
+                txtInfo.AppendText(string.Format("Current step:{0}\r\n", currentStep));
                 ChangeBackGroudColor(currentStep, isStart);
             });
            

@@ -68,7 +68,11 @@ namespace WorkstationController.VisualElement
 
         void ware_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
         {
-            InvalidateVisual();
+            this.Dispatcher.Invoke(() =>
+            {
+                InvalidateVisual();
+            });
+            
         }
 
         /// <summary>

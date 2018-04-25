@@ -1,6 +1,7 @@
 ﻿using SKHardwareController;
 using System;
 using System.Collections.Generic;
+using System.Configuration;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -16,14 +17,11 @@ namespace WTPipetting.Hardware
         public IRoma Roma { get; set; }
         public HardwareController(Layout layout)
         {
-            Liha = new Liha(layout);
+            string portNum = ConfigurationManager.AppSettings["PortName"];
+            Liha = new Liha(layout, portNum);
+           
         }
-
-      
     
-        public void Init()
-        {
-            Liha.Init();
-        }
+        
     }
 }

@@ -54,17 +54,9 @@ namespace WTPipetting.Hardware
 
             foreach (var pipettingInfo in pipettingInfos)
             {
-                if (pipettingInfo.srcLabware == PipettingInfo.StepStart)
-                {
-                    NotifyStepStarted(currentStep);
-                    continue;
-                }
-                if (pipettingInfo.srcLabware == PipettingInfo.StepFinish)
-                {
-                    NotifyStepFinished(currentStep);
-                    currentStep++;
-                    continue;
-                }
+                NotifyStepStarted(currentStep);
+                 
+                
                 if (NeedPauseOrStop())
                     break;
                 hardwareController.Liha.GetTip(new List<int>() { 1 });
@@ -77,6 +69,8 @@ namespace WTPipetting.Hardware
                 if (NeedPauseOrStop())
                     break;
                 hardwareController.Liha.DropTip();
+                NotifyStepFinished(currentStep);
+                currentStep++;
             }
            
         }
@@ -118,7 +112,6 @@ namespace WTPipetting.Hardware
         {
             this.layout = layout;
             this.hardwareController = new HardwareController(layout);
-            hardwareController.Init();
             pipettingInfos = GenerateScripts();
             Run();
         }
@@ -132,9 +125,8 @@ namespace WTPipetting.Hardware
             int stepNo = 1;
             foreach(var stepDef in ProtocolManager.Instance.SelectedProtocol.StepsDefinition)
             {
-                pipettingInfos.Add(new PipettingInfo(PipettingInfo.StepStart,0,0,"",0,""));
-                pipettingInfos.AddRange(GenerateScriptsThisStep(stepDef, stepNo++));
-                pipettingInfos.Add(new PipettingInfo(PipettingInfo.StepFinish, 0, 0, "", 0, ""));
+                pipettingInfos.AddRange(GenerateScriptsThisStep(stepDef, stepNo));
+                stepNo++;
             }
             
             return pipettingInfos;
