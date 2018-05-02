@@ -15,7 +15,7 @@ namespace WTPipetting
         ObservableCollection<StepDesc> stepDescs = new ObservableCollection<StepDesc>();
         public StepViewModel()
         {
-            string sDataFolder =  FolderHelper.GetImageFolder();
+            string sDataFolder =  FolderHelperEx.GetImageFolder();
             BitmapImage sampleDef = new BitmapImage(new Uri(sDataFolder + "sampleDef.png"));
             BitmapImage barcodeDef = new BitmapImage(new Uri(sDataFolder + "barcodeDef.jpg"));
             BitmapImage genScript = new BitmapImage(new Uri(sDataFolder + "genScript.jpg"));

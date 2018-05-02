@@ -63,6 +63,7 @@ namespace WTPipetting.StageControls
 
         private void ChangeBackGroudColor(int nStep, bool isStart)
         {
+            log.InfoFormat("current step:{0}, is start:{1}", nStep, isStart);
             foreach (var thisStepWithProgressInfo in stepsDefWithProgressInfo)
             {
                 if (isStart)
@@ -85,12 +86,12 @@ namespace WTPipetting.StageControls
             wkList = new Worklist();
             wkList.OnCriticalErrorHappened += wkList_OnCriticalErrorHappened;
             wkList.OnStepChanged += wkList_OnStepChanged;
-            this.IsEnabled = false;
+            //this.IsEnabled = false;
             await Task.Run(() =>
             {
                 wkList.Execute(GlobalVars.Instance.selectedLayout);
             });
-            this.IsEnabled = true;
+            //this.IsEnabled = true;
            
         }
 
@@ -99,7 +100,6 @@ namespace WTPipetting.StageControls
         void wkList_OnStepChanged(int currentStep, bool isStart)
         {
             this.Dispatcher.Invoke(() => {
-                txtInfo.AppendText(string.Format("Current step:{0}\r\n", currentStep));
                 ChangeBackGroudColor(currentStep, isStart);
             });
            

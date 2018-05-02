@@ -27,7 +27,7 @@ namespace WTPipetting.Hardware
         List<PipettingInfo> pipettingInfos;
         bool bStop = false;
         bool bPause = false;
-    
+        private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
 
         public delegate void OnStepChangedDelegate(int currentStep, bool isStart);
         public event OnStepChangedDelegate OnStepChanged;
@@ -69,6 +69,7 @@ namespace WTPipetting.Hardware
                 if (NeedPauseOrStop())
                     break;
                 hardwareController.Liha.DropTip();
+                log.Info("notify finished");
                 NotifyStepFinished(currentStep);
                 currentStep++;
             }

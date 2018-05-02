@@ -27,7 +27,7 @@ namespace WTPipetting.Utility
         }
         private ProtocolManager()
         {
-            string sFolder = FolderHelper.GetProtocolFolder();
+            string sFolder = FolderHelperEx.GetProtocolFolder();
             DirectoryInfo dirInfo = new DirectoryInfo(sFolder);
             var fileInfos = dirInfo.EnumerateFiles("*.csv");
             foreach(var fileInfo in fileInfos)

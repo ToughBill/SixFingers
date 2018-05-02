@@ -88,10 +88,10 @@
         <TextBlock Grid.Row="4" Grid.Column="4" Text="Y" VerticalAlignment="Bottom" HorizontalAlignment="Center"/>
         <Label Grid.Row="5" Grid.Column="0" Content="首孔"/>
         <Label Grid.Row="6" Grid.Column="0" Content="末孔"/>
-        <Button Grid.Row="5" Grid.Column="5" Content="使用当前值"/>
-        <Button Grid.Row="5" Grid.Column="6" Content="移动到"/>
-        <Button Grid.Row="6" Grid.Column="5" Content="使用当前值"/>
-        <Button Grid.Row="6" Grid.Column="6" Content="移动到"/>
+        <Button Name="btnUseCurrentValFirtWell" Grid.Row="5" Grid.Column="5" Content="使用当前值" Click="btnUseCurrentValFirtWell_Click"/>
+        <Button Name="btnMove2CurrentPositionFirstWell" Grid.Row="5" Grid.Column="6" Content="移动到" Click="btnMove2CurrentPositionFirstWell_Click"/>
+        <Button Name="btnUseCurrentValLastWell" Grid.Row="6" Grid.Column="5" Content="使用当前值" Click="btnUseCurrentValLastWell_Click" Height="25" Margin="6,0,7,3" VerticalAlignment="Bottom"/>
+        <Button  Name="btnMove2CurrentPositionLastWell" Grid.Row="6" Grid.Column="6" Content="移动到" Click="btnMove2CurrentPositionLastWell_Click"/>
         <TextBox Grid.Row="5" Grid.Column="2" Text="{Binding Path=TopLeftWellX, Mode =TwoWay}"/>
         <TextBox Grid.Row="5" Grid.Column="4" Text="{Binding Path=TopLeftWellY, Mode =TwoWay}"/>
         <TextBox Grid.Row="6" Grid.Column="2" Text="{Binding Path=BottomRightWellX, Mode =TwoWay}"/>
@@ -107,14 +107,14 @@
         <TextBox Grid.Row="9" Grid.Column="4" Text="{Binding Path=ZValues.ZStart}"/>
         <TextBox Grid.Row="10" Grid.Column="4" Text="{Binding Path=ZValues.ZDispense}"/>
         <TextBox Grid.Row="11" Grid.Column="4" Text="{Binding Path=ZValues.ZMax}"/>
-        <Button Grid.Row="8" Grid.Column="5" Content="使用当前值"/>
-        <Button Grid.Row="8" Grid.Column="6" Content="移动到"/>
-        <Button Grid.Row="9" Grid.Column="5" Content="使用当前值"/>
-        <Button Grid.Row="9" Grid.Column="6" Content="移动到"/>
-        <Button Grid.Row="10" Grid.Column="5" Content="使用当前值"/>
-        <Button Grid.Row="10" Grid.Column="6" Content="移动到"/>
-        <Button Grid.Row="11" Grid.Column="5" Content="使用当前值"/>
-        <Button Grid.Row="11" Grid.Column="6" Content="移动到"/>
+        <Button Name="btnUseCurrentValZTravel" Grid.Row="8" Grid.Column="5" Content="使用当前值" Click="btnUseCurrentValZTravel_Click"/>
+        <Button Name="btnMove2CurrentPositionZTravel" Grid.Row="8" Grid.Column="6" Content="移动到" Click="btnMove2CurrentPositionZTravel_Click"/>
+        <Button Name="btnUseCurrentValZStart" Grid.Row="9" Grid.Column="5" Content="使用当前值" Click="btnUseCurrentValZStart_Click"/>
+        <Button Name="btnMove2CurrentPositionZStart" Grid.Row="9" Grid.Column="6" Content="移动到"/>
+        <Button Name="btnUseCurrentValZDispense" Grid.Row="10" Grid.Column="5" Content="使用当前值" Click="btnUseCurrentValZDispense_Click"/>
+        <Button Name="btnMove2CurrentPositionZDispense"  Grid.Row="10" Grid.Column="6" Content="移动到"/>
+        <Button Name="btnUseCurrentValZMax" Grid.Row="11" Grid.Column="5" Content="使用当前值" Click="btnUseCurrentValZMax_Click"/>
+        <Button Name="btnMove2CurrentPositionZMax" Grid.Row="11" Grid.Column="6" Content="移动到"/>
         <Label Grid.Row="13" Content="孔半径:" />
         <TextBox Grid.Row="13" Grid.Column="2" Text="{Binding Path=WellsInfo.WellRadius}"/>
         <Label Grid.Row="13" Grid.Column="5" Content="(单位:" HorizontalAlignment="Right" />

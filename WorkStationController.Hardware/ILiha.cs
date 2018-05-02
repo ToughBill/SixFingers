@@ -24,7 +24,7 @@ namespace WorkstationController.Hardware
         void Aspirate(string labwareLabel, List<int> wellIDs, List<double> volumes, string liquidClass);
 
         void Dispense(string labwareLabel, List<int> wellIDs, List<double> volumes, string liquidClass);
-        
 
+     
     }
 }

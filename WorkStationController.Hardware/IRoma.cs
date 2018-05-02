@@ -20,9 +20,9 @@ namespace WorkstationController.Hardware
 
         void Move2AbsPosition(float x, float y, float z);
 
-        XYZ GetCurrentPosition();
+        XYZR GetCurrentPosition();
         bool IsOpen { get; set; }
-
+   
 
     }
 }

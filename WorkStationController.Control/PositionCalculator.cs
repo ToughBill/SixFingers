@@ -9,10 +9,10 @@ using WorkstationController.Core.Data;
 
 namespace WorkstationController.Control
 {
-    class PositionCalculator
+    public class PositionCalculator
     {
-        XYZ positionXYZ;
-        XYZ speedXYZ;
+        XYZR expectedPositionXYZ;
+        XYZR speedXYZ;
 
         double acceleration = 10;
         double slowAcceleration = 5;
@@ -20,11 +20,11 @@ namespace WorkstationController.Control
         double maxSpeed = 30; //30mm/s
         double oldTime = 0;
         Stopwatch watcher = new Stopwatch();
-        public event EventHandler<XYZ> OnPositionChanged;
-        public PositionCalculator(XYZ xyz)
+        public event EventHandler<XYZR> OnExpectedPositionChanged;
+        public PositionCalculator(XYZR xyz)
         {
-            this.positionXYZ = xyz;
-            speedXYZ = new XYZ(0, 0, 0);
+            this.expectedPositionXYZ = xyz;
+            speedXYZ = new XYZR(0, 0, 0);
             //this.acceleration = slowAcceleration;
         }
         public void OnDirectionPressed(Direction dir, bool isFastAcceleration = false)
@@ -39,9 +39,9 @@ namespace WorkstationController.Control
 
             UpdatePositionAndSpeed(dir, distance, speedChanged);
             Debug.WriteLine("V:{0}", GetDirectionSpeed(dir));
-            if (OnPositionChanged != null)
+            if (OnExpectedPositionChanged != null)
             {
-                OnPositionChanged(this, positionXYZ);
+                OnExpectedPositionChanged(this, expectedPositionXYZ);
             }
         }
 
@@ -62,27 +62,27 @@ namespace WorkstationController.Control
                     break;
                 case Direction.Up:
                     speedXYZ.Y = (speedXYZ.Y + speedChanged > maxSpeed) ? maxSpeed : (speedXYZ.Y + speedChanged);
-                    positionXYZ.Y += distance;
+                    expectedPositionXYZ.Y += distance;
                     break;
                 case Direction.Left:
                     speedXYZ.X = (speedXYZ.X + speedChanged > maxSpeed) ? maxSpeed : (speedXYZ.X + speedChanged);
-                    positionXYZ.X -= distance;
+                    expectedPositionXYZ.X -= distance;
                     break;
                 case Direction.ZUp:
                     speedXYZ.Z = (speedXYZ.Z + speedChanged > maxSpeed) ? maxSpeed : (speedXYZ.Z + speedChanged);
-                    positionXYZ.Z += distance;
+                    expectedPositionXYZ.Z += distance;
                     break;
                 case Direction.Down:
                     speedXYZ.Y = (speedXYZ.Y + speedChanged > maxSpeed) ? maxSpeed : (speedXYZ.Y + speedChanged);
-                    positionXYZ.Y -= distance;
+                    expectedPositionXYZ.Y -= distance;
                     break;
                 case Direction.Right:
                     speedXYZ.X = (speedXYZ.X + speedChanged > maxSpeed) ? maxSpeed : (speedXYZ.X + speedChanged);
-                    positionXYZ.X += distance;
+                    expectedPositionXYZ.X += distance;
                     break;
                 case Direction.ZDown:
                     speedXYZ.Z = (speedXYZ.Z + speedChanged > maxSpeed) ? maxSpeed : (speedXYZ.Z + speedChanged);
-                    positionXYZ.Z -= distance;
+                    expectedPositionXYZ.Z -= distance;
                     break;
                 default:
                     break;
@@ -126,13 +126,13 @@ namespace WorkstationController.Control
     }
 
 
-    class InputDeviceInfo
+    public class InputDeviceInfo
     {
         //public static bool isMoving = false;
         public static bool isJoysMoving = false;
         public static bool isKeyBoardMoving = false;
     }
-    class InputChecker
+    public class InputChecker
     {
         PositionCalculator positionCalculator;
         SharpDX.DirectInput.Keyboard curKeyBoard;

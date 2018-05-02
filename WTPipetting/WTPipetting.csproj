@@ -84,7 +84,7 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>strings.resx</DependentUpon>
     </Compile>
-    <Compile Include="Utility\FolderHelper.cs" />
+    <Compile Include="Utility\FolderHelperEx.cs" />
     <Compile Include="Utility\Helper.cs" />
     <Compile Include="Utility\ProtocolManager.cs" />
     <Compile Include="Utility\SerializationHelper.cs" />

@@ -7,17 +7,18 @@ using System.Text;
 
 namespace WorkstationController.Core.Data
 {
-    public class XYZ:BindableBase
+    public class XYZR:BindableBase
     {
         double x;
         double y;
         double z;
-
-        public XYZ(double x, double y, double z)
+        double r;
+        public XYZR(double x, double y, double z, double r = 0)
         {
             this.x = x;
             this.y = y;
             this.z = z;
+            this.r = r;
         }
         public double X
         {
@@ -52,6 +53,18 @@ namespace WorkstationController.Core.Data
             set
             {
                 SetProperty(ref z, value);
+            }
+        }
+
+        public double R
+        {
+            get
+            {
+                return r;
+            }
+            set
+            {
+                SetProperty(ref r, value);
             }
         }
     }

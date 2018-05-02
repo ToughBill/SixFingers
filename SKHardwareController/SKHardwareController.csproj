@@ -52,6 +52,7 @@
     <Compile Include="MoveController.cs" />
     <Compile Include="Liha.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="TeachingImplement.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\WorkStationController.Core\WorkstationController.Core.csproj">

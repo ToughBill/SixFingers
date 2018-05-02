@@ -39,6 +39,10 @@
     <NoWarn>1591</NoWarn>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="log4net, Version=1.2.11.0, Culture=neutral, PublicKeyToken=669e0ddf0bb1aa2a, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\lib\log4net.dll</HintPath>
+    </Reference>
     <Reference Include="SharpDX, Version=4.0.1.0, Culture=neutral, PublicKeyToken=b4dcf0f35e5521f1, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\lib\SharpDX.dll</HintPath>
@@ -48,6 +52,7 @@
       <HintPath>..\lib\SharpDX.DirectInput.dll</HintPath>
     </Reference>
     <Reference Include="System" />
+    <Reference Include="System.Configuration" />
     <Reference Include="System.Data" />
     <Reference Include="System.Drawing" />
     <Reference Include="System.Windows.Forms" />
@@ -68,13 +73,12 @@
     <Compile Include="DitiEditor.xaml.cs">
       <DependentUpon>DitiEditor.xaml</DependentUpon>
     </Compile>
-    <Compile Include="MoveControlForm.xaml.cs">
-      <DependentUpon>MoveControlForm.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="MoveControls\MovementController.cs" />
     <Compile Include="PipettingCommandEditor.xaml.cs">
       <DependentUpon>PipettingCommandEditor.xaml</DependentUpon>
     </Compile>
+    <Compile Include="PositionCalculator.cs" />
+    <Compile Include="Teaching\LabwareTeachingForm.xaml.cs" />
+    <Compile Include="Teaching\RomaTeachingForm.xaml.cs" />
     <Compile Include="ThirdParties\ExtendedTabControl\Converters.cs" />
     <Compile Include="ThirdParties\ExtendedTabControl\Helper.cs" />
     <Compile Include="ThirdParties\ExtendedTabControl\TabControl.cs" />
@@ -99,13 +103,17 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="MoveControlForm.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
     <Page Include="PipettingCommandEditor.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Teaching\LabwareTeachingForm.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Teaching\RomaTeachingForm.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
     </Page>
     <Page Include="ThirdParties\ExtendedTabControl\Themes\Generic.xaml">
       <Generator>MSBuild:Compile</Generator>
@@ -186,6 +194,10 @@
       <Project>{c3ba4ccf-e014-4e15-be64-1675c58ef27a}</Project>
       <Name>WorkstationController.Core</Name>
     </ProjectReference>
+    <ProjectReference Include="..\WorkStationController.Hardware\WorkstationController.Hardware.csproj">
+      <Project>{d8b83067-6fb6-4e8e-a2bd-5ccedc0a9c08}</Project>
+      <Name>WorkstationController.Hardware</Name>
+    </ProjectReference>
     <ProjectReference Include="..\WorkstationController.Visual\WorkstationController.Visual.csproj">
       <Project>{575166a6-3f77-4c58-925f-441d7a1f5e87}</Project>
       <Name>WorkstationController.Visual</Name>
@@ -202,6 +214,7 @@
   <ItemGroup>
     <Resource Include="ThirdParties\ExtendedTabControl\Images\newtab.ico" />
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

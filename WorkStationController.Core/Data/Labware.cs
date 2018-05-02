@@ -482,16 +482,16 @@ namespace WorkstationController.Core.Data
     [Serializable]
     public class ZValues : BindableBase, ICloneable
     {
-        private int _zTravel;
-        private int _zStart;
-        private int _zMax;
-        private int _zDispense;
+        private float _zTravel;
+        private float _zStart;
+        private float _zMax;
+        private float _zDispense;
 
         /// <summary>
-        /// Gets or sets the Z-Travel value, in 1/10 millimetre
+        /// Gets or sets the Z-Travel value, unit is mm
         /// </summary>
         [XmlElement]
-        public int ZTravel
+        public float ZTravel
         {
             get
             {
@@ -507,7 +507,7 @@ namespace WorkstationController.Core.Data
         /// Gets or sets the Z-Start value, in 1/10 millimetre
         /// </summary>
         [XmlElement]
-        public int ZStart
+        public float ZStart
         {
             get
             {
@@ -523,7 +523,7 @@ namespace WorkstationController.Core.Data
         /// Gets or sets the Z-Dispense value, in 1/10 millimetre
         /// </summary>
         [XmlElement]
-        public int ZDispense
+        public float ZDispense
         {
             get
             {
@@ -539,7 +539,7 @@ namespace WorkstationController.Core.Data
         /// Gets or sets the Z-Max value, in 1/10 millimetre
         /// </summary>
         [XmlElement]
-        public int ZMax
+        public float ZMax
         {
             get
             {
@@ -565,7 +565,7 @@ namespace WorkstationController.Core.Data
         /// <param name="start"></param>
         /// <param name="zDispense"></param>
         /// <param name="zMax"></param>
-        public ZValues(int travel, int start, int zDispense, int zMax)
+        public ZValues(float travel, float start, float zDispense, float zMax)
         {
             _zTravel = travel;
             _zStart = start;

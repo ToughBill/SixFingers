@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.IO.Ports;
 using System.Linq;
 using System.Text;
@@ -30,15 +29,17 @@ namespace SKHardwareController
         private SerialPort serialPort = new SerialPort();
         public bool Listening { get; set; }
         bool isErrorState = false;
-        bool closing = false;
-        bool initialized = false;
+        public bool bOpen = false;
+        public bool bHome = false;
         Object thisLock = new Object();
-        AutoResetEvent cmdFinished = new AutoResetEvent(false);
+        //AutoResetEvent cmdFinished = new AutoResetEvent(false);
         AutoResetEvent cmdACK = new AutoResetEvent(false);
-        bool bACK = false;
+        bool[] bACK = new bool[2];
+        bool[] bActiondone = new bool[2];
         double mmPerStepX = 0.22345;
         double mmPerStepY = 0.14224;
         double mmPerStepZ = 0.098175;
+        public const int defaultTimeOut = 5000;
         e_RSPErrorCode[] _errorCode = new e_RSPErrorCode[(int)_eARM.两个 - 1];
 
         private static MoveController instance;
@@ -51,7 +52,36 @@ namespace SKHardwareController
                  return instance;
             }
         }
+        public bool ErrorHappened
+        {
+            get
+            {
+                return isErrorState;
+            }
+        }
+        public bool IsLihaMoving
+        {
+            get
+            {
+                return !bActiondone[0];
+            }
+        }
 
+        public bool IsRomaMoving
+        {
+            get
+            {
+                return !bActiondone[1];
+            }
+        }
+
+        public bool MoveFinished
+        {
+            get
+            {
+                return bActiondone[0] && bActiondone[1];
+            }
+        }
         /// <summary>
         ///Init ARM
         /// </summary>
@@ -59,22 +89,33 @@ namespace SKHardwareController
         {
             lock (thisLock)
             {
-                if (initialized)
+                if (bOpen)
                     return;
 
                 try
                 {
                     serialPort = new SerialPort(sPort, 9600, Parity.None, 8, StopBits.One);
                     serialPort.Open();
+                    //serialPort.DataReceived += serialPort_DataReceived;
+
+                    Thread myThread = new Thread(ReceiveMessage);
+                    myThread.IsBackground = true;
+                    myThread.Start();
+
+                    bOpen = true;
                 }
                 catch (Exception ex)
                 {
                     throw ex;
                 }
-
-                serialPort.DataReceived += serialPort_DataReceived;
-                initialized = true;
             }
+        }
+
+
+        public void MoveHome()
+        {
+            MoveHome(_eARM.左臂, 8000);
+            MoveHome(_eARM.右臂, 8000);
         }
 
         /// <summary>
@@ -85,27 +126,81 @@ namespace SKHardwareController
         /// <returns></returns>
         public e_RSPErrorCode MoveHome(_eARM armid, int timeout)
         {
-            if (armid >= _eARM.两个)
+            if (armid == _eARM.左臂 || armid == _eARM.两个)
             {
-                return e_RSPErrorCode.无效操作;
-            }
-            for (int i = 0; i < 3; i++)
-            {
-                SendCommand(string.Format("{0}8PI", (int)armid, i==0?false:true));
-                cmdACK.WaitOne(100);
-                if (bACK) break;
+                for (int i = 0; i < 3; i++)
+                {
+                    SendCommand(string.Format("18PI"), i != 0);
+                    cmdACK.WaitOne(100);
+                    if (bACK[0]) break;
+                }
+
+                if (!bACK[0])
+                {
+                    return e_RSPErrorCode.Send_fail;
+                }
             }
 
-            if (bACK == false)
-        {
-                return e_RSPErrorCode.Send_fail;
+            if (armid == _eARM.右臂 || armid == _eARM.两个)
+            {
+                for (int i = 0; i < 3; i++)
+                {
+                    SendCommand(string.Format("28PI"), i != 0);
+                    cmdACK.WaitOne(100);
+                    if (bACK[1]) break;
+                }
+
+                if (!bACK[1])
+                {
+                    return e_RSPErrorCode.Send_fail;
+                }
             }
 
-            if (timeout > 0)
+            if (armid == _eARM.左臂 || armid == _eARM.两个)
             {
-                if (cmdFinished.WaitOne(timeout) == false) return e_RSPErrorCode.超时错误;
-        }
-            return _errorCode[(int)armid-1];
+                if (timeout > 0)
+                {
+                    while (!bActiondone[0] && timeout > 0)
+                    {
+                        Thread.Sleep(10);
+                        timeout -= 10;
+                    }
+                }
+                if (timeout <= 0)
+                {
+                    return e_RSPErrorCode.超时错误;
+                }
+            }
+
+            if (armid == _eARM.右臂 || armid == _eARM.两个)
+            {
+                if (timeout > 0)
+                {
+                    while (!bActiondone[1] && timeout > 0)
+                    {
+                        Thread.Sleep(10);
+                        timeout -= 10;
+                    }
+                }
+                if (timeout <= 0)
+                {
+                    return e_RSPErrorCode.超时错误;
+                }
+            }
+
+            if (armid == _eARM.左臂 || armid == _eARM.两个)
+            {
+                if (_errorCode[0] != e_RSPErrorCode.RSP_ERROR_NONE) 
+                    return _errorCode[0];
+            }
+            if (armid == _eARM.右臂 || armid == _eARM.两个)
+            {
+                if (_errorCode[1] != e_RSPErrorCode.RSP_ERROR_NONE) 
+                    return _errorCode[1];
+            }
+
+            bHome = true;
+            return e_RSPErrorCode.RSP_ERROR_NONE;
         }
 
         /// <summary>
@@ -115,113 +210,117 @@ namespace SKHardwareController
         /// <param name="tbX">x轴位置，单位:mm</param>
         /// <param name="tbY">y轴位置，单位:mm</param>
         /// <param name="tbZ">z轴位置，单位:mm</param>
+        /// <param name="tbZ">r轴位置，单位:mm</param>
         /// <param name="timeout">超时等待时间ms, 0：不等待，异步运行</param>
         /// <returns></returns>
-        public e_RSPErrorCode MoveXYZ(_eARM armid, double tbX, double tbY, double tbZ, int timeout)
+        public e_RSPErrorCode MoveXYZR(_eARM armid, double tbX, double tbY, double tbZ,double tbR, int timeout)
         {
-            Stopwatch stopWatcher = new Stopwatch();
-            stopWatcher.Start();
+            if (!bHome)
+            {
+                return e_RSPErrorCode.未初始化;
+            }
+
             if (armid >= _eARM.两个)
             {
                 return e_RSPErrorCode.无效操作;
             }
             for (int i = 0; i < 3; i++)
             {
-                SendCommand(string.Format("{0}8PA {1} {2} {3}", (int)armid, 
-                    ((int)(tbX / mmPerStepX)).ToString(),
+                SendCommand(string.Format("{0}8PA {1} {2} {3}", 
+                    (int)armid, ((int)(tbX / mmPerStepX)).ToString(), 
                     ((int)(tbY / mmPerStepY)).ToString(), 
-                    ((int)(tbZ * mmPerStepX)).ToString()), i != 0);
+                    ((int)(tbZ / mmPerStepX)).ToString()), i != 0);
                 cmdACK.WaitOne(100);
-                
-                if (bACK) 
-                    break;
+                if (bACK[(int)armid-1]) break;
             }
 
-            if (!bACK)
+            if (!bACK[(int)armid - 1])
             {
                 return e_RSPErrorCode.Send_fail;
             }
 
             if (timeout > 0)
             {
-                if (!cmdFinished.WaitOne(timeout)) 
-                    return e_RSPErrorCode.超时错误;
+                while (!bActiondone[(int)armid - 1] && timeout > 0)
+                {
+                    Thread.Sleep(50);
+                    timeout -= 50;
+                }
             }
-            Debug.WriteLine("used seconds:" + stopWatcher.Elapsed.Milliseconds.ToString());
+
+            if (timeout <= 0)
+            {
+                return e_RSPErrorCode.超时错误;
+            }
 
             return _errorCode[(int)armid - 1];
         }
 
-        void serialPort_DataReceived(object sender, SerialDataReceivedEventArgs e)
+        private void ReceiveMessage()
         {
-            if (closing)
+            if (!bOpen)
                 return;
-            Listening = true;
-
-            int n = 0;
             byte data = 0;
             byte[] RxBuffer = { 0 };
-
+            Listening = true;
             do
             {
-                n = serialPort.BytesToRead;//先记录下来，避免某种原因，人为的原因，操作几次之间时间长，缓存不一致  
-                data = (byte)serialPort.ReadByte();//读取缓冲数据  
+                if (serialPort.BytesToRead == 0)
+                {
+                    Thread.Sleep(10);
+                    continue;
+                }
+
+                data = (byte)serialPort.ReadByte();
                 if (data == ARM_PROTOCOL_STX)
                     received_count = 0;
 
                 globalBuffer[received_count++] = data;
                 if (received_count > 2 && (globalBuffer[received_count - 2] == ARM_PROTOCOL_ETX))
-                    break;
-
-            } while (true);
-
-
-            RxBuffer = new byte[received_count];
-
-            Array.Copy(globalBuffer, RxBuffer, RxBuffer.Length);
-            StringBuilder strBuilder = new StringBuilder();
-            strBuilder.Clear();
-
-            bool cmdDone = (RxBuffer[1] & MASK_DONE_BIT) == MASK_DONE_BIT;
-            if (cmdDone)
-            {
-                //log.Info("action done!");
-                _errorCode[RxBuffer[2] - 0x31] = (e_RSPErrorCode)(RxBuffer[1] & 0x0f);
-                cmdFinished.Set();
-                SendACK(RxBuffer[2]);
-            }
-            else
-            {
-                bool hasError = (RxBuffer[1] - 0x40) > 0;
-                if (hasError)
                 {
-                    e_RSPErrorCode errorCode = (e_RSPErrorCode)(RxBuffer[1] - 0x40);
-                    _errorCode[RxBuffer[2] - 0x31] = (e_RSPErrorCode)(RxBuffer[1] - 0x40);
-                    string errDesc = errorCode.ToString();
-                    if (IsCriticalError(errorCode))
+                    RxBuffer = new byte[received_count];
+
+                    Array.Copy(globalBuffer, RxBuffer, RxBuffer.Length);
+                    SendACK(RxBuffer[2]);
+                    bool cmdDone = (RxBuffer[1] & MASK_DONE_BIT) == MASK_DONE_BIT;
+                    if (cmdDone)
                     {
-                        isErrorState = true;
-                        //throw new CriticalException(errDesc);
+                        _errorCode[RxBuffer[2] - 0x31] = (e_RSPErrorCode)(RxBuffer[1] & 0x0f);
+                        //cmdFinished.Set();
+                        bActiondone[RxBuffer[2] - 0x31] = true;
                     }
-                    //log.Error(errDesc);
-                    cmdFinished.Set();
+                    else
+                    {
+                        bool hasError = (RxBuffer[1] - 0x40) > 0;
+                        if (hasError)
+                        {
+                            bHome = false;
+                            bActiondone[RxBuffer[2] - 0x31] = true;
+                            e_RSPErrorCode errorCode = (e_RSPErrorCode)(RxBuffer[1] - 0x40);
+                            _errorCode[RxBuffer[2] - 0x31] = (e_RSPErrorCode)(RxBuffer[1] - 0x40);
+                            string errDesc = errorCode.ToString();
+                            if (IsCriticalError(errorCode))
+                            {
+                                isErrorState = true;
+                            }
+                        }
+                        else
+                        {
+                            bACK[RxBuffer[2] - 0x31] = true;
+                            cmdACK.Set();
+                        }
+                    }
                 }
-                else
-                {
-                    bACK = true;
-                    cmdACK.Set();
-                }
-
-            }
-
-            strBuilder.Append("R:");
-            //foreach (byte b in buf)
-            for (int i = 0; i < received_count; i++)
-            {
-                strBuilder.Append(RxBuffer[i].ToString("X2") + " ");
-            }
-            //log.Info(strBuilder.ToString());
+            } while (bOpen);
             Listening = false;
+        }
+
+        public void GetCurrentPosition(_eARM armID, ref double x, ref  double y, ref  double z, ref double rotationDegree)
+        {
+            x = 0;
+            y = 0;
+            z = 0;
+            rotationDegree = 0;
         }
 
         private bool IsCriticalError(e_RSPErrorCode errorCode)
@@ -255,16 +354,12 @@ namespace SKHardwareController
         protected void SendCommand(string strcmd, bool bRepeat = false)
         {
             var remainContents = serialPort.ReadExisting(); ;
-            if (isErrorState)
-            {
-                throw new Exception("处于错误状态，需要重新初始化！");
-            }
-
+            
             _eARM armid;
 
             //FUNC_ENTER;
             byte[] data = Encoding.ASCII.GetBytes(strcmd);//获得缓存
-            armid = (_eARM)(data[0] - 0x31);
+            armid = (_eARM)(data[0] - 0x30);
 
             if (armid >= _eARM.两个)
             {
@@ -274,18 +369,18 @@ namespace SKHardwareController
 
             if (!bRepeat)
             {
-                if (g_ARMSeqNum[(int)armid] < MAX_SEQ_NUM)
-                    g_ARMSeqNum[(int)armid]++;
+                if (g_ARMSeqNum[(int)armid - 1] < MAX_SEQ_NUM)
+                    g_ARMSeqNum[(int)armid - 1]++;
                 else
-                    g_ARMSeqNum[(int)armid] = 1;
+                    g_ARMSeqNum[(int)armid - 1] = 1;
             }
 
             byte[] ucData = new byte[data.Length + 4];
             ucData[0] = ARM_PROTOCOL_STX;
             if (bRepeat)
-                ucData[1] = (byte)(0x48 | (g_ARMSeqNum[(int)armid] & MASK_SEQ));
+                ucData[1] = (byte)(0x48 | (g_ARMSeqNum[(int)armid - 1] & MASK_SEQ));
             else
-                ucData[1] = (byte)(0x40 | (g_ARMSeqNum[(int)armid] & MASK_SEQ));
+                ucData[1] = (byte)(0x40 | (g_ARMSeqNum[(int)armid - 1] & MASK_SEQ));
             for (int i = 0; i < data.Length; i++)
             {
                 ucData[2 + i] = data[i];
@@ -294,8 +389,9 @@ namespace SKHardwareController
             ucData[data.Length + 3] = ucData[0];
             for (int i = 1; i < data.Length + 3; i++)
                 ucData[data.Length + 3] = (byte)(ucData[data.Length + 3] ^ ucData[i]);
-            bACK = false;
-            _errorCode[(int)armid] = e_RSPErrorCode.RSP_ERROR_NONE;
+            bACK[(int)armid - 1] = false;
+            bActiondone[(int)armid - 1] = false;
+            _errorCode[(int)armid-1] = e_RSPErrorCode.RSP_ERROR_NONE;
             serialPort.Write(ucData, 0, ucData.Length);
         }
 
@@ -341,7 +437,6 @@ namespace SKHardwareController
 
         void Close()
         {
-            closing = true;
             if (serialPort != null && serialPort.IsOpen)
             {
                 while (Listening)
@@ -349,6 +444,8 @@ namespace SKHardwareController
                 serialPort.Close();
                 //log.Info("Port closed.");
             }
+            bOpen = false;
+            bHome = false;
         }
 
 
@@ -369,6 +466,9 @@ namespace SKHardwareController
         动作未完成,//RSP_ERROR_Not_implemented,  //Device not implemented
         超时错误,//RSP_ERROR_Timeout_error,   //Time out error
         未初始化,//RSP_ERROR_Not_initialized,  //Device not initialized
+        X失步,//RSP_ERROR_Step_loss_X,  //Step loss detected on X-axis
+        Y失步,//RSP_ERROR_Step_loss_Y,  //Step loss detected on Y-axis
+        Z失步,//RSP_ERROR_Step_loss_Z,  //Step loss detected on Z-axis
         命令缓存溢出,//RSP_ERROR_Command_overflow, //Command overflow
         没液体ZX,//RSP_ERROR_NoLiquid_ZX,         //No liquid detected with ZX-command
         超范围,//RSP_ERROR_ZMove_out_of_range,   //Entered move for Z-axis out of range
@@ -381,9 +481,6 @@ namespace SKHardwareController
         撞臂保护,//RSP_ERROR_Collision_avoided,//Arm collision avoided
         RSP_ERROR_Reserved4,
         RSP_ERROR_Reserved5,
-        X失步,//RSP_ERROR_Step_loss_X,  //Step loss detected on X-axis
-        Y失步,//RSP_ERROR_Step_loss_Y,  //Step loss detected on Y-axis
-        Z失步,//RSP_ERROR_Step_loss_Z,  //Step loss detected on Z-axis
         RSP_ERROR_Step_loss_X_opp,  //Step loss detected on X-axis of opposing arm
         RSP_ERROR_ALIDUM_pulse_timeout,  //ALIDUM pulse time out
         RSP_ERROR_Tip_not_fetched,  //Tip not fetched (used with DiTi option)

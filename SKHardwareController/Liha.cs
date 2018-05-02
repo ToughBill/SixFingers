@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Configuration;
+using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using WorkstationController.Core.Data;
@@ -11,26 +12,26 @@ namespace SKHardwareController
 {
     public class Liha : ArmBase,ILiha
     {
-        XYZ xyz;
-        int xMax = 800;
+        XYZR xyz;
+        int xMax = 650;
         int yMax = 300;
         int zMax = 200;
         TipManagement tipManagement;
         Layout layout;
-         
+        string portNum;
         
         public Liha(Layout layout, string portNum)
         {
             this.layout = layout;
-            xyz = new XYZ(50, 0, 10);
+            xyz = new XYZR(50, 0, 10);
+            this.portNum = portNum;
             tipManagement = new TipManagement(layout);
-            MoveController.Instance.Init(portNum);
-            MoveController.Instance.MoveHome(_eARM.左臂, timeOutSeconds*2000);
-            MoveController.Instance.MoveHome(_eARM.右臂, timeOutSeconds*2000);
-
+            Init();
         }
 
-        private void Move2XYZ(XYZ xyz)
+        
+
+        public void Move2XYZ(XYZR xyz)
         {
             if(xyz.X > xMax)
             {
@@ -49,7 +50,15 @@ namespace SKHardwareController
         }
         public void MoveFirstTip2AbsolutePosition(float x, float y, float z)
         {
-            MoveController.Instance.MoveXYZ(_eARM.左臂, (int)x, (int)y,(int) z, timeOutSeconds * 1000);
+            Stopwatch stopWatcher = new Stopwatch();
+            stopWatcher.Start();
+            var err = MoveController.Instance.MoveXYZR(_eARM.左臂, (int)x, (int)y,(int) z,0, timeOutSeconds * 1000);
+
+            if(MoveController.Instance.ErrorHappened)
+            {
+                throw new CriticalException(err.ToString());
+            }
+            log.InfoFormat("used ms:{0}", stopWatcher.ElapsedMilliseconds);
         }
 
         public void MoveFirstTipXAbs(float x)
@@ -111,6 +120,7 @@ namespace SKHardwareController
             xyz.X = position.X;
             xyz.Y = position.Y;
             Move2XYZ(xyz);
+            log.Info("Drop tip finished");
         }
 
         public void Aspirate(string labwareLabel, List<int> wellIDs, List<double> volumes, string liquidClass)
@@ -137,7 +147,14 @@ namespace SKHardwareController
 
         public void Init()
         {
-           
+            MoveController.Instance.Init(portNum);
+            MoveController.Instance.MoveHome();
+        }
+
+
+        public bool IsMoving
+        {
+            get { return MoveController.Instance.IsLihaMoving; }
         }
     }
 }
