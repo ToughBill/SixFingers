@@ -11,7 +11,7 @@ namespace WorkstationController.Control
 {
     public class PositionCalculator
     {
-        XYZR expectedPositionXYZ;
+        XYZR expectedPositionXYZR;
         XYZR speedXYZ;
 
         double acceleration = 10;
@@ -21,9 +21,9 @@ namespace WorkstationController.Control
         double oldTime = 0;
         Stopwatch watcher = new Stopwatch();
         public event EventHandler<XYZR> OnExpectedPositionChanged;
-        public PositionCalculator(XYZR xyz)
+        public PositionCalculator(XYZR xyzr)
         {
-            this.expectedPositionXYZ = xyz;
+            this.expectedPositionXYZR = xyzr;
             speedXYZ = new XYZR(0, 0, 0);
             //this.acceleration = slowAcceleration;
         }
@@ -41,7 +41,7 @@ namespace WorkstationController.Control
             Debug.WriteLine("V:{0}", GetDirectionSpeed(dir));
             if (OnExpectedPositionChanged != null)
             {
-                OnExpectedPositionChanged(this, expectedPositionXYZ);
+                OnExpectedPositionChanged(this, expectedPositionXYZR);
             }
         }
 
@@ -62,27 +62,27 @@ namespace WorkstationController.Control
                     break;
                 case Direction.Up:
                     speedXYZ.Y = (speedXYZ.Y + speedChanged > maxSpeed) ? maxSpeed : (speedXYZ.Y + speedChanged);
-                    expectedPositionXYZ.Y += distance;
+                    expectedPositionXYZR.Y += distance;
                     break;
                 case Direction.Left:
                     speedXYZ.X = (speedXYZ.X + speedChanged > maxSpeed) ? maxSpeed : (speedXYZ.X + speedChanged);
-                    expectedPositionXYZ.X -= distance;
+                    expectedPositionXYZR.X -= distance;
                     break;
                 case Direction.ZUp:
                     speedXYZ.Z = (speedXYZ.Z + speedChanged > maxSpeed) ? maxSpeed : (speedXYZ.Z + speedChanged);
-                    expectedPositionXYZ.Z += distance;
+                    expectedPositionXYZR.Z += distance;
                     break;
                 case Direction.Down:
                     speedXYZ.Y = (speedXYZ.Y + speedChanged > maxSpeed) ? maxSpeed : (speedXYZ.Y + speedChanged);
-                    expectedPositionXYZ.Y -= distance;
+                    expectedPositionXYZR.Y -= distance;
                     break;
                 case Direction.Right:
                     speedXYZ.X = (speedXYZ.X + speedChanged > maxSpeed) ? maxSpeed : (speedXYZ.X + speedChanged);
-                    expectedPositionXYZ.X += distance;
+                    expectedPositionXYZR.X += distance;
                     break;
                 case Direction.ZDown:
                     speedXYZ.Z = (speedXYZ.Z + speedChanged > maxSpeed) ? maxSpeed : (speedXYZ.Z + speedChanged);
-                    expectedPositionXYZ.Z -= distance;
+                    expectedPositionXYZR.Z -= distance;
                     break;
                 default:
                     break;

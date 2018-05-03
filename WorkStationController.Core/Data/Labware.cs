@@ -56,7 +56,7 @@ namespace WorkstationController.Core.Data
         protected string    _label = string.Empty;
     
         private Carrier _calibCarrier;
-
+        private PlateVector plateVector;
         private double topLeftWellXPositionInLayout;
         private double topLeftWellYPositionInLayout;
         private double bottomRightWellXPositionInLayout;
@@ -74,6 +74,21 @@ namespace WorkstationController.Core.Data
             set
             {
                 SetProperty(ref _siteID, value);
+            }
+        }
+
+        /// <summary>
+        /// the vector used by roma
+        /// </summary>
+        public PlateVector PlateVector
+        {
+            get
+            {
+                return plateVector;
+            }
+            set
+            {
+                SetProperty(ref plateVector, value);
             }
         }
 
@@ -308,7 +323,7 @@ namespace WorkstationController.Core.Data
             if (_parentCarrier != null)
                 _calibCarrier = _parentCarrier;
 
-            
+            plateVector = new PlateVector();
         }
 
         //public override void DoExtraWork()

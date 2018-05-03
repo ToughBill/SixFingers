@@ -67,6 +67,13 @@ namespace WorkstationController.Core.Data
                 SetProperty(ref r, value);
             }
         }
+
+
+        public override bool Equals(object obj)
+        {
+            XYZR that = (XYZR)obj;
+            return this.x == that.x && this.y == that.y && this.z == that.z && this.r == that.r;
+        } 
     }
 
     

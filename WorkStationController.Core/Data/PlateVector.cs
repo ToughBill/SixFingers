@@ -15,17 +15,12 @@ namespace WorkstationController.Core.Data
         ROMAPosition currentPosition = new ROMAPosition();
         public PlateVector()
         {
-
-        }
-
-        public PlateVector(string name)
-        {
-            this.name = name;
             ROMAPosition safePosition = new ROMAPosition("Safe", 100, 100, 100, 0);
             ROMAPosition endPosition = new ROMAPosition("End", 100, 100, 100, 0);
             positions.Add(safePosition);
             positions.Add(endPosition);
         }
+
 
 
         public ROMAPosition CurrentPosition
@@ -69,42 +64,29 @@ namespace WorkstationController.Core.Data
             }
         }
 
-        int gripDistance;
-        int releaseDistance;
-        public int GridDistance
+        int clipDistance;
+        int openDistance;
+        public int ClipDistance
         {
             get
             {
-                return gripDistance;
+                return clipDistance;
             }
             set
             {
-                SetProperty(ref gripDistance, value);
+                SetProperty(ref clipDistance, value);
             }
         }
 
-        public int ReleaseDistance
+        public int OpenDistance
         {
             get
             {
-                return releaseDistance;
+                return openDistance;
             }
             set
             {
-                SetProperty(ref releaseDistance, value);
-            }
-        }
-
-        int gripSpeed;
-        public int GripSpeed
-        {
-            get
-            {
-                return gripSpeed;
-            }
-            set
-            {
-                SetProperty(ref gripSpeed, value);
+                SetProperty(ref openDistance, value);
             }
         }
 
@@ -154,7 +136,10 @@ namespace WorkstationController.Core.Data
             }
 
             int nextID = vals.Count > 0 ? vals.Max() +1 : 1;
-            positions.Add(new ROMAPosition(nextID.ToString(), 0, 0, 0,0));
+            var newPosition = new ROMAPosition(nextID.ToString(), 0, 0, 10, 0);
+            //positions.Add(newPosition);
+            Positions.Add(newPosition);
+            CurrentPosition = newPosition;
         }
     }
 }

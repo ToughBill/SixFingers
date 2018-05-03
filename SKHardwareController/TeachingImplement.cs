@@ -34,5 +34,14 @@ namespace SKHardwareController
             MoveController.Instance.GetCurrentPosition(enumMapper[armType], ref x, ref y, ref z, ref r);
             return new XYZR(x, y, z, r);
         }
+
+
+        public bool IsMoving(ArmType armType)
+        {
+            if (armType == ArmType.Liha)
+                return MoveController.Instance.IsLihaMoving;
+            else
+                return MoveController.Instance.IsRomaMoving;
+        }
     }
 }

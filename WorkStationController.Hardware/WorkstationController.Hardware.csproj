@@ -53,7 +53,7 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>strings.resx</DependentUpon>
     </Compile>
-    <Compile Include="TeachingController.cs" />
+    <Compile Include="TeachingControllerDelegate.cs" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="strings.resx">

@@ -10,11 +10,12 @@ namespace WorkstationController.Core.Data
     public class ROMAPosition:BindableBase
     {
         private string id;
-        private int x;
-        private int y;
-        private int z;
-        private int r;
-        public int X
+        private double x;
+        private double y;
+        private double z;
+        private double r;
+        private double clipDistance;
+        public double X
         {
             get
             {
@@ -26,7 +27,19 @@ namespace WorkstationController.Core.Data
             }
         }
 
-        public int Y
+        public double ClipDistance
+        {
+            get
+            {
+                return clipDistance;
+            }
+            set
+            {
+                SetProperty(ref clipDistance, value);
+            }
+        }
+
+        public double Y
         {
             get
             {
@@ -39,7 +52,7 @@ namespace WorkstationController.Core.Data
         }
 
 
-        public int Z
+        public double Z
         {
             get
             {
@@ -52,7 +65,7 @@ namespace WorkstationController.Core.Data
         }
 
 
-        public int R
+        public double R
         {
             get
             {
@@ -81,7 +94,7 @@ namespace WorkstationController.Core.Data
 
         }
 
-        public ROMAPosition(string id,int x, int y ,int z, int r)
+        public ROMAPosition(string id, double x, double y, double z, double r)
         {
             this.id = id;
             this.x = x;

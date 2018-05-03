@@ -77,7 +77,6 @@
       <DependentUpon>PipettingCommandEditor.xaml</DependentUpon>
     </Compile>
     <Compile Include="PositionCalculator.cs" />
-    <Compile Include="Teaching\LabwareTeachingForm.xaml.cs" />
     <Compile Include="Teaching\RomaTeachingForm.xaml.cs" />
     <Compile Include="ThirdParties\ExtendedTabControl\Converters.cs" />
     <Compile Include="ThirdParties\ExtendedTabControl\Helper.cs" />
@@ -106,10 +105,6 @@
     <Page Include="PipettingCommandEditor.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="Teaching\LabwareTeachingForm.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
     </Page>
     <Page Include="Teaching\RomaTeachingForm.xaml">
       <Generator>MSBuild:Compile</Generator>

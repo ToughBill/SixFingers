@@ -4,6 +4,7 @@ using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
@@ -15,6 +16,7 @@ using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
 using WorkstationController.Core.Data;
 using WorkstationController.Core.Utility;
+using WorkstationController.Hardware;
 
 namespace WorkstationController.Control
 {
@@ -23,119 +25,56 @@ namespace WorkstationController.Control
     /// </summary>
     public partial class RomaTeachingForm : Window
     {
-        PlateVectorCollection plateVectorCollection = new PlateVectorCollection();
-        public RomaTeachingForm()
+        PlateVector plateVector;
+        DateTime lastUpdateTime = DateTime.Now;
+        XYZR xyzr;
+        public RomaTeachingForm(PlateVector plateVector,PositionCalculator positionCalculator)
         {
             InitializeComponent();
-            LoadPlateVectors();
+            this.plateVector = plateVector;
+            positionCalculator.OnExpectedPositionChanged += UpdateXYZR;
+            this.Loaded += RomaTeachingForm_Loaded;
         }
 
-
-       
-        private void LoadPlateVectors()
+     
+        void RomaTeachingForm_Loaded(object sender, RoutedEventArgs e)
         {
-            
-            string folder = FolderHelper.GetVectorFolder();
-            plateVectorCollection.PlateVectors.Clear();
-            DirectoryInfo dirInfo = new DirectoryInfo(folder);
-            var files = dirInfo.EnumerateFiles("*.xml").ToList();
-            foreach(var file in files)
-            {
-                plateVectorCollection.PlateVectors.Add(SerializationHelper.Deserialize<PlateVector>(file.FullName));
-            }
-            this.DataContext = plateVectorCollection;
+            this.DataContext = plateVector;
+            //xyzr = new XYZR(0, 0, 0);
+            //xyzr = TeachingControllerDelegate.Instance.Controller.GetPosition(ArmType.Liha);
+            //currentPosPanel.DataContext = xyzr;
         }
-
-        private void SaveDefineVectors_CanExecute(object sender, CanExecuteRoutedEventArgs e)
-        {
-            e.CanExecute = true;
-        }
-
-        private void SaveDefineVectors_Executed(object sender, ExecutedRoutedEventArgs e)
-        {
-            if(plateVectorCollection.SelectedPlateVector != null)
-            {
-                SavePlateVector(plateVectorCollection.SelectedPlateVector);
-            }
-        }
-
-        private void SavePlateVector(PlateVector plateVector)
-        {
-            string name = plateVector.Name;
-            string sFile = FolderHelper.GetVectorFolder() + name + ".xml";
-            if(File.Exists(sFile))
-            {
-                File.Delete(sFile);
-            }
-            SerializationHelper.Serialize(sFile,plateVector);
-            //SetInfo(string.Format("向量已经成功保存到{0}", sFile),false);
-        }
-
-        //private void SetInfo(string hint, bool isError = true)
-        //{
-        //    txtInfo.Text = hint;
-        //    Brush txtBrush = isError ? Brushes.Red : Brushes.Black;
-        //    txtInfo.Foreground = txtBrush;
-        //}
 
         
 
-        private void btnAddPlateVector_Click(object sender, RoutedEventArgs e)
+        private void UpdateXYZR(object sender, XYZR e)
         {
-            var names = plateVectorCollection.PlateVectors.Select(x => x.Name).ToList();
-            string vectorName = GetNextName(names);
-            PlateVector plateVector = new PlateVector(vectorName);
-            plateVectorCollection.Add(plateVector);
+            plateVector.CurrentPosition.X = Math.Round(e.X, 1);
+            plateVector.CurrentPosition.Y = Math.Round(e.Y, 1);
+            plateVector.CurrentPosition.Z = Math.Round(e.Z, 1);
+            plateVector.CurrentPosition.R = Math.Round(e.R, 1);
         }
-
-        private void btnRemovePlateVector_Click(object sender, RoutedEventArgs e)
-        {
-            
-            
-        }
-
 
         private void btnAddPosition_Click(object sender, RoutedEventArgs e)
         {
-            if (plateVectorCollection.SelectedPlateVector == null)
-                return;
-            plateVectorCollection.SelectedPlateVector.AddNewPosition();
-
+            plateVector.AddNewPosition();
         }
 
         private void btnDeletePosition_Click(object sender, RoutedEventArgs e)
         {
-            if (plateVectorCollection.SelectedPlateVector == null)
+
+            if (plateVector.Positions.Count == 0)
                 return;
-            if (plateVectorCollection.SelectedPlateVector.Positions == null || plateVectorCollection.SelectedPlateVector.Positions.Count == 0)
-                return;
-            if (plateVectorCollection.SelectedPlateVector.CurrentPosition != null)
-                plateVectorCollection.SelectedPlateVector.RemoveCurrent();
+            if (plateVector.CurrentPosition != null)
+                plateVector.RemoveCurrent();
+
         }
 
-
-       
-
-        static public string GetExeParentFolder()
+        private void btnUseCurrentVal_Click(object sender, RoutedEventArgs e)
         {
-            string s = System.IO.Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
-            int index = s.LastIndexOf("\\");
-            return s.Substring(0, index) + "\\";
+            string id = plateVector.CurrentPosition.ID;
+            plateVector.CurrentPosition = new ROMAPosition(id, xyzr.X, xyzr.Y, xyzr.Z, xyzr.R);
         }
 
-        static public string GetNextName(List<string> existingNames)
-        {
-            if (existingNames == null || existingNames.Count == 0)
-                return "unknown1";
-            int id = 1;
-            while (true)
-            {
-
-                string testName = string.Format("unknown{0}", id);
-                if (!existingNames.Contains(testName))
-                    return testName;
-                id++;
-            }
-        }
     }
 }
