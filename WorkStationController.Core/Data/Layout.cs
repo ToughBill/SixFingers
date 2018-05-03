@@ -17,6 +17,7 @@ namespace WorkstationController.Core.Data
         protected List<Carrier> _carriers = new List<Carrier>();
         protected List<CarrierTrait> _carrierTraits;
         protected List<LabwareTrait> _labwareTraits;
+        protected List<PlateVector> _plateVectors;
         protected DitiInfo _ditiInfo;
         private string _saveName;
         /// <summary>
@@ -37,19 +38,6 @@ namespace WorkstationController.Core.Data
         }
 
 
-        //[XmlAttribute]
-        //public string Name
-        //{
-        //    get
-        //    {
-        //        return _name;
-        //    }
-        //    set
-        //    {
-        //        SetProperty(ref _name, value);
-        //    }
-        //}
-
         /// <summary>
         /// tips info
         /// </summary>
@@ -67,10 +55,24 @@ namespace WorkstationController.Core.Data
         }
 
 
+        [XmlArray("PlateVectors")]
+        [XmlArrayItem("PlateVector", typeof(PlateVector), IsNullable = false)]
+        public List<PlateVector> PlateVectors
+        {
+            get
+            {
+                return _plateVectors;
+            }
+            set
+            {
+                SetProperty(ref _plateVectors, value);
+            }
+        }
+
         public static Layout Create(string fromXmlFile)
         {
             Layout layout = SerializationHelper.Deserialize<Layout>(fromXmlFile);
-            layout._carriers = RestoreCarriersFromTrait(layout._carrierTraits, layout._labwareTraits);
+            layout._carriers = RestoreCarriersFromTrait(layout._carrierTraits, layout._labwareTraits, layout._plateVectors);
             //ConstrainTipInfo(recipe);
             return layout;
         }
@@ -90,6 +92,8 @@ namespace WorkstationController.Core.Data
             }
         }
 
+
+     
 
         /// <summary>
         /// Gets the carrier collection on layout, don't serialize this
@@ -121,8 +125,24 @@ namespace WorkstationController.Core.Data
         public override void Serialize(string toXmlFile)
         {
             GetTraitsInfo();
+            GetPlateVectors();
             ConstrainTipInfo(this);
             SerializationHelper.Serialize(toXmlFile, this);
+        }
+
+        private void GetPlateVectors()
+        {
+            _plateVectors.Clear();
+            foreach (Carrier carrier in _carriers )
+            {
+                foreach (Labware labware in carrier.Labwares)
+                {
+                    if(labware.PlateVector != null)
+                    {
+                        _plateVectors.Add(labware.PlateVector);
+                    }
+                }
+            }
         }
         internal static void ConstrainTipInfo(Layout layout)
         {
@@ -187,7 +207,8 @@ namespace WorkstationController.Core.Data
         }
 
 
-        protected static List<Carrier> RestoreCarriersFromTrait(List<CarrierTrait> carrierTraits, List<LabwareTrait> labwareTraits)
+        protected static List<Carrier> RestoreCarriersFromTrait(List<CarrierTrait> carrierTraits,
+            List<LabwareTrait> labwareTraits,List<PlateVector> plateVectors)
         {
             List<Carrier> carriers = new List<Carrier>();
             foreach(CarrierTrait carrierSkeletonItem in carrierTraits)
@@ -196,11 +217,11 @@ namespace WorkstationController.Core.Data
                 if(carrier != null)
                     carriers.Add(carrier);
             }
-             RestoreLabwares(carriers,labwareTraits);
+            RestoreLabwares(carriers, labwareTraits, plateVectors);
              return carriers;
         }
 
-        protected static void RestoreLabwares(List<Carrier> carriers, List<LabwareTrait> labwareTraits)
+        protected static void RestoreLabwares(List<Carrier> carriers, List<LabwareTrait> labwareTraits, List<PlateVector> plateVectors)
         {
             foreach (LabwareTrait labwareTrait in labwareTraits)
             {
@@ -210,9 +231,16 @@ namespace WorkstationController.Core.Data
                     //warning should be given here
                     continue;
                 }
+                
                 Labware labware = Labware.CreateFromTrait(labwareTrait, parentCarrier);
                 if(labware != null)
+                {
+                    var plateVector = plateVectors.Find(x => x.Name == labwareTrait.Label);
+                    labware.PlateVector = plateVector;
                     parentCarrier.Labwares.Add(labware);
+                }
+                    
+
             }
         }
 
@@ -283,7 +311,7 @@ namespace WorkstationController.Core.Data
         public override void DoExtraWork()
         {
             base.DoExtraWork();
-            _carriers = RestoreCarriersFromTrait(_carrierTraits, _labwareTraits);
+            _carriers = RestoreCarriersFromTrait(_carrierTraits, _labwareTraits,_plateVectors);
         }
 
         public Labware FindLabware(string label)

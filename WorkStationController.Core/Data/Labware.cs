@@ -80,6 +80,7 @@ namespace WorkstationController.Core.Data
         /// <summary>
         /// the vector used by roma
         /// </summary>
+        [XmlIgnore]
         public PlateVector PlateVector
         {
             get
@@ -322,8 +323,6 @@ namespace WorkstationController.Core.Data
             
             if (_parentCarrier != null)
                 _calibCarrier = _parentCarrier;
-
-            plateVector = new PlateVector();
         }
 
         //public override void DoExtraWork()

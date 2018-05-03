@@ -9,18 +9,23 @@ using WorkstationController.Core;
 namespace WorkstationController.Core.Data
 {
     [Serializable]
-    public   class PlateVector:BindableBase
+    public  class PlateVector:BindableBase
     {
         ObservableCollection<ROMAPosition> positions = new ObservableCollection<ROMAPosition>();
         ROMAPosition currentPosition = new ROMAPosition();
+        public const string Safe = "Safe";
+        public const string End = "End";
         public PlateVector()
         {
-            ROMAPosition safePosition = new ROMAPosition("Safe", 100, 100, 100, 0);
-            ROMAPosition endPosition = new ROMAPosition("End", 100, 100, 100, 0);
+           
+        }
+        public PlateVector(bool createDefault)
+        {
+            ROMAPosition safePosition = new ROMAPosition(Safe, 100, 100, 100, 0);
+            ROMAPosition endPosition = new ROMAPosition(End, 100, 100, 100, 0);
             positions.Add(safePosition);
             positions.Add(endPosition);
         }
-
 
 
         public ROMAPosition CurrentPosition

@@ -11,7 +11,7 @@ namespace WorkstationController.Core.Data
     public class PlateVectorCollection:BindableBase
     {
         ObservableCollection<PlateVector> plateVectors = new ObservableCollection<PlateVector>();
-        PlateVector selectedPlateVector = new PlateVector();
+        PlateVector selectedPlateVector = new PlateVector(true);
         public PlateVector SelectedPlateVector
         {
             get

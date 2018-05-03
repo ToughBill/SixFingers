@@ -4,6 +4,7 @@ using System.Windows;
 using WorkstationController.Core.Data;
 using WorkstationController.Core.Utility;
 using WorkstationController.Hardware;
+using WorkstationController.VisualElement.Uitility;
 
 namespace WorkstationController.Control
 {
@@ -26,13 +27,27 @@ namespace WorkstationController.Control
         /// <summary>
         /// ctor
         /// </summary>
-        public LabwareEditor(NewInformationHandler newInfoHandler)
+        public LabwareEditor(NewInformationHandler newInfoHandler,Window parent)
             :base(newInfoHandler)
         {
             InitializeComponent();
          
             this.Loaded += LabwareEditor_Loaded;
             this.Unloaded += LabwareEditor_Unloaded;
+            parent.Closing += parent_Closing;
+        }
+
+        void parent_Closing(object sender, System.ComponentModel.CancelEventArgs e)
+        {
+            if (joysThread.IsAlive)
+                joysThread.Abort();
+            if (keyBoardThread.IsAlive)
+                keyBoardThread.Abort();
+        }
+
+        ~LabwareEditor()
+        {
+
         }
 
         #region teaching implement
@@ -257,6 +272,9 @@ namespace WorkstationController.Control
 
         private void OnSetROMAVectorClick(object sender, RoutedEventArgs e)
         {
+            if (labware.PlateVector == null)
+                labware.PlateVector = new PlateVector(true);
+            labware.PlateVector.Name = labware.Label;
             RomaTeachingForm romaTeachingForm = new RomaTeachingForm(labware.PlateVector, positionCalculator);
             romaTeachingForm.ShowDialog();
         }

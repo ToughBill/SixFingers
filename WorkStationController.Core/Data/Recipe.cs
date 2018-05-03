@@ -47,18 +47,8 @@ namespace WorkstationController.Core.Data
             }
         }
 
-        /// <summary>
-        /// Create an instance of Layout from a XML file
-        /// </summary>
-        /// <param name="fromXmlFile">XML file name</param>
-        /// <returns>A Layout instance</returns>
-        public static Recipe Create(string fromXmlFile)
-        {
-            Recipe recipe = SerializationHelper.Deserialize<Recipe>(fromXmlFile);
-            recipe._carriers = RestoreCarriersFromTrait(recipe._carrierTraits, recipe._labwareTraits);
-            //ConstrainTipInfo(recipe);
-            return recipe;
-        }
+   
+     
 
        
        

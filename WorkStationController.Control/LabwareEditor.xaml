@@ -138,7 +138,7 @@
            
             
         </StackPanel>
-        <StackPanel  Grid.Row="14" Grid.Column="6"  HorizontalAlignment="Right" Margin="0,5,0,0" Orientation="Horizontal">
+        <StackPanel  Grid.Row="14" Grid.Column="6"  HorizontalAlignment="Right" Margin="0,2,0,0" Orientation="Horizontal">
             <Button   Width="60" Height="30" Content="夹手位置" Click="OnSetROMAVectorClick"/>
             <Button   Width="60" Height="30" Content="保存" Click="OnSaveButtonClick"/>
         </StackPanel>

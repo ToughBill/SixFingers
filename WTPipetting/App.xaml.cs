@@ -74,6 +74,7 @@ namespace WTPipetting
                     // edited by acidzombie24, added if statemnet
                     if (hasHandle)
                         mutex.ReleaseMutex();
+                    GC.Collect();
                     Application.Current.Shutdown();
                 }
             }

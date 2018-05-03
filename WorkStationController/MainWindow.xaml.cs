@@ -106,7 +106,7 @@ namespace WorkstationController
             if (selectedLabware == null || this.ActivateEditingTab(selectedLabware.TypeName))
                 return;
 
-            LabwareEditor editor = new LabwareEditor(AddInfo);
+            LabwareEditor editor = new LabwareEditor(AddInfo,this);
             selectedLabware.CalculatePositionInLayout();
             editor.DataContext = selectedLabware;
             this.AddTabItem(editor);
@@ -183,7 +183,7 @@ namespace WorkstationController
         private void NewLabware_Executed(object sender, ExecutedRoutedEventArgs e)
         {
             Labware labware = new Labware();
-            LabwareEditor editor = new LabwareEditor(AddInfo);
+            LabwareEditor editor = new LabwareEditor(AddInfo, this);
             editor.DataContext = labware;
             this.AddTabItem(editor);
         }
@@ -197,7 +197,7 @@ namespace WorkstationController
         private void DuplicateLabware_Executed(object sender, ExecutedRoutedEventArgs e)
         {
             Labware labware = ((Labware)this.lb_labwares.SelectedItem).Clone() as Labware;
-            LabwareEditor editor = new LabwareEditor(AddInfo);
+            LabwareEditor editor = new LabwareEditor(AddInfo, this);
             editor.DataContext = labware;
             this.AddTabItem(editor);
         }
@@ -383,7 +383,7 @@ namespace WorkstationController
                 if (this.ActivateEditingTab(labware.TypeName))
                     return;
 
-                LabwareEditor editor = new LabwareEditor(AddInfo);
+                LabwareEditor editor = new LabwareEditor(AddInfo, this);
                 editor.DataContext = labware;
                 this.AddTabItem(editor);
             }
