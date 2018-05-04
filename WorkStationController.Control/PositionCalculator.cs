@@ -33,12 +33,13 @@ namespace WorkstationController.Control
             watcher.Start();
             double speed = GetDirectionSpeed(dir);
             double timeSeconds = watcher.ElapsedMilliseconds / 1000.0 - oldTime;
-            oldTime = watcher.ElapsedMilliseconds / 1000.0;
+            timeSeconds = Math.Max(0.1,timeSeconds);
+            oldTime += timeSeconds* 1000;
             double distance = timeSeconds * speed + 0.5 * acceleration * timeSeconds * timeSeconds;
             double speedChanged = timeSeconds * acceleration;
-
+            distance = Math.Max(0.1, distance); //min 0.1mm
             UpdatePositionAndSpeed(dir, distance, speedChanged);
-            Debug.WriteLine("V:{0}", GetDirectionSpeed(dir));
+        
             if (OnExpectedPositionChanged != null)
             {
                 OnExpectedPositionChanged(this, expectedPositionXYZR);
@@ -87,6 +88,9 @@ namespace WorkstationController.Control
                 default:
                     break;
             }
+            expectedPositionXYZR.X = Math.Max(0, expectedPositionXYZR.X);
+            expectedPositionXYZR.Y = Math.Max(0, expectedPositionXYZR.Y);
+            expectedPositionXYZR.Z = Math.Max(0, expectedPositionXYZR.Z);
         }
 
         private double GetDirectionSpeed(Direction dir)

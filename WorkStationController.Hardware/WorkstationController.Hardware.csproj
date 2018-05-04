@@ -54,6 +54,7 @@
       <DependentUpon>strings.resx</DependentUpon>
     </Compile>
     <Compile Include="TeachingControllerDelegate.cs" />
+    <Compile Include="TeachingControllerSimulator.cs" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="strings.resx">

@@ -39,7 +39,7 @@ namespace WorkstationController.EditorTests
             List<string> strs = new List<string>();
             strs.Add(LabwareEditor);
             strs.Add(CarrierEditor);
-            labwareEditorUserControl = new LabwareEditor(null);
+            labwareEditorUserControl = new LabwareEditor(null,this);
             carrierEditorUserControl = new CarrierEditor(null);
           
             labware.ZValues = new ZValues(360, 625, 665, 1610);

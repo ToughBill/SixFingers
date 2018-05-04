@@ -23,6 +23,11 @@ namespace WorkstationController.Hardware
             }
         }
 
+        private TeachingControllerDelegate()
+        {
+            RegisterController(new TeachingControllerSimulator());
+        }
+
         public ITeachingController Controller
         {
             get

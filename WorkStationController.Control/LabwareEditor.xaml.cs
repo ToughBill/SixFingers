@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Diagnostics;
 using System.Threading;
 using System.Windows;
 using WorkstationController.Core.Data;
@@ -107,12 +108,12 @@ namespace WorkstationController.Control
                 keepMovingTimer.Start();
                 MoveXYZ();
                 lastUpdateTime = DateTime.Now;
-            }
+            }            
         }
 
-        private bool NeedRealMove(DateTime dateTime)
+        private bool NeedRealMove(DateTime now)
         {
-            TimeSpan timeSpan = lastUpdateTime.Subtract(dateTime);
+            TimeSpan timeSpan = now - lastUpdateTime;
             return timeSpan.Milliseconds > 100; //0.1s
         }
         #endregion
@@ -146,7 +147,7 @@ namespace WorkstationController.Control
             labware.CalculatePositionInLayout();
 
 
-            //Init();
+            Init();
             keepMovingTimer = new System.Timers.Timer(200);
             keepMovingTimer.Elapsed += keepMovingTimer_Elapsed;
             positionCalculator = new PositionCalculator(xyzr);
@@ -275,7 +276,7 @@ namespace WorkstationController.Control
             if (labware.PlateVector == null)
                 labware.PlateVector = new PlateVector(true);
             labware.PlateVector.Name = labware.Label;
-            RomaTeachingForm romaTeachingForm = new RomaTeachingForm(labware.PlateVector, positionCalculator);
+            RomaTeachingForm romaTeachingForm = new RomaTeachingForm(labware.PlateVector, positionCalculator,newInfoHandler);
             romaTeachingForm.ShowDialog();
         }
 
