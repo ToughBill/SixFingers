@@ -55,14 +55,6 @@ namespace WorkstationController.Core.Data
         /// <summary>
         /// Create an instance of Worktable
         /// </summary>
-        /// <param name="sz"></param>
-        /// <param name="firstRowPinSize"></param>
-        /// <param name="secondRowPinSize"></param>
-        /// <param name="thirdRowPinSize"></param>
-        /// <param name="firstPinPos"></param>
-        /// <param name="secondPinYPos"></param>
-        /// <param name="thirdPinYPos"></param>
-        /// <param name="gridCount"></param>
         public Worktable(Size sz,
             Size pinSize,
             Point topLeftPinPos,
