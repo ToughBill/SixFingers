@@ -6,16 +6,17 @@ using System.Linq;
 using System.Text;
 using System.Threading;
 using WorkstationController.Core.Data;
+using WorkstationController.Hardware;
 
 namespace WorkstationController.Control
 {
   
     public class InputChecker
     {
-        SharpDX.DirectInput.Keyboard curKeyBoard;
         Dictionary<SharpDX.DirectInput.Key, Direction> keyboard_Direction;
         public event EventHandler<Direction> OnStartMove;
         public event EventHandler<Direction> OnStopMove;
+        bool stopChecking = false;
         public InputChecker()
         {
             keyboard_Direction = new Dictionary<Key, Direction>();
@@ -31,49 +32,54 @@ namespace WorkstationController.Control
         }
         public void Start()
         {
+            Thread th = new Thread(new ThreadStart(StartImpl));
+            th.Start();
+        }
 
-            //Start joystick
-           var joyStick  = StartJoyStick();
-           var keyBoard = StartKeyboard();
-
+        private void StartImpl()
+        {
+            var joyStick = StartJoyStick();
+            var keyBoard = StartKeyboard();
+            stopChecking = false;
             Dictionary<int, Direction> offset_Dir = GetXYDirMapping();
             Direction dir = Direction.None;
             Direction lastDir = Direction.None;
             while (true)
             {
-               
-                if(joyStick != null)
+                if (stopChecking)
+                    break;
+                if (joyStick != null)
                 {
                     dir = GetDirectionFromJoystick(joyStick);
                 }
-                if(dir == Direction.None)
+                if (dir == Direction.None)
                 {
                     dir = GetDirectionFromKeyboard(keyBoard);
                 }
 
-                if(lastDir == Direction.None)
+                if (lastDir == Direction.None)
                 {
                     //start dir;
                     if (OnStartMove != null)
                         OnStartMove(this, dir);
                     lastDir = dir;
                 }
-                else if( dir != lastDir)
+                else if (dir != lastDir)
                 {
                     //end dir
                     if (OnStopMove != null)
-                        OnStopMove(this,dir);
+                        OnStopMove(this, dir);
                     lastDir = Direction.None;
                 }
-                
+
                 Thread.Sleep(100);
-                
+
             }
         }
 
         private Direction GetDirectionFromKeyboard(Keyboard keyBoard)
         {
-            var curKeyboardState = curKeyBoard.GetCurrentState();
+            var curKeyboardState = keyBoard.GetCurrentState();
             Key curPressedKey = new Key(); ;
             if (curKeyboardState.PressedKeys.Count() > 0)
                 curPressedKey = curKeyboardState.PressedKeys[0];
@@ -102,7 +108,7 @@ namespace WorkstationController.Control
                     keyboard.Acquire();
                 }
             }
-            return curKeyBoard;
+            return keyboard;
         }
 
         private Direction GetDirectionFromJoystick(Joystick joystick)
@@ -203,20 +209,12 @@ namespace WorkstationController.Control
         {
             return state.Offset == JoystickOffset.Buttons4 || state.Offset == JoystickOffset.Buttons0 || IsPointofView(state);
         }
+
+        internal void Stop()
+        {
+            stopChecking = true;
+        }
     }
 
-    public enum Direction
-    {
-        None,
-        Up,
-        Down,
-        Left,
-        Right,
-        ZUp,
-        ZDown,
-        RotateLeft,
-        RotateRight,
-        ClampOn,
-        ClampOff
-    }
+   
 }

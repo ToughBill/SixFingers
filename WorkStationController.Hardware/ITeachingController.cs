@@ -12,7 +12,24 @@ namespace WorkstationController.Hardware
         void Init(string sPort);
         void Move2XYZR(ArmType armType,XYZR xyzr);
 
-        bool IsMoving(ArmType armType);
+       
         XYZR GetPosition(ArmType armType);
+        void StartMove(Direction e);
+        void StopMove();
+    }
+
+    public enum Direction
+    {
+        None,
+        Up,
+        Down,
+        Left,
+        Right,
+        ZUp,
+        ZDown,
+        RotateLeft,
+        RotateRight,
+        ClampOn,
+        ClampOff
     }
 }

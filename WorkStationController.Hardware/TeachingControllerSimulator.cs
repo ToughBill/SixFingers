@@ -32,14 +32,24 @@ namespace WorkstationController.Hardware
             currentPosition = xyzr;
         }
 
-        public bool IsMoving(ArmType armType)
-        {
-            return isMoving;
-        }
-
+  
         public Core.Data.XYZR GetPosition(ArmType armType)
         {
             return currentPosition;
         }
+
+
+        public void StartMove(Direction e)
+        {
+            Debug.WriteLine(string.Format("start move at:{0}",e.ToString()));
+        }
+
+        public void StopMove()
+        {
+            Debug.WriteLine("stop move");
+        }
+
+
+       
     }
 }

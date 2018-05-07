@@ -43,5 +43,16 @@ namespace SKHardwareController
             else
                 return MoveController.Instance.IsRomaMoving;
         }
+
+
+        public void StartMove(Direction e)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void StopMove()
+        {
+            throw new NotImplementedException();
+        }
     }
 }

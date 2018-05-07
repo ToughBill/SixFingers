@@ -18,11 +18,9 @@ namespace WorkstationController.Control
         #region teaching related
         XYZR xyzr = new XYZR(0, 0, 0);
       
-        InputChecker inputChecker;
-        Thread inputCheckingThread;
-      
+        InputChecker inputChecker = new InputChecker();
         DateTime lastUpdateTime = DateTime.Now;
-        System.Timers.Timer keepMovingTimer;
+        System.Timers.Timer updatePositionTimer = new System.Timers.Timer(250);
         #endregion
 
         /// <summary>
@@ -32,17 +30,23 @@ namespace WorkstationController.Control
             :base(newInfoHandler)
         {
             InitializeComponent();
-         
+            inputChecker.OnStartMove += inputChecker_OnStartMove;
+            inputChecker.OnStopMove += inputChecker_OnStopMove;
+            updatePositionTimer.Elapsed += updatePositionTimer_Elapsed;
             this.Loaded += LabwareEditor_Loaded;
             this.Unloaded += LabwareEditor_Unloaded;
             parent.Closing += parent_Closing;
         }
 
+        void updatePositionTimer_Elapsed(object sender, System.Timers.ElapsedEventArgs e)
+        {
+            xyzr = TeachingControllerDelegate.Instance.Controller.GetPosition(ArmType.Liha);
+        }
+
         void parent_Closing(object sender, System.ComponentModel.CancelEventArgs e)
         {
-            if (inputCheckingThread.IsAlive)
-                inputCheckingThread.Abort();
-         
+            inputChecker.Stop();
+        
         }
 
         ~LabwareEditor()
@@ -53,41 +57,38 @@ namespace WorkstationController.Control
         #region teaching implement
   
 
-        private void MoveXYZ()
-        {
-            try
-            {
-                TeachingControllerDelegate.Instance.Controller.Move2XYZR(ArmType.Liha, xyzr);
-            }
-            catch (Exception ex)
-            {
-                newInfoHandler(ex.Message, true);
-            }
-        }
-
-
-        private void Init()
+        private void GetCurrentPositon()
         {
             //get current position
             xyzr = TeachingControllerDelegate.Instance.Controller.GetPosition(ArmType.Liha);
         }
 
     
-
-        private void StartCheckingInput(object obj)
+        private void StartCheckingInput()
         {
             inputChecker.Start();
+            updatePositionTimer.Start();
+          
         }
 
-    
+        void inputChecker_OnStopMove(object sender, Direction e)
+        {
+            TeachingControllerDelegate.Instance.Controller.StopMove();
+            updatePositionTimer.Stop();
+        }
 
-      
+        void inputChecker_OnStartMove(object sender, Direction e)
+        {
+            TeachingControllerDelegate.Instance.Controller.StartMove(e);
+            updatePositionTimer.Start();
+        }
+
         #endregion
-
         void LabwareEditor_Unloaded(object sender, RoutedEventArgs e)
         {
             labware.UpdateWellInfos();
-            inputCheckingThread.Abort();
+            inputChecker.Stop();
+            updatePositionTimer.Stop();
         }
 
         void LabwareEditor_Loaded(object sender, RoutedEventArgs e)
@@ -110,14 +111,10 @@ namespace WorkstationController.Control
             }
             labware.CalculatePositionInLayout();
 
-            Init();
-            inputChecker = new InputChecker();
-            inputChecker.Start();
+            GetCurrentPositon();
+            StartCheckingInput();
             curPositionPanel.DataContext = xyzr;
         }
-
-     
-
 
         private void OnSaveButtonClick(object sender, RoutedEventArgs e)
         {
