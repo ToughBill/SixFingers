@@ -86,6 +86,7 @@ namespace WTPipetting.StageControls
             wkList = new Worklist();
             wkList.OnCriticalErrorHappened += wkList_OnCriticalErrorHappened;
             wkList.OnStepChanged += wkList_OnStepChanged;
+            wkList.OnCommandInfo += wkList_OnCommandInfo;
             //this.IsEnabled = false;
             await Task.Run(() =>
             {
@@ -93,6 +94,15 @@ namespace WTPipetting.StageControls
             });
             //this.IsEnabled = true;
            
+        }
+
+        void wkList_OnCommandInfo(object sender, string e)
+        {
+            this.Dispatcher.Invoke(() =>
+            {
+                txtLog.Text += e;
+                txtLog.Text += "\r\n";
+            });
         }
 
 

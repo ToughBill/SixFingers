@@ -132,7 +132,7 @@ namespace WorkstationController.Core.Data
 
         private void GetPlateVectors()
         {
-            _plateVectors.Clear();
+            _plateVectors = new List<PlateVector>();
             foreach (Carrier carrier in _carriers )
             {
                 foreach (Labware labware in carrier.Labwares)
@@ -146,11 +146,14 @@ namespace WorkstationController.Core.Data
         }
         internal static void ConstrainTipInfo(Layout layout)
         {
+            if (layout.DitiInfo != null && layout.DitiInfo.CurrentDitiLabware != "" && layout.DitiInfo.DitiInfoItems != null)
+                return;
+
             List<DitiInfoItem> ditiInfoItems = new List<DitiInfoItem>();
             DitiInfo ditiInfo = null;
             foreach (Carrier carrier in layout.Carriers )
             {
-                if (carrier.TypeName == "DitiCarrier")
+                if (carrier.TypeName == BuildInCarrierType.Diti.ToString())
                 {
 
                     string currentDiti = "";

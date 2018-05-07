@@ -51,7 +51,6 @@ namespace WorkstationController.Core.UnitTest.Managements
 
             Layout layout = CreateDitiLayout();
             layout.DitiInfo.DitiInfoItems[0].count = 0;
-            layout.Serialize(_xmlFilePath);
             TipManagement tipManagement = new TipManagement(layout);
             tipManagement.GetTip(1);
             Assert.AreEqual("diti2", tipManagement.CurrentLabware.Label);

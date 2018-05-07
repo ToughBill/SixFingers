@@ -99,9 +99,10 @@ namespace SKHardwareController
             throw new NotImplementedException();
         }
 
-        public void GetTip(List<int> tipIDs)
+        public string GetTip(List<int> tipIDs)
         {
-            log.InfoFormat("Get tip from ditibox:{0} remain:{1}", tipManagement.CurrentLabware, tipManagement.CurrentDitiID);
+            string sCommandDesc = string.Format("Get tip from ditibox:{0} remain:{1}", tipManagement.CurrentLabware, tipManagement.CurrentDitiID);
+            log.Info(sCommandDesc);
             if (tipIDs.Count != 1)
                 throw new Exception("只支持单针！");
             var ditiPair = tipManagement.GetTip(1).First();
@@ -110,24 +111,27 @@ namespace SKHardwareController
             xyz.X = position.X;
             xyz.Y = position.Y;
             Move2XYZ(xyz);
-
+            return sCommandDesc;
         }
 
-        public void DropTip()
+        public string DropTip()
         {
-            log.Info("Drop tip");
+            string sCommandDesc = "Drop tip";
+            log.Info(sCommandDesc);
             var position = layout.GetWastePosition();
             xyz.X = position.X;
             xyz.Y = position.Y;
             Move2XYZ(xyz);
             log.Info("Drop tip finished");
+            return sCommandDesc;
         }
 
-        public void Aspirate(string labwareLabel, List<int> wellIDs, List<double> volumes, string liquidClass)
+        public string Aspirate(string labwareLabel, List<int> wellIDs, List<double> volumes, string liquidClass)
         {
-            log.InfoFormat("A;{0};{1};{2},{3}", labwareLabel, wellIDs.First(),volumes.First(),liquidClass);
+            string sCommandDesc = string.Format("Aspirate from:{0} at:{1} volume:{2},{3}", labwareLabel, wellIDs.First(), volumes.First(), liquidClass);
+            log.InfoFormat(sCommandDesc);
             Move2Position(labwareLabel, wellIDs.First());
-            
+            return sCommandDesc;
         }
 
         private void Move2Position(string labwareLabel, int wellID)
@@ -139,10 +143,12 @@ namespace SKHardwareController
             Move2XYZ(xyz);
         }
 
-        public void Dispense(string labwareLabel, List<int> wellIDs, List<double> volumes, string liquidClass)
+        public string Dispense(string labwareLabel, List<int> wellIDs, List<double> volumes, string liquidClass)
         {
-            log.InfoFormat("D;{0};{1};{2},{3}", labwareLabel, wellIDs.First(), volumes.First(), liquidClass);
+            string sCommandDesc = string.Format("Dispense to:{0} at:{1} volume:{2},{3}", labwareLabel, wellIDs.First(), volumes.First(), liquidClass);
+            log.InfoFormat(sCommandDesc);
             Move2Position(labwareLabel, wellIDs.First());
+            return sCommandDesc;
         }
 
         public void Init()

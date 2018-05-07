@@ -33,7 +33,7 @@ namespace WTPipetting.Hardware
         public event OnStepChangedDelegate OnStepChanged;
 
         public event EventHandler<string> OnCriticalErrorHappened;
-
+        public event EventHandler<string> OnCommandInfo;
       
         void NotifyStepStarted(int currentStep)
         {
@@ -59,21 +59,31 @@ namespace WTPipetting.Hardware
                 
                 if (NeedPauseOrStop())
                     break;
-                hardwareController.Liha.GetTip(new List<int>() { 1 });
+                string sDesc = hardwareController.Liha.GetTip(new List<int>() { 1 });
+                OnCommandExecuted(sDesc);
                 if (NeedPauseOrStop())
                     break;
-                hardwareController.Liha.Aspirate(pipettingInfo.srcLabware, new List<int>() { pipettingInfo.srcWellID }, new List<double>() { pipettingInfo.volume }, pipettingInfo.liquidClass);
+                sDesc = hardwareController.Liha.Aspirate(pipettingInfo.srcLabware, new List<int>() { pipettingInfo.srcWellID }, new List<double>() { pipettingInfo.volume }, pipettingInfo.liquidClass);
+                OnCommandExecuted(sDesc);
                 if (NeedPauseOrStop())
                     break;
-                hardwareController.Liha.Dispense(pipettingInfo.dstLabware, new List<int>() { pipettingInfo.dstWellID }, new List<double>() { pipettingInfo.volume }, pipettingInfo.liquidClass);
+                sDesc = hardwareController.Liha.Dispense(pipettingInfo.dstLabware, new List<int>() { pipettingInfo.dstWellID }, new List<double>() { pipettingInfo.volume }, pipettingInfo.liquidClass);
+                OnCommandExecuted(sDesc);
                 if (NeedPauseOrStop())
                     break;
-                hardwareController.Liha.DropTip();
+                sDesc = hardwareController.Liha.DropTip();
+                OnCommandExecuted(sDesc);
                 log.Info("notify finished");
                 NotifyStepFinished(currentStep);
                 currentStep++;
             }
            
+        }
+
+        private void OnCommandExecuted(string sDesc)
+        {
+            if (OnCommandInfo != null)
+                OnCommandInfo(this,sDesc);
         }
 
         public void Run()

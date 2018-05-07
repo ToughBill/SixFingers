@@ -19,11 +19,11 @@ namespace WorkstationController.Hardware
         void MoveFirstTipRelativeZ(float z, float speed);
 
         void SetTipsDistance(float distance);
-        void GetTip(List<int> tipIDs);
-        void DropTip();
-        void Aspirate(string labwareLabel, List<int> wellIDs, List<double> volumes, string liquidClass);
+        string GetTip(List<int> tipIDs);
+        string DropTip();
+        string Aspirate(string labwareLabel, List<int> wellIDs, List<double> volumes, string liquidClass);
 
-        void Dispense(string labwareLabel, List<int> wellIDs, List<double> volumes, string liquidClass);
+        string Dispense(string labwareLabel, List<int> wellIDs, List<double> volumes, string liquidClass);
 
      
     }
