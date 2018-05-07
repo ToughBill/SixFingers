@@ -31,13 +31,13 @@ namespace WorkstationController.Control
         System.Timers.Timer keepMovingTimer;
         
         WorkstationController.Control.BaseEditor.NewInformationHandler newInfoHandler;
-        public RomaTeachingForm(PlateVector plateVector, PositionCalculator positionCalculator,
+        public RomaTeachingForm(PlateVector plateVector, 
             WorkstationController.Control.BaseEditor.NewInformationHandler newInfoHandler)
         {
             InitializeComponent();
             this.plateVector = plateVector;
             this.newInfoHandler = newInfoHandler;
-            positionCalculator.OnExpectedPositionChanged += UpdateXYZR;
+            
             this.Loaded += RomaTeachingForm_Loaded;
         }
 

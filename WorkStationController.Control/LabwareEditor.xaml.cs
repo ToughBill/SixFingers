@@ -17,10 +17,10 @@ namespace WorkstationController.Control
         Labware labware;
         #region teaching related
         XYZR xyzr = new XYZR(0, 0, 0);
-        PositionCalculator positionCalculator;
+      
         InputChecker inputChecker;
-        Thread joysThread;
-        Thread keyBoardThread;
+        Thread inputCheckingThread;
+      
         DateTime lastUpdateTime = DateTime.Now;
         System.Timers.Timer keepMovingTimer;
         #endregion
@@ -40,10 +40,9 @@ namespace WorkstationController.Control
 
         void parent_Closing(object sender, System.ComponentModel.CancelEventArgs e)
         {
-            if (joysThread.IsAlive)
-                joysThread.Abort();
-            if (keyBoardThread.IsAlive)
-                keyBoardThread.Abort();
+            if (inputCheckingThread.IsAlive)
+                inputCheckingThread.Abort();
+         
         }
 
         ~LabwareEditor()
@@ -52,20 +51,7 @@ namespace WorkstationController.Control
         }
 
         #region teaching implement
-        private void keepMovingTimer_Elapsed(object sender, System.Timers.ElapsedEventArgs e)
-        {
-            if (TeachingControllerDelegate.Instance.Controller.IsMoving(ArmType.Liha))
-                return;
-            var currentXYZR = TeachingControllerDelegate.Instance.Controller.GetPosition(ArmType.Liha);
-            if (!xyzr.Equals(currentXYZR))
-            {
-                MoveXYZ();
-            }
-            else
-            {
-                keepMovingTimer.Stop();
-            }
-        }
+  
 
         private void MoveXYZ()
         {
@@ -86,45 +72,22 @@ namespace WorkstationController.Control
             xyzr = TeachingControllerDelegate.Instance.Controller.GetPosition(ArmType.Liha);
         }
 
-        private void StartKeyBoard(object obj)
+    
+
+        private void StartCheckingInput(object obj)
         {
-            inputChecker.KeyBoardStart();
+            inputChecker.Start();
         }
 
-        private void StartJoys(object obj)
-        {
-            inputChecker.JoysStart();
-        }
+    
 
-        private void UpdateXYZ(object sender, XYZR e)
-        {
-            xyzr.X = Math.Round(e.X, 1);
-            xyzr.Y = Math.Round(e.Y, 1);
-            xyzr.Z = Math.Round(e.Z, 1);
-            Debug.WriteLine(Math.Round(e.R, 1));
-            if (NeedRealMove(DateTime.Now))
-            {
-                if (TeachingControllerDelegate.Instance.Controller.IsMoving(ArmType.Liha))
-                    return;
-                keepMovingTimer.Start();
-                MoveXYZ();
-                lastUpdateTime = DateTime.Now;
-            }            
-        }
-
-        private bool NeedRealMove(DateTime now)
-        {
-            TimeSpan timeSpan = now - lastUpdateTime;
-            return timeSpan.Milliseconds > 100; //0.1s
-        }
+      
         #endregion
 
         void LabwareEditor_Unloaded(object sender, RoutedEventArgs e)
         {
             labware.UpdateWellInfos();
-            joysThread.Abort();
-            keyBoardThread.Abort();
-            keepMovingTimer.Stop();
+            inputCheckingThread.Abort();
         }
 
         void LabwareEditor_Loaded(object sender, RoutedEventArgs e)
@@ -147,17 +110,9 @@ namespace WorkstationController.Control
             }
             labware.CalculatePositionInLayout();
 
-
             Init();
-            keepMovingTimer = new System.Timers.Timer(200);
-            keepMovingTimer.Elapsed += keepMovingTimer_Elapsed;
-            positionCalculator = new PositionCalculator(xyzr);
-            inputChecker = new InputChecker(positionCalculator);
-            positionCalculator.OnExpectedPositionChanged += UpdateXYZ;
-            joysThread = new Thread(StartJoys);
-            joysThread.Start();
-            keyBoardThread = new Thread(StartKeyBoard);
-            keyBoardThread.Start();
+            inputChecker = new InputChecker();
+            inputChecker.Start();
             curPositionPanel.DataContext = xyzr;
         }
 
@@ -277,7 +232,7 @@ namespace WorkstationController.Control
             if (labware.PlateVector == null)
                 labware.PlateVector = new PlateVector(true);
             labware.PlateVector.Name = labware.Label;
-            RomaTeachingForm romaTeachingForm = new RomaTeachingForm(labware.PlateVector, positionCalculator,newInfoHandler);
+            RomaTeachingForm romaTeachingForm = new RomaTeachingForm(labware.PlateVector, newInfoHandler);
             romaTeachingForm.ShowDialog();
         }
 

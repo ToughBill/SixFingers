@@ -76,7 +76,7 @@
     <Compile Include="PipettingCommandEditor.xaml.cs">
       <DependentUpon>PipettingCommandEditor.xaml</DependentUpon>
     </Compile>
-    <Compile Include="PositionCalculator.cs" />
+    <Compile Include="InputChecker.cs" />
     <Compile Include="Teaching\RomaTeachingForm.xaml.cs" />
     <Compile Include="ThirdParties\ExtendedTabControl\Converters.cs" />
     <Compile Include="ThirdParties\ExtendedTabControl\Helper.cs" />
