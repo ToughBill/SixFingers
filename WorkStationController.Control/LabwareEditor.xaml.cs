@@ -101,6 +101,7 @@ namespace WorkstationController.Control
             xyzr.X = Math.Round(e.X, 1);
             xyzr.Y = Math.Round(e.Y, 1);
             xyzr.Z = Math.Round(e.Z, 1);
+            Debug.WriteLine(Math.Round(e.R, 1));
             if (NeedRealMove(DateTime.Now))
             {
                 if (TeachingControllerDelegate.Instance.Controller.IsMoving(ArmType.Liha))

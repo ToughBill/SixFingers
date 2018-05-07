@@ -13,10 +13,10 @@ namespace WorkstationController.Control
     {
         XYZR expectedPositionXYZR;
         XYZR speedXYZ;
-
         double acceleration = 10;
         double slowAcceleration = 5;
         double fastAcceleration = 10;
+        double rotateSpeed = 3;
         double maxSpeed = 30; //30mm/s
         double oldTime = 0;
         Stopwatch watcher = new Stopwatch();
@@ -27,7 +27,9 @@ namespace WorkstationController.Control
             speedXYZ = new XYZR(0, 0, 0);
             //this.acceleration = slowAcceleration;
         }
-        public void OnDirectionPressed(Direction dir, bool isFastAcceleration = false)
+
+
+        public void OnDirectionPressed(Direction dir)
         {
             //AccelerationSetting(isFastAcceleration);
             watcher.Start();
@@ -35,7 +37,7 @@ namespace WorkstationController.Control
             double timeSeconds = watcher.ElapsedMilliseconds / 1000.0 - oldTime;
             timeSeconds = Math.Max(0.1,timeSeconds);
             oldTime += timeSeconds* 1000;
-            double distance = timeSeconds * speed + 0.5 * acceleration * timeSeconds * timeSeconds;
+            double distance = distanceCalculator(dir, speed, timeSeconds);
             double speedChanged = timeSeconds * acceleration;
             distance = Math.Max(0.1, distance); //min 0.1mm
             UpdatePositionAndSpeed(dir, distance, speedChanged);
@@ -44,6 +46,14 @@ namespace WorkstationController.Control
             {
                 OnExpectedPositionChanged(this, expectedPositionXYZR);
             }
+        }
+
+        private double distanceCalculator(Direction dir, double speed, double timeSeconds)
+        {
+            if (dir == Direction.RotateLeft || dir == Direction.RotateRight)
+                return speed * timeSeconds;
+            else
+                return timeSeconds * speed + 0.5 * acceleration * timeSeconds * timeSeconds;
         }
 
         private void AccelerationSetting(bool isFastAcceleration)
@@ -85,6 +95,12 @@ namespace WorkstationController.Control
                     speedXYZ.Z = (speedXYZ.Z + speedChanged > maxSpeed) ? maxSpeed : (speedXYZ.Z + speedChanged);
                     expectedPositionXYZR.Z -= distance;
                     break;
+                case Direction.RotateLeft:
+                    expectedPositionXYZR.R -= distance;
+                    break;
+                case Direction.RotateRight:
+                    expectedPositionXYZR.R += distance;
+                    break;
                 default:
                     break;
             }
@@ -111,6 +127,10 @@ namespace WorkstationController.Control
                 case Direction.ZUp:
                 case Direction.ZDown:
                     speed = speedXYZ.Z;
+                    break;
+                case Direction.RotateLeft:
+                case Direction.RotateRight:
+                    speed = rotateSpeed;
                     break;
                 default:
                     break;
@@ -183,24 +203,38 @@ namespace WorkstationController.Control
                 int directionButton = joys.PointOfViewControllers[0];
                 var zUpButton = joys.Buttons[4];
                 var zDownButton = joys.Buttons[0];
-                var accelerationChangeButton = joys.Buttons[7];
+
+                var rotateLeftButton = joys.Buttons[3];
+                var rotateRightButton = joys.Buttons[1];
+                var clampOnButton = joys.Buttons[7];
+                var clampOffButton = joys.Buttons[9];
+
+                if (clampOnButton || clampOffButton)
+                {
+                    dir = clampOnButton ? Direction.ClampOn : Direction.ClampOff;
+                    //clampCalculator.OnClampPressed(dir);
+                    Debug.WriteLine(dir.ToString());
+                    continue;
+                }
+
                 if (offset_Dir.ContainsKey(directionButton))
                     dir = offset_Dir[directionButton];
                 if (zUpButton || zDownButton)
                     dir = zUpButton ? Direction.ZUp : Direction.ZDown;
-                if (-1 == directionButton && (!zUpButton && !zDownButton))
-                {
-                    if (!InputDeviceInfo.isKeyBoardMoving)
-                    {
-                        positionCalculator.Stop();
-                        InputDeviceInfo.isJoysMoving = false;
-                    }
+                if (rotateLeftButton || rotateRightButton)
+                    dir = rotateLeftButton ? Direction.RotateLeft : Direction.RotateRight;
 
+                if (InputDeviceInfo.isKeyBoardMoving)
+                    continue;
+                InputDeviceInfo.isJoysMoving = directionButton != -1 || zUpButton || zDownButton || rotateLeftButton || rotateRightButton;
+
+                if (!InputDeviceInfo.isJoysMoving)
+                {
+                    positionCalculator.Stop();
                 }
                 else
                 {
-                    InputDeviceInfo.isJoysMoving = true;
-                    positionCalculator.OnDirectionPressed(dir, accelerationChangeButton);
+                    positionCalculator.OnDirectionPressed(dir);
                 }
             }
         }
@@ -223,11 +257,24 @@ namespace WorkstationController.Control
             {
                 Thread.Sleep(100);
                 var curKeyboardState = curKeyBoard.GetCurrentState();
-                var curPressedKeys = curKeyboardState.PressedKeys;
-                if (curKeyboardState.PressedKeys.Count() > 0 && IsControlKey(curKeyboardState.PressedKeys[0]))
+                Key curPressedKey = new Key(); ;
+                if (curKeyboardState.PressedKeys.Count() > 0)
+                    curPressedKey = curKeyboardState.PressedKeys[0];
+                if (curPressedKey == SharpDX.DirectInput.Key.O || curPressedKey == SharpDX.DirectInput.Key.P)
+                {
+                    var dir = curPressedKey == SharpDX.DirectInput.Key.O ? Direction.ClampOn : Direction.ClampOff;
+                    //clampCalculator.OnClampPressed(dir);
+                    Debug.WriteLine(dir.ToString());
+                    continue;
+                }
+
+                if (InputDeviceInfo.isJoysMoving)
+                    continue;
+                InputDeviceInfo.isKeyBoardMoving = curKeyboardState.PressedKeys.Count() > 0 && IsControlKey(curPressedKey);
+                if (InputDeviceInfo.isKeyBoardMoving)
                 {
 
-                    InputDeviceInfo.isKeyBoardMoving = true;
+                    //InputDeviceInfo.isKeyBoardMoving = true;
                     switch (curKeyboardState.PressedKeys[0])
                     {
                         case SharpDX.DirectInput.Key.W:
@@ -248,6 +295,12 @@ namespace WorkstationController.Control
                         case SharpDX.DirectInput.Key.K:
                             positionCalculator.OnDirectionPressed(Direction.ZDown);
                             break;
+                        case SharpDX.DirectInput.Key.J:
+                            positionCalculator.OnDirectionPressed(Direction.RotateLeft);
+                            break;
+                        case SharpDX.DirectInput.Key.L:
+                            positionCalculator.OnDirectionPressed(Direction.RotateRight);
+                            break;
                         default:
                             break;
 
@@ -255,19 +308,13 @@ namespace WorkstationController.Control
 
                 }
                 else
-                {
-                    if (!InputDeviceInfo.isJoysMoving)
-                    {
-                        positionCalculator.Stop();
-                        InputDeviceInfo.isKeyBoardMoving = false;
-                    }
-                }
+                    positionCalculator.Stop();
             }
         }
 
         private bool IsControlKey(Key key)
         {
-            return (key == Key.W) || (key == Key.A) || (key == Key.S) || (key == Key.D) || (key == Key.I) || (key == Key.K);
+            return (key == Key.W) || (key == Key.A) || (key == Key.S) || (key == Key.D) || (key == Key.I) || (key == Key.K) || (key == Key.J) || (key == Key.L);
         }
 
         private Dictionary<int, Direction> GetOffsetDirMapping()
@@ -299,6 +346,10 @@ namespace WorkstationController.Control
         Left,
         Right,
         ZUp,
-        ZDown
+        ZDown,
+        RotateLeft,
+        RotateRight,
+        ClampOn,
+        ClampOff
     }
 }
