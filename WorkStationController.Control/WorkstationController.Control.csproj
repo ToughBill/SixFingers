@@ -185,6 +185,10 @@
     <Resource Include="Resources\liquidclass.png" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\SKHardwareController\SKHardwareController.csproj">
+      <Project>{d694a181-fca1-452d-ae1e-7062eade83a8}</Project>
+      <Name>SKHardwareController</Name>
+    </ProjectReference>
     <ProjectReference Include="..\WorkStationController.Core\WorkstationController.Core.csproj">
       <Project>{c3ba4ccf-e014-4e15-be64-1675c58ef27a}</Project>
       <Name>WorkstationController.Core</Name>

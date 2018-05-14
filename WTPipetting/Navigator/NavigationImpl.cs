@@ -60,7 +60,7 @@ namespace WTPipetting.Navigation
         protected bool preventUI = false;
         protected Stage farthestStage = Stage.SampleDef;
         
-        private ListBox lstSteps = null;
+        //private ListBox lstSteps = null;
         protected List<BaseUserControl> stageUserControls = new List<BaseUserControl>();
         protected static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
         public BaseHost()

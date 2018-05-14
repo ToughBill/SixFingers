@@ -36,12 +36,11 @@ namespace SKHardwareController
         AutoResetEvent cmdACK = new AutoResetEvent(false);
         bool[] bACK = new bool[2];
         bool[] bActiondone = new bool[2];
-        double mmPerStepX = 0.22345;
-        double mmPerStepY = 0.14224;
-        double mmPerStepZ = 0.098175;
-        public const int defaultTimeOut = 5000;
+        double mmPerStepX = 0.09;
+        double mmPerStepY = 0.14;
+        double mmPerStepZ = 0.09;
         e_RSPErrorCode[] _errorCode = new e_RSPErrorCode[(int)_eARM.两个 - 1];
-
+        public const int defaultTimeOut = 5000;
         private static MoveController instance;
         static public MoveController Instance
         {
@@ -52,36 +51,7 @@ namespace SKHardwareController
                  return instance;
             }
         }
-        public bool ErrorHappened
-        {
-            get
-            {
-                return isErrorState;
-            }
-        }
-        public bool IsLihaMoving
-        {
-            get
-            {
-                return !bActiondone[0];
-            }
-        }
 
-        public bool IsRomaMoving
-        {
-            get
-            {
-                return !bActiondone[1];
-            }
-        }
-
-        public bool MoveFinished
-        {
-            get
-            {
-                return bActiondone[0] && bActiondone[1];
-            }
-        }
         /// <summary>
         ///Init ARM
         /// </summary>
@@ -111,13 +81,60 @@ namespace SKHardwareController
             }
         }
 
-
-        public void MoveHome()
+        public e_RSPErrorCode MoveClipper(double degree, double width)
         {
-            MoveHome(_eARM.左臂, 8000);
-            MoveHome(_eARM.右臂, 8000);
+            throw new NotImplementedException();
         }
 
+        public e_RSPErrorCode GetClipperInfo(ref double degree, ref double width)
+        {
+            throw new NotImplementedException();
+        }
+
+
+        public bool IsTipMounted
+        {
+            get
+            {
+                throw new NotImplementedException();
+            }
+        }
+
+        public e_RSPErrorCode InitCarvo()
+        {
+            throw new NotImplementedException();
+        }
+
+        public e_RSPErrorCode DropDiti()
+        {
+            throw new NotImplementedException();
+        }
+
+        public e_RSPErrorCode DetectLiquid(double zStart, double zMax, double speedMMPerSecond)
+        {
+            throw new NotImplementedException();
+        }
+
+        public e_RSPErrorCode Aspirate(double volume, double speedMax, double speedStart, double speedStop)
+        {
+            throw new NotImplementedException();
+        }
+
+        public e_RSPErrorCode Dispense(double volume, double speedMax, double speedStart, double speedStop)
+        {
+            throw new NotImplementedException();
+        }
+
+
+        public e_RSPErrorCode StartMove(Axis axis, int speedMMPerSecond)
+        {
+            throw new NotImplementedException();
+        }
+
+        public e_RSPErrorCode StopMove()
+        {
+            throw new NotImplementedException();
+        }
         /// <summary>
         /// 启动臂
         /// </summary>
@@ -203,6 +220,11 @@ namespace SKHardwareController
             return e_RSPErrorCode.RSP_ERROR_NONE;
         }
 
+
+        public e_RSPErrorCode MoveZAtSpeed(_eARM arm, double z)
+        {
+            throw new NotImplementedException();
+        }
         /// <summary>
         /// 移动臂到目标位置
         /// </summary>
@@ -213,7 +235,7 @@ namespace SKHardwareController
         /// <param name="tbZ">r轴位置，单位:mm</param>
         /// <param name="timeout">超时等待时间ms, 0：不等待，异步运行</param>
         /// <returns></returns>
-        public e_RSPErrorCode MoveXYZR(_eARM armid, double tbX, double tbY, double tbZ,double tbR, int timeout)
+        public e_RSPErrorCode MoveXYZ(_eARM armid, double tbX, double tbY, double tbZ,int timeout)
         {
             if (!bHome)
             {
@@ -243,8 +265,8 @@ namespace SKHardwareController
             {
                 while (!bActiondone[(int)armid - 1] && timeout > 0)
                 {
-                    Thread.Sleep(50);
-                    timeout -= 50;
+                    Thread.Sleep(10);
+                    timeout -= 10;
                 }
             }
 
@@ -279,36 +301,46 @@ namespace SKHardwareController
                 if (received_count > 2 && (globalBuffer[received_count - 2] == ARM_PROTOCOL_ETX))
                 {
                     RxBuffer = new byte[received_count];
-
                     Array.Copy(globalBuffer, RxBuffer, RxBuffer.Length);
-                    SendACK(RxBuffer[2]);
-                    bool cmdDone = (RxBuffer[1] & MASK_DONE_BIT) == MASK_DONE_BIT;
-                    if (cmdDone)
+                    if ((RxBuffer[2] == 0x31 || RxBuffer[2] == 0x32) && RxBuffer[3] == 0x38)
                     {
-                        _errorCode[RxBuffer[2] - 0x31] = (e_RSPErrorCode)(RxBuffer[1] & 0x0f);
-                        //cmdFinished.Set();
-                        bActiondone[RxBuffer[2] - 0x31] = true;
-                    }
-                    else
-                    {
-                        bool hasError = (RxBuffer[1] - 0x40) > 0;
-                        if (hasError)
+                        SendACK(RxBuffer[2]);
+                        bool cmdDone = (RxBuffer[1] & MASK_DONE_BIT) == MASK_DONE_BIT;
+                        if (cmdDone)
                         {
-                            bHome = false;
+                            _errorCode[RxBuffer[2] - 0x31] = (e_RSPErrorCode)(RxBuffer[1] & 0x0f);
+                            //cmdFinished.Set();
                             bActiondone[RxBuffer[2] - 0x31] = true;
-                            e_RSPErrorCode errorCode = (e_RSPErrorCode)(RxBuffer[1] - 0x40);
-                            _errorCode[RxBuffer[2] - 0x31] = (e_RSPErrorCode)(RxBuffer[1] - 0x40);
-                            string errDesc = errorCode.ToString();
-                            if (IsCriticalError(errorCode))
-                            {
-                                isErrorState = true;
-                            }
                         }
                         else
                         {
-                            bACK[RxBuffer[2] - 0x31] = true;
-                            cmdACK.Set();
+                            bool hasError = (RxBuffer[1] - 0x40) > 0;
+                            if (hasError)
+                            {
+                                bHome = false;
+                                bActiondone[RxBuffer[2] - 0x31] = true;
+                                e_RSPErrorCode errorCode = (e_RSPErrorCode)(RxBuffer[1] - 0x40);
+                                _errorCode[RxBuffer[2] - 0x31] = (e_RSPErrorCode)(RxBuffer[1] - 0x40);
+                                string errDesc = errorCode.ToString();
+                                if (IsCriticalError(errorCode))
+                                {
+                                    isErrorState = true;
+                                    //throw new CriticalException(errDesc);
+                                }
+                                //log.Error(errDesc);
+                                //cmdFinished.Set();
+                                //throw new Exception(errDesc);
+                            }
+                            else
+                            {
+                                bACK[RxBuffer[2] - 0x31] = true;
+                                cmdACK.Set();
+                            }
                         }
+                    }
+                    else
+                    {
+                        received_count = 0;
                     }
                 }
             } while (bOpen);
@@ -317,9 +349,13 @@ namespace SKHardwareController
 
         public void GetCurrentPosition(_eARM armID, ref double x, ref  double y, ref  double z, ref double rotationDegree)
         {
+            
             x = 0;
             y = 0;
             z = 0;
+            x = Math.Round(x, 1);
+            y = Math.Round(y, 1);
+            z = Math.Round(z, 1);
             rotationDegree = 0;
         }
 
@@ -455,6 +491,15 @@ namespace SKHardwareController
         左臂 = 1,
         右臂,
         两个,
+    }
+
+    public enum Axis
+    {
+        X,
+        Y,
+        Z,
+        R,
+        Clipper
     }
     public enum e_RSPErrorCode
     {

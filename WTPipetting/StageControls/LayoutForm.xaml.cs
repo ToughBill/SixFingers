@@ -27,7 +27,6 @@ namespace WTPipetting.StageControls
     public partial class LayoutForm : BaseUserControl
     {
         List<Protocol> _protocols;
-        private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
         public LayoutForm(Stage stage, BaseHost host)
             : base(stage, host)
         {

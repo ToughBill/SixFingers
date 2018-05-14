@@ -60,19 +60,6 @@ namespace WorkstationController.Control
                 plateVector.CurrentPosition = plateVector.Positions[0];
             
         }
-        private void UpdateXYZR(object sender, XYZR e)
-        {
-            plateVector.CurrentPosition.X = xyzr.X = Math.Round(e.X, 1);
-            plateVector.CurrentPosition.Y = xyzr.Y = Math.Round(e.Y, 1);
-            plateVector.CurrentPosition.Z = xyzr.Z = Math.Round(e.Z, 1);
-            plateVector.CurrentPosition.R = xyzr.R = Math.Round(e.R, 1);
-           
-        }
-
-   
-   
-       
-
         private void btnAddPosition_Click(object sender, RoutedEventArgs e)
         {
             plateVector.AddNewPosition();

@@ -24,7 +24,7 @@
             <RowDefinition Height="30"/>
             <RowDefinition Height="30"/>
             <RowDefinition Height="40"/>
-            
+            <RowDefinition Height="40"/>
         </Grid.RowDefinitions>
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="Auto"/>
@@ -135,8 +135,17 @@
                     <TextBox Text="{Binding Z}" Width="60"></TextBox>
                 </StackPanel>
             </StackPanel>
-           
             
+            
+        </StackPanel>
+        <StackPanel Grid.Row="15" Grid.ColumnSpan="6" Orientation="Horizontal">
+            <Label>移动速度：</Label>
+            <StackPanel Orientation="Horizontal" Margin="20,5,0,2">
+                <RadioButton Name="rdbLowSpeed" Checked="rdbSpeed_Checked"  IsChecked="True" VerticalAlignment="Center">低速(1)</RadioButton>
+                <RadioButton Name="rdbMediumSpeed" Checked="rdbSpeed_Checked" Margin="2,0,2,0" VerticalAlignment="Center">中速(10)</RadioButton>
+                <RadioButton Name="rdbHighSpeed" Checked="rdbSpeed_Checked" Margin="2,0,2,0" VerticalAlignment="Center">高速(50)</RadioButton>
+            </StackPanel>
+            <Label>mm/s</Label>
         </StackPanel>
         <StackPanel  Grid.Row="14" Grid.Column="6"  HorizontalAlignment="Right" Margin="0,2,0,0" Orientation="Horizontal">
             <Button   Width="60" Height="30" Content="夹手位置" Click="OnSetROMAVectorClick"/>

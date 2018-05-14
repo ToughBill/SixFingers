@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Configuration;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -8,22 +9,28 @@ using WorkstationController.Hardware;
 
 namespace SKHardwareController
 {
-    class TeachingImplement : ITeachingController
+    public class TeachingImplement : ITeachingController
     {
         Dictionary<ArmType, _eARM> enumMapper = new Dictionary<ArmType, _eARM>();
+
+        public TeachingImplement()
+        {
+            string sPort = ConfigurationManager.AppSettings["PortName"];
+            Init(sPort);
+        }
         public void Init(string sPort)
         {
             enumMapper.Add(ArmType.Liha, _eARM.左臂);
             enumMapper.Add(ArmType.Roma, _eARM.右臂);
             MoveController.Instance.Init(sPort);
-            MoveController.Instance.MoveHome();
+            MoveController.Instance.MoveHome(_eARM.两个,MoveController.defaultTimeOut);
         }
 
         public void Move2XYZR(ArmType armType, XYZR xyzr)
         {
             //need consider ztravel
-            var err = MoveController.Instance.MoveXYZR(enumMapper[armType], xyzr.X, xyzr.Y, xyzr.Z, xyzr.R, MoveController.defaultTimeOut);
-            if (MoveController.Instance.ErrorHappened)
+            var err = MoveController.Instance.MoveXYZ(enumMapper[armType], xyzr.X, xyzr.Y, xyzr.Z, MoveController.defaultTimeOut);
+            if (err != e_RSPErrorCode.RSP_ERROR_NONE)
                 throw new CriticalException(err.ToString());
         }
 
@@ -36,16 +43,7 @@ namespace SKHardwareController
         }
 
 
-        public bool IsMoving(ArmType armType)
-        {
-            if (armType == ArmType.Liha)
-                return MoveController.Instance.IsLihaMoving;
-            else
-                return MoveController.Instance.IsRomaMoving;
-        }
-
-
-        public void StartMove(Direction e)
+        public void StartMove(Direction e, int mmPerSecond)
         {
             throw new NotImplementedException();
         }

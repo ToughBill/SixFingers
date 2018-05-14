@@ -64,17 +64,6 @@
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
-    <COMReference Include="RSPCOMMSERVERLib">
-      <Guid>{4302B331-F682-11D1-A745-00A0C95CBB1A}</Guid>
-      <VersionMajor>1</VersionMajor>
-      <VersionMinor>0</VersionMinor>
-      <Lcid>0</Lcid>
-      <WrapperTool>tlbimp</WrapperTool>
-      <Isolated>False</Isolated>
-      <EmbedInteropTypes>False</EmbedInteropTypes>
-    </COMReference>
-  </ItemGroup>
-  <ItemGroup>
     <ProjectReference Include="..\WorkStationController.Core\WorkstationController.Core.csproj">
       <Project>{c3ba4ccf-e014-4e15-be64-1675c58ef27a}</Project>
       <Name>WorkstationController.Core</Name>

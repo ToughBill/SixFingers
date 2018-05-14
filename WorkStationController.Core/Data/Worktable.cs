@@ -37,6 +37,7 @@ namespace WorkstationController.Core.Data
         /// </summary>
         public Size PinSize{ get; set; }
 
+        /// <summary>
         /// Position of the left-top pin
         /// </summary>
         public Point TopLeftPinPosition{ get; set; }

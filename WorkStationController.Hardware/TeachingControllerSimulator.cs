@@ -9,13 +9,49 @@ using WorkstationController.Core.Data;
 
 namespace WorkstationController.Hardware
 {
-    class TeachingControllerSimulator : ITeachingController
+    public class TeachingControllerSimulator : ITeachingController
     {
         XYZR currentPosition = new XYZR(0,0,0);
         bool isMoving = false;
+        Stopwatch stopWatch = new Stopwatch();
+        int speed_mmPerSecond = 0;
+        Direction dir;
+        System.Timers.Timer updatePositionTimer = new System.Timers.Timer(200);
         public void Init(string sPort)
         {
             Debug.WriteLine("Init");
+         
+        }
+        public TeachingControllerSimulator()
+        {
+            updatePositionTimer.Elapsed += updatePositionTimer_Elapsed;
+        }
+        void updatePositionTimer_Elapsed(object sender, System.Timers.ElapsedEventArgs e)
+        {
+            Debug.WriteLine("timer updated");
+            double distance = speed_mmPerSecond * updatePositionTimer.Interval/1000;
+            distance = Math.Round(distance, 1);
+            switch(dir)
+            {
+                case Direction.Up:
+                    currentPosition.Y += distance;
+                    break;
+                case Direction.Down:
+                    currentPosition.Y -= distance;
+                    break;
+                case Direction.Left:
+                    currentPosition.X -= distance;
+                    break;
+                case Direction.Right:
+                    currentPosition.X += distance;
+                    break;
+                case Direction.ZUp:
+                    currentPosition.Z += distance;
+                    break;
+                case Direction.ZDown:
+                    currentPosition.Z -= distance;
+                    break;
+            }
         }
 
         public void Move2XYZR(ArmType armType, Core.Data.XYZR xyzr)
@@ -39,14 +75,46 @@ namespace WorkstationController.Hardware
         }
 
 
-        public void StartMove(Direction e)
+        public void StartMove(Direction e, int speed)
         {
+            updatePositionTimer.Start();
             Debug.WriteLine(string.Format("start move at:{0}",e.ToString()));
+            stopWatch.Restart();
+            speed_mmPerSecond = speed;
+            dir = e;
+            
         }
 
         public void StopMove()
         {
             Debug.WriteLine("stop move");
+            double seconds = stopWatch.ElapsedMilliseconds < 100 ? 0.1f :  stopWatch.ElapsedMilliseconds / 1000.0f;
+            seconds = Math.Round(seconds,1);
+            double distance = speed_mmPerSecond * seconds;
+            Debug.WriteLine(string.Format("moved: {0} mm",distance));
+            updatePositionTimer.Stop();
+            switch (dir)
+            {
+                case Direction.Up:
+                    currentPosition.Y += distance;
+                    break;
+                case Direction.Down:
+                    currentPosition.Y -= distance;
+                    break;
+                case Direction.Left:
+                    currentPosition.X -= distance;
+                    break;
+                case Direction.Right:
+                    currentPosition.X += distance;
+                    break;
+                case Direction.ZUp:
+                    currentPosition.Z += distance;
+                    break;
+                case Direction.ZDown:
+                    currentPosition.Z -= distance;
+                    break;
+            }
+
         }
 
 

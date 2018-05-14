@@ -39,6 +39,7 @@
     <Reference Include="System" />
     <Reference Include="System.Configuration" />
     <Reference Include="System.Core" />
+    <Reference Include="System.Drawing" />
     <Reference Include="System.Windows.Forms" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
@@ -52,7 +53,14 @@
     <Compile Include="MoveController.cs" />
     <Compile Include="Liha.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Roma.cs" />
     <Compile Include="TeachingImplement.cs" />
+    <Compile Include="TipNotFetched.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="TipNotFetched.Designer.cs">
+      <DependentUpon>TipNotFetched.cs</DependentUpon>
+    </Compile>
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\WorkStationController.Core\WorkstationController.Core.csproj">
@@ -68,6 +76,11 @@
     <Content Include="log4net.xml">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="TipNotFetched.resx">
+      <DependentUpon>TipNotFetched.cs</DependentUpon>
+    </EmbeddedResource>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

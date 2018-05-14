@@ -107,6 +107,8 @@ namespace WTPipetting.Data
             //TipType = lines[(int)StepDefCol.TipType];
             LiquidClass = lines[(int)StepDefCol.LiquidClass];
         }
+
+        public const string MovePlate = "MovePlate";
     }
 
     class StepDefinitionWithProgressInfo : StepDefinition

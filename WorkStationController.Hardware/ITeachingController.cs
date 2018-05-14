@@ -14,7 +14,7 @@ namespace WorkstationController.Hardware
 
        
         XYZR GetPosition(ArmType armType);
-        void StartMove(Direction e);
+        void StartMove(Direction e, int speedMMPerSecond);
         void StopMove();
     }
 

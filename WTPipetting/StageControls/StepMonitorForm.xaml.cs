@@ -27,7 +27,6 @@ namespace WTPipetting.StageControls
     {   
       
         Worklist wkList = new Worklist();
-        private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
         ObservableCollection<StepDefinitionWithProgressInfo> stepsDefWithProgressInfo;
         RunState runState = RunState.Start;
         public StepMonitorForm(Stage stage, BaseHost host)
@@ -139,9 +138,18 @@ namespace WTPipetting.StageControls
 
         private void btnRunPause_Click(object sender, RoutedEventArgs e)
         {
+            
             if(runState == RunState.Start)
             {
-                RunProtocol();
+                try
+                {
+                    RunProtocol();
+                }
+                catch(Exception ex)
+                {
+                    SetErrorInfo(ex.Message);
+                }
+             
                 ChangeRunState(RunState.Pause);
             }
             else if(runState == RunState.Pause)

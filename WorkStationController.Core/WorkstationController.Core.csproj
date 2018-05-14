@@ -66,6 +66,7 @@
     <Compile Include="Data\Recipe.cs" />
     <Compile Include="Data\ROMAPosition.cs" />
     <Compile Include="Data\Script.cs" />
+    <Compile Include="Data\TrackInfo.cs" />
     <Compile Include="Data\WareBase.cs" />
     <Compile Include="Data\Worktable.cs" />
     <Compile Include="Data\PipettorElement.cs" />

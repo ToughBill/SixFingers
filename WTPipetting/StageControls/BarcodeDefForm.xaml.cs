@@ -21,7 +21,6 @@ namespace WTPipetting.StageControls
     /// </summary>
     public partial class BarcodeDefForm :  BaseUserControl
     {
-        private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
         public BarcodeDefForm(Stage stage, BaseHost host)
             : base(stage, host)
         {

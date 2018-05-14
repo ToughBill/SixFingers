@@ -23,10 +23,11 @@ namespace WorkstationController.Control
             keyboard_Direction.Add(SharpDX.DirectInput.Key.W, Direction.Up);
             keyboard_Direction.Add(SharpDX.DirectInput.Key.S, Direction.Down);
             keyboard_Direction.Add(SharpDX.DirectInput.Key.I, Direction.ZUp);
+            keyboard_Direction.Add(SharpDX.DirectInput.Key.K, Direction.ZDown);
             keyboard_Direction.Add(SharpDX.DirectInput.Key.A, Direction.Left);
             keyboard_Direction.Add(SharpDX.DirectInput.Key.D, Direction.Right);
             keyboard_Direction.Add(SharpDX.DirectInput.Key.J, Direction.RotateLeft);
-            keyboard_Direction.Add(SharpDX.DirectInput.Key.K, Direction.RotateRight);
+            keyboard_Direction.Add(SharpDX.DirectInput.Key.L, Direction.RotateRight);
             keyboard_Direction.Add(SharpDX.DirectInput.Key.O, Direction.ClampOn);
             keyboard_Direction.Add(SharpDX.DirectInput.Key.P, Direction.ClampOff);
         }
@@ -48,6 +49,7 @@ namespace WorkstationController.Control
             {
                 if (stopChecking)
                     break;
+                dir = Direction.None;
                 if (joyStick != null)
                 {
                     dir = GetDirectionFromJoystick(joyStick);
@@ -57,23 +59,20 @@ namespace WorkstationController.Control
                     dir = GetDirectionFromKeyboard(keyBoard);
                 }
 
-                if (lastDir == Direction.None)
+                if(dir != lastDir) 
                 {
-                    //start dir;
-                    if (OnStartMove != null)
-                        OnStartMove(this, dir);
-                    lastDir = dir;
+                    if(dir == Direction.None)
+                    {
+                        if (OnStopMove != null)
+                            OnStopMove(this, dir);
+                    }
+                    else
+                    {
+                        if (OnStartMove != null)
+                             OnStartMove(this, dir);
+                    }
                 }
-                else if (dir != lastDir)
-                {
-                    //end dir
-                    if (OnStopMove != null)
-                        OnStopMove(this, dir);
-                    lastDir = Direction.None;
-                }
-
-                Thread.Sleep(100);
-
+                lastDir = dir;
             }
         }
 
@@ -86,8 +85,6 @@ namespace WorkstationController.Control
             if (curPressedKey == SharpDX.DirectInput.Key.O || curPressedKey == SharpDX.DirectInput.Key.P)
             {
                 var dir = curPressedKey == SharpDX.DirectInput.Key.O ? Direction.ClampOn : Direction.ClampOff;
-                //clampCalculator.OnClampPressed(dir);
-                Debug.WriteLine(dir.ToString());
             }
             if (keyboard_Direction.ContainsKey(curPressedKey))
                 return keyboard_Direction[curPressedKey];

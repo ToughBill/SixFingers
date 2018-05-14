@@ -11,18 +11,12 @@ namespace WorkstationController.Hardware
     {
         void Init();
 
-        float OpenWidth { get; set; }
-        float ClipWidth { get; set; }
-
-        void Open();
-        void Clip();
-        void Rotate(float angle);
-
-        void Move2AbsPosition(float x, float y, float z);
+        void MoveClipper(double degree, double width);
+        void GetClipperInfo(ref double degree, ref double width);
+        void Move2AbsPosition(double x, double y, double z);
 
         XYZR GetCurrentPosition();
-        bool IsOpen { get; set; }
-   
+        
 
     }
 }

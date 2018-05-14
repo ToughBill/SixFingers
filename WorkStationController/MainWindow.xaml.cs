@@ -266,7 +266,9 @@ namespace WorkstationController
             CommandsManager.NewCarrier = new RoutedUICommand("New Carrier", "NewCarrier", typeof(MainWindow), null);
             CommandsManager.DuplicateCarrier = new RoutedUICommand("Duplicate Carrier", "DuplicateCarrier", typeof(MainWindow), null);
             CommandsManager.DeleteCarrier = new RoutedUICommand("Delete Carrier", "DeleteCarrier", typeof(MainWindow), null);
+            
         }
+
         #endregion
 
         /// <summary>
@@ -296,15 +298,15 @@ namespace WorkstationController
             InitializeComponent();
 
             // Initialize pipettor element manager
-            //try
+            try
             {
                 this._pipettorElementManager.Initialize();
             }
-            //catch(Exception ex)
-            //{
-            //    MessageBox.Show(ex.Message, Properties.Resources.StartupFailed);
-            //    return;
-            //}
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message, Properties.Resources.StartupFailed);
+                return;
+            }
 
             // Initialize supported command
             this._supportedCommands = Command.CreatSupportedCommands();

@@ -131,7 +131,16 @@ namespace WorkstationController.Core.Managements
             return labware.GridID * 10 + labware.SiteID;
         }
 
-      
+
+
+        public void ReplaceTips()
+        {
+            var ditiInfo = _layout.DitiInfo;
+            for(int i = 0; i < ditiInfo.DitiInfoItems.Count;i++)
+            {
+                ditiInfo.DitiInfoItems[i].count = 96;
+            }
+        }
     }
 
  

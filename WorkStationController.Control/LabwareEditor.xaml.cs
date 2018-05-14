@@ -21,6 +21,7 @@ namespace WorkstationController.Control
         InputChecker inputChecker = new InputChecker();
         DateTime lastUpdateTime = DateTime.Now;
         System.Timers.Timer updatePositionTimer = new System.Timers.Timer(250);
+        int speed = 1;
         #endregion
 
         /// <summary>
@@ -32,6 +33,7 @@ namespace WorkstationController.Control
             InitializeComponent();
             inputChecker.OnStartMove += inputChecker_OnStartMove;
             inputChecker.OnStopMove += inputChecker_OnStopMove;
+            TeachingControllerDelegate.Instance.RegisterController(new TeachingControllerSimulator());
             updatePositionTimer.Elapsed += updatePositionTimer_Elapsed;
             this.Loaded += LabwareEditor_Loaded;
             this.Unloaded += LabwareEditor_Unloaded;
@@ -40,6 +42,7 @@ namespace WorkstationController.Control
 
         void updatePositionTimer_Elapsed(object sender, System.Timers.ElapsedEventArgs e)
         {
+            Debug.WriteLine("Query position");
             xyzr = TeachingControllerDelegate.Instance.Controller.GetPosition(ArmType.Liha);
         }
 
@@ -66,6 +69,7 @@ namespace WorkstationController.Control
     
         private void StartCheckingInput()
         {
+            
             inputChecker.Start();
             updatePositionTimer.Start();
           
@@ -79,7 +83,7 @@ namespace WorkstationController.Control
 
         void inputChecker_OnStartMove(object sender, Direction e)
         {
-            TeachingControllerDelegate.Instance.Controller.StartMove(e);
+            TeachingControllerDelegate.Instance.Controller.StartMove(e,speed);
             updatePositionTimer.Start();
         }
 
@@ -229,8 +233,25 @@ namespace WorkstationController.Control
             if (labware.PlateVector == null)
                 labware.PlateVector = new PlateVector(true);
             labware.PlateVector.Name = labware.Label;
-            RomaTeachingForm romaTeachingForm = new RomaTeachingForm(labware.PlateVector, newInfoHandler);
+            
+            RomaTeachingForm romaTeachingForm = new RomaTeachingForm(labware.PlateVector,updatePositionTimer, newInfoHandler);
             romaTeachingForm.ShowDialog();
+        }
+
+        private void rdbSpeed_Checked(object sender, RoutedEventArgs e)
+        {
+            if (rdbHighSpeed == null)
+                return;
+
+            bool isLowSpeed = (bool)rdbLowSpeed.IsChecked;
+            bool isMediumSpeed = (bool)rdbMediumSpeed.IsChecked;
+            bool isHighSpeed = (bool)rdbHighSpeed.IsChecked;
+            if (isLowSpeed)
+                speed = 1;
+            else if (isMediumSpeed)
+                speed = 10;
+            else
+                speed = 50;
         }
 
 
