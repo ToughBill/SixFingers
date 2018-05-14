@@ -133,12 +133,27 @@ namespace WTPipetting.Hardware
             OnCommandExecuted(sDesc);
             if (NeedPauseOrStop())
                 return true;
-            sDesc = hardwareController.Liha.Aspirate(lihaCommand.srcLabware, new List<int>() { lihaCommand.srcWellID }, new List<double>() { lihaCommand.volume }, lihaCommand.liquidClass);
-            OnCommandExecuted(sDesc);
+
+            bool needSkipDispense = false;
+            try
+            {
+                sDesc = hardwareController.Liha.Aspirate(lihaCommand.srcLabware, new List<int>() { lihaCommand.srcWellID }, new List<double>() { lihaCommand.volume }, lihaCommand.liquidClass);
+                OnCommandExecuted(sDesc);
+            }
+            catch(SkipException ex)
+            {
+                needSkipDispense = true;
+            }
+            
+            
             if (NeedPauseOrStop())
                 return true;
-            sDesc = hardwareController.Liha.Dispense(lihaCommand.dstLabware, new List<int>() { lihaCommand.dstWellID }, new List<double>() { lihaCommand.volume }, lihaCommand.liquidClass);
-            OnCommandExecuted(sDesc);
+            if(!needSkipDispense) //if need skip,skip
+            {
+                sDesc = hardwareController.Liha.Dispense(lihaCommand.dstLabware, new List<int>() { lihaCommand.dstWellID }, new List<double>() { lihaCommand.volume }, lihaCommand.liquidClass);
+                OnCommandExecuted(sDesc);
+            }
+            
             if (NeedPauseOrStop())
                 return true;
             sDesc = hardwareController.Liha.DropTip();

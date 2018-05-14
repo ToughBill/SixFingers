@@ -20,7 +20,9 @@ namespace SKHardwareController
         TipManagement tipManagement;
         Layout layout;
         string portNum;
-        
+        const int maxSpeedV = 200;
+        const int startSpeedV = 10;
+        const int endSpeedV = 10
         public Liha(Layout layout, string portNum)
         {
             this.layout = layout;
@@ -201,17 +203,58 @@ namespace SKHardwareController
             Move2Position(labwareLabel, wellIDs.First());
             var labware = layout.FindLabware(labwareLabel);
             Move2PositionZStart(labwareLabel, wellIDs.First());
-            int mmPerSecond = 50;
-            var res = MoveController.Instance.DetectLiquid(labware.ZValues.ZStart, labware.ZValues.ZMax, mmPerSecond);
-            if(res == e_RSPErrorCode.RSP_ERROR_NONE)
+            while (true)
             {
-
+                bool bok = TryDetectLiquid(labware);
+                bool hasEnoughLiquid = IsEnoughLiquid(labware, volumes.First());
+                if (!hasEnoughLiquid)
+                    bok = false;
+                if (bok)
+                    break;
+                else
+                {
+                    string title = !hasEnoughLiquid ? "液体不足" : "";
+                    LiquidNotDetected liquidNotDetectForm = new LiquidNotDetected(title);
+                    liquidNotDetectForm.ShowDialog();
+                    if (liquidNotDetectForm.UserSelection == NextActionOfNoLiquid.abort)
+                        throw new CriticalException("无法检测到液体，放弃运行程序！");
+                    else if (liquidNotDetectForm.UserSelection == NextActionOfNoLiquid.aspirateAir)
+                    {
+                        //aspirate air
+                        Move2Position(labwareLabel, wellIDs.First());
+                        MoveController.Instance.Aspirate(volumes.First(), maxSpeedV,startSpeedV, endSpeedV);
+                    }
+                    else if (liquidNotDetectForm.UserSelection == NextActionOfNoLiquid.skip)
+                    {
+                        throw new SkipException();
+                    }
+                    else
+                    {
+                        ;
+                    }
+                }
+                    
             }
-            //not detected
-            //not enough liquid
-            //air,goto zmax
+            MoveController.Instance.Aspirate(volumes.First(),maxSpeedV,startSpeedV, endSpeedV);
             //jump the sample
             return sCommandDesc;
+        }
+
+        private bool IsEnoughLiquid(Labware labware,double volume)
+        {
+            double x, y, z;
+            x = y = z = 0;
+            MoveController.Instance.GetCurrentPosition(_eARM.左臂, ref x, ref y, ref z);
+            double crossSectionArea = labware.WellsInfo.WellRadius * labware.WellsInfo.WellRadius * Math.PI;
+            double tubeThickness = 1; //mm
+            return crossSectionArea * (z - tubeThickness) > volume;
+        }
+
+        private bool TryDetectLiquid(Labware labware)
+        {
+            const int mmPerSecond = 50;
+            var res = MoveController.Instance.DetectLiquid(labware.ZValues.ZStart, labware.ZValues.ZMax, mmPerSecond,1);
+            return res == e_RSPErrorCode.RSP_ERROR_NONE;
         }
 
         private void Move2PositionZStart(string labwareLabel, int wellID)
@@ -246,6 +289,7 @@ namespace SKHardwareController
         {
             MoveController.Instance.Init(portNum);
             MoveController.Instance.MoveHome(_eARM.两个,MoveController.defaultTimeOut);
+            MoveController.Instance.InitCarvo();
         }
 
 

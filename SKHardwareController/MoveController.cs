@@ -110,12 +110,12 @@ namespace SKHardwareController
             throw new NotImplementedException();
         }
 
-        public e_RSPErrorCode DetectLiquid(double zStart, double zMax, double speedMMPerSecond)
+        public e_RSPErrorCode DetectLiquid(double zStart, double zMax, double speedMMPerSecond, double subMergeMM)
         {
             throw new NotImplementedException();
         }
 
-        public e_RSPErrorCode Aspirate(double volume, double speedMax, double speedStart, double speedStop)
+        public e_RSPErrorCode Aspirate(double volume, double speedMax, double speedStart, double speedStop,bool tracking)
         {
             throw new NotImplementedException();
         }
@@ -347,16 +347,14 @@ namespace SKHardwareController
             Listening = false;
         }
 
-        public void GetCurrentPosition(_eARM armID, ref double x, ref  double y, ref  double z, ref double rotationDegree)
+        public void GetCurrentPosition(_eARM armID, ref double x, ref  double y, ref  double z)
         {
-            
             x = 0;
             y = 0;
             z = 0;
             x = Math.Round(x, 1);
             y = Math.Round(y, 1);
             z = Math.Round(z, 1);
-            rotationDegree = 0;
         }
 
         private bool IsCriticalError(e_RSPErrorCode errorCode)
@@ -515,11 +513,9 @@ namespace SKHardwareController
         Y失步,//RSP_ERROR_Step_loss_Y,  //Step loss detected on Y-axis
         Z失步,//RSP_ERROR_Step_loss_Z,  //Step loss detected on Z-axis
         命令缓存溢出,//RSP_ERROR_Command_overflow, //Command overflow
-        没液体ZX,//RSP_ERROR_NoLiquid_ZX,         //No liquid detected with ZX-command
         超范围,//RSP_ERROR_ZMove_out_of_range,   //Entered move for Z-axis out of range
         液体不足ZX,//RSP_ERROR_Not_enough_liquid_ZX,    //Not enough liquid detected with ZX-command
         没液体ZZ,//RSP_ERROR_Noliquid_ZZ,  //No liquid detected with ZZ-command
-        液体不足ZZ,//RSP_ERROR_Not_enough_liquid_ZZ, //Not enough liquid detected with ZZ-command
         RSP_ERROR_Reserved1,
         RSP_ERROR_Reserved2,
         RSP_ERROR_Reserved3,

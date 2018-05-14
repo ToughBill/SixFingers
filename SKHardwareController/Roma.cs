@@ -37,18 +37,26 @@ namespace SKHardwareController
 
         public void MoveClipper(double degree, double width)
         {
-            throw new NotImplementedException();
+            var res = MoveController.Instance.MoveClipper(degree, width);
+            if(res != e_RSPErrorCode.RSP_ERROR_NONE)
+            {
+                throw new CriticalException(res.ToString());
+            }
         }
 
         public void Move2AbsPosition(double x, double y, double z)
         {
-            throw new NotImplementedException();
+            var res = MoveController.Instance.MoveXYZ(_eARM.右臂, x, y, z, MoveController.defaultTimeOut);
+            if (res != e_RSPErrorCode.RSP_ERROR_NONE)
+            {
+                throw new CriticalException(res.ToString());
+            }
         }
 
 
         public void GetClipperInfo(ref double degree, ref double width)
         {
-            throw new NotImplementedException();
+            MoveController.Instance.GetClipperInfo(ref degree, ref width);
         }
     }
 }

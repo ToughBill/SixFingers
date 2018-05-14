@@ -17,7 +17,9 @@ namespace WorkstationController.Core.Data
         }
 
     }
-
+    public class SkipException : Exception
+    {
+    }
     public class CriticalException : Exception
     {
         public string Description { get; set; }

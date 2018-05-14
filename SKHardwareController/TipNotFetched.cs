@@ -24,7 +24,7 @@ namespace SKHardwareController
 
         private void Exit(NextActionOfNoTip nextActionOfNoTip)
         {
-            NextActionOfNoTip action = nextActionOfNoTip;
+            UserSelection = nextActionOfNoTip;
             this.Close();
         }
 
@@ -38,7 +38,7 @@ namespace SKHardwareController
             Exit(NextActionOfNoTip.retry);
         }
 
-        public NextActionOfNoTip Action { get; set; }
+        public NextActionOfNoTip UserSelection { get; set; }
     }
 
     public enum NextActionOfNoTip

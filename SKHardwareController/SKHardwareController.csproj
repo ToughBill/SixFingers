@@ -50,6 +50,12 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="ArmBase.cs" />
+    <Compile Include="LiquidNotDetected.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="LiquidNotDetected.Designer.cs">
+      <DependentUpon>LiquidNotDetected.cs</DependentUpon>
+    </Compile>
     <Compile Include="MoveController.cs" />
     <Compile Include="Liha.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -78,6 +84,9 @@
     </Content>
   </ItemGroup>
   <ItemGroup>
+    <EmbeddedResource Include="LiquidNotDetected.resx">
+      <DependentUpon>LiquidNotDetected.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="TipNotFetched.resx">
       <DependentUpon>TipNotFetched.cs</DependentUpon>
     </EmbeddedResource>
