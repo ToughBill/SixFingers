@@ -17,7 +17,7 @@ namespace WorkstationController.Control
         Labware labware;
         #region teaching related
         XYZR xyzr = new XYZR(0, 0, 0);
-      
+        RomaTeachingForm romaTeachingForm;
         InputChecker inputChecker = new InputChecker();
         DateTime lastUpdateTime = DateTime.Now;
         System.Timers.Timer updatePositionTimer = new System.Timers.Timer(250);
@@ -81,9 +81,14 @@ namespace WorkstationController.Control
             updatePositionTimer.Stop();
         }
 
-        void inputChecker_OnStartMove(object sender, Direction e)
+        void inputChecker_OnStartMove(object sender, Direction dir)
         {
-            TeachingControllerDelegate.Instance.Controller.StartMove(e,speed);
+            ArmType armType = ArmType.Liha;
+            if( romaTeachingForm != null &&romaTeachingForm.IsVisible )
+            {
+                armType = ArmType.Roma;
+            }
+            TeachingControllerDelegate.Instance.Controller.StartMove(armType, dir,speed);
             updatePositionTimer.Start();
         }
 
@@ -233,8 +238,8 @@ namespace WorkstationController.Control
             if (labware.PlateVector == null)
                 labware.PlateVector = new PlateVector(true);
             labware.PlateVector.Name = labware.Label;
-            
-            RomaTeachingForm romaTeachingForm = new RomaTeachingForm(labware.PlateVector,updatePositionTimer, newInfoHandler);
+
+            romaTeachingForm = new RomaTeachingForm(labware.PlateVector, updatePositionTimer, newInfoHandler);
             romaTeachingForm.ShowDialog();
         }
 

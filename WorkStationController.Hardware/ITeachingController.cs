@@ -12,9 +12,10 @@ namespace WorkstationController.Hardware
         void Init(string sPort);
         void Move2XYZR(ArmType armType,XYZR xyzr);
 
-       
+        void MoveClipper(double degree, double clipWidth);
+        void GetClipperInfo(ref double degree, ref double clipWidth);
         XYZR GetPosition(ArmType armType);
-        void StartMove(Direction e, int speedMMPerSecond);
+        void StartMove(ArmType armType,Direction dir, int speedMMPerSecond);
         void StopMove();
     }
 
@@ -27,8 +28,8 @@ namespace WorkstationController.Hardware
         Right,
         ZUp,
         ZDown,
-        RotateLeft,
-        RotateRight,
+        RotateCW,
+        RotateCCW,
         ClampOn,
         ClampOff
     }

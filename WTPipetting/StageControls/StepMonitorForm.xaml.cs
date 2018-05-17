@@ -17,6 +17,7 @@ using WTPipetting.Data;
 using WTPipetting.Navigation;
 using WTPipetting.Utility;
 using WTPipetting.Hardware;
+using WorkstationController.Core.Data;
 
 namespace WTPipetting.StageControls
 {
@@ -29,10 +30,12 @@ namespace WTPipetting.StageControls
         Worklist wkList = new Worklist();
         ObservableCollection<StepDefinitionWithProgressInfo> stepsDefWithProgressInfo;
         RunState runState = RunState.Start;
+        LogForm logForm;
         public StepMonitorForm(Stage stage, BaseHost host)
             : base(stage, host)
         {
             log.Info("StepMonitorForm");
+            logForm = new LogForm();
             InitializeComponent();
         }
 
@@ -41,6 +44,7 @@ namespace WTPipetting.StageControls
         {
             base.Initialize();
             InitStepsInfo();
+            
         }
 
         private void InitStepsInfo()
@@ -95,14 +99,27 @@ namespace WTPipetting.StageControls
            
         }
 
-        void wkList_OnCommandInfo(object sender, string e)
+        private void wkList_OnCommandInfo(object sender, List<ITrackInfo> e)
         {
-            this.Dispatcher.Invoke(() =>
-            {
-                txtLog.Text += e;
-                txtLog.Text += "\r\n";
-            });
+           string  s ="";
+           foreach(var baseTrackInfo in e)
+           {
+               if(baseTrackInfo is PipettingTrackInfo)
+               {
+                   s = ((PipettingTrackInfo)baseTrackInfo).Stringfy();
+                   logForm.AddLog(s);
+               }
+           }
         }
+
+        //void wkList_OnCommandInfo(object sender, string e)
+        //{
+        //    this.Dispatcher.Invoke(() =>
+        //    {
+        //        txtLog.Text += e;
+        //        txtLog.Text += "\r\n";
+        //    });
+        //}
 
 
         #region event handler

@@ -26,8 +26,8 @@ namespace WorkstationController.Control
             keyboard_Direction.Add(SharpDX.DirectInput.Key.K, Direction.ZDown);
             keyboard_Direction.Add(SharpDX.DirectInput.Key.A, Direction.Left);
             keyboard_Direction.Add(SharpDX.DirectInput.Key.D, Direction.Right);
-            keyboard_Direction.Add(SharpDX.DirectInput.Key.J, Direction.RotateLeft);
-            keyboard_Direction.Add(SharpDX.DirectInput.Key.L, Direction.RotateRight);
+            keyboard_Direction.Add(SharpDX.DirectInput.Key.J, Direction.RotateCW);
+            keyboard_Direction.Add(SharpDX.DirectInput.Key.L, Direction.RotateCCW);
             keyboard_Direction.Add(SharpDX.DirectInput.Key.O, Direction.ClampOn);
             keyboard_Direction.Add(SharpDX.DirectInput.Key.P, Direction.ClampOff);
         }
@@ -134,7 +134,7 @@ namespace WorkstationController.Control
             if (zUpButton || zDownButton)
                 dir = zUpButton ? Direction.ZUp : Direction.ZDown;
             if (rotateLeftButton || rotateRightButton)
-                dir = rotateLeftButton ? Direction.RotateLeft : Direction.RotateRight;
+                dir = rotateLeftButton ? Direction.RotateCW : Direction.RotateCCW;
             return dir;
         }
 

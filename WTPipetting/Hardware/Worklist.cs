@@ -12,6 +12,7 @@ using WTPipetting.Utility;
 using System.Collections.ObjectModel;
 using System.Threading;
 using System.Windows;
+using WorkstationController.Core.Utility;
 
 namespace WTPipetting.Hardware
 {
@@ -33,7 +34,7 @@ namespace WTPipetting.Hardware
         public event OnStepChangedDelegate OnStepChanged;
 
         public event EventHandler<string> OnCriticalErrorHappened;
-        public event EventHandler<string> OnCommandInfo;
+        public event EventHandler<List<ITrackInfo>> OnCommandInfo;
       
         void NotifyStepStarted(int currentStep)
         {
@@ -85,12 +86,19 @@ namespace WTPipetting.Hardware
             //srcLabware.PlateVector.Positions
             
             bool needBreak = RunPlateVector(srcLabware.PlateVector);
-            OnCommandInfo(this,string.Format("Move to source plate:{0}",srcLabware.Label));
+            ITrackInfo romaTrackInfo = new RomaTrackInfo(srcLabware.Label,dstLabware.Label,false);
+            //OnCommandInfo(this,string.Format("Move to source plate:{0}",srcLabware.Label));
             if(needBreak)
+            {
+                OnCommandExecuted( new List<ITrackInfo>() { romaTrackInfo });
                 return true;
+            }
+                
 
             needBreak = RunPlateVector(dstLabware.PlateVector);
-            OnCommandInfo(this,string.Format("Move to dst plate:{0}",dstLabware.Label));
+            ((RomaTrackInfo)romaTrackInfo).AllFinished = true;
+            //OnCommandInfo(this,string.Format("Move to dst plate:{0}",dstLabware.Label));
+            OnCommandExecuted(new List<ITrackInfo>() { romaTrackInfo });
             return needBreak;
 
         }
@@ -127,18 +135,27 @@ namespace WTPipetting.Hardware
 
         private bool RunLihaCommand(ILiquidHandlerCommand machineCommand)
         {
-
- 	        string sDesc = hardwareController.Liha.GetTip(new List<int>() { 1 });
+            
+            if(hardwareController.Liha.IsTipMounted)
+            {
+                ITrackInfo trackInfo = null;
+                hardwareController.Liha.DropTip(ref trackInfo);
+            }
+            
+            
+            List<ITrackInfo> ditiTrackInfos = null;
+            hardwareController.Liha.GetTip(new List<int>() { 1 }, ref ditiTrackInfos);
             LihaCommand lihaCommand = machineCommand as LihaCommand;
-            OnCommandExecuted(sDesc);
+            OnCommandExecuted(ditiTrackInfos);
             if (NeedPauseOrStop())
                 return true;
-
+            var liquidClass = PipettorElementManager.Instance.LiquidClasses.First(x => x.SaveName == lihaCommand.liquidClass);
             bool needSkipDispense = false;
             try
             {
-                sDesc = hardwareController.Liha.Aspirate(lihaCommand.srcLabware, new List<int>() { lihaCommand.srcWellID }, new List<double>() { lihaCommand.volume }, lihaCommand.liquidClass);
-                OnCommandExecuted(sDesc);
+                var TrackInfos = new List<ITrackInfo>();
+                hardwareController.Liha.Aspirate(lihaCommand.srcLabware, new List<int>() { lihaCommand.srcWellID }, new List<double>() { lihaCommand.volume }, liquidClass, ref TrackInfos);
+                OnCommandExecuted(TrackInfos);
             }
             catch(SkipException ex)
             {
@@ -150,21 +167,23 @@ namespace WTPipetting.Hardware
                 return true;
             if(!needSkipDispense) //if need skip,skip
             {
-                sDesc = hardwareController.Liha.Dispense(lihaCommand.dstLabware, new List<int>() { lihaCommand.dstWellID }, new List<double>() { lihaCommand.volume }, lihaCommand.liquidClass);
-                OnCommandExecuted(sDesc);
+                var TrackInfos = new List<ITrackInfo>();
+                hardwareController.Liha.Dispense(lihaCommand.dstLabware, new List<int>() { lihaCommand.dstWellID }, new List<double>() { lihaCommand.volume }, liquidClass, ref TrackInfos);
+                OnCommandExecuted(TrackInfos);
             }
             
             if (NeedPauseOrStop())
                 return true;
-            sDesc = hardwareController.Liha.DropTip();
-            OnCommandExecuted(sDesc);
+            ITrackInfo ditiTrackInfo = null;
+            hardwareController.Liha.DropTip(ref ditiTrackInfo);
+            OnCommandExecuted(new List<ITrackInfo>(){ditiTrackInfo});
             return false;
         }
 
-        private void OnCommandExecuted(string sDesc)
+        private void OnCommandExecuted(List<ITrackInfo> trackInfos)
         {
             if (OnCommandInfo != null)
-                OnCommandInfo(this,sDesc);
+                OnCommandInfo(this, trackInfos);
         }
 
         public void Run()

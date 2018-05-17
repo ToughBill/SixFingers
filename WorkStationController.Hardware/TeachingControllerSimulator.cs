@@ -12,7 +12,6 @@ namespace WorkstationController.Hardware
     public class TeachingControllerSimulator : ITeachingController
     {
         XYZR currentPosition = new XYZR(0,0,0);
-        bool isMoving = false;
         Stopwatch stopWatch = new Stopwatch();
         int speed_mmPerSecond = 0;
         Direction dir;
@@ -57,14 +56,12 @@ namespace WorkstationController.Hardware
         public void Move2XYZR(ArmType armType, Core.Data.XYZR xyzr)
         {
             Random rnd = new Random((int)DateTime.Now.Ticks);
-            isMoving = true;
             double xDiff = xyzr.X - currentPosition.X;
             double yDiff = xyzr.Y - currentPosition.Y;
             double zDiff = xyzr.Z - currentPosition.Z;
             double maxDis = Math.Max(Math.Max(xDiff, yDiff), zDiff);
             int milliSeconds = (int)(maxDis / 0.8);
             Thread.Sleep(milliSeconds);
-            isMoving = false;
             currentPosition = xyzr;
         }
 
@@ -75,15 +72,6 @@ namespace WorkstationController.Hardware
         }
 
 
-        public void StartMove(Direction e, int speed)
-        {
-            updatePositionTimer.Start();
-            Debug.WriteLine(string.Format("start move at:{0}",e.ToString()));
-            stopWatch.Restart();
-            speed_mmPerSecond = speed;
-            dir = e;
-            
-        }
 
         public void StopMove()
         {
@@ -118,6 +106,27 @@ namespace WorkstationController.Hardware
         }
 
 
-       
+
+
+
+        public void StartMove(ArmType armType, Direction dir, int speedMMPerSecond)
+        {
+            updatePositionTimer.Start();
+            Debug.WriteLine(string.Format("start move at:{0}", dir.ToString()));
+            stopWatch.Restart();
+            this.speed_mmPerSecond = speedMMPerSecond;
+            this.dir = dir;
+        }
+
+
+        public void MoveClipper(double degree, double clipWidth)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void GetClipperInfo(ref double degree, ref double clipWidth)
+        {
+            throw new NotImplementedException();
+        }
     }
 }

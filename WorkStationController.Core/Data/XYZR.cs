@@ -20,6 +20,14 @@ namespace WorkstationController.Core.Data
             this.z = z;
             this.r = r;
         }
+
+        public XYZR(XYZR newVal)
+        {
+            x = newVal.x;
+            y = newVal.y;
+            z = newVal.z;
+            r = newVal.r;
+        }
         public double X
         {
             get

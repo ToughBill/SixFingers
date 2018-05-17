@@ -6,26 +6,30 @@ using System.Threading.Tasks;
 
 namespace WorkstationController.Core.Data
 {
-    public class LihaTrackInfo
+    public class PipettingTrackInfo : ITrackInfo
     {
-        private string srcLabware;
-        private string dstLabware;
-        private string srcWellID;
-        private string dstWellID;
+        private string labware;
+        private string wellID;
         private double volume;
         private PipettingResult result;
-        public LihaTrackInfo(string srcLabware, string dstLabware, 
-            string srcWellID, string dstWellID,
-            double volume ,PipettingResult result)
+        bool isAsp;
+        public PipettingTrackInfo(string labware, string wellID,
+            double volume ,PipettingResult result, bool isAsp = true)
         {
-            this.srcLabware = srcLabware;
-            this.dstLabware = dstLabware;
-            this.srcWellID = srcWellID;
-            this.dstWellID = dstWellID;
+            this.labware = labware;
+            this.wellID = wellID;
             this.volume = volume;
             this.result = result;
+            this.isAsp = isAsp;
         }
 
+        public string Name
+        {
+            get
+            {
+                return isAsp? "Aspirate" : "Dispense";
+            }
+        } 
         public double Volume
         {
             get
@@ -50,66 +54,96 @@ namespace WorkstationController.Core.Data
             }
         }
 
-        public string SrcWellID
+        public string WellID
         {
             get
             {
-                return srcWellID;
+                return wellID;
             }
             set
             {
-                srcWellID = value;
+                wellID = value;
             }
         }
 
-        public string DstWellID
-        {
-            get
-            {
-                return dstWellID;
-            }
-            set
-            {
-                dstWellID = value;
-            }
-        }
+     
 
-        public string SrcLabware
+        public string Labware
         {
             get
             {
-                return srcLabware;
+                return labware;
             }
             set
             {
-                srcLabware = value;
-            }
-        }
-
-        public string DstLabware
-        {
-            get
-            {
-                return dstLabware;
-            }
-            set
-            {
-                dstLabware = value;
+                labware = value;
             }
         }
 
 
+        public string Stringfy()
+        {
+            
+            if( isAsp)
+                return string.Format("从{0}的孔{1}吸{2}ul,-{3}", Labware, WellID, Volume,TranslateResult(result));
+            else
+                return string.Format("喷{0}ul到{1}的孔{2}", Volume,Labware, WellID);
+        }
 
+        private string TranslateResult(PipettingResult result)
+        {
+            string s = "";
+            switch(result)
+            {
+                case PipettingResult.abort:
+                    s = "中止！";
+                    break;
+                case PipettingResult.air:
+                    s = "吸空气";
+                    break;
+                case PipettingResult.nothing:
+                    s = "跳过";
+                    break;
+                case PipettingResult.ok:
+                    s = "";
+                    break;
+                case PipettingResult.zmax:
+                    s = "zMax";
+                    break;
+            }
+            return s;
+        }
     }
 
-    public class RomaTrackInfo
+    public class RomaTrackInfo : ITrackInfo
     {
         private string srcLabware;
         private string dstLabware;
-        public RomaTrackInfo(string srcLabware, string dstLabware )
+        bool allFinished = true;
+        public RomaTrackInfo(string srcLabware, string dstLabware, bool allFinished = true )
         {
             this.srcLabware = srcLabware;
             this.dstLabware = dstLabware;
+            this.allFinished = allFinished;
+        }
+        public bool AllFinished
+        {
+            get
+            {
+                return allFinished;
+            }
+            set
+            {
+                allFinished = value;
+            }
+        }
+
+        public string Name
+        {
+            get
+            {
+                return "Roma";
+            }
         }
 
         public string SrcLabware
@@ -135,14 +169,54 @@ namespace WorkstationController.Core.Data
                 dstLabware = value;
             }
         }
+
+
+        public string Stringfy()
+        {
+            return string.Format("从{0}抓到{1}", srcLabware, dstLabware);
+        }
     }
 
+    public class DitiTrackInfo : ITrackInfo
+    {
+        private bool isGetDiti = true;
+        public DitiTrackInfo(string label, int ditiID, bool succeed, bool isGetDiti = true)
+        {
+            DitiLabel = label;
+            ID = ditiID;
+            Succeed = succeed;
+            this.isGetDiti = isGetDiti;
+        }
 
+        public bool Succeed { get; set; }
+        public string DitiLabel { get; set; }
+        public int ID { get; set; }
+        public string Name
+        {
+            get
+            {
+                return isGetDiti ? "GetDiti" : "DropDiti";
+            }
+        }
+
+        public string Stringfy()
+        {
+            return string.Format("从{0}的第{1}个位置取枪头,{2}", DitiLabel, ID,Succeed ? "成功":"失败");
+        }
+    }
+    public interface ITrackInfo
+    {
+        string Name { get; }
+        string Stringfy();
+    }
+
+    
     public enum PipettingResult
     {
         ok,
         air,
         nothing,
+        zmax,
         abort
     }
 }

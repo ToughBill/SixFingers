@@ -4,6 +4,7 @@ using System.Configuration;
 using System.Diagnostics;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Windows.Forms;
 using WorkstationController.Core.Data;
 using WorkstationController.Core.Managements;
@@ -22,7 +23,7 @@ namespace SKHardwareController
         string portNum;
         const int maxSpeedV = 200;
         const int startSpeedV = 10;
-        const int endSpeedV = 10
+        const int endSpeedV = 10;
         public Liha(Layout layout, string portNum)
         {
             this.layout = layout;
@@ -51,12 +52,13 @@ namespace SKHardwareController
             log.InfoFormat("Move to: {0}_{1}_{2}", xyz.X, xyz.Y, xyz.Z);
             MoveFirstTip2AbsolutePosition((float)xyz.X, (float)xyz.Y, (float)xyz.Z);
         }
+
         public void MoveFirstTip2AbsolutePosition(float x, float y, float z)
         {
             Stopwatch stopWatcher = new Stopwatch();
             stopWatcher.Start();
-            var err = MoveController.Instance.MoveXYZ(_eARM.左臂, (int)x, (int)y,(int) z, timeOutSeconds * 1000);
-
+            var res = MoveController.Instance.MoveXYZ(_eARM.左臂, (int)x, (int)y, (int)z, timeOutSeconds * 1000);
+            ThrowCriticalException(res);
             //if(MoveController.Instance.ErrorHappened)
             //{
             //    throw new CriticalException(err.ToString());
@@ -102,8 +104,10 @@ namespace SKHardwareController
             throw new NotImplementedException();
         }
 
-        public string GetTip(List<int> tipIDs)
+        public void GetTip(List<int> tipIDs,ref List<ITrackInfo> trackInfos)
         {
+            trackInfos = new List<ITrackInfo>();
+
             string sCommandDesc = string.Format("Get tip from ditibox:{0} remain:{1}", 
                 tipManagement.CurrentLabware, 
                 tipManagement.CurrentDitiID);
@@ -118,24 +122,20 @@ namespace SKHardwareController
             while(true)
             {
                 bool bok = TryGetTip(zDistanceFetchTip);
-                if (!bok)
-                {
-                    TipNotFetched tipNotFetched = new TipNotFetched();
-                    tipNotFetched.ShowDialog();
-
-                    if (tipNotFetched.UserSelection == NextActionOfNoTip.abort)
-                        throw new CriticalException("取不到枪头，放弃运行程序！");
-                    else if (tipNotFetched.UserSelection == NextActionOfNoTip.retryNextPosition)
-                        tuple = Move2NextTipPosition();
-                    else
-                    {
-                        Move2SearchTipPosition(tuple);
-                    }
-                }
-                else
+                trackInfos.Add(new DitiTrackInfo(tipManagement.CurrentLabware.Label, tipManagement.CurrentDitiID, bok));
+                if (bok)
                     break;
+                TipNotFetched tipNotFetched = new TipNotFetched();
+                tipNotFetched.ShowDialog();
+                if (tipNotFetched.UserSelection == NextActionOfNoTip.abort)
+                    throw new CriticalException("取不到枪头，放弃运行程序！");
+                else if (tipNotFetched.UserSelection == NextActionOfNoTip.retryNextPosition)
+                    tuple = Move2NextTipPosition();
+                else
+                {
+                    Move2SearchTipPosition(tuple);
+                }
             }
-            return sCommandDesc;
         }
 
         private void Move2SearchTipPosition(Tuple<Labware, System.Windows.Point> tuple)
@@ -184,7 +184,7 @@ namespace SKHardwareController
             return MoveController.Instance.IsTipMounted;
         }
 
-        public string DropTip()
+        public void DropTip(ref ITrackInfo ditiTrackInfo)
         {
             string sCommandDesc = "Drop tip";
             log.Info(sCommandDesc);
@@ -192,21 +192,55 @@ namespace SKHardwareController
             xyz.X = position.X;
             xyz.Y = position.Y;
             Move2XYZ(xyz);
+            
+            while (true)
+            {
+                var res = MoveController.Instance.DropDiti();
+                bool bok = res == e_RSPErrorCode.RSP_ERROR_NONE;
+                ditiTrackInfo = new DitiTrackInfo(Labware.WasteLabel,1, bok, false);
+                if(bok)
+                {
+                    bok = !MoveController.Instance.IsTipMounted;
+                }
+
+                if (bok)
+                    break;
+
+                DitiNotDropped ditiNotDroppedForm = new DitiNotDropped();
+                ditiNotDroppedForm.ShowDialog();
+                var userSelection = ditiNotDroppedForm.UserSelection;
+                switch(userSelection)
+                {
+                    case DitiNotDroppedAction.abort:
+                        throw new CriticalException("无法丢弃枪头，放弃运行程序！");
+                    default:
+                        break;
+                }
+            }
             log.Info("Drop tip finished");
-            return sCommandDesc;
         }
 
-        public string Aspirate(string labwareLabel, List<int> wellIDs, List<double> volumes, string liquidClass)
+        public void Aspirate(string labwareLabel, List<int> wellIDs, List<double> volumes, LiquidClass liquidClass,ref List<ITrackInfo> trackInfos)
         {
-            string sCommandDesc = string.Format("Aspirate from:{0} at:{1} volume:{2},{3}", labwareLabel, wellIDs.First(), volumes.First(), liquidClass);
+            trackInfos = new List<ITrackInfo>();
+            int wellID = wellIDs.First();
+            double volume = volumes.First();
+            double leadingAirGap = liquidClass.AspirationSinglePipetting.LeadingAirgap;
+            string sCommandDesc = string.Format("Aspirate from:{0} at:{1} volume:{2},{3}", labwareLabel, wellID, volume, liquidClass.SaveName);
             log.InfoFormat(sCommandDesc);
-            Move2Position(labwareLabel, wellIDs.First());
+            Move2Position(labwareLabel, wellID);
             var labware = layout.FindLabware(labwareLabel);
-            Move2PositionZStart(labwareLabel, wellIDs.First());
+            Move2Position(labwareLabel, wellID, "ZStart");
+            //aspirate air gap
+            var res = MoveController.Instance.Aspirate(leadingAirGap, maxSpeedV, startSpeedV, endSpeedV);
+            ThrowCriticalException(res);
+
+
+            //检测不到或液体不够，循环询问，
             while (true)
             {
                 bool bok = TryDetectLiquid(labware);
-                bool hasEnoughLiquid = IsEnoughLiquid(labware, volumes.First());
+                bool hasEnoughLiquid = IsEnoughLiquid(labware, volume,liquidClass.AspirationSinglePipetting.SubMergeMM);
                 if (!hasEnoughLiquid)
                     bok = false;
                 if (bok)
@@ -216,82 +250,156 @@ namespace SKHardwareController
                     string title = !hasEnoughLiquid ? "液体不足" : "";
                     LiquidNotDetected liquidNotDetectForm = new LiquidNotDetected(title);
                     liquidNotDetectForm.ShowDialog();
-                    if (liquidNotDetectForm.UserSelection == NextActionOfNoLiquid.abort)
-                        throw new CriticalException("无法检测到液体，放弃运行程序！");
-                    else if (liquidNotDetectForm.UserSelection == NextActionOfNoLiquid.aspirateAir)
+                    var userSelection = liquidNotDetectForm.UserSelection;
+                    
+                    
+                    switch(userSelection)
                     {
-                        //aspirate air
-                        Move2Position(labwareLabel, wellIDs.First());
-                        MoveController.Instance.Aspirate(volumes.First(), maxSpeedV,startSpeedV, endSpeedV);
-                    }
-                    else if (liquidNotDetectForm.UserSelection == NextActionOfNoLiquid.skip)
-                    {
-                        throw new SkipException();
-                    }
-                    else
-                    {
-                        ;
+                        case NextActionOfNoLiquid.abort:
+                            trackInfos.Add(new PipettingTrackInfo(labwareLabel, wellID.ToString(), volume, PipettingResult.abort));        
+                            throw new CriticalException("无法检测到液体，放弃运行程序！");
+                        case NextActionOfNoLiquid.aspirateAir:
+                            Move2Position(labwareLabel, wellID);
+                            MoveController.Instance.Aspirate(volumes.First(), maxSpeedV,startSpeedV, endSpeedV);
+                            trackInfos.Add(new PipettingTrackInfo(labwareLabel, wellID.ToString(), volume, PipettingResult.air));
+                            break;
+                        case NextActionOfNoLiquid.gotoZMax:
+                            Move2Position(labwareLabel, wellID, "ZMax");
+                            MoveController.Instance.Aspirate(volumes.First(), maxSpeedV,startSpeedV, endSpeedV);
+                            trackInfos.Add(new PipettingTrackInfo(labwareLabel, wellID.ToString(), volume, PipettingResult.zmax));
+                            break;
+                        case NextActionOfNoLiquid.retry:
+                            break;
+                        case NextActionOfNoLiquid.skip:
+                            trackInfos.Add(new PipettingTrackInfo(labwareLabel, wellID.ToString(), volume, PipettingResult.nothing));
+                            throw new SkipException();
                     }
                 }
                     
             }
-            MoveController.Instance.Aspirate(volumes.First(),maxSpeedV,startSpeedV, endSpeedV);
-            //jump the sample
-            return sCommandDesc;
+
+            //tracking 吸液
+            DoTracking(labware,volume,liquidClass);
+            int excessVolume = 10;
+            res = MoveController.Instance.Aspirate(volume + excessVolume, liquidClass.AspirationSinglePipetting.AspirationSpeed, startSpeedV, endSpeedV);
+            ThrowCriticalException(res);
+
+            res = MoveController.Instance.Dispense(excessVolume, liquidClass.AspirationSinglePipetting.AspirationSpeed, startSpeedV, endSpeedV);
+            
+            //到zStart吸 trailing airGap
+            Move2Position(labwareLabel, wellID, "ZStart");
+            double trailingAirGap = liquidClass.AspirationSinglePipetting.TrailingAirgap;
+            MoveController.Instance.Aspirate(trailingAirGap, liquidClass.AspirationSinglePipetting.AspirationSpeed, startSpeedV, endSpeedV);
+
+            //delay
+            int delayMS = liquidClass.AspirationSinglePipetting.Delay;
+            Thread.Sleep(delayMS);
+
+            //Move 2 ZTravel
+            Move2Position(labwareLabel, wellID);
+
         }
 
-        private bool IsEnoughLiquid(Labware labware,double volume)
+        private void DoTracking(Labware labware, double volume, LiquidClass liquidClass)
+        {
+            double crossSectionArea = labware.WellsInfo.WellRadius * labware.WellsInfo.WellRadius * Math.PI;
+            double distance2Go = volume / crossSectionArea;
+            double seconds = volume / liquidClass.AspirationSinglePipetting.AspirationSpeed;
+            double goDownSpeed = distance2Go / seconds;
+            MoveController.Instance.MoveZAtSpeed(_eARM.左臂, goDownSpeed);
+        }
+
+        private void ThrowCriticalException(e_RSPErrorCode res)
+        {
+            if (res != e_RSPErrorCode.RSP_ERROR_NONE)
+                throw new CriticalException(res.ToString());
+        }
+
+     
+
+        private bool IsEnoughLiquid(Labware labware,double volume,int subMergeMM)
         {
             double x, y, z;
             x = y = z = 0;
-            MoveController.Instance.GetCurrentPosition(_eARM.左臂, ref x, ref y, ref z);
+            var res = MoveController.Instance.GetCurrentPosition(_eARM.左臂, ref x, ref y, ref z);
+            if (res != e_RSPErrorCode.RSP_ERROR_NONE)
+                throw new CriticalException(res.ToString());
             double crossSectionArea = labware.WellsInfo.WellRadius * labware.WellsInfo.WellRadius * Math.PI;
-            double tubeThickness = 1; //mm
-            return crossSectionArea * (z - tubeThickness) > volume;
+            double zMax = labware.ZValues.ZMax; //mm
+            return crossSectionArea * (zMax - z - subMergeMM) > volume;
         }
 
         private bool TryDetectLiquid(Labware labware)
         {
             const int mmPerSecond = 50;
-            var res = MoveController.Instance.DetectLiquid(labware.ZValues.ZStart, labware.ZValues.ZMax, mmPerSecond,1);
+            var res = MoveController.Instance.DetectLiquid(labware.ZValues.ZStart, labware.ZValues.ZMax, mmPerSecond);
             return res == e_RSPErrorCode.RSP_ERROR_NONE;
         }
 
-        private void Move2PositionZStart(string labwareLabel, int wellID)
+
+        private void Move2Position(string labwareLabel, int wellID, string zDescription = "ZTravel")
         {
             var labware = layout.FindLabware(labwareLabel);
             var position = labware.GetAbsPosition(wellID);
             xyz.X = position.X;
             xyz.Y = position.Y;
-            xyz.Z = labware.ZValues.ZStart;
+            switch(zDescription)
+            {
+                case "ZTravel":
+                    xyz.Z = labware.ZValues.ZTravel;
+                    break;
+                case "ZMax":
+                    xyz.Z = labware.ZValues.ZMax;
+                    break;
+                case "ZStart" :
+                    xyz.Z = labware.ZValues.ZStart;
+                    break;
+                case "ZDispense":
+                    xyz.Z = labware.ZValues.ZDispense;
+                    break;
+            }
             Move2XYZ(xyz);
         }
 
-        private void Move2Position(string labwareLabel, int wellID)
+        public void Dispense(string labwareLabel, List<int> wellIDs, List<double> volumes, LiquidClass liquidClass, ref List<ITrackInfo> trackInfos)
         {
-            var labware = layout.FindLabware(labwareLabel);
-            var position = labware.GetAbsPosition(wellID);
-            xyz.X = position.X;
-            xyz.Y = position.Y;
-            xyz.Z = labware.ZValues.ZTravel;
-            Move2XYZ(xyz);
-        }
-
-        public string Dispense(string labwareLabel, List<int> wellIDs, List<double> volumes, string liquidClass)
-        {
-            string sCommandDesc = string.Format("Dispense to:{0} at:{1} volume:{2},{3}", labwareLabel, wellIDs.First(), volumes.First(), liquidClass);
+            int wellID = wellIDs.First();
+            double volume = Math.Round(volumes.First(), 1);
+            string sWellID = wellID.ToString();
+            string sCommandDesc = string.Format("Dispense to:{0} at:{1} volume:{2},{3}", labwareLabel, wellID, volume, liquidClass);
             log.InfoFormat(sCommandDesc);
-            Move2Position(labwareLabel, wellIDs.First());
-            return sCommandDesc;
+
+            //air gap
+            int airGap = liquidClass.AspirationSinglePipetting.TrailingAirgap + liquidClass.AspirationSinglePipetting.LeadingAirgap;
+            volume += airGap;
+
+            Move2Position(labwareLabel, wellID);
+            Move2Position(labwareLabel, wellID, "ZDispense");
+            var res = MoveController.Instance.Dispense(volume, maxSpeedV, startSpeedV, endSpeedV);
+            
+            PipettingResult pipettingResult = res == e_RSPErrorCode.RSP_ERROR_NONE ? PipettingResult.ok : PipettingResult.abort;
+            PipettingTrackInfo pipettingTrackInfo = new PipettingTrackInfo(labwareLabel, sWellID, volume, pipettingResult);
+            trackInfos.Add(pipettingTrackInfo);
+            ThrowCriticalException(res);
+
+            Move2Position(labwareLabel, wellID);
         }
 
         public void Init()
         {
             MoveController.Instance.Init(portNum);
-            MoveController.Instance.MoveHome(_eARM.两个,MoveController.defaultTimeOut);
-            MoveController.Instance.InitCarvo();
+            var res = MoveController.Instance.MoveHome(_eARM.两个,MoveController.defaultTimeOut);
+            if (res != e_RSPErrorCode.RSP_ERROR_NONE)
+                throw new CriticalException(res.ToString());
+            res = MoveController.Instance.InitCarvo();
+            ThrowCriticalException(res);
         }
 
+       
 
+        public bool IsTipMounted
+        {
+            get { return MoveController.Instance.IsTipMounted; }
+        }
     }
 }

@@ -50,10 +50,16 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="ArmBase.cs" />
-    <Compile Include="LiquidNotDetected.cs">
+    <Compile Include="ErrorForms\DitiNotDropped.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="LiquidNotDetected.Designer.cs">
+    <Compile Include="ErrorForms\DitiNotDropped.Designer.cs">
+      <DependentUpon>DitiNotDropped.cs</DependentUpon>
+    </Compile>
+    <Compile Include="ErrorForms\LiquidNotDetected.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="ErrorForms\LiquidNotDetected.Designer.cs">
       <DependentUpon>LiquidNotDetected.cs</DependentUpon>
     </Compile>
     <Compile Include="MoveController.cs" />
@@ -61,10 +67,10 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Roma.cs" />
     <Compile Include="TeachingImplement.cs" />
-    <Compile Include="TipNotFetched.cs">
+    <Compile Include="ErrorForms\TipNotFetched.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="TipNotFetched.Designer.cs">
+    <Compile Include="ErrorForms\TipNotFetched.Designer.cs">
       <DependentUpon>TipNotFetched.cs</DependentUpon>
     </Compile>
   </ItemGroup>
@@ -84,10 +90,13 @@
     </Content>
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="LiquidNotDetected.resx">
+    <EmbeddedResource Include="ErrorForms\DitiNotDropped.resx">
+      <DependentUpon>DitiNotDropped.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="ErrorForms\LiquidNotDetected.resx">
       <DependentUpon>LiquidNotDetected.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="TipNotFetched.resx">
+    <EmbeddedResource Include="ErrorForms\TipNotFetched.resx">
       <DependentUpon>TipNotFetched.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>

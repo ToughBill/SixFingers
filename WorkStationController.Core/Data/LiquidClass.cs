@@ -140,6 +140,7 @@ namespace WorkstationController.Core.Data
         private int _trailingAirgap = 0;
         private int _excessVolume = 0;
         private int _conditioningVolume = 0;
+        private int _subMergeMM = 2;
         #endregion
 
      
@@ -166,6 +167,20 @@ namespace WorkstationController.Core.Data
             } 
         }
 
+
+
+        public int SubMergeMM
+        {
+            get
+            {
+                return _subMergeMM;
+            }
+            set
+            {
+                SetProperty(ref _subMergeMM, value);
+            }
+        }
+        
         /// <summary>
         /// Gets or sets the system trailing airgap in unit of μl
         /// </summary>

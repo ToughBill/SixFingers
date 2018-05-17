@@ -28,7 +28,6 @@ namespace SKHardwareController
 
         private SerialPort serialPort = new SerialPort();
         public bool Listening { get; set; }
-        bool isErrorState = false;
         public bool bOpen = false;
         public bool bHome = false;
         Object thisLock = new Object();
@@ -110,12 +109,12 @@ namespace SKHardwareController
             throw new NotImplementedException();
         }
 
-        public e_RSPErrorCode DetectLiquid(double zStart, double zMax, double speedMMPerSecond, double subMergeMM)
+        public e_RSPErrorCode DetectLiquid(double zStart, double zMax, double speedMMPerSecond)
         {
             throw new NotImplementedException();
         }
 
-        public e_RSPErrorCode Aspirate(double volume, double speedMax, double speedStart, double speedStop,bool tracking)
+        public e_RSPErrorCode Aspirate(double volume, double speedMax, double speedStart, double speedStop)
         {
             throw new NotImplementedException();
         }
@@ -126,7 +125,7 @@ namespace SKHardwareController
         }
 
 
-        public e_RSPErrorCode StartMove(Axis axis, int speedMMPerSecond)
+        public e_RSPErrorCode StartMove(_eARM arm, Direction dir, int speedMMPerSecond)
         {
             throw new NotImplementedException();
         }
@@ -221,7 +220,7 @@ namespace SKHardwareController
         }
 
 
-        public e_RSPErrorCode MoveZAtSpeed(_eARM arm, double z)
+        public e_RSPErrorCode MoveZAtSpeed(_eARM arm, double speedMMPerSecond)
         {
             throw new NotImplementedException();
         }
@@ -321,12 +320,7 @@ namespace SKHardwareController
                                 bActiondone[RxBuffer[2] - 0x31] = true;
                                 e_RSPErrorCode errorCode = (e_RSPErrorCode)(RxBuffer[1] - 0x40);
                                 _errorCode[RxBuffer[2] - 0x31] = (e_RSPErrorCode)(RxBuffer[1] - 0x40);
-                                string errDesc = errorCode.ToString();
-                                if (IsCriticalError(errorCode))
-                                {
-                                    isErrorState = true;
-                                    //throw new CriticalException(errDesc);
-                                }
+                                
                                 //log.Error(errDesc);
                                 //cmdFinished.Set();
                                 //throw new Exception(errDesc);
@@ -347,7 +341,7 @@ namespace SKHardwareController
             Listening = false;
         }
 
-        public void GetCurrentPosition(_eARM armID, ref double x, ref  double y, ref  double z)
+        public e_RSPErrorCode GetCurrentPosition(_eARM armID, ref double x, ref  double y, ref  double z)
         {
             x = 0;
             y = 0;
@@ -355,6 +349,7 @@ namespace SKHardwareController
             x = Math.Round(x, 1);
             y = Math.Round(y, 1);
             z = Math.Round(z, 1);
+            return e_RSPErrorCode.RSP_ERROR_NONE;
         }
 
         private bool IsCriticalError(e_RSPErrorCode errorCode)
@@ -491,14 +486,21 @@ namespace SKHardwareController
         两个,
     }
 
-    public enum Axis
+    public enum Direction
     {
-        X,
-        Y,
-        Z,
-        R,
-        Clipper
+        None,
+        Up,
+        Down,
+        Left,
+        Right,
+        ZUp,
+        ZDown,
+        RotateCW,
+        RotateCCW,
+        ClampOn,
+        ClampOff
     }
+
     public enum e_RSPErrorCode
     {
         RSP_ERROR_NONE = 0,

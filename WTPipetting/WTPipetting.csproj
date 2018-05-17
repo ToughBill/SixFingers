@@ -76,6 +76,12 @@
     <Compile Include="StageControls\LayoutForm.xaml.cs">
       <DependentUpon>LayoutForm.xaml</DependentUpon>
     </Compile>
+    <Compile Include="StageControls\LogForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="StageControls\LogForm.Designer.cs">
+      <DependentUpon>LogForm.cs</DependentUpon>
+    </Compile>
     <Compile Include="StageControls\StepMonitorForm.xaml.cs">
       <DependentUpon>StepMonitorForm.xaml</DependentUpon>
     </Compile>
@@ -137,6 +143,9 @@
     <EmbeddedResource Include="Properties\stringRes.resx">
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>stringRes.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Include="StageControls\LogForm.resx">
+      <DependentUpon>LogForm.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="strings.resx">
       <Generator>ResXFileCodeGenerator</Generator>
