@@ -180,7 +180,7 @@ namespace SKHardwareController
 
         private bool TryGetTip(double zDistanceFetchTip)
         {
-            MoveController.Instance.MoveZAtSpeed(_eARM.左臂, zDistanceFetchTip);
+            MoveController.Instance.MoveZAtSpeed(_eARM.左臂, zDistanceFetchTip,100);
             return MoveController.Instance.IsTipMounted;
         }
 
@@ -306,7 +306,7 @@ namespace SKHardwareController
             double distance2Go = volume / crossSectionArea;
             double seconds = volume / liquidClass.AspirationSinglePipetting.AspirationSpeed;
             double goDownSpeed = distance2Go / seconds;
-            MoveController.Instance.MoveZAtSpeed(_eARM.左臂, goDownSpeed);
+            MoveController.Instance.MoveZAtSpeed(_eARM.左臂, distance2Go,goDownSpeed);
         }
 
         private void ThrowCriticalException(e_RSPErrorCode res)
@@ -321,9 +321,10 @@ namespace SKHardwareController
         {
             double x, y, z;
             x = y = z = 0;
-            var res = MoveController.Instance.GetCurrentPosition(_eARM.左臂, ref x, ref y, ref z);
-            if (res != e_RSPErrorCode.RSP_ERROR_NONE)
-                throw new CriticalException(res.ToString());
+            MoveController.Instance.GetCurrentPosition(_eARM.左臂, ref x, ref y, ref z);
+            if (x == -1 || y == -1 || z == -1)
+                throw new CriticalException("无法获取到位置！");
+            
             double crossSectionArea = labware.WellsInfo.WellRadius * labware.WellsInfo.WellRadius * Math.PI;
             double zMax = labware.ZValues.ZMax; //mm
             return crossSectionArea * (zMax - z - subMergeMM) > volume;

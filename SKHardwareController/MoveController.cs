@@ -26,18 +26,30 @@ namespace SKHardwareController
         protected byte[] globalBuffer = new byte[1024];
         #endregion
 
+        private const double MAX_X_DISTANCE = 700.0;//70cm
+        private const double MAX_Y_DISTANCE = 400.0;//40cm
+        private const double MAX_Z_DISTANCE = 300.0;//30cm
+        private const double DegreePerStep = 360 / 1000;
+
+        private int getValue = 0;
+
         private SerialPort serialPort = new SerialPort();
         public bool Listening { get; set; }
+        bool isErrorState = false;
         public bool bOpen = false;
         public bool bHome = false;
+        private bool bClipperInit = false;
+        private bool bADPInited = false;
         Object thisLock = new Object();
         //AutoResetEvent cmdFinished = new AutoResetEvent(false);
         AutoResetEvent cmdACK = new AutoResetEvent(false);
         bool[] bACK = new bool[2];
         bool[] bActiondone = new bool[2];
-        double mmPerStepX = 0.09;
-        double mmPerStepY = 0.14;
-        double mmPerStepZ = 0.09;
+        double mmPerStepX = 89.5/200;
+        double mmPerStepY = 56.8/200;
+        double mmPerStepZ = 56.8/200;
+        double mmPerStepClipper = 0.1;//mm
+        double ulPerStepADP = 0.025;//ul/step
         e_RSPErrorCode[] _errorCode = new e_RSPErrorCode[(int)_eARM.两个 - 1];
         public const int defaultTimeOut = 5000;
         private static MoveController instance;
@@ -79,61 +91,436 @@ namespace SKHardwareController
                 }
             }
         }
-
-        public e_RSPErrorCode MoveClipper(double degree, double width)
+        /// <summary>
+        /// 张开夹爪
+        /// </summary>
+        /// <param name="width"></param>
+        /// <returns></returns>
+        public e_RSPErrorCode MoveClipper(double width)
         {
-            throw new NotImplementedException();
+            return MoveClipperAtSpeed(_eARM.右臂, width, 10);
+        }
+
+        /// <summary>
+        /// 旋转夹爪
+        /// </summary>
+        /// <param name="Degree"></param>
+        /// <returns></returns>
+        public e_RSPErrorCode RoateClipper(double Degree)
+        {
+            return MoveRAtSpeed(_eARM.右臂, Degree, 180);
         }
 
         public e_RSPErrorCode GetClipperInfo(ref double degree, ref double width)
         {
-            throw new NotImplementedException();
+            degree = GetRPos(_eARM.右臂);
+            width = GetClipperPos(_eARM.右臂);
+            return e_RSPErrorCode.RSP_ERROR_NONE;
         }
 
 
+        private bool _istipmounted = false;
         public bool IsTipMounted
         {
             get
             {
-                throw new NotImplementedException();
+                e_RSPErrorCode ret = GetTipStatus(_eARM.左臂, ref _istipmounted);
+                return _istipmounted;
             }
         }
+        /// <summary>
+        /// 初始化ADP
+        /// </summary>
+        /// <param name="timeout"></param>
+        /// <returns></returns>
+        public e_RSPErrorCode InitCarvo(int timeout = 10000)
+        {
+            _eARM armid = _eARM.左臂;
 
-        public e_RSPErrorCode InitCarvo()
+            for (int i = 0; i < 3; i++)
+            {
+                SendCommand(string.Format("{0}8AI", (int)armid), i != 0);
+                cmdACK.WaitOne(100);
+                if (bACK[(int)armid - 1]) break;
+            }
+
+            if (!bACK[(int)armid - 1])
+            {
+                return e_RSPErrorCode.Send_fail;
+            }
+
+            if (timeout > 0)
+            {
+                while (!bActiondone[(int)armid - 1] && timeout > 0)
+                {
+                    Thread.Sleep(10);
+                    timeout -= 10;
+                }
+            }
+
+            if (timeout <= 0)
+            {
+                return e_RSPErrorCode.超时错误;
+            }
+
+            bADPInited = true;
+            return _errorCode[(int)armid - 1];
+        }
+
+        /// <summary>
+        /// 初始化夹爪
+        /// </summary>
+        /// <param name="timeout"></param>
+        /// <returns></returns>
+        public e_RSPErrorCode InitClipper(int timeout = 10000)
+        {
+            _eARM armid = _eARM.右臂;
+
+            for (int i = 0; i < 3; i++)
+            {
+                SendCommand(string.Format("{0}8CI", (int)armid), i != 0);
+                cmdACK.WaitOne(100);
+                if (bACK[(int)armid - 1]) break;
+            }
+
+            if (!bACK[(int)armid - 1])
+            {
+                return e_RSPErrorCode.Send_fail;
+            }
+
+            if (timeout > 0)
+            {
+                while (!bActiondone[(int)armid - 1] && timeout > 0)
+                {
+                    Thread.Sleep(10);
+                    timeout -= 10;
+                }
+            }
+
+            if (timeout <= 0)
+            {
+                return e_RSPErrorCode.超时错误;
+            }
+            bClipperInit = true;
+            return _errorCode[(int)armid - 1];
+        }
+
+        /// <summary>
+        /// 丢弃Tip头
+        /// </summary>
+        /// <param name="timeout"></param>
+        /// <returns></returns>
+        public e_RSPErrorCode DropDiti(int timeout = 10000)
+        {
+            _eARM armid = _eARM.左臂;
+
+            for (int i = 0; i < 3; i++)
+            {
+                SendCommand(string.Format("{0}8AA", (int)armid), i != 0);
+                cmdACK.WaitOne(100);
+                if (bACK[(int)armid - 1]) break;
+            }
+
+            if (!bACK[(int)armid - 1])
+            {
+                return e_RSPErrorCode.Send_fail;
+            }
+
+            if (timeout > 0)
+            {
+                while (!bActiondone[(int)armid - 1] && timeout > 0)
+                {
+                    Thread.Sleep(10);
+                    timeout -= 10;
+                }
+            }
+
+            if (timeout <= 0)
+            {
+                return e_RSPErrorCode.超时错误;
+            }
+
+            return _errorCode[(int)armid - 1];
+        }
+        /// <summary>
+        /// 液位探测
+        /// </summary>
+        /// <param name="zStart"></param>
+        /// <param name="zMax"></param>
+        /// <param name="speedMMPerSecond"></param>
+        /// <param name="timeout"></param>
+        /// <returns></returns>
+        public e_RSPErrorCode DetectLiquid(double zStart, double zMax, double speedMMPerSecond, int timeout=10000)
+        {
+            _eARM armid = _eARM.左臂;
+            e_RSPErrorCode ret = e_RSPErrorCode.RSP_ERROR_NONE;
+
+            //移动到z start
+            ret = Move2Z(armid, zStart);
+            if (ret != e_RSPErrorCode.RSP_ERROR_NONE)
+                return ret;
+
+            //异步移动到zMax
+            ret = MoveZAtSpeed(armid, zMax - zStart, speedMMPerSecond, 0);
+            if (ret != e_RSPErrorCode.RSP_ERROR_NONE)
+                return ret;
+
+            for (int i = 0; i < 3; i++)
+            {
+                SendCommand(string.Format("{0}8AL", (int)armid), i != 0);
+                cmdACK.WaitOne(100);
+                if (bACK[(int)armid - 1]) break;
+            }
+
+            if (!bACK[(int)armid - 1])
+            {
+                return e_RSPErrorCode.Send_fail;
+            }
+
+            if (timeout > 0)
+            {
+                while (!bActiondone[(int)armid - 1] && timeout > 0)
+                {
+                    Thread.Sleep(10);
+                    timeout -= 10;
+                }
+            }
+
+            if (timeout <= 0)
+            {
+                return e_RSPErrorCode.超时错误;
+            }
+
+            return _errorCode[(int)armid - 1];
+        }
+        /// <summary>
+        /// 吸液
+        /// </summary>
+        /// <param name="volume"></param>
+        /// <param name="speedMax">ul/s</param>
+        /// <param name="speedStart">ul/s</param>
+        /// <param name="speedStop">ul/s</param>
+        /// <param name="timeout"></param>
+        /// <returns></returns>
+        public e_RSPErrorCode Aspirate(double volume, double speedMax=100, double speedStart=50, double speedStop=50, int timeout=10000)
+        {
+            _eARM armid = _eARM.左臂;
+            int bNewFunc = 0;
+
+            for (int i = 0; i < 3; i++)
+            {
+                SendCommand(string.Format("{0}8AP {1} {2} {3} {4} {5}", (int)armid,
+                    Math.Round(speedMax / ulPerStepADP), Math.Round(speedStart / ulPerStepADP), Math.Round(speedStop / ulPerStepADP), 
+                    (int)volume, bNewFunc), i != 0);
+                cmdACK.WaitOne(100);
+                if (bACK[(int)armid - 1]) break;
+            }
+
+            if (!bACK[(int)armid - 1])
+            {
+                return e_RSPErrorCode.Send_fail;
+            }
+
+            if (timeout > 0)
+            {
+                while (!bActiondone[(int)armid - 1] && timeout > 0)
+                {
+                    Thread.Sleep(10);
+                    timeout -= 10;
+                }
+            }
+
+            if (timeout <= 0)
+            {
+                return e_RSPErrorCode.超时错误;
+            }
+
+            return _errorCode[(int)armid - 1];
+        }
+        /// <summary>
+        /// 吐液
+        /// </summary>
+        /// <param name="volume">吐液量ul</param>
+        /// <param name="speedMax">最大速度ul/s</param>
+        /// <param name="speedStart">ul/s</param>
+        /// <param name="speedStop">ul/s</param>
+        /// <param name="timeout"></param>
+        /// <returns></returns>
+        public e_RSPErrorCode Dispense(double volume, double speedMax=1000, double speedStart=100, double speedStop=200, int timeout=10000)
+        {
+            _eARM armid = _eARM.左臂;
+
+            for (int i = 0; i < 3; i++)
+            {
+                SendCommand(string.Format("{0}8AD {1} {2} {3} {4}", (int)armid,
+                    Math.Round(speedMax / ulPerStepADP), Math.Round(speedStart / ulPerStepADP), Math.Round(speedStop / ulPerStepADP), (int)volume), i != 0);
+                cmdACK.WaitOne(100);
+                if (bACK[(int)armid - 1]) break;
+            }
+
+            if (!bACK[(int)armid - 1])
+            {
+                return e_RSPErrorCode.Send_fail;
+            }
+
+            if (timeout > 0)
+            {
+                while (!bActiondone[(int)armid - 1] && timeout > 0)
+                {
+                    Thread.Sleep(10);
+                    timeout -= 10;
+                }
+            }
+
+            if (timeout <= 0)
+            {
+                return e_RSPErrorCode.超时错误;
+            }
+
+            return _errorCode[(int)armid - 1];
+        }
+
+        /// <summary>
+        /// 开始移动
+        /// </summary>
+        /// <param name="armid"></param>
+        /// <param name="axis"></param>
+        /// <param name="DegreeOrMMPerSecond">角度或距离</param>
+        /// <param name="timeout"></param>
+        /// <returns></returns>
+        public e_RSPErrorCode StartMove(_eARM armid, Axis axis, double DegreeOrMMPerSecond, int timeout=20000)
+        {
+            int speedbyStep = 0;
+
+            if (!bHome)
+            {
+                return e_RSPErrorCode.未初始化;
+            }
+
+            if (armid >= _eARM.两个)
+            {
+                return e_RSPErrorCode.无效操作;
+            }
+
+            switch (axis)
+            {
+                case Axis.X:
+                    speedbyStep = (int)Math.Round(DegreeOrMMPerSecond / mmPerStepX);
+                    break;
+                case Axis.Y:
+                    speedbyStep = (int)Math.Round(DegreeOrMMPerSecond / mmPerStepY);
+                    break;
+                case Axis.Z:
+                    speedbyStep = (int)Math.Round(DegreeOrMMPerSecond / mmPerStepZ);
+                    break;
+                case Axis.R:
+                    speedbyStep = (int)Math.Round(DegreeOrMMPerSecond / DegreePerStep);
+                    break;
+                case Axis.Clipper:
+                    speedbyStep = (int)Math.Round(DegreeOrMMPerSecond / mmPerStepClipper);
+                    break;
+            }
+
+
+            for (int i = 0; i < 3; i++)
+            {
+                SendCommand(string.Format("{0}8SM {1} {2} {3}", (int)armid, (int)axis, speedbyStep), i != 0);
+                cmdACK.WaitOne(100);
+                if (bACK[(int)armid - 1]) break;
+            }
+
+            if (!bACK[(int)armid - 1])
+            {
+                return e_RSPErrorCode.Send_fail;
+            }
+
+            if (timeout > 0)
+            {
+                while (!bActiondone[(int)armid - 1] && timeout > 0)
+                {
+                    Thread.Sleep(10);
+                    timeout -= 10;
+                }
+            }
+
+            if (timeout <= 0)
+            {
+                StopMove(armid, axis);
+                return e_RSPErrorCode.超时错误;
+            }
+
+            return _errorCode[(int)armid - 1];
+        }
+        /// <summary>
+        /// 停止移动
+        /// </summary>
+        /// <param name="armid"></param>
+        /// <param name="axis"></param>
+        /// <returns></returns>
+        public e_RSPErrorCode StopMove(_eARM armid, Axis axis, int timeout=500)
+        {
+            if (!bHome)
+            {
+                return e_RSPErrorCode.未初始化;
+            }
+
+            if (armid >= _eARM.两个)
+            {
+                return e_RSPErrorCode.无效操作;
+            }
+            for (int i = 0; i < 3; i++)
+            {
+                SendCommand(string.Format("{0}8ST {1} {2}",(int)armid, (int)axis), i != 0);
+                cmdACK.WaitOne(100);
+                if (bACK[(int)armid - 1]) break;
+            }
+
+            if (!bACK[(int)armid - 1])
+            {
+                return e_RSPErrorCode.Send_fail;
+            }
+
+            if (timeout > 0)
+            {
+                while (!bActiondone[(int)armid - 1] && timeout > 0)
+                {
+                    Thread.Sleep(10);
+                    timeout -= 10;
+                }
+            }
+
+            if (timeout <= 0)
+            {
+                return e_RSPErrorCode.超时错误;
+            }
+
+            return _errorCode[(int)armid - 1];
+        }
+
+        /// <summary>
+        /// 设定最大速度
+        /// </summary>
+        /// <param name="armid"></param>
+        /// <param name="axis"></param>
+        /// <param name="maxSpeedMMPerSecond"></param>
+        /// <returns></returns>
+        public e_RSPErrorCode SetSpeed(_eARM armid, Axis axis, double maxSpeedMMPerSecond)
         {
             throw new NotImplementedException();
         }
 
-        public e_RSPErrorCode DropDiti()
+        /// <summary>
+        /// 设定最大加速度
+        /// </summary>
+        /// <param name="armid"></param>
+        /// <param name="axis"></param>
+        /// <param name="maxAccSpeedMMPerSecond"></param>
+        /// <returns></returns>
+        public e_RSPErrorCode SetAccSpeed(_eARM armid, Axis axis, double maxAccSpeedMMPerSecond)
         {
             throw new NotImplementedException();
         }
 
-        public e_RSPErrorCode DetectLiquid(double zStart, double zMax, double speedMMPerSecond)
-        {
-            throw new NotImplementedException();
-        }
-
-        public e_RSPErrorCode Aspirate(double volume, double speedMax, double speedStart, double speedStop)
-        {
-            throw new NotImplementedException();
-        }
-
-        public e_RSPErrorCode Dispense(double volume, double speedMax, double speedStart, double speedStop)
-        {
-            throw new NotImplementedException();
-        }
-
-
-        public e_RSPErrorCode StartMove(_eARM arm, Direction dir, int speedMMPerSecond)
-        {
-            throw new NotImplementedException();
-        }
-
-        public e_RSPErrorCode StopMove()
-        {
-            throw new NotImplementedException();
-        }
         /// <summary>
         /// 启动臂
         /// </summary>
@@ -219,13 +606,731 @@ namespace SKHardwareController
             return e_RSPErrorCode.RSP_ERROR_NONE;
         }
 
-
-        public e_RSPErrorCode MoveZAtSpeed(_eARM arm, double speedMMPerSecond)
+        /// <summary>
+        /// 以设定的速度加速度移动x轴，绝对位移
+        /// </summary>
+        /// <param name="armid"></param>
+        /// <param name="absX">绝对位移mm</param>
+        /// <param name="timeout"></param>
+        /// <returns></returns>
+        public e_RSPErrorCode Move2X(_eARM armid, double absX, int timeout = 10000)
         {
-            throw new NotImplementedException();
+            if (!bHome)
+            {
+                return e_RSPErrorCode.未初始化;
+            }
+
+            if (armid >= _eARM.两个)
+            {
+                return e_RSPErrorCode.无效操作;
+            }
+            for (int i = 0; i < 3; i++)
+            {
+                SendCommand(string.Format("{0}8XA {1}", (int)armid, ((int)Math.Round((absX / mmPerStepX))).ToString()), i != 0);
+                cmdACK.WaitOne(100);
+                if (bACK[(int)armid - 1]) break;
+            }
+
+            if (!bACK[(int)armid - 1])
+            {
+                return e_RSPErrorCode.Send_fail;
+            }
+
+            if (timeout > 0)
+            {
+                while (!bActiondone[(int)armid - 1] && timeout > 0)
+                {
+                    Thread.Sleep(10);
+                    timeout -= 10;
+                }
+            }
+
+            if (timeout <= 0)
+            {
+                return e_RSPErrorCode.超时错误;
+            }
+
+            return _errorCode[(int)armid - 1];
+        }
+
+
+        /// <summary>
+        /// 获取x当前位置
+        /// </summary>
+        /// <param name="armid"></param>
+        /// <returns></returns>
+        public double GetXPos(_eARM armid)
+        {
+            double curpos = -1;
+            int timeout = 500;
+
+            if (!bHome)
+            {
+                return curpos;
+            }
+
+            if (armid >= _eARM.两个)
+            {
+                return curpos;
+            }
+            for (int i = 0; i < 3; i++)
+            {
+                SendCommand(string.Format("{0}8RX", (int)armid), i != 0);
+                cmdACK.WaitOne(100);
+                if (bACK[(int)armid - 1]) break;
+            }
+
+            if (!bACK[(int)armid - 1])
+            {
+                return curpos;
+            }
+
+            if (timeout > 0)
+            {
+                while (!bActiondone[(int)armid - 1] && timeout > 0)
+                {
+                    Thread.Sleep(10);
+                    timeout -= 10;
+                }
+            }
+
+            if (timeout <= 0)
+            {
+                return curpos;
+            }
+
+            curpos = getValue*mmPerStepX;
+            return curpos;
         }
         /// <summary>
-        /// 移动臂到目标位置
+        /// 获取y当前位置
+        /// </summary>
+        /// <param name="armid"></param>
+        /// <returns></returns>
+        public double GetYPos(_eARM armid)
+        {
+            double curpos = -1;
+            int timeout = 500;
+
+            if (!bHome)
+            {
+                return curpos;
+            }
+
+            if (armid >= _eARM.两个)
+            {
+                return curpos;
+            }
+            for (int i = 0; i < 3; i++)
+            {
+                SendCommand(string.Format("{0}8RY", (int)armid), i != 0);
+                cmdACK.WaitOne(100);
+                if (bACK[(int)armid - 1]) break;
+            }
+
+            if (!bACK[(int)armid - 1])
+            {
+                return curpos;
+            }
+
+            if (timeout > 0)
+            {
+                while (!bActiondone[(int)armid - 1] && timeout > 0)
+                {
+                    Thread.Sleep(10);
+                    timeout -= 10;
+                }
+            }
+
+            if (timeout <= 0)
+            {
+                return curpos;
+            }
+
+            curpos = getValue * mmPerStepY;
+            return curpos;
+        }
+
+        /// <summary>
+        /// 获取z当前位置
+        /// </summary>
+        /// <param name="armid"></param>
+        /// <returns></returns>
+        public double GetZPos(_eARM armid)
+        {
+            double curpos = -1;
+            int timeout = 500;
+
+            if (!bHome)
+            {
+                return curpos;
+            }
+
+            if (armid >= _eARM.两个)
+            {
+                return curpos;
+            }
+            for (int i = 0; i < 3; i++)
+            {
+                SendCommand(string.Format("{0}8RZ", (int)armid), i != 0);
+                cmdACK.WaitOne(100);
+                if (bACK[(int)armid - 1]) break;
+            }
+
+            if (!bACK[(int)armid - 1])
+            {
+                return curpos;
+            }
+
+            if (timeout > 0)
+            {
+                while (!bActiondone[(int)armid - 1] && timeout > 0)
+                {
+                    Thread.Sleep(10);
+                    timeout -= 10;
+                }
+            }
+
+            if (timeout <= 0)
+            {
+                return curpos;
+            }
+
+            curpos = getValue * mmPerStepZ;
+            return curpos;
+        }
+
+        /// <summary>
+        /// 获取抓手当前旋转角度
+        /// </summary>
+        /// <param name="armid"></param>
+        /// <returns></returns>
+        public double GetRPos(_eARM armid)
+        {
+            double curpos = 0.0;
+            int timeout = 500;
+
+            if (!bHome)
+            {
+                return curpos;
+            }
+
+            if (armid >= _eARM.两个)
+            {
+                return curpos;
+            }
+            for (int i = 0; i < 3; i++)
+            {
+                SendCommand(string.Format("{0}8RR", (int)armid), i != 0);
+                cmdACK.WaitOne(100);
+                if (bACK[(int)armid - 1]) break;
+            }
+
+            if (!bACK[(int)armid - 1])
+            {
+                return curpos;
+            }
+
+            if (timeout > 0)
+            {
+                while (!bActiondone[(int)armid - 1] && timeout > 0)
+                {
+                    Thread.Sleep(10);
+                    timeout -= 10;
+                }
+            }
+
+            if (timeout <= 0)
+            {
+                return curpos;
+            }
+
+            curpos = getValue * DegreePerStep;
+            return curpos;
+        }
+
+        /// <summary>
+        /// 获取抓手张开宽度
+        /// </summary>
+        /// <param name="armid"></param>
+        /// <returns></returns>
+        public double GetClipperPos(_eARM armid)
+        {
+            double curpos = 0.0;
+            int timeout = 500;
+
+            if (!bHome)
+            {
+                return curpos;
+            }
+
+            if (armid >= _eARM.两个)
+            {
+                return curpos;
+            }
+            for (int i = 0; i < 3; i++)
+            {
+                SendCommand(string.Format("{0}8RC", (int)armid), i != 0);
+                cmdACK.WaitOne(100);
+                if (bACK[(int)armid - 1]) break;
+            }
+
+            if (!bACK[(int)armid - 1])
+            {
+                return curpos;
+            }
+
+            if (timeout > 0)
+            {
+                while (!bActiondone[(int)armid - 1] && timeout > 0)
+                {
+                    Thread.Sleep(10);
+                    timeout -= 10;
+                }
+            }
+
+            if (timeout <= 0)
+            {
+                return curpos;
+            }
+
+            curpos = getValue * mmPerStepClipper;
+            return curpos;
+        }
+
+        /// <summary>
+        /// 查询TIP状态
+        /// </summary>
+        /// <param name="armid"></param>
+        /// <param name="bStatus">true:tip存在，false:tip不存在</param>
+        /// <returns></returns>
+        public e_RSPErrorCode GetTipStatus(_eARM armid, ref bool bStatus)
+        {
+            int QueryNum = 31;//查询TIP状态
+            int timeout = 500;
+
+            if (!bADPInited)
+            {
+                return e_RSPErrorCode.未初始化;
+            }
+
+            if (armid >= _eARM.两个)
+            {
+                return e_RSPErrorCode.无效操作;
+            }
+            for (int i = 0; i < 3; i++)
+            {
+                SendCommand(string.Format("{0}8AQ {1}", (int)armid, QueryNum), i != 0);
+                cmdACK.WaitOne(100);
+                if (bACK[(int)armid - 1]) break;
+            }
+
+            if (!bACK[(int)armid - 1])
+            {
+                return e_RSPErrorCode.Send_fail;
+            }
+
+            if (timeout > 0)
+            {
+                while (!bActiondone[(int)armid - 1] && timeout > 0)
+                {
+                    Thread.Sleep(10);
+                    timeout -= 10;
+                }
+            }
+
+            if (timeout <= 0)
+            {
+                return e_RSPErrorCode.超时错误;
+            }
+
+            bStatus = (getValue!=0);
+            return _errorCode[(int)armid - 1];
+        }
+
+        /// <summary>
+        /// 以设定的速度加速度移动x轴，相对位移
+        /// </summary>
+        /// <param name="armid"></param>
+        /// <param name="x">相对位移mm</param>
+        /// <param name="timeout"></param>
+        /// <returns></returns>
+        public e_RSPErrorCode MoveX(_eARM armid, double x, int timeout = 10000)
+        {
+            if (!bHome)
+            {
+                return e_RSPErrorCode.未初始化;
+            }
+
+            if (armid >= _eARM.两个)
+            {
+                return e_RSPErrorCode.无效操作;
+            }
+            for (int i = 0; i < 3; i++)
+            {
+                SendCommand(string.Format("{0}8XR {1}", (int)armid, ((int)Math.Round((x / mmPerStepX))).ToString()), i != 0);
+                cmdACK.WaitOne(100);
+                if (bACK[(int)armid - 1]) break;
+            }
+
+            if (!bACK[(int)armid - 1])
+            {
+                return e_RSPErrorCode.Send_fail;
+            }
+
+            if (timeout > 0)
+            {
+                while (!bActiondone[(int)armid - 1] && timeout > 0)
+                {
+                    Thread.Sleep(10);
+                    timeout -= 10;
+                }
+            }
+
+            if (timeout <= 0)
+            {
+                return e_RSPErrorCode.超时错误;
+            }
+
+            return _errorCode[(int)armid - 1];
+        }
+
+        /// <summary>
+        /// 以指定速度移动x轴,相对位移
+        /// </summary>
+        /// <param name="armid">臂</param>
+        /// <param name="x">相对位移mm</param>
+        /// <param name="speed">速度mm/s</param>
+        /// <param name="timeout">超时时间ms</param>
+        /// <returns></returns>
+        public e_RSPErrorCode MoveXAtSpeed(_eARM armid, double x, double speedMMPerSecond, int timeout = 10000)
+        {
+            if (!bHome)
+            {
+                return e_RSPErrorCode.未初始化;
+            }
+
+            if (armid >= _eARM.两个)
+            {
+                return e_RSPErrorCode.无效操作;
+            }
+            for (int i = 0; i < 3; i++)
+            {
+                SendCommand(string.Format("{0}8XS {1} {2}",
+                    (int)armid, ((int)Math.Round((x / mmPerStepX))).ToString(),
+                    ((int)Math.Round((speedMMPerSecond / mmPerStepX))).ToString()), i != 0);
+                cmdACK.WaitOne(100);
+                if (bACK[(int)armid - 1]) break;
+            }
+
+            if (!bACK[(int)armid - 1])
+            {
+                return e_RSPErrorCode.Send_fail;
+            }
+
+            if (timeout > 0)
+            {
+                while (!bActiondone[(int)armid - 1] && timeout > 0)
+                {
+                    Thread.Sleep(10);
+                    timeout -= 10;
+                }
+            }
+
+            if (timeout <= 0)
+            {
+                return e_RSPErrorCode.超时错误;
+            }
+
+            return _errorCode[(int)armid - 1];
+        }
+
+        /// <summary>
+        /// 以设定的速度加速度移动y轴，绝对位移
+        /// </summary>
+        /// <param name="armid"></param>
+        /// <param name="absY">绝对位移mm</param>
+        /// <param name="timeout"></param>
+        /// <returns></returns>
+        public e_RSPErrorCode Move2Y(_eARM armid, double absY, int timeout = 10000)
+        {
+            if (!bHome)
+            {
+                return e_RSPErrorCode.未初始化;
+            }
+
+            if (armid >= _eARM.两个)
+            {
+                return e_RSPErrorCode.无效操作;
+            }
+            for (int i = 0; i < 3; i++)
+            {
+                SendCommand(string.Format("{0}8YA {1}", (int)armid, ((int)Math.Round((absY / mmPerStepY))).ToString()), i != 0);
+                cmdACK.WaitOne(100);
+                if (bACK[(int)armid - 1]) break;
+            }
+
+            if (!bACK[(int)armid - 1])
+            {
+                return e_RSPErrorCode.Send_fail;
+            }
+
+            if (timeout > 0)
+            {
+                while (!bActiondone[(int)armid - 1] && timeout > 0)
+                {
+                    Thread.Sleep(10);
+                    timeout -= 10;
+                }
+            }
+
+            if (timeout <= 0)
+            {
+                return e_RSPErrorCode.超时错误;
+            }
+
+            return _errorCode[(int)armid - 1];
+        }
+
+        /// <summary>
+        /// 以设定的速度加速度移动y轴,相对位移
+        /// </summary>
+        /// <param name="armid">臂</param>
+        /// <param name="y">相对位移mm</param>
+        /// <param name="timeout"></param>
+        /// <returns></returns>
+        public e_RSPErrorCode MoveY(_eARM armid, double y, int timeout = 10000)
+        {
+            if (!bHome)
+            {
+                return e_RSPErrorCode.未初始化;
+            }
+
+            if (armid >= _eARM.两个)
+            {
+                return e_RSPErrorCode.无效操作;
+            }
+            for (int i = 0; i < 3; i++)
+            {
+                SendCommand(string.Format("{0}8YR {1}", (int)armid, ((int)Math.Round((y / mmPerStepY))).ToString()), i != 0);
+                cmdACK.WaitOne(100);
+                if (bACK[(int)armid - 1]) break;
+            }
+
+            if (!bACK[(int)armid - 1])
+            {
+                return e_RSPErrorCode.Send_fail;
+            }
+
+            if (timeout > 0)
+            {
+                while (!bActiondone[(int)armid - 1] && timeout > 0)
+                {
+                    Thread.Sleep(10);
+                    timeout -= 10;
+                }
+            }
+
+            if (timeout <= 0)
+            {
+                return e_RSPErrorCode.超时错误;
+            }
+
+            return _errorCode[(int)armid - 1];
+        }
+
+        /// <summary>
+        /// 以指定速度移动y轴，相对位移
+        /// </summary>
+        /// <param name="armid">臂</param>
+        /// <param name="x">相对位移mm</param>
+        /// <param name="speed">速度mm/s</param>
+        /// <param name="timeout">超时时间ms</param>
+        /// <returns></returns>
+        public e_RSPErrorCode MoveYAtSpeed(_eARM armid, double y, double speedMMPerSecond, int timeout = 10000)
+        {
+            if (!bHome)
+            {
+                return e_RSPErrorCode.未初始化;
+            }
+
+            if (armid >= _eARM.两个)
+            {
+                return e_RSPErrorCode.无效操作;
+            }
+            for (int i = 0; i < 3; i++)
+            {
+                SendCommand(string.Format("{0}8YS {1} {2}",
+                    (int)armid, ((int)Math.Round((y / mmPerStepY))).ToString(),
+                    ((int)Math.Round((speedMMPerSecond / mmPerStepY))).ToString()), i != 0);
+                cmdACK.WaitOne(100);
+                if (bACK[(int)armid - 1]) break;
+            }
+
+            if (!bACK[(int)armid - 1])
+            {
+                return e_RSPErrorCode.Send_fail;
+            }
+
+            if (timeout > 0)
+            {
+                while (!bActiondone[(int)armid - 1] && timeout > 0)
+                {
+                    Thread.Sleep(10);
+                    timeout -= 10;
+                }
+            }
+
+            if (timeout <= 0)
+            {
+                return e_RSPErrorCode.超时错误;
+            }
+
+            return _errorCode[(int)armid - 1];
+        }
+        /// <summary>
+        /// 以设定的速度移动z轴,绝对位移
+        /// </summary>
+        /// <param name="armid"></param>
+        /// <param name="absZ"></param>
+        /// <param name="timeout"></param>
+        /// <returns></returns>
+        public e_RSPErrorCode Move2Z(_eARM armid, double absZ, int timeout = 10000)
+        {
+            if (!bHome)
+            {
+                return e_RSPErrorCode.未初始化;
+            }
+
+            if (armid >= _eARM.两个)
+            {
+                return e_RSPErrorCode.无效操作;
+            }
+            for (int i = 0; i < 3; i++)
+            {
+                SendCommand(string.Format("{0}8ZA {1}", (int)armid, ((int)Math.Round((absZ / mmPerStepZ))).ToString()), i != 0);
+                cmdACK.WaitOne(100);
+                if (bACK[(int)armid - 1]) break;
+            }
+
+            if (!bACK[(int)armid - 1])
+            {
+                return e_RSPErrorCode.Send_fail;
+            }
+
+            if (timeout > 0)
+            {
+                while (!bActiondone[(int)armid - 1] && timeout > 0)
+                {
+                    Thread.Sleep(10);
+                    timeout -= 10;
+                }
+            }
+
+            if (timeout <= 0)
+            {
+                return e_RSPErrorCode.超时错误;
+            }
+
+            return _errorCode[(int)armid - 1];
+        }
+        /// <summary>
+        /// 以设定的加速度速度移动z轴，相对位移
+        /// </summary>
+        /// <param name="armid"></param>
+        /// <param name="z">相对位移</param>
+        /// <param name="timeout"></param>
+        /// <returns></returns>
+        public e_RSPErrorCode MoveZ(_eARM armid, double z, int timeout = 10000)
+        {
+            if (!bHome)
+            {
+                return e_RSPErrorCode.未初始化;
+            }
+
+            if (armid >= _eARM.两个)
+            {
+                return e_RSPErrorCode.无效操作;
+            }
+            for (int i = 0; i < 3; i++)
+            {
+                SendCommand(string.Format("{0}8ZR {1}",(int)armid, ((int)(z / mmPerStepZ)).ToString()), i != 0);
+                cmdACK.WaitOne(100);
+                if (bACK[(int)armid - 1]) break;
+            }
+
+            if (!bACK[(int)armid - 1])
+            {
+                return e_RSPErrorCode.Send_fail;
+            }
+
+            if (timeout > 0)
+            {
+                while (!bActiondone[(int)armid - 1] && timeout > 0)
+                {
+                    Thread.Sleep(10);
+                    timeout -= 10;
+                }
+            }
+
+            if (timeout <= 0)
+            {
+                return e_RSPErrorCode.超时错误;
+            }
+
+            return _errorCode[(int)armid - 1];
+        }
+        /// <summary>
+        /// 以指定速度移动z轴，相对位移
+        /// </summary>
+        /// <param name="armid">臂</param>
+        /// <param name="x">相对位移mm</param>
+        /// <param name="speed">速度mm/s</param>
+        /// <param name="timeout">超时时间ms</param>
+        /// <returns></returns>
+        public e_RSPErrorCode MoveZAtSpeed(_eARM armid, double z, double speedMMPerSecond, int timeout = 10000)
+        {
+            if (!bHome)
+            {
+                return e_RSPErrorCode.未初始化;
+            }
+
+            if (armid >= _eARM.两个)
+            {
+                return e_RSPErrorCode.无效操作;
+            }
+            for (int i = 0; i < 3; i++)
+            {
+                SendCommand(string.Format("{0}8ZS {1} {2}",
+                    (int)armid, ((int)Math.Round((z / mmPerStepZ))).ToString(),
+                    ((int)Math.Round((speedMMPerSecond / mmPerStepZ))).ToString()), i != 0);
+                cmdACK.WaitOne(100);
+                if (bACK[(int)armid - 1]) break;
+            }
+
+            if (!bACK[(int)armid - 1])
+            {
+                return e_RSPErrorCode.Send_fail;
+            }
+
+            if (timeout > 0)
+            {
+                while (!bActiondone[(int)armid - 1] && timeout > 0)
+                {
+                    Thread.Sleep(10);
+                    timeout -= 10;
+                }
+            }
+
+            if (timeout <= 0)
+            {
+                return e_RSPErrorCode.超时错误;
+            }
+
+            return _errorCode[(int)armid - 1];
+        }
+        /// <summary>
+        /// 移动臂到目标位置，绝对位置
         /// </summary>
         /// <param name="armid">臂ID, 1:左臂，2：右臂</param>
         /// <param name="tbX">x轴位置，单位:mm</param>
@@ -248,11 +1353,110 @@ namespace SKHardwareController
             for (int i = 0; i < 3; i++)
             {
                 SendCommand(string.Format("{0}8PA {1} {2} {3}", 
-                    (int)armid, ((int)(tbX / mmPerStepX)).ToString(), 
-                    ((int)(tbY / mmPerStepY)).ToString(), 
-                    ((int)(tbZ / mmPerStepX)).ToString()), i != 0);
+                    (int)armid, ((int)Math.Round((tbX / mmPerStepX))).ToString(),
+                    ((int)Math.Round((tbY / mmPerStepY))).ToString(),
+                    ((int)Math.Round((tbZ / mmPerStepZ))).ToString()), i != 0);
                 cmdACK.WaitOne(100);
                 if (bACK[(int)armid-1]) break;
+            }
+
+            if (!bACK[(int)armid - 1])
+            {
+                return e_RSPErrorCode.Send_fail;
+            }
+
+            if (timeout > 0)
+            {
+                while (!bActiondone[(int)armid - 1] && timeout > 0)
+                {
+                    Thread.Sleep(10);
+                    timeout -= 10;
+                }
+            }
+
+            if (timeout <= 0)
+            {
+                return e_RSPErrorCode.超时错误;
+            }
+
+            return _errorCode[(int)armid - 1];
+        }
+
+        /// <summary>
+        /// 以指定速度旋转角度，绝对角度
+        /// </summary>
+        /// <param name="armid"></param>
+        /// <param name="degree">绝对角度</param>
+        /// <param name="DegreePerSecond">速度，单位:角度/秒</param>
+        /// <param name="timeout"></param>
+        /// <returns></returns>
+        public e_RSPErrorCode MoveRAtSpeed(_eARM armid, double degree, double DegreePerSecond, int timeout = 10000)
+        {
+            if (!bClipperInit)
+            {
+                return e_RSPErrorCode.未初始化;
+            }
+
+            if (armid >= _eARM.两个)
+            {
+                return e_RSPErrorCode.无效操作;
+            }
+            for (int i = 0; i < 3; i++)
+            {
+                SendCommand(string.Format("{0}8RA {1} {2}",
+                    (int)armid, ((int)Math.Round((degree / DegreePerStep))).ToString(),
+                    ((int)Math.Round((DegreePerSecond / DegreePerStep))).ToString()), i != 0);
+                cmdACK.WaitOne(100);
+                if (bACK[(int)armid - 1]) break;
+            }
+
+            if (!bACK[(int)armid - 1])
+            {
+                return e_RSPErrorCode.Send_fail;
+            }
+
+            if (timeout > 0)
+            {
+                while (!bActiondone[(int)armid - 1] && timeout > 0)
+                {
+                    Thread.Sleep(10);
+                    timeout -= 10;
+                }
+            }
+
+            if (timeout <= 0)
+            {
+                return e_RSPErrorCode.超时错误;
+            }
+
+            return _errorCode[(int)armid - 1];
+        }
+        /// <summary>
+        /// 以指定速度张开抓手，绝对位移
+        /// </summary>
+        /// <param name="armid"></param>
+        /// <param name="width">张开宽度，绝对位移</param>
+        /// <param name="speedMMPerSecond"></param>
+        /// <param name="timeout"></param>
+        /// <returns></returns>
+        public e_RSPErrorCode MoveClipperAtSpeed(_eARM armid, double width, double speedMMPerSecond, int timeout = 10000)
+        {
+            if (!bClipperInit)
+            {
+                return e_RSPErrorCode.未初始化;
+            }
+
+            if (armid >= _eARM.两个)
+            {
+                return e_RSPErrorCode.无效操作;
+            }
+            for (int i = 0; i < 3; i++)
+            {
+                SendCommand(string.Format("{0}8CA {1} {2}",
+                    (int)armid, ((int)Math.Round((width / mmPerStepClipper))).ToString(),
+                    ((int)Math.Round((speedMMPerSecond / mmPerStepClipper))).ToString()), i != 0);
+                cmdACK.WaitOne(100);
+                if (bACK[(int)armid - 1]) break;
             }
 
             if (!bACK[(int)armid - 1])
@@ -310,6 +1514,12 @@ namespace SKHardwareController
                             _errorCode[RxBuffer[2] - 0x31] = (e_RSPErrorCode)(RxBuffer[1] & 0x0f);
                             //cmdFinished.Set();
                             bActiondone[RxBuffer[2] - 0x31] = true;
+                            if (RxBuffer.Length > 6)
+                            {
+                                byte[] value = new byte[RxBuffer.Length-6];
+                                Array.Copy(RxBuffer, 4, value, 0, value.Length);
+                                getValue = int.Parse(System.Text.Encoding.ASCII.GetString(value));
+                            }
                         }
                         else
                         {
@@ -320,7 +1530,12 @@ namespace SKHardwareController
                                 bActiondone[RxBuffer[2] - 0x31] = true;
                                 e_RSPErrorCode errorCode = (e_RSPErrorCode)(RxBuffer[1] - 0x40);
                                 _errorCode[RxBuffer[2] - 0x31] = (e_RSPErrorCode)(RxBuffer[1] - 0x40);
-                                
+                                string errDesc = errorCode.ToString();
+                                if (IsCriticalError(errorCode))
+                                {
+                                    isErrorState = true;
+                                    //throw new CriticalException(errDesc);
+                                }
                                 //log.Error(errDesc);
                                 //cmdFinished.Set();
                                 //throw new Exception(errDesc);
@@ -341,15 +1556,11 @@ namespace SKHardwareController
             Listening = false;
         }
 
-        public e_RSPErrorCode GetCurrentPosition(_eARM armID, ref double x, ref  double y, ref  double z)
+        public void GetCurrentPosition(_eARM armID, ref double x, ref  double y, ref  double z)
         {
-            x = 0;
-            y = 0;
-            z = 0;
-            x = Math.Round(x, 1);
-            y = Math.Round(y, 1);
-            z = Math.Round(z, 1);
-            return e_RSPErrorCode.RSP_ERROR_NONE;
+            x = GetXPos(armID);
+            y = GetYPos(armID);
+            z = GetZPos(armID);
         }
 
         private bool IsCriticalError(e_RSPErrorCode errorCode)
@@ -486,21 +1697,14 @@ namespace SKHardwareController
         两个,
     }
 
-    public enum Direction
+    public enum Axis
     {
-        None,
-        Up,
-        Down,
-        Left,
-        Right,
-        ZUp,
-        ZDown,
-        RotateCW,
-        RotateCCW,
-        ClampOn,
-        ClampOff
+        X,
+        Y,
+        Z,
+        R,
+        Clipper
     }
-
     public enum e_RSPErrorCode
     {
         RSP_ERROR_NONE = 0,
@@ -515,12 +1719,14 @@ namespace SKHardwareController
         Y失步,//RSP_ERROR_Step_loss_Y,  //Step loss detected on Y-axis
         Z失步,//RSP_ERROR_Step_loss_Z,  //Step loss detected on Z-axis
         命令缓存溢出,//RSP_ERROR_Command_overflow, //Command overflow
+        没液体ZX,//RSP_ERROR_NoLiquid_ZX,         //No liquid detected with ZX-command
         超范围,//RSP_ERROR_ZMove_out_of_range,   //Entered move for Z-axis out of range
         液体不足ZX,//RSP_ERROR_Not_enough_liquid_ZX,    //Not enough liquid detected with ZX-command
         没液体ZZ,//RSP_ERROR_Noliquid_ZZ,  //No liquid detected with ZZ-command
-        RSP_ERROR_Reserved1,
-        RSP_ERROR_Reserved2,
-        RSP_ERROR_Reserved3,
+        液体不足ZZ,//RSP_ERROR_Not_enough_liquid_ZZ, //Not enough liquid detected with ZZ-command
+        空吸,//RSP_ERROR_PICKUP_EMPTY,//Sensor broken
+        泡沫,//RSP_ERROR_PICKUP_FOAM,
+        凝块,//RSP_ERROR_PICKUP_BLOCK,
         撞臂保护,//RSP_ERROR_Collision_avoided,//Arm collision avoided
         RSP_ERROR_Reserved4,
         RSP_ERROR_Reserved5,

@@ -19,6 +19,7 @@ namespace SKHardwareController
         WorkstationController.Hardware.Direction dir;
         int speedMMPerSecond;
         ArmType armType;
+
         public TeachingImplement()
         {
             string sPort = ConfigurationManager.AppSettings["PortName"];
@@ -52,7 +53,9 @@ namespace SKHardwareController
 
         public void StopMove()
         {
-            MoveController.Instance.StopMove();
+            Axis axis = ConvertDir2Axis(dir);
+            dir = Direction.None;
+            MoveController.Instance.StopMove(enumMapper[armType], axis);
             Thread.Sleep(100);
             if(armType == ArmType.Roma && IsRotateOrClip(dir))
             {
@@ -98,6 +101,31 @@ namespace SKHardwareController
             }
         }
 
+        private Axis ConvertDir2Axis(Direction dir)
+        {
+            switch(dir)
+            {
+                case Direction.Left:
+                case Direction.Right:
+                    return Axis.X;
+                case Direction.Up:
+                case Direction.Down:
+                    return Axis.Y;
+                case Direction.ZUp:
+                case Direction.ZDown:
+                    return Axis.Z;
+                case Direction.RotateCCW:
+                case Direction.RotateCW:
+                    return Axis.R;
+                case Direction.ClampOn:
+                case Direction.ClampOff:
+                    return Axis.Clipper;
+                default:
+                    throw new Exception("不知道之前的移动方向，无法停止");
+            }
+
+        }
+
         private XYZR GetDstPosition(XYZR startPosition, WorkstationController.Hardware.Direction dir, double distance)
         {
             XYZR xyzr = new XYZR(startPosition);
@@ -116,10 +144,10 @@ namespace SKHardwareController
                     xyzr.X += distance;
                     break;
                 case WorkstationController.Hardware.Direction.ZDown:
-                    xyzr.Z -= distance;
+                    xyzr.Z += distance;
                     break;
                 case WorkstationController.Hardware.Direction.ZUp:
-                    xyzr.Z += distance;
+                    xyzr.Z -= distance;
                     break;
                 default:
                     break;
@@ -168,24 +196,59 @@ namespace SKHardwareController
             {
                 GetClipperInfo(ref degree, ref clipWidth);
             }
-            var res = MoveController.Instance.StartMove(enumMapper[armType], (Direction)dir, speedMMPerSecond);
+
+            var eArmType = enumMapper[armType];
+            //var res = MoveController.Instance.StartMove(enumMapper[armType], (Direction)dir, speedMMPerSecond);
+            e_RSPErrorCode res = e_RSPErrorCode.RSP_ERROR_NONE;
+            
+            switch(dir)
+            {
+                case Direction.Left:
+                case Direction.Right:
+                    MoveController.Instance.SetSpeed(eArmType, Axis.X, speedMMPerSecond);
+                    res = MoveController.Instance.Move2X(eArmType, dir == Direction.Left ?  0 : 700);
+                    break;
+                case Direction.Up:
+                case Direction.Down:
+                    MoveController.Instance.SetSpeed(eArmType, Axis.Y, speedMMPerSecond);
+                    res = MoveController.Instance.Move2Y(eArmType, dir == Direction.Down ? 0 : 400);
+                    break;
+                case Direction.ZDown:
+                case Direction.ZUp:
+                    MoveController.Instance.SetSpeed(eArmType, Axis.Z, speedMMPerSecond);
+                    res = MoveController.Instance.Move2Z(eArmType, dir == Direction.ZUp ? 0 : 300);
+                    break;
+                case Direction.RotateCCW:
+                case Direction.RotateCW:
+                    res = MoveController.Instance.RoateClipper( dir == Direction.RotateCCW ? 0 : 360);
+                    break;
+                case Direction.ClampOff:
+                case Direction.ClampOn:
+                    res = MoveController.Instance.MoveClipperAtSpeed(_eARM.右臂, dir == Direction.ClampOff ? 0 : 20, 10);
+                    break;
+            }
+            ThrowIfErrorHappened(res);
+        }
+
+
+        void ThrowIfErrorHappened(e_RSPErrorCode res)
+        {
             if (res != e_RSPErrorCode.RSP_ERROR_NONE)
                 throw new CriticalException(res.ToString());
         }
 
-
         public void MoveClipper(double degree, double clipWidth)
         {
-            var res = MoveController.Instance.MoveClipper(degree, clipWidth);
-            if (res != e_RSPErrorCode.RSP_ERROR_NONE)
-                throw new CriticalException(res.ToString());
+            var res = MoveController.Instance.MoveClipper(clipWidth);
+            ThrowIfErrorHappened(res);
+            res = MoveController.Instance.RoateClipper(degree);
+            ThrowIfErrorHappened(res);
         }
 
         public void GetClipperInfo(ref double degree, ref double clipWidth)
         {
             var res = MoveController.Instance.GetClipperInfo(ref degree, ref clipWidth);
-            if (res != e_RSPErrorCode.RSP_ERROR_NONE)
-                throw new CriticalException(res.ToString());
+            ThrowIfErrorHappened(res);
         }
     }
 }

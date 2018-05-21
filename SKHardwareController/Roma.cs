@@ -18,8 +18,7 @@ namespace SKHardwareController
         public void Move2AbsPosition(double x, double y, double z,double r)
         {
             var res = MoveController.Instance.MoveXYZ(_eARM.右臂, x, y, z, MoveController.defaultTimeOut);
-            if (res != e_RSPErrorCode.RSP_ERROR_NONE)
-                throw new CriticalException(res.ToString());
+            ThrowCriticalException(res);
         }
 
         public WorkstationController.Core.Data.XYZR GetCurrentPosition()
@@ -27,22 +26,23 @@ namespace SKHardwareController
             //XYZR xyzr = new XYZR()
             double x,y,z,r;
             x = y = z = r = 0;
-            var res = MoveController.Instance.GetCurrentPosition(_eARM.右臂, ref x, ref y, ref z);
-            if (res != e_RSPErrorCode.RSP_ERROR_NONE)
-                throw new CriticalException(res.ToString());
+            MoveController.Instance.GetCurrentPosition(_eARM.右臂, ref x, ref y, ref z);
+            if (x == -1 || y == -1 || z == -1)
+                throw new CriticalException("获取位置失败！");
             return new XYZR(x, y, z, r);
         }
 
-
+        private void ThrowCriticalException(e_RSPErrorCode res)
+        {
+            if (res != e_RSPErrorCode.RSP_ERROR_NONE)
+                throw new CriticalException(res.ToString());
+        }
 
 
         public void MoveClipper(double degree, double width)
         {
-            var res = MoveController.Instance.MoveClipper(degree, width);
-            if(res != e_RSPErrorCode.RSP_ERROR_NONE)
-            {
-                throw new CriticalException(res.ToString());
-            }
+            var res = MoveController.Instance.MoveClipper(degree);
+            ThrowCriticalException(res);
         }
 
         public void Move2AbsPosition(double x, double y, double z)
