@@ -102,6 +102,19 @@ namespace WorkstationController.Control
 
         void LabwareEditor_Loaded(object sender, RoutedEventArgs e)
         {
+            //改成循环测试，直到连接上，或者放弃StartCheckingInput
+            try
+            {
+                TeachingControllerDelegate.Instance.Controller.Init();
+            }
+            catch(CriticalException ex)
+            {
+                if(ex.Message == "Send_fail")
+                {
+                    MessageBox.Show("初始化失败，可能是机器未通电");
+                }
+            }
+
             labware = this.DataContext as Labware;
             int index = -1;
             if(labware.ParentCarrier != null)

@@ -22,15 +22,16 @@ namespace SKHardwareController
 
         public TeachingImplement()
         {
-            string sPort = ConfigurationManager.AppSettings["PortName"];
-            Init(sPort);
+            
         }
-        public void Init(string sPort)
+        public void Init()
         {
+            string sPort = ConfigurationManager.AppSettings["PortName"];
             enumMapper.Add(ArmType.Liha, _eARM.左臂);
             enumMapper.Add(ArmType.Roma, _eARM.右臂);
             MoveController.Instance.Init(sPort);
-            MoveController.Instance.MoveHome(_eARM.两个,MoveController.defaultTimeOut);
+            var res = MoveController.Instance.MoveHome(_eARM.两个,MoveController.defaultTimeOut);
+            ThrowIfErrorHappened(res);
         }
 
         public void Move2XYZR(ArmType armType, XYZR xyzr)
@@ -200,36 +201,41 @@ namespace SKHardwareController
             var eArmType = enumMapper[armType];
             //var res = MoveController.Instance.StartMove(enumMapper[armType], (Direction)dir, speedMMPerSecond);
             e_RSPErrorCode res = e_RSPErrorCode.RSP_ERROR_NONE;
-            
+            e_CanMotorID motorID = e_CanMotorID.CanMotorID_Max;
             switch(dir)
             {
                 case Direction.Left:
                 case Direction.Right:
-                    MoveController.Instance.SetSpeed(eArmType, Axis.X, speedMMPerSecond);
+                    motorID = armType == ArmType.Liha ? e_CanMotorID.CanMotorID_Left_x : e_CanMotorID.CanMotorID_Right_x;
+                    res = MoveController.Instance.SetSpeed(eArmType, motorID, speedMMPerSecond);
+                    ThrowIfErrorHappened(res);
                     res = MoveController.Instance.Move2X(eArmType, dir == Direction.Left ?  0 : 700);
                     break;
                 case Direction.Up:
                 case Direction.Down:
-                    MoveController.Instance.SetSpeed(eArmType, Axis.Y, speedMMPerSecond);
+                    motorID = armType == ArmType.Liha ? e_CanMotorID.CanMotorID_Left_y : e_CanMotorID.CanMotorID_Right_y;
+                    MoveController.Instance.SetSpeed(eArmType, motorID, speedMMPerSecond);
                     res = MoveController.Instance.Move2Y(eArmType, dir == Direction.Down ? 0 : 400);
                     break;
                 case Direction.ZDown:
                 case Direction.ZUp:
-                    MoveController.Instance.SetSpeed(eArmType, Axis.Z, speedMMPerSecond);
+                    motorID = armType == ArmType.Liha ? e_CanMotorID.CanMotorID_Left_z : e_CanMotorID.CanMotorID_Right_z;
+                    MoveController.Instance.SetSpeed(eArmType, motorID, speedMMPerSecond);
                     res = MoveController.Instance.Move2Z(eArmType, dir == Direction.ZUp ? 0 : 300);
                     break;
                 case Direction.RotateCCW:
                 case Direction.RotateCW:
+                    motorID = e_CanMotorID.CanMotorID_Rotate;
                     res = MoveController.Instance.RoateClipper( dir == Direction.RotateCCW ? 0 : 360);
                     break;
                 case Direction.ClampOff:
                 case Direction.ClampOn:
+                    motorID = e_CanMotorID.CanMotorID_Clipper;
                     res = MoveController.Instance.MoveClipperAtSpeed(_eARM.右臂, dir == Direction.ClampOff ? 0 : 20, 10);
                     break;
             }
             ThrowIfErrorHappened(res);
         }
-
 
         void ThrowIfErrorHappened(e_RSPErrorCode res)
         {

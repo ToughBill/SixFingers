@@ -29,7 +29,7 @@ namespace SKHardwareController
         private const double MAX_X_DISTANCE = 700.0;//70cm
         private const double MAX_Y_DISTANCE = 400.0;//40cm
         private const double MAX_Z_DISTANCE = 300.0;//30cm
-        private const double DegreePerStep = 360 / 1000;
+        private const double DegreePerStep = 360 / 200;
 
         private int getValue = 0;
 
@@ -504,9 +504,65 @@ namespace SKHardwareController
         /// <param name="axis"></param>
         /// <param name="maxSpeedMMPerSecond"></param>
         /// <returns></returns>
-        public e_RSPErrorCode SetSpeed(_eARM armid, Axis axis, double maxSpeedMMPerSecond)
+        public e_RSPErrorCode SetSpeed(_eARM armid, e_CanMotorID motor, double maxSpeedMMorDegreePerSecond)
         {
-            
+            int timeout = 500;
+            double SpeedbyStep = 0;
+
+            if (armid >= _eARM.两个)
+            {
+                return e_RSPErrorCode.无效操作; ;
+            }
+
+            switch (motor)
+            {
+                case e_CanMotorID.CanMotorID_Left_x:
+                case e_CanMotorID.CanMotorID_Right_x:
+                    SpeedbyStep = Math.Round(maxSpeedMMorDegreePerSecond/mmPerStepX);
+                    break;
+                case e_CanMotorID.CanMotorID_Left_y:
+                case e_CanMotorID.CanMotorID_Right_y:
+                    SpeedbyStep = Math.Round(maxSpeedMMorDegreePerSecond/mmPerStepY);
+                    break;
+                case e_CanMotorID.CanMotorID_Left_z:
+                case e_CanMotorID.CanMotorID_Right_z:
+                    SpeedbyStep = Math.Round(maxSpeedMMorDegreePerSecond/mmPerStepZ);
+                    break;
+                case e_CanMotorID.CanMotorID_Rotate:
+                    SpeedbyStep = Math.Round(maxSpeedMMorDegreePerSecond/DegreePerStep);
+                    break;
+                case e_CanMotorID.CanMotorID_Clipper:
+                    SpeedbyStep = Math.Round(maxSpeedMMorDegreePerSecond/mmPerStepClipper);
+                    break;
+            }
+
+            for (int i = 0; i < 3; i++)
+            {
+                SendCommand(string.Format("{0}8SS {1} {2}", (int)armid, (int)motor, (int)SpeedbyStep), i != 0);
+                cmdACK.WaitOne(100);
+                if (bACK[(int)armid - 1]) break;
+            }
+
+            if (!bACK[(int)armid - 1])
+            {
+                return e_RSPErrorCode.Send_fail;
+            }
+
+            if (timeout > 0)
+            {
+                while (!bActiondone[(int)armid - 1] && timeout > 0)
+                {
+                    Thread.Sleep(10);
+                    timeout -= 10;
+                }
+            }
+
+            if (timeout <= 0)
+            {
+                return e_RSPErrorCode.超时错误;
+            }
+
+            return _errorCode[(int)armid - 1];
         }
 
         /// <summary>
@@ -516,9 +572,65 @@ namespace SKHardwareController
         /// <param name="axis"></param>
         /// <param name="maxAccSpeedMMPerSecond"></param>
         /// <returns></returns>
-        public e_RSPErrorCode SetAccSpeed(_eARM armid, Axis axis, double maxAccSpeedMMPerSecond)
+        public e_RSPErrorCode SetAccSpeed(_eARM armid, e_CanMotorID motor, double maxAccSpeedMMorDegreePerSecond)
         {
-            throw new NotImplementedException();
+            int timeout = 500;
+            double SpeedbyStep = 0;
+
+            if (armid >= _eARM.两个)
+            {
+                return e_RSPErrorCode.无效操作; ;
+            }
+
+            switch (motor)
+            {
+                case e_CanMotorID.CanMotorID_Left_x:
+                case e_CanMotorID.CanMotorID_Right_x:
+                    SpeedbyStep = Math.Round(maxAccSpeedMMorDegreePerSecond / mmPerStepX);
+                    break;
+                case e_CanMotorID.CanMotorID_Left_y:
+                case e_CanMotorID.CanMotorID_Right_y:
+                    SpeedbyStep = Math.Round(maxAccSpeedMMorDegreePerSecond / mmPerStepY);
+                    break;
+                case e_CanMotorID.CanMotorID_Left_z:
+                case e_CanMotorID.CanMotorID_Right_z:
+                    SpeedbyStep = Math.Round(maxAccSpeedMMorDegreePerSecond / mmPerStepZ);
+                    break;
+                case e_CanMotorID.CanMotorID_Rotate:
+                    SpeedbyStep = Math.Round(maxAccSpeedMMorDegreePerSecond / DegreePerStep);
+                    break;
+                case e_CanMotorID.CanMotorID_Clipper:
+                    SpeedbyStep = Math.Round(maxAccSpeedMMorDegreePerSecond / mmPerStepClipper);
+                    break;
+            }
+
+            for (int i = 0; i < 3; i++)
+            {
+                SendCommand(string.Format("{0}8SJ {1} {2}", (int)armid, (int)motor, (int)SpeedbyStep), i != 0);
+                cmdACK.WaitOne(100);
+                if (bACK[(int)armid - 1]) break;
+            }
+
+            if (!bACK[(int)armid - 1])
+            {
+                return e_RSPErrorCode.Send_fail;
+            }
+
+            if (timeout > 0)
+            {
+                while (!bActiondone[(int)armid - 1] && timeout > 0)
+                {
+                    Thread.Sleep(10);
+                    timeout -= 10;
+                }
+            }
+
+            if (timeout <= 0)
+            {
+                return e_RSPErrorCode.超时错误;
+            }
+
+            return _errorCode[(int)armid - 1];
         }
 
         /// <summary>
@@ -661,7 +773,7 @@ namespace SKHardwareController
         /// <returns></returns>
         public double GetXPos(_eARM armid)
         {
-            double curpos = -1;
+            double curpos = 0.0;
             int timeout = 500;
 
             if (!bHome)
@@ -709,7 +821,7 @@ namespace SKHardwareController
         /// <returns></returns>
         public double GetYPos(_eARM armid)
         {
-            double curpos = -1;
+            double curpos = 0.0;
             int timeout = 500;
 
             if (!bHome)
@@ -758,7 +870,7 @@ namespace SKHardwareController
         /// <returns></returns>
         public double GetZPos(_eARM armid)
         {
-            double curpos = -1;
+            double curpos = 0.0;
             int timeout = 500;
 
             if (!bHome)
@@ -946,6 +1058,144 @@ namespace SKHardwareController
 
             bStatus = (getValue!=0);
             return _errorCode[(int)armid - 1];
+        }
+
+        /// <summary>
+        /// 获取电机轴速度
+        /// </summary>
+        /// <param name="armid"></param>
+        /// <param name="motor"></param>
+        /// <returns></returns>
+        public double GetSpeed(_eARM armid, e_CanMotorID motor)
+        {
+            double curpos = 0.0;
+            int timeout = 500;
+            double MMorDegrePperStep = 0;
+
+            if (armid >= _eARM.两个)
+            {
+                return curpos;
+            }
+            
+            switch(motor)
+            {
+                case e_CanMotorID.CanMotorID_Left_x:
+                case e_CanMotorID.CanMotorID_Right_x:
+                    MMorDegrePperStep = mmPerStepX;
+                    break;
+                case e_CanMotorID.CanMotorID_Left_y:
+                case e_CanMotorID.CanMotorID_Right_y:
+                    MMorDegrePperStep = mmPerStepY;
+                    break;
+                case e_CanMotorID.CanMotorID_Left_z:
+                case e_CanMotorID.CanMotorID_Right_z:
+                    MMorDegrePperStep = mmPerStepZ;
+                    break;
+                case e_CanMotorID.CanMotorID_Rotate:
+                    MMorDegrePperStep = DegreePerStep;
+                    break;
+                case e_CanMotorID.CanMotorID_Clipper:
+                    MMorDegrePperStep = mmPerStepClipper;
+                    break;
+            }
+            
+            for (int i = 0; i < 3; i++)
+            {
+                SendCommand(string.Format("{0}8RS {1}", (int)armid, (int)motor), i != 0);
+                cmdACK.WaitOne(100);
+                if (bACK[(int)armid - 1]) break;
+            }
+
+            if (!bACK[(int)armid - 1])
+            {
+                return curpos;
+            }
+
+            if (timeout > 0)
+            {
+                while (!bActiondone[(int)armid - 1] && timeout > 0)
+                {
+                    Thread.Sleep(10);
+                    timeout -= 10;
+                }
+            }
+
+            if (timeout <= 0)
+            {
+                return curpos;
+            }
+
+            curpos = getValue * MMorDegrePperStep;
+            return curpos;
+        }
+
+        /// <summary>
+        /// 获取电机轴速度
+        /// </summary>
+        /// <param name="armid"></param>
+        /// <param name="motor"></param>
+        /// <returns></returns>
+        public double GetAccSpeed(_eARM armid, e_CanMotorID motor)
+        {
+            double curpos = 0.0;
+            int timeout = 500;
+            double MMorDegrePperStep = 0;
+
+            if (armid >= _eARM.两个)
+            {
+                return curpos;
+            }
+
+            switch (motor)
+            {
+                case e_CanMotorID.CanMotorID_Left_x:
+                case e_CanMotorID.CanMotorID_Right_x:
+                    MMorDegrePperStep = mmPerStepX;
+                    break;
+                case e_CanMotorID.CanMotorID_Left_y:
+                case e_CanMotorID.CanMotorID_Right_y:
+                    MMorDegrePperStep = mmPerStepY;
+                    break;
+                case e_CanMotorID.CanMotorID_Left_z:
+                case e_CanMotorID.CanMotorID_Right_z:
+                    MMorDegrePperStep = mmPerStepZ;
+                    break;
+                case e_CanMotorID.CanMotorID_Rotate:
+                    MMorDegrePperStep = DegreePerStep;
+                    break;
+                case e_CanMotorID.CanMotorID_Clipper:
+                    MMorDegrePperStep = mmPerStepClipper;
+                    break;
+            }
+
+            for (int i = 0; i < 3; i++)
+            {
+                SendCommand(string.Format("{0}8RJ {1}", (int)armid, (int)motor), i != 0);
+                cmdACK.WaitOne(100);
+                if (bACK[(int)armid - 1]) break;
+            }
+
+            if (!bACK[(int)armid - 1])
+            {
+                return curpos;
+            }
+
+            if (timeout > 0)
+            {
+                while (!bActiondone[(int)armid - 1] && timeout > 0)
+                {
+                    Thread.Sleep(10);
+                    timeout -= 10;
+                }
+            }
+
+            if (timeout <= 0)
+            {
+                return curpos;
+            }
+
+            curpos = getValue * MMorDegrePperStep;
+            return curpos;
         }
 
         /// <summary>
@@ -1558,6 +1808,9 @@ namespace SKHardwareController
 
         public void GetCurrentPosition(_eARM armID, ref double x, ref  double y, ref  double z)
         {
+            x = -1;
+            y = -1;
+            z = -1;
             x = GetXPos(armID);
             y = GetYPos(armID);
             z = GetZPos(armID);
@@ -1736,5 +1989,17 @@ namespace SKHardwareController
         RSP_ERROR_Tip_crash,    //Tip crash (used with DiTi option)
         RSP_ERROR_Tip_not_clean,//Tip not clean (used with DiTi option)
         Send_fail,
+    };
+
+    public enum e_CanMotorID{
+        CanMotorID_Left_x,   //左臂x
+        CanMotorID_Left_y,   //左臂y
+        CanMotorID_Left_z,   //左臂z
+        CanMotorID_Right_x,   //右臂x
+        CanMotorID_Right_y,   //右臂y
+        CanMotorID_Right_z,   //右臂z
+        CanMotorID_Rotate,   //右臂夹爪旋转
+        CanMotorID_Clipper,   //右臂夹爪张合
+        CanMotorID_Max,
     };
 }

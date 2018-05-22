@@ -9,7 +9,7 @@ namespace WorkstationController.Hardware
 {
     public interface ITeachingController
     {
-        void Init(string sPort);
+        void Init();
         void Move2XYZR(ArmType armType,XYZR xyzr);
 
         void MoveClipper(double degree, double clipWidth);

@@ -128,5 +128,10 @@ namespace WorkstationController.Hardware
         {
             throw new NotImplementedException();
         }
+
+        public void Init()
+        {
+            throw new NotImplementedException();
+        }
     }
 }
