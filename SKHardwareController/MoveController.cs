@@ -506,7 +506,7 @@ namespace SKHardwareController
         /// <returns></returns>
         public e_RSPErrorCode SetSpeed(_eARM armid, Axis axis, double maxSpeedMMPerSecond)
         {
-            throw new NotImplementedException();
+            
         }
 
         /// <summary>

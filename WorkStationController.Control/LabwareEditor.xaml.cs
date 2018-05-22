@@ -33,7 +33,7 @@ namespace WorkstationController.Control
             InitializeComponent();
             inputChecker.OnStartMove += inputChecker_OnStartMove;
             inputChecker.OnStopMove += inputChecker_OnStopMove;
-            TeachingControllerDelegate.Instance.RegisterController(new TeachingControllerSimulator());
+            TeachingControllerDelegate.Instance.RegisterController(new SKHardwareController.TeachingImplement());
             updatePositionTimer.Elapsed += updatePositionTimer_Elapsed;
             this.Loaded += LabwareEditor_Loaded;
             this.Unloaded += LabwareEditor_Unloaded;
