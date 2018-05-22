@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Configuration;
+using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading;
@@ -13,7 +14,7 @@ namespace SKHardwareController
     public class TeachingImplement : ITeachingController
     {
         Dictionary<ArmType, _eARM> enumMapper = new Dictionary<ArmType, _eARM>();
-        XYZR startPosition;
+        XYZ startPosition;
         double clipWidth;
         double degree;
         WorkstationController.Hardware.Direction dir;
@@ -30,11 +31,14 @@ namespace SKHardwareController
             enumMapper.Add(ArmType.Liha, _eARM.左臂);
             enumMapper.Add(ArmType.Roma, _eARM.右臂);
             MoveController.Instance.Init(sPort);
+
             var res = MoveController.Instance.MoveHome(_eARM.两个,MoveController.defaultTimeOut);
+            ThrowIfErrorHappened(res);
+            res = MoveController.Instance.InitClipper();
             ThrowIfErrorHappened(res);
         }
 
-        public void Move2XYZR(ArmType armType, XYZR xyzr)
+        public void Move2XYZR(ArmType armType, XYZ xyzr)
         {
             //need consider ztravel
             var err = MoveController.Instance.MoveXYZ(enumMapper[armType], xyzr.X, xyzr.Y, xyzr.Z, MoveController.defaultTimeOut);
@@ -42,64 +46,22 @@ namespace SKHardwareController
                 throw new CriticalException(err.ToString());
         }
 
-        public XYZR GetPosition(ArmType armType)
+        public XYZ GetPosition(ArmType armType)
         {
             double x, y, z,r;
             x = y = z = r = 0;
             MoveController.Instance.GetCurrentPosition(enumMapper[armType], ref x, ref y, ref z);
-            return new XYZR(x, y, z);
+            return new XYZ(x, y, z);
         }
 
   
-
+        //when stop move triggers, we check whether we have moved the minium distance, 
+        //if not, we move the remaining distance
         public void StopMove()
         {
             Axis axis = ConvertDir2Axis(dir);
             dir = Direction.None;
-            MoveController.Instance.StopMove(enumMapper[armType], axis);
-            Thread.Sleep(100);
-            if(armType == ArmType.Roma && IsRotateOrClip(dir))
-            {
-                double currentDegree,currentClipWidth;
-                currentClipWidth = currentDegree = 0;
-                GetClipperInfo(ref currentDegree, ref currentClipWidth);
-
-                bool needAdditionalMove = false;
-                double dstDegree, dstClipWidth;
-                dstDegree = currentDegree;
-                dstClipWidth = currentClipWidth;
-
-                if(dir == WorkstationController.Hardware.Direction.RotateCCW || dir == WorkstationController.Hardware.Direction.RotateCW)
-                {
-                    double degreeDiff = Math.Abs(currentDegree - degree);
-                    if(degreeDiff < speedMMPerSecond *0.1)
-                    {
-                        needAdditionalMove = true;
-                        double minusOrPlus = dir == WorkstationController.Hardware.Direction.RotateCW ?  1: -1;
-                        dstDegree = degree + minusOrPlus * speedMMPerSecond * 0.1;
-                    }
-                }
-                if(dir == WorkstationController.Hardware.Direction.ClampOff || dir == WorkstationController.Hardware.Direction.ClampOn)
-                {
-                    double clipDiff = currentClipWidth - clipWidth;
-                    if (clipDiff < speedMMPerSecond * 0.1)
-                    {
-                        needAdditionalMove = true;
-                        double minusOrPlus = dir == WorkstationController.Hardware.Direction.ClampOn ? 1 : -1;
-                        dstClipWidth = degree + minusOrPlus* speedMMPerSecond * 0.1;
-                    }
-                }
-                if(needAdditionalMove)
-                    MoveClipper(dstDegree, dstClipWidth);
-                return;
-            }
-            var currentPosition = GetPosition(armType);
-            double distanceMoved = GetDistance(startPosition, currentPosition, dir);
-            if(distanceMoved < speedMMPerSecond * 0.1)
-            {
-                XYZR dstPosition = GetDstPosition(startPosition, dir, speedMMPerSecond * 0.1);
-                Move2XYZR(armType, dstPosition);
-            }
+            e_RSPErrorCode res = MoveController.Instance.StopMove(enumMapper[armType], axis);
         }
 
         private Axis ConvertDir2Axis(Direction dir)
@@ -127,35 +89,6 @@ namespace SKHardwareController
 
         }
 
-        private XYZR GetDstPosition(XYZR startPosition, WorkstationController.Hardware.Direction dir, double distance)
-        {
-            XYZR xyzr = new XYZR(startPosition);
-            switch (dir)
-            {
-                case WorkstationController.Hardware.Direction.Down:
-                    xyzr.Y -= distance;
-                    break;
-                case WorkstationController.Hardware.Direction.Up:
-                    xyzr.Y += distance;
-                    break;
-                case WorkstationController.Hardware.Direction.Left:
-                    xyzr.X -= distance;
-                    break;
-                case WorkstationController.Hardware.Direction.Right:
-                    xyzr.X += distance;
-                    break;
-                case WorkstationController.Hardware.Direction.ZDown:
-                    xyzr.Z += distance;
-                    break;
-                case WorkstationController.Hardware.Direction.ZUp:
-                    xyzr.Z -= distance;
-                    break;
-                default:
-                    break;
-            }
-            return xyzr;
-        }
-
         private bool IsRotateOrClip(WorkstationController.Hardware.Direction dir)
         {
             return dir == WorkstationController.Hardware.Direction.ClampOff ||
@@ -164,28 +97,6 @@ namespace SKHardwareController
                    dir == WorkstationController.Hardware.Direction.RotateCCW;
         }
 
-        private double GetDistance(XYZR startPosition, XYZR currentPosition, WorkstationController.Hardware.Direction dir)
-        {
-            double distance = 0;
-            switch(dir)
-            {
-                case WorkstationController.Hardware.Direction.Down:
-                case WorkstationController.Hardware.Direction.Up:
-                    distance = currentPosition.Y - startPosition.Y;
-                    break;
-                case WorkstationController.Hardware.Direction.Left:
-                case WorkstationController.Hardware.Direction.Right:
-                    distance = currentPosition.X - startPosition.X;
-                    break;
-                case WorkstationController.Hardware.Direction.ZDown:
-                case WorkstationController.Hardware.Direction.ZUp:
-                    distance = currentPosition.Z - startPosition.Z;
-                    break;
-                default:
-                    break;
-            }
-            return Math.Abs(distance);
-        }
 
         public void StartMove(ArmType armType, WorkstationController.Hardware.Direction dir, int speedMMPerSecond)
         {
@@ -202,36 +113,41 @@ namespace SKHardwareController
             //var res = MoveController.Instance.StartMove(enumMapper[armType], (Direction)dir, speedMMPerSecond);
             e_RSPErrorCode res = e_RSPErrorCode.RSP_ERROR_NONE;
             e_CanMotorID motorID = e_CanMotorID.CanMotorID_Max;
+            double absPosition = 0;
             switch(dir)
             {
                 case Direction.Left:
                 case Direction.Right:
                     motorID = armType == ArmType.Liha ? e_CanMotorID.CanMotorID_Left_x : e_CanMotorID.CanMotorID_Right_x;
-                    res = MoveController.Instance.SetSpeed(eArmType, motorID, speedMMPerSecond);
-                    ThrowIfErrorHappened(res);
-                    res = MoveController.Instance.Move2X(eArmType, dir == Direction.Left ?  0 : 700);
+                    absPosition =  dir == Direction.Left ? 0 : 700;
+                    res = MoveController.Instance.StartMove(eArmType,Axis.X, speedMMPerSecond,absPosition,0);
+                    Debug.WriteLine(string.Format("movex result:{0}",res.ToString()));
                     break;
                 case Direction.Up:
                 case Direction.Down:
                     motorID = armType == ArmType.Liha ? e_CanMotorID.CanMotorID_Left_y : e_CanMotorID.CanMotorID_Right_y;
-                    MoveController.Instance.SetSpeed(eArmType, motorID, speedMMPerSecond);
-                    res = MoveController.Instance.Move2Y(eArmType, dir == Direction.Down ? 0 : 400);
+                    absPosition = dir == Direction.Down ? 400 : 0;
+                    res = MoveController.Instance.StartMove(eArmType, Axis.Y, speedMMPerSecond, absPosition, 0);
                     break;
                 case Direction.ZDown:
                 case Direction.ZUp:
                     motorID = armType == ArmType.Liha ? e_CanMotorID.CanMotorID_Left_z : e_CanMotorID.CanMotorID_Right_z;
-                    MoveController.Instance.SetSpeed(eArmType, motorID, speedMMPerSecond);
-                    res = MoveController.Instance.Move2Z(eArmType, dir == Direction.ZUp ? 0 : 300);
+                    absPosition =  dir == Direction.ZUp ? 0 : 300;
+                    res = MoveController.Instance.StartMove(eArmType, Axis.Z, speedMMPerSecond, absPosition, 0);
                     break;
                 case Direction.RotateCCW:
                 case Direction.RotateCW:
+                    this.armType = ArmType.Roma;
                     motorID = e_CanMotorID.CanMotorID_Rotate;
-                    res = MoveController.Instance.RoateClipper( dir == Direction.RotateCCW ? 0 : 360);
+                    absPosition =  dir == Direction.RotateCCW ? 360 : 720;
+                    res = MoveController.Instance.StartMove(_eARM.右臂, Axis.R, speedMMPerSecond, absPosition, 0);
                     break;
                 case Direction.ClampOff:
                 case Direction.ClampOn:
+                    this.armType = ArmType.Roma;
                     motorID = e_CanMotorID.CanMotorID_Clipper;
-                    res = MoveController.Instance.MoveClipperAtSpeed(_eARM.右臂, dir == Direction.ClampOff ? 0 : 20, 10);
+                    absPosition = dir == Direction.ClampOff ? 0 : 20;
+                    res = MoveController.Instance.StartMove(_eARM.右臂, Axis.Clipper, speedMMPerSecond, absPosition, 0);
                     break;
             }
             ThrowIfErrorHappened(res);

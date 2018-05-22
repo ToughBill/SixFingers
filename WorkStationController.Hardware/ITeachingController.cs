@@ -10,11 +10,11 @@ namespace WorkstationController.Hardware
     public interface ITeachingController
     {
         void Init();
-        void Move2XYZR(ArmType armType,XYZR xyzr);
+        void Move2XYZR(ArmType armType,XYZ xyzr);
 
         void MoveClipper(double degree, double clipWidth);
         void GetClipperInfo(ref double degree, ref double clipWidth);
-        XYZR GetPosition(ArmType armType);
+        XYZ GetPosition(ArmType armType);
         void StartMove(ArmType armType,Direction dir, int speedMMPerSecond);
         void StopMove();
     }

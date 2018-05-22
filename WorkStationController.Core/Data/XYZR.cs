@@ -7,26 +7,25 @@ using System.Text;
 
 namespace WorkstationController.Core.Data
 {
-    public class XYZR:BindableBase
+    public class XYZ:BindableBase
     {
         double x;
         double y;
         double z;
         double r;
-        public XYZR(double x, double y, double z, double r = 0)
+        public XYZ(double x, double y, double z)
         {
             this.x = x;
             this.y = y;
             this.z = z;
-            this.r = r;
         }
 
-        public XYZR(XYZR newVal)
+        public XYZ(XYZ newVal)
         {
             x = newVal.x;
             y = newVal.y;
             z = newVal.z;
-            r = newVal.r;
+
         }
         public double X
         {
@@ -64,23 +63,23 @@ namespace WorkstationController.Core.Data
             }
         }
 
-        public double R
-        {
-            get
-            {
-                return r;
-            }
-            set
-            {
-                SetProperty(ref r, value);
-            }
-        }
+        //public double R
+        //{
+        //    get
+        //    {
+        //        return r;
+        //    }
+        //    set
+        //    {
+        //        SetProperty(ref r, value);
+        //    }
+        //}
 
 
         public override bool Equals(object obj)
         {
-            XYZR that = (XYZR)obj;
-            return this.x == that.x && this.y == that.y && this.z == that.z && this.r == that.r;
+            XYZ that = (XYZ)obj;
+            return this.x == that.x && this.y == that.y && this.z == that.z;
         } 
     }
 

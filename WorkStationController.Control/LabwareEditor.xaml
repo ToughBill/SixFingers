@@ -36,7 +36,7 @@
             <ColumnDefinition Width="*"/>
         </Grid.ColumnDefinitions>
         <Grid.Resources>
-           
+
             <Style x:Name="LabelStyle" TargetType="Label">
                 <Setter Property="VerticalContentAlignment" Value="Center"/>
             </Style>
@@ -52,7 +52,7 @@
 
         <Label Grid.Row="0" Grid.Column="0" Content="器件名: "/>
         <TextBox  Grid.Row="0" Grid.Column="2"    VerticalContentAlignment="Center"         Text="{Binding Path=SaveName, Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}"/>
-        
+
         <!--Color-->
         <StackPanel  Grid.Row="2" Grid.Column="4" Orientation="Horizontal">
             <TextBlock Text="条位:" VerticalAlignment="Center"  Margin="5" HorizontalAlignment="Left"/>
@@ -67,7 +67,7 @@
             <control:ColorPickerCombo x:Name="_colorPicker" HorizontalAlignment="Stretch" Margin="5" SelectedColor="{Binding BackgroundColor, Mode=TwoWay}"/>
         </StackPanel>
         <!--Dimension-->
-       
+
         <Label Grid.Row="2" Grid.Column="0" Content="校准载架:"/>
 
         <ComboBox Grid.Row="2" Name="cmbCalibCarrier"
@@ -120,23 +120,24 @@
         <TextBox Grid.Row="13" Grid.Column="6" Text="{Binding Path=WellsInfo.WellRadius}"/>
         <Label Grid.Row="12" Grid.Column="6" Content="(单位:mm)" HorizontalAlignment="Right" />
         <StackPanel Grid.Row="14" Grid.Column="0" Grid.ColumnSpan="6" Orientation="Horizontal" >
-            <StackPanel Name="curPositionPanel" Orientation="Horizontal" Height="40">
-                <Label>当前位置：</Label>
+
+
+            <StackPanel x:Name="curPositionPanel" Orientation="Horizontal" Height="40">
+                <Label Content="当前位置："/>
                 <StackPanel Orientation="Horizontal" Margin="0,5,0,2">
-                    <Label>X:</Label>
-                    <TextBox Text="{Binding X}" Width="60"></TextBox>
+                    <Label Content="X:"/>
+                    <TextBox Text="{Binding X}" Width="60"/>
                 </StackPanel>
                 <StackPanel Orientation="Horizontal" Margin="0,5,0,2">
-                    <Label>Y:</Label>
-                    <TextBox Text="{Binding Y}" Width="60"></TextBox>
+                    <Label Content="Y:"/>
+                    <TextBox Text="{Binding Y}" Width="60"/>
                 </StackPanel>
                 <StackPanel Orientation="Horizontal" Margin="0,5,0,2">
-                    <Label>Z:</Label>
-                    <TextBox Text="{Binding Z}" Width="60"></TextBox>
+                    <Label Content="Z:"/>
+                    <TextBox Text="{Binding Z}" Width="60"/>
                 </StackPanel>
             </StackPanel>
-            
-            
+
         </StackPanel>
         <StackPanel Grid.Row="15" Grid.ColumnSpan="6" Orientation="Horizontal">
             <Label>移动速度：</Label>
@@ -148,7 +149,7 @@
             <Label>mm/s</Label>
         </StackPanel>
         <StackPanel  Grid.Row="14" Grid.Column="6"  HorizontalAlignment="Right" Margin="0,2,0,0" Orientation="Horizontal">
-            <Button   Width="60" Height="30" Content="夹手位置" Click="OnSetROMAVectorClick"/>
+            <Button   Width="60" Height="30" Content="夹手位置" Click="OnSetROMAVectorClick" Margin="3,4,3,0" VerticalAlignment="Top"/>
             <Button   Width="60" Height="30" Content="保存" Click="OnSaveButtonClick"/>
         </StackPanel>
     </Grid>

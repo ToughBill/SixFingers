@@ -13,6 +13,6 @@ namespace WorkstationController.Hardware
         void MoveClipper(double degree, double width);
         void GetClipperInfo(ref double degree, ref double width);
         void Move2AbsPosition(double x, double y, double z);
-        XYZR GetCurrentPosition();
+        XYZ GetCurrentPosition();
     }
 }

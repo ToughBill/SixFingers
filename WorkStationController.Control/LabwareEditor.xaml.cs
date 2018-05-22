@@ -16,11 +16,12 @@ namespace WorkstationController.Control
     {
         Labware labware;
         #region teaching related
-        XYZR xyzr = new XYZR(0, 0, 0);
+        XYZ xyzr = new XYZ(0, 0, 0);
         RomaTeachingForm romaTeachingForm;
         InputChecker inputChecker = new InputChecker();
         DateTime lastUpdateTime = DateTime.Now;
         System.Timers.Timer updatePositionTimer = new System.Timers.Timer(250);
+        public event EventHandler<ROMAPosition> onPositionChanged;
         int speed = 1;
         #endregion
 
@@ -34,61 +35,74 @@ namespace WorkstationController.Control
             inputChecker.OnStartMove += inputChecker_OnStartMove;
             inputChecker.OnStopMove += inputChecker_OnStopMove;
             TeachingControllerDelegate.Instance.RegisterController(new SKHardwareController.TeachingImplement());
-            updatePositionTimer.Elapsed += updatePositionTimer_Elapsed;
             this.Loaded += LabwareEditor_Loaded;
             this.Unloaded += LabwareEditor_Unloaded;
             parent.Closing += parent_Closing;
         }
 
-        void updatePositionTimer_Elapsed(object sender, System.Timers.ElapsedEventArgs e)
-        {
-            Debug.WriteLine("Query position");
-            xyzr = TeachingControllerDelegate.Instance.Controller.GetPosition(ArmType.Liha);
-        }
+       
 
         void parent_Closing(object sender, System.ComponentModel.CancelEventArgs e)
         {
             inputChecker.Stop();
-        
         }
 
         ~LabwareEditor()
         {
-
         }
 
         #region teaching implement
-  
-
         private void GetCurrentPositon()
         {
             //get current position
-            xyzr = TeachingControllerDelegate.Instance.Controller.GetPosition(ArmType.Liha);
+            ArmType armType = ArmType.Liha;
+
+            if( romaTeachingForm != null && romaTeachingForm.IsVisible)
+            {
+                armType = ArmType.Roma;
+            }
+            var position = TeachingControllerDelegate.Instance.Controller.GetPosition(armType);
+            double degree, clipWidth;
+            degree = clipWidth = 0;
+            if(armType == ArmType.Roma)
+            {
+                TeachingControllerDelegate.Instance.Controller.GetClipperInfo(ref degree, ref clipWidth); 
+                if (onPositionChanged != null)
+                    onPositionChanged(this, new ROMAPosition("x",xyzr.X,xyzr.Y,xyzr.Z,degree));
+                return;
+            }
+            
+
+            Debug.WriteLine("Current Position is: xyz {0}{1}{2}", position.X, position.Y, position.Z);
+            xyzr.X = position.X;
+            xyzr.Y = position.Y;
+            xyzr.Z = position.Z;
+         
         }
 
-    
         private void StartCheckingInput()
         {
-            
             inputChecker.Start();
             updatePositionTimer.Start();
-          
         }
 
         void inputChecker_OnStopMove(object sender, Direction e)
         {
+            Debug.WriteLine("input checker on stopp move");
             TeachingControllerDelegate.Instance.Controller.StopMove();
             updatePositionTimer.Stop();
+            GetCurrentPositon();
+
         }
 
         void inputChecker_OnStartMove(object sender, Direction dir)
         {
             ArmType armType = ArmType.Liha;
-            if( romaTeachingForm != null &&romaTeachingForm.IsVisible )
+            if (romaTeachingForm != null && romaTeachingForm.IsVisible)
             {
                 armType = ArmType.Roma;
             }
-            TeachingControllerDelegate.Instance.Controller.StartMove(armType, dir,speed);
+            TeachingControllerDelegate.Instance.Controller.StartMove(armType, dir, speed);
             updatePositionTimer.Start();
         }
 
@@ -132,10 +146,9 @@ namespace WorkstationController.Control
                     cmbCalibCarrier.SelectedIndex = index;
             }
             labware.CalculatePositionInLayout();
-
             GetCurrentPositon();
-            StartCheckingInput();
             curPositionPanel.DataContext = xyzr;
+            StartCheckingInput();
         }
 
         private void OnSaveButtonClick(object sender, RoutedEventArgs e)
@@ -153,11 +166,7 @@ namespace WorkstationController.Control
                 if (newInfoHandler != null)
                     newInfoHandler(ex.Message, true);
             }
-            
         }
-
-      
-     
 
         #region 使用当前位置，移动到设置位置
         private void btnUseCurrentValFirtWell_Click(object sender, RoutedEventArgs e)
@@ -243,7 +252,6 @@ namespace WorkstationController.Control
             xyzr.Z = labware.ZValues.ZStart;
             TeachingControllerDelegate.Instance.Controller.Move2XYZR(ArmType.Liha, xyzr);
         }
-
         #endregion
 
         private void OnSetROMAVectorClick(object sender, RoutedEventArgs e)
@@ -251,8 +259,7 @@ namespace WorkstationController.Control
             if (labware.PlateVector == null)
                 labware.PlateVector = new PlateVector(true);
             labware.PlateVector.Name = labware.Label;
-
-            romaTeachingForm = new RomaTeachingForm(labware.PlateVector, updatePositionTimer, newInfoHandler);
+            romaTeachingForm = new RomaTeachingForm(labware.PlateVector,this,newInfoHandler);
             romaTeachingForm.ShowDialog();
         }
 
@@ -271,8 +278,5 @@ namespace WorkstationController.Control
             else
                 speed = 50;
         }
-
-
-
     }
 }

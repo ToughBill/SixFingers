@@ -11,7 +11,7 @@ namespace WorkstationController.Hardware
 {
     public class TeachingControllerSimulator : ITeachingController
     {
-        XYZR currentPosition = new XYZR(0,0,0);
+        XYZ currentPosition = new XYZ(0,0,0);
         Stopwatch stopWatch = new Stopwatch();
         int speed_mmPerSecond = 0;
         Direction dir;
@@ -53,7 +53,7 @@ namespace WorkstationController.Hardware
             }
         }
 
-        public void Move2XYZR(ArmType armType, Core.Data.XYZR xyzr)
+        public void Move2XYZR(ArmType armType, Core.Data.XYZ xyzr)
         {
             Random rnd = new Random((int)DateTime.Now.Ticks);
             double xDiff = xyzr.X - currentPosition.X;
@@ -66,7 +66,7 @@ namespace WorkstationController.Hardware
         }
 
   
-        public Core.Data.XYZR GetPosition(ArmType armType)
+        public Core.Data.XYZ GetPosition(ArmType armType)
         {
             return currentPosition;
         }

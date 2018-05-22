@@ -25,31 +25,29 @@ namespace WorkstationController.Control
     /// </summary>
     public partial class RomaTeachingForm : Window
     {
-        XYZR xyzr;
+        XYZ xyzr;
         PlateVector plateVector;
         DateTime lastUpdateTime = DateTime.Now;
         System.Timers.Timer updatePositionTimer;
         
         WorkstationController.Control.BaseEditor.NewInformationHandler newInfoHandler;
-        public RomaTeachingForm(PlateVector plateVector,System.Timers.Timer  updatePositionTimer,
+        public RomaTeachingForm(PlateVector plateVector, LabwareEditor labwareEditor,
             WorkstationController.Control.BaseEditor.NewInformationHandler newInfoHandler)
         {
             InitializeComponent();
             this.plateVector = plateVector;
             this.newInfoHandler = newInfoHandler;
-            this.updatePositionTimer = updatePositionTimer;
-            updatePositionTimer.Elapsed += updatePositionTimer_Elapsed;
+            labwareEditor.onPositionChanged += labwareEditor_onPositionChanged;
             this.Loaded += RomaTeachingForm_Loaded;
         }
 
-        void updatePositionTimer_Elapsed(object sender, System.Timers.ElapsedEventArgs e)
+        void labwareEditor_onPositionChanged(object sender, ROMAPosition e)
         {
-            xyzr = TeachingControllerDelegate.Instance.Controller.GetPosition(ArmType.Roma);
-            plateVector.CurrentPosition.X = xyzr.X;
-            plateVector.CurrentPosition.Y = xyzr.Y;
-            plateVector.CurrentPosition.Z = xyzr.Z;
-            plateVector.CurrentPosition.R = xyzr.R;
-
+            plateVector.CurrentPosition.X = e.X;
+            plateVector.CurrentPosition.Y = e.Y;
+            plateVector.CurrentPosition.Z = e.Z;
+            plateVector.CurrentPosition.R = e.R;
+            plateVector.CurrentPosition.ClipDistance = e.ClipDistance;
         }
 
      

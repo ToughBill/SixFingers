@@ -21,15 +21,15 @@ namespace SKHardwareController
             ThrowCriticalException(res);
         }
 
-        public WorkstationController.Core.Data.XYZR GetCurrentPosition()
+        public WorkstationController.Core.Data.XYZ GetCurrentPosition()
         {
             //XYZR xyzr = new XYZR()
-            double x,y,z,r;
-            x = y = z = r = 0;
+            double x,y,z;
+            x = y = z = 0;
             MoveController.Instance.GetCurrentPosition(_eARM.右臂, ref x, ref y, ref z);
             if (x == -1 || y == -1 || z == -1)
                 throw new CriticalException("获取位置失败！");
-            return new XYZR(x, y, z, r);
+            return new XYZ(x, y, z);
         }
 
         private void ThrowCriticalException(e_RSPErrorCode res)

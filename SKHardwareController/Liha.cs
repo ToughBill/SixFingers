@@ -14,7 +14,7 @@ namespace SKHardwareController
 {
     public class Liha : ArmBase,ILiha
     {
-        XYZR xyz;
+        XYZ xyz;
         int xMax = 650;
         int yMax = 300;
         int zMax = 200;
@@ -27,7 +27,7 @@ namespace SKHardwareController
         public Liha(Layout layout, string portNum)
         {
             this.layout = layout;
-            xyz = new XYZR(50, 0, 10);
+            xyz = new XYZ(50, 0, 10);
             this.portNum = portNum;
             tipManagement = new TipManagement(layout);
             Init();
@@ -35,7 +35,7 @@ namespace SKHardwareController
 
         
 
-        public void Move2XYZ(XYZR xyz)
+        public void Move2XYZ(XYZ xyz)
         {
             if(xyz.X > xMax)
             {

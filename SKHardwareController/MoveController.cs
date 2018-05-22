@@ -106,9 +106,9 @@ namespace SKHardwareController
         /// </summary>
         /// <param name="Degree"></param>
         /// <returns></returns>
-        public e_RSPErrorCode RoateClipper(double Degree)
+        public e_RSPErrorCode RoateClipper(double Degree, int timeOut = 10000)
         {
-            return MoveRAtSpeed(_eARM.右臂, Degree, 180);
+            return MoveRAtSpeed(_eARM.右臂, Degree, 180, timeOut);
         }
 
         public e_RSPErrorCode GetClipperInfo(ref double degree, ref double width)
@@ -388,9 +388,10 @@ namespace SKHardwareController
         /// <param name="DegreeOrMMPerSecond">角度或距离</param>
         /// <param name="timeout"></param>
         /// <returns></returns>
-        public e_RSPErrorCode StartMove(_eARM armid, Axis axis, double DegreeOrMMPerSecond, int timeout=20000)
+        public e_RSPErrorCode StartMove(_eARM armid, Axis axis, double DegreeOrMMPerSecond, double distance, int timeout=20000)
         {
             int speedbyStep = 0;
+            int distancebystep = 0;
 
             if (!bHome)
             {
@@ -406,25 +407,30 @@ namespace SKHardwareController
             {
                 case Axis.X:
                     speedbyStep = (int)Math.Round(DegreeOrMMPerSecond / mmPerStepX);
+                    distancebystep =(int)Math.Round(distance / mmPerStepX);
                     break;
                 case Axis.Y:
                     speedbyStep = (int)Math.Round(DegreeOrMMPerSecond / mmPerStepY);
+                    distancebystep = (int)Math.Round(distance / mmPerStepY);
                     break;
                 case Axis.Z:
                     speedbyStep = (int)Math.Round(DegreeOrMMPerSecond / mmPerStepZ);
+                    distancebystep = (int)Math.Round(distance / mmPerStepZ);
                     break;
                 case Axis.R:
                     speedbyStep = (int)Math.Round(DegreeOrMMPerSecond / DegreePerStep);
+                    distancebystep = (int)Math.Round(distance / DegreePerStep);
                     break;
                 case Axis.Clipper:
                     speedbyStep = (int)Math.Round(DegreeOrMMPerSecond / mmPerStepClipper);
+                    distancebystep = (int)Math.Round(distance / mmPerStepClipper);
                     break;
             }
 
 
             for (int i = 0; i < 3; i++)
             {
-                SendCommand(string.Format("{0}8SM {1} {2} {3}", (int)armid, (int)axis, speedbyStep), i != 0);
+                SendCommand(string.Format("{0}8SM {1} {2} {3}", (int)armid, (int)axis, speedbyStep, distancebystep), i != 0);
                 cmdACK.WaitOne(100);
                 if (bACK[(int)armid - 1]) break;
             }
@@ -432,6 +438,11 @@ namespace SKHardwareController
             if (!bACK[(int)armid - 1])
             {
                 return e_RSPErrorCode.Send_fail;
+            }
+
+            if (timeout == 0)
+            {
+                return e_RSPErrorCode.RSP_ERROR_NONE;
             }
 
             if (timeout > 0)
@@ -470,7 +481,7 @@ namespace SKHardwareController
             }
             for (int i = 0; i < 3; i++)
             {
-                SendCommand(string.Format("{0}8ST {1} {2}",(int)armid, (int)axis), i != 0);
+                SendCommand(string.Format("{0}8ST {1}",(int)armid, (int)axis), i != 0);
                 cmdACK.WaitOne(100);
                 if (bACK[(int)armid - 1]) break;
             }
@@ -478,6 +489,11 @@ namespace SKHardwareController
             if (!bACK[(int)armid - 1])
             {
                 return e_RSPErrorCode.Send_fail;
+            }
+
+            if (timeout == 0)
+            {
+                return e_RSPErrorCode.RSP_ERROR_NONE;
             }
 
             if (timeout > 0)
@@ -548,6 +564,12 @@ namespace SKHardwareController
                 return e_RSPErrorCode.Send_fail;
             }
 
+            if (timeout == 0)
+            {
+                return e_RSPErrorCode.RSP_ERROR_NONE;
+            }
+
+
             if (timeout > 0)
             {
                 while (!bActiondone[(int)armid - 1] && timeout > 0)
@@ -616,6 +638,11 @@ namespace SKHardwareController
                 return e_RSPErrorCode.Send_fail;
             }
 
+            if (timeout == 0)
+            {
+                return e_RSPErrorCode.RSP_ERROR_NONE;
+            }
+
             if (timeout > 0)
             {
                 while (!bActiondone[(int)armid - 1] && timeout > 0)
@@ -641,6 +668,9 @@ namespace SKHardwareController
         /// <returns></returns>
         public e_RSPErrorCode MoveHome(_eARM armid, int timeout)
         {
+            if (bHome)
+                return e_RSPErrorCode.RSP_ERROR_NONE;
+
             if (armid == _eARM.左臂 || armid == _eARM.两个)
             {
                 for (int i = 0; i < 3; i++)
@@ -670,6 +700,12 @@ namespace SKHardwareController
                     return e_RSPErrorCode.Send_fail;
                 }
             }
+
+            if (timeout == 0)
+            {
+                return e_RSPErrorCode.RSP_ERROR_NONE;
+            }
+
 
             if (armid == _eARM.左臂 || armid == _eARM.两个)
             {
@@ -747,6 +783,12 @@ namespace SKHardwareController
             {
                 return e_RSPErrorCode.Send_fail;
             }
+
+            if (timeout == 0)
+            {
+                return e_RSPErrorCode.RSP_ERROR_NONE;
+            }
+
 
             if (timeout > 0)
             {
@@ -1228,6 +1270,11 @@ namespace SKHardwareController
                 return e_RSPErrorCode.Send_fail;
             }
 
+            if (timeout == 0)
+            {
+                return e_RSPErrorCode.RSP_ERROR_NONE;
+            }
+
             if (timeout > 0)
             {
                 while (!bActiondone[(int)armid - 1] && timeout > 0)
@@ -1278,6 +1325,11 @@ namespace SKHardwareController
                 return e_RSPErrorCode.Send_fail;
             }
 
+            if (timeout == 0)
+            {
+                return e_RSPErrorCode.RSP_ERROR_NONE;
+            }
+
             if (timeout > 0)
             {
                 while (!bActiondone[(int)armid - 1] && timeout > 0)
@@ -1325,6 +1377,12 @@ namespace SKHardwareController
                 return e_RSPErrorCode.Send_fail;
             }
 
+            if (timeout == 0)
+            {
+                return e_RSPErrorCode.RSP_ERROR_NONE;
+            }
+
+
             if (timeout > 0)
             {
                 while (!bActiondone[(int)armid - 1] && timeout > 0)
@@ -1371,6 +1429,12 @@ namespace SKHardwareController
             {
                 return e_RSPErrorCode.Send_fail;
             }
+
+            if (timeout == 0)
+            {
+                return e_RSPErrorCode.RSP_ERROR_NONE;
+            }
+
 
             if (timeout > 0)
             {
@@ -1468,6 +1532,12 @@ namespace SKHardwareController
                 return e_RSPErrorCode.Send_fail;
             }
 
+            if (timeout == 0)
+            {
+                return e_RSPErrorCode.RSP_ERROR_NONE;
+            }
+
+
             if (timeout > 0)
             {
                 while (!bActiondone[(int)armid - 1] && timeout > 0)
@@ -1513,6 +1583,12 @@ namespace SKHardwareController
             {
                 return e_RSPErrorCode.Send_fail;
             }
+
+            if (timeout == 0)
+            {
+                return e_RSPErrorCode.RSP_ERROR_NONE;
+            }
+
 
             if (timeout > 0)
             {
@@ -1562,6 +1638,12 @@ namespace SKHardwareController
             {
                 return e_RSPErrorCode.Send_fail;
             }
+
+            if (timeout == 0)
+            {
+                return e_RSPErrorCode.RSP_ERROR_NONE;
+            }
+
 
             if (timeout > 0)
             {
@@ -1615,6 +1697,11 @@ namespace SKHardwareController
                 return e_RSPErrorCode.Send_fail;
             }
 
+            if (timeout == 0)
+            {
+                return e_RSPErrorCode.RSP_ERROR_NONE;
+            }
+
             if (timeout > 0)
             {
                 while (!bActiondone[(int)armid - 1] && timeout > 0)
@@ -1665,6 +1752,12 @@ namespace SKHardwareController
                 return e_RSPErrorCode.Send_fail;
             }
 
+            if (timeout == 0)
+            {
+                return e_RSPErrorCode.RSP_ERROR_NONE;
+            }
+
+
             if (timeout > 0)
             {
                 while (!bActiondone[(int)armid - 1] && timeout > 0)
@@ -1713,6 +1806,8 @@ namespace SKHardwareController
             {
                 return e_RSPErrorCode.Send_fail;
             }
+            if (timeout == 0)
+                return e_RSPErrorCode.RSP_ERROR_NONE;
 
             if (timeout > 0)
             {
