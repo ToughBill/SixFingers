@@ -30,10 +30,10 @@ namespace SKHardwareController
             xyz = new XYZ(50, 0, 10);
             this.portNum = portNum;
             tipManagement = new TipManagement(layout);
+            MoveController.Instance.onStepLost += Instance_onStepLost;
             Init();
         }
 
-        
 
         public void Move2XYZ(XYZ xyz)
         {
@@ -59,10 +59,6 @@ namespace SKHardwareController
             stopWatcher.Start();
             var res = MoveController.Instance.MoveXYZ(_eARM.左臂, (int)x, (int)y, (int)z, timeOutSeconds * 1000);
             ThrowCriticalException(res);
-            //if(MoveController.Instance.ErrorHappened)
-            //{
-            //    throw new CriticalException(err.ToString());
-            //}
             log.InfoFormat("used ms:{0}", stopWatcher.ElapsedMilliseconds);
         }
 
@@ -315,8 +311,6 @@ namespace SKHardwareController
                 throw new CriticalException(res.ToString());
         }
 
-     
-
         private bool IsEnoughLiquid(Labware labware,double volume,int subMergeMM)
         {
             double x, y, z;
@@ -382,18 +376,24 @@ namespace SKHardwareController
             PipettingTrackInfo pipettingTrackInfo = new PipettingTrackInfo(labwareLabel, sWellID, volume, pipettingResult);
             trackInfos.Add(pipettingTrackInfo);
             ThrowCriticalException(res);
-
             Move2Position(labwareLabel, wellID);
         }
 
         public void Init()
         {
             MoveController.Instance.Init(portNum);
+            
             var res = MoveController.Instance.MoveHome(_eARM.两个,MoveController.defaultTimeOut);
             if (res != e_RSPErrorCode.RSP_ERROR_NONE)
                 throw new CriticalException(res.ToString());
             res = MoveController.Instance.InitCarvo();
             ThrowCriticalException(res);
+        }
+
+        void Instance_onStepLost(object sender, string e)
+        {
+            if (onCriticalErrorHappened != null)
+                onCriticalErrorHappened(this, e);
         }
 
        
@@ -402,5 +402,8 @@ namespace SKHardwareController
         {
             get { return MoveController.Instance.IsTipMounted; }
         }
+
+
+        public event EventHandler<string> onCriticalErrorHappened;
     }
 }

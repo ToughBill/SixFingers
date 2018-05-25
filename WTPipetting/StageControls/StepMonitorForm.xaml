@@ -13,36 +13,38 @@
             <Image x:Key="StartIcon"   Source="/Resources/run.png" Height="48" Width="48"/>
             <Image x:Key="PauseIcon"   Source="/Resources/pause.png" Height="48" Width="48"/>
             <Image x:Key="StopIcon"   Source="/Resources/stop.png" Height="48" Width="48"/>
+            <Image x:Key="ResetIcon"   Source="/Resources/reset.png" Height="48" Width="48"/>
+            <Image x:Key="LogIcon"   Source="/Resources/log.png" Height="48" Width="48"/>
         </Grid.Resources>
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="4*"/>
             <ColumnDefinition Width="1.5*"/>
         </Grid.ColumnDefinitions>
         <Grid.RowDefinitions>
-          
+            <RowDefinition Height="80"/>
             <RowDefinition Height="*"/>
             <RowDefinition Height="300"/>
         </Grid.RowDefinitions>
-        <StackPanel Grid.Row="2" Grid.Column="1">
+        <StackPanel>
             <StackPanel Orientation="Horizontal">
                 <TextBlock Name="runPause" Margin="14,0,0,0">运行</TextBlock>
                 <TextBlock Margin="28,0,0,0">停止</TextBlock>
+                <TextBlock Margin="18,0,0,0">初始化</TextBlock>
+                <TextBlock Margin="18,0,0,0">日志</TextBlock>
             </StackPanel>
-            
-            
             <StackPanel Orientation="Horizontal">
-
-                <Button   Name="btnStartPause"  HorizontalAlignment="Left" VerticalAlignment="Top"  Click="btnRunPause_Click">
-                    <DynamicResource ResourceKey="StartIcon" ></DynamicResource>
-                </Button>
-
+                <Button Content="{StaticResource StartIcon}"  Name="btnStartPause"  HorizontalAlignment="Left" VerticalAlignment="Top"  Click="btnRunPause_Click"/>
                 <Button Content="{StaticResource StopIcon}"  Name="btnStop"  HorizontalAlignment="Left"  VerticalAlignment="Top"  Click="btnStop_Click"/>
+                <Button Content="{StaticResource ResetIcon}"  Name="btnInit"  HorizontalAlignment="Left"  VerticalAlignment="Top"  Click="btnInit_Click"/>
+                <Button Content="{StaticResource LogIcon}"  Name="btnLog"  HorizontalAlignment="Left"  VerticalAlignment="Top"  Click="btnLog_Click"/>
             </StackPanel>
+        </StackPanel>
+        <StackPanel Grid.Row="1" Grid.Column="1" Grid.RowSpan="2">
             <Label>信息：</Label>
             <TextBox  HorizontalAlignment="Stretch"  Margin="5,0,5,0"  Name="txtInfo"  VerticalAlignment="Stretch"  TabIndex="4" TextWrapping="Wrap" VerticalScrollBarVisibility="Auto" IsReadOnly="True" Height="180" />
         </StackPanel>
       
-        <StackPanel Grid.Column="0" Grid.RowSpan="2">
+        <StackPanel Grid.Column="0" Grid.RowSpan="2" Grid.Row="1">
             <Label Content="实验流程：" Margin="4,4,4,4"/>
             <ListView Name="lvProtocol" FontSize="14" FontFamily="SimSun" Margin="0,0,0,0" >
                 <ListView.View >
@@ -73,21 +75,17 @@
             <StackPanel VerticalAlignment="Top" Margin="0,20,0,0">
                 <StackPanel Orientation="Horizontal">
                     <Label  Content ="总用时：" HorizontalAlignment="Left" Margin="0,0,0,0" VerticalAlignment="Center"/>
-                    <TextBox HorizontalAlignment="Left" Margin="14,0,0,0" Width="80" TextWrapping="Wrap" Name="txtTimeUsed" Text="{Binding Path=TotalUsed}" VerticalAlignment="Center"/>
+                    <TextBox HorizontalAlignment="Left" Margin="14,0,0,0" Width="80" TextWrapping="Wrap" Name="txtTimeUsed"  VerticalAlignment="Center"/>
                 </StackPanel>
                 <StackPanel Orientation="Horizontal">
                     <Label Content="剩余时间：" HorizontalAlignment="Left"  VerticalAlignment="Center"/>
-                    <TextBox  HorizontalAlignment="Left"  Width="80" TextWrapping="Wrap" Text="{Binding Path=TotalRemaining}"  Name="txtRemainingTime" VerticalAlignment="Center"/>
+                    <TextBox  HorizontalAlignment="Left"  Width="80" TextWrapping="Wrap"   Name="txtRemainingTime" VerticalAlignment="Center"/>
                 </StackPanel>
                 
             </StackPanel>
         </Grid>
 
 
-        <StackPanel Grid.Row="2" Grid.Column="0" Grid.RowSpan="2">
-            <Label>日志：</Label>
-            <TextBox  Grid.Column="0"   HorizontalAlignment="Stretch" Margin="10,10,10,0"  Name="txtLog"  VerticalAlignment="Stretch" MaxLines="100" TabIndex="4" TextWrapping="Wrap" VerticalScrollBarVisibility="Auto" IsReadOnly="True" Height="250" />
-            
-        </StackPanel>
+        
     </Grid>
 </bb:BaseUserControl>

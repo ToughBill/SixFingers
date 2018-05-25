@@ -28,5 +28,7 @@ namespace WorkstationController.Hardware
         void Dispense(string labwareLabel, List<int> wellIDs, List<double> volumes, LiquidClass liquidClass, ref List<ITrackInfo> trackInfos);
 
         bool IsTipMounted{get;}
+
+        event EventHandler<string> onCriticalErrorHappened;
     }
 }

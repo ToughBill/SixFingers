@@ -192,11 +192,15 @@
     <Resource Include="Images\diti.jpg" />
   </ItemGroup>
   <ItemGroup>
+    <Resource Include="Resources\log.png" />
     <Resource Include="Resources\run.png" />
     <Resource Include="Resources\stop.png" />
   </ItemGroup>
   <ItemGroup>
     <Resource Include="Resources\pause.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Resources\reset.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

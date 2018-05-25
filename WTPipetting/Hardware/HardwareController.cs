@@ -19,7 +19,8 @@ namespace WTPipetting.Hardware
         {
             string portNum = ConfigurationManager.AppSettings["PortName"];
             Liha = new Liha(layout, portNum);
-           
+            Roma = new Roma();
+
         }
     
         

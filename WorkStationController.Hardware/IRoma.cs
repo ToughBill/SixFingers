@@ -14,5 +14,7 @@ namespace WorkstationController.Hardware
         void GetClipperInfo(ref double degree, ref double width);
         void Move2AbsPosition(double x, double y, double z);
         XYZ GetCurrentPosition();
+
+        event EventHandler<string> onCriticalErrorHappened;
     }
 }

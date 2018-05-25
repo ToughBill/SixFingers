@@ -18,6 +18,7 @@ using WTPipetting.Navigation;
 using WTPipetting.Utility;
 using WTPipetting.Hardware;
 using WorkstationController.Core.Data;
+using System.Timers;
 
 namespace WTPipetting.StageControls
 {
@@ -31,12 +32,64 @@ namespace WTPipetting.StageControls
         ObservableCollection<StepDefinitionWithProgressInfo> stepsDefWithProgressInfo;
         RunState runState = RunState.Start;
         LogForm logForm;
+        Timer timer = new Timer();
+        int usedSeconds = 0;
+        int timeNeeded = 0;
+        int actualUsedTime = 0;
         public StepMonitorForm(Stage stage, BaseHost host)
             : base(stage, host)
         {
             log.Info("StepMonitorForm");
             logForm = new LogForm();
+            logForm.Visible = false;
+            timer.Interval = 1000;
+            timer.Elapsed += timer_Elapsed;
+            timeNeeded = CalculateTimeNeeded(ProtocolManager.Instance.SelectedProtocol.SampleCnt_SecondsNeed);
             InitializeComponent();
+        }
+
+        private int CalculateTimeNeeded(Dictionary<int, int> sampleCnt_SecondsNeed)
+        {
+            //GlobalVars.Instance.SampleCount
+            if (sampleCnt_SecondsNeed.Count == 0)
+                return 0;
+
+            var newDict = sampleCnt_SecondsNeed.OrderBy(x => x.Key).ToDictionary(x=>x.Key,x=>x.Value);
+            if (newDict.Count == 1 || GlobalVars.Instance.SampleCount <= sampleCnt_SecondsNeed.First().Key)
+            {
+                int sampleCnt = newDict.First().Key;
+                int seconds = newDict.First().Value;
+                return (int)((GlobalVars.Instance.SampleCount / (double)sampleCnt) * seconds);
+            }
+            if (GlobalVars.Instance.SampleCount >= newDict.Last().Key)
+            {
+                int sampleCnt = newDict.Last().Key;
+                int seconds = newDict.Last().Value;
+                return (int)((GlobalVars.Instance.SampleCount / (double)sampleCnt) * seconds);
+            }
+
+            var smallerCnt = newDict.Where(x => x.Key < GlobalVars.Instance.SampleCount).Select(x => x.Key).Max();
+            var biggerCnt =  newDict.Where(x => x.Key > GlobalVars.Instance.SampleCount).Select(x => x.Key).Min();
+
+            double secondsPerSample = (newDict[biggerCnt] - newDict[smallerCnt]) / (biggerCnt * 1.0 - smallerCnt);
+            return (int)((GlobalVars.Instance.SampleCount - smallerCnt) * secondsPerSample) + newDict[smallerCnt];
+         
+            
+        }
+
+ 
+        void timer_Elapsed(object sender, ElapsedEventArgs e)
+        {
+            //TotalUsed = Time
+            txtTimeUsed.Text = TimeSpan.FromSeconds(usedSeconds).ToString();
+            if (runState == RunState.Pause)
+                return;
+            actualUsedTime++;
+            if(timeNeeded != 0)
+            {
+                double remainingTime = Math.Max(0, (timeNeeded - actualUsedTime));
+                txtRemainingTime.Text = remainingTime.ToString();
+            }
         }
 
 
@@ -135,6 +188,9 @@ namespace WTPipetting.StageControls
         {
             this.Dispatcher.Invoke(() =>
             {
+                this.IsEnabled = false;
+                btnInit.IsEnabled = true;
+                
                 SetErrorInfo(e);
             });
         }
@@ -160,6 +216,9 @@ namespace WTPipetting.StageControls
             {
                 try
                 {
+                    usedSeconds = 0;
+                    actualUsedTime = 0;
+                    timer.Start();
                     RunProtocol();
                 }
                 catch(Exception ex)
@@ -201,6 +260,17 @@ namespace WTPipetting.StageControls
         private void btnStop_Click(object sender, RoutedEventArgs e)
         {
             wkList.Stop();
+        }
+
+        private void btnInit_Click(object sender, RoutedEventArgs e)
+        {
+            this.IsEnabled = true;
+            wkList.HardwareController.Liha.Init();
+        }
+
+        private void btnLog_Click(object sender, RoutedEventArgs e)
+        {
+            logForm.Visible = !logForm.Visible;            
         }
 
         

@@ -48,6 +48,14 @@ namespace WTPipetting.Hardware
                 OnStepChanged(currentStep, false);
         }
 
+        public HardwareController HardwareController
+        {
+            get
+            {
+                return hardwareController;
+            }
+        }
+
         private void RunImpl()
         {
             

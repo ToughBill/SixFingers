@@ -8,11 +8,17 @@ using WorkstationController.Hardware;
 
 namespace SKHardwareController
 {
-    class Roma:ArmBase,IRoma
+    public class Roma:ArmBase,IRoma
     {
         public void Init()
         {
-            
+            MoveController.Instance.onStepLost += Instance_onStepLost;
+        }
+
+        void Instance_onStepLost(object sender, string e)
+        {
+            if (onCriticalErrorHappened != null)
+                onCriticalErrorHappened(this,e);
         }
 
         public void Move2AbsPosition(double x, double y, double z,double r)
@@ -59,5 +65,8 @@ namespace SKHardwareController
         {
             MoveController.Instance.GetClipperInfo(ref degree, ref width);
         }
+
+
+        public event EventHandler<string> onCriticalErrorHappened;
     }
 }

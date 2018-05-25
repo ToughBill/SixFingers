@@ -13,11 +13,15 @@ namespace WTPipetting.Data
     {
         const char comma = ',';
         public string Name { get; set; }
+
+        
         public List<StepDefinition> StepsDefinition { get; set; }
-        public Protocol(string name, List<StepDefinition> definitions)
+        public Dictionary<int, int> SampleCnt_SecondsNeed { get; set; }
+        public Protocol(string name, List<StepDefinition> definitions,Dictionary<int,int> sample_Seconds)
         {
             Name = name;
             StepsDefinition = definitions;
+            SampleCnt_SecondsNeed = sample_Seconds;
         }
         public Protocol()
         {
@@ -26,12 +30,13 @@ namespace WTPipetting.Data
         static public Protocol  CreateFromCSVFile(string csvFile)
         {
             int commaCnt = 4;
-            
             FileInfo fileInfo = new FileInfo(csvFile);
             string name = fileInfo.Name;
             string[] strLines = File.ReadAllLines(csvFile,Encoding.Default);
             strLines = strLines.Where(x => x != "").ToArray();
             List<StepDefinition> stepDefinitions = new List<StepDefinition>();
+            
+
             for (int i = 1; i < strLines.Length; i++ )
             {
                 string sLine = strLines[i];
@@ -44,8 +49,28 @@ namespace WTPipetting.Data
                 StepDefinition stepDefinition = new StepDefinition(lineContents,i);
                 stepDefinitions.Add(stepDefinition);
             }
-            return new Protocol(name, stepDefinitions);
+            Dictionary<int,int> sample_Seconds = ReadTimeInfo(csvFile.Replace(".csv",".txt"));
+
+            return new Protocol(name, stepDefinitions, sample_Seconds);
         }
+
+        private static Dictionary<int, int> ReadTimeInfo(string file)
+        {
+            
+            Dictionary<int, int> pairs = new Dictionary<int, int>();
+            if(File.Exists(file))
+            {
+                List<string> strs = File.ReadAllLines(file).ToList();
+                foreach(var str in strs)
+                {
+                    string[] tempStrs = str.Split(',');
+                    pairs.Add(int.Parse(tempStrs[0]), int.Parse(tempStrs[1]));
+                }
+            }
+            return pairs;
+        }
+
+       
 
         
     }

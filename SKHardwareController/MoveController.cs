@@ -53,6 +53,8 @@ namespace SKHardwareController
         e_RSPErrorCode[] _errorCode = new e_RSPErrorCode[(int)_eARM.两个 - 1];
         public const int defaultTimeOut = 5000;
         private static MoveController instance;
+
+        public event EventHandler<string> onStepLost;
         static public MoveController Instance
         {
             get
@@ -337,6 +339,13 @@ namespace SKHardwareController
 
             return _errorCode[(int)armid - 1];
         }
+
+
+        void NotifyStepLost()
+        {
+            if (onStepLost != null)
+                onStepLost(this, "");
+        }
         /// <summary>
         /// 吐液
         /// </summary>
@@ -395,6 +404,7 @@ namespace SKHardwareController
 
             if (!bHome)
             {
+                NotifyStepLost();
                 return e_RSPErrorCode.未初始化;
             }
 
@@ -1872,6 +1882,7 @@ namespace SKHardwareController
                             if (hasError)
                             {
                                 bHome = false;
+                                NotifyStepLost();
                                 bActiondone[RxBuffer[2] - 0x31] = true;
                                 e_RSPErrorCode errorCode = (e_RSPErrorCode)(RxBuffer[1] - 0x40);
                                 _errorCode[RxBuffer[2] - 0x31] = (e_RSPErrorCode)(RxBuffer[1] - 0x40);
