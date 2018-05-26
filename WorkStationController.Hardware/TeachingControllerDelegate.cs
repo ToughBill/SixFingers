@@ -42,6 +42,8 @@ namespace WorkstationController.Hardware
 
         public void RegisterController(ITeachingController teachingControllerImpl)
         {
+            if (registered)
+                return;
             registered = true;
             this.teachingControllerImpl = teachingControllerImpl;
         }

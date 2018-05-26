@@ -132,7 +132,7 @@ namespace WTPipetting.Navigation
         }
     }
 
-    public abstract class BaseUserControl : UserControl, IStageControl
+    public class BaseUserControl : UserControl, IStageControl
     {
         private Stage _stage;
         bool resultIsOk = false;

@@ -39,10 +39,18 @@
                 <Button Content="{StaticResource LogIcon}"  Name="btnLog"  HorizontalAlignment="Left"  VerticalAlignment="Top"  Click="btnLog_Click"/>
             </StackPanel>
         </StackPanel>
-        <StackPanel Grid.Row="1" Grid.Column="1" Grid.RowSpan="2">
-            <Label>信息：</Label>
-            <TextBox  HorizontalAlignment="Stretch"  Margin="5,0,5,0"  Name="txtInfo"  VerticalAlignment="Stretch"  TabIndex="4" TextWrapping="Wrap" VerticalScrollBarVisibility="Auto" IsReadOnly="True" Height="180" />
-        </StackPanel>
+        <Grid Grid.Row="1" Grid.Column="1" Grid.RowSpan="2">
+            <Grid>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="50"></RowDefinition>
+                    <RowDefinition Height="*"></RowDefinition>
+                </Grid.RowDefinitions>
+            </Grid>
+            <Label Grid.Row="0">信息：</Label>
+            <Grid Grid.Row="1">
+                <TextBox   Margin="5,30,5,5"  Name="txtInfo"   TabIndex="4" TextWrapping="Wrap" VerticalScrollBarVisibility="Auto" IsReadOnly="True"  />
+            </Grid>
+        </Grid>
       
         <StackPanel Grid.Column="0" Grid.RowSpan="2" Grid.Row="1">
             <Label Content="实验流程：" Margin="4,4,4,4"/>

@@ -44,12 +44,16 @@ namespace WTPipetting.StageControls
             logForm.Visible = false;
             timer.Interval = 1000;
             timer.Elapsed += timer_Elapsed;
-            timeNeeded = CalculateTimeNeeded(ProtocolManager.Instance.SelectedProtocol.SampleCnt_SecondsNeed);
+            timeNeeded = CalculateTimeNeeded();
             InitializeComponent();
         }
 
-        private int CalculateTimeNeeded(Dictionary<int, int> sampleCnt_SecondsNeed)
+        private int CalculateTimeNeeded()
         {
+            if (ProtocolManager.Instance.SelectedProtocol == null)
+                return 0;
+
+            var sampleCnt_SecondsNeed = ProtocolManager.Instance.SelectedProtocol.SampleCnt_SecondsNeed;
             //GlobalVars.Instance.SampleCount
             if (sampleCnt_SecondsNeed.Count == 0)
                 return 0;
@@ -73,23 +77,24 @@ namespace WTPipetting.StageControls
 
             double secondsPerSample = (newDict[biggerCnt] - newDict[smallerCnt]) / (biggerCnt * 1.0 - smallerCnt);
             return (int)((GlobalVars.Instance.SampleCount - smallerCnt) * secondsPerSample) + newDict[smallerCnt];
-         
-            
         }
 
  
         void timer_Elapsed(object sender, ElapsedEventArgs e)
         {
             //TotalUsed = Time
-            txtTimeUsed.Text = TimeSpan.FromSeconds(usedSeconds).ToString();
-            if (runState == RunState.Pause)
-                return;
-            actualUsedTime++;
-            if(timeNeeded != 0)
+            this.Dispatcher.Invoke(() =>
             {
-                double remainingTime = Math.Max(0, (timeNeeded - actualUsedTime));
-                txtRemainingTime.Text = remainingTime.ToString();
-            }
+                txtTimeUsed.Text = TimeSpan.FromSeconds(usedSeconds).ToString();
+                if (runState == RunState.Pause)
+                    return;
+                actualUsedTime++;
+                if (timeNeeded != 0)
+                {
+                    double remainingTime = Math.Max(0, (timeNeeded - actualUsedTime));
+                    txtRemainingTime.Text = remainingTime.ToString();
+                }
+            });
         }
 
 
@@ -97,7 +102,6 @@ namespace WTPipetting.StageControls
         {
             base.Initialize();
             InitStepsInfo();
-            
         }
 
         private void InitStepsInfo()
@@ -190,7 +194,7 @@ namespace WTPipetting.StageControls
             {
                 this.IsEnabled = false;
                 btnInit.IsEnabled = true;
-                
+                btnStop.IsEnabled = true;
                 SetErrorInfo(e);
             });
         }
@@ -265,6 +269,7 @@ namespace WTPipetting.StageControls
         private void btnInit_Click(object sender, RoutedEventArgs e)
         {
             this.IsEnabled = true;
+            UpdateInfo(""); //clear errors;
             wkList.HardwareController.Liha.Init();
         }
 

@@ -65,6 +65,24 @@ namespace SKHardwareController
             }
         }
 
+
+        public bool ArmInitialized
+        {
+            get
+            {
+                return bHome;
+            }
+        }
+
+        public bool ClipperInitialized
+        {
+            get
+            {
+                return bClipperInit;
+            }
+        }
+
+
         /// <summary>
         ///Init ARM
         /// </summary>

@@ -198,13 +198,14 @@ namespace WTPipetting.Hardware
         {
             try
             {
+               this.hardwareController = new HardwareController(layout);
                RunImpl();
             }
             catch(CriticalException ex)
             {
                 if(OnCriticalErrorHappened != null)
                 {
-                    OnCriticalErrorHappened(this, ex.Message);
+                    OnCriticalErrorHappened(this, ex.Description);
                     bStop = true;
                 }
             }
@@ -230,7 +231,6 @@ namespace WTPipetting.Hardware
         public void Execute(Layout layout)
         {
             this.layout = layout;
-            this.hardwareController = new HardwareController(layout);
             liquidHandlerCommands = GenerateCommands();
             Run();
         }

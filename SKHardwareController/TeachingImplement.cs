@@ -20,6 +20,7 @@ namespace SKHardwareController
         WorkstationController.Hardware.Direction dir;
         int speedMMPerSecond;
         ArmType armType;
+        
 
         public TeachingImplement()
         {
@@ -27,15 +28,22 @@ namespace SKHardwareController
         }
         public void Init()
         {
+            enumMapper.Clear();
             string sPort = ConfigurationManager.AppSettings["PortName"];
             enumMapper.Add(ArmType.Liha, _eARM.左臂);
             enumMapper.Add(ArmType.Roma, _eARM.右臂);
             MoveController.Instance.Init(sPort);
-
-            var res = MoveController.Instance.MoveHome(_eARM.两个,MoveController.defaultTimeOut);
-            ThrowIfErrorHappened(res);
-            res = MoveController.Instance.InitClipper();
-            ThrowIfErrorHappened(res);
+            if(!MoveController.Instance.ArmInitialized)
+            {
+                var res = MoveController.Instance.MoveHome(_eARM.两个, MoveController.defaultTimeOut);
+                ThrowIfErrorHappened(res);
+            }
+            if (!MoveController.Instance.ClipperInitialized)
+            {
+                var res = MoveController.Instance.InitClipper();
+                ThrowIfErrorHappened(res);
+            }
+            
         }
 
         public void Move2XYZR(ArmType armType, XYZ xyzr)

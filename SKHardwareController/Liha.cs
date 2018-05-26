@@ -113,11 +113,11 @@ namespace SKHardwareController
             double zDistanceFetchTip = 0; //取枪头移动距离
             var tuple = Move2NextTipPosition();
             var ditiBox = tuple.Item1;
-            zDistanceFetchTip = ditiBox.ZValues.ZMax - ditiBox.ZValues.ZStart;
+            //zDistanceFetchTip = ditiBox.ZValues.ZMax - ditiBox.ZValues.ZStart;
             //get tip
             while(true)
             {
-                bool bok = TryGetTip(zDistanceFetchTip);
+                bool bok = TryGetTip(ditiBox.ZValues.ZMax);
                 trackInfos.Add(new DitiTrackInfo(tipManagement.CurrentLabware.Label, tipManagement.CurrentDitiID, bok));
                 if (bok)
                     break;
@@ -174,21 +174,26 @@ namespace SKHardwareController
             return Tuple.Create(labware,position);
         }
 
-        private bool TryGetTip(double zDistanceFetchTip)
+        private bool TryGetTip(double zMax)
         {
-            MoveController.Instance.MoveZAtSpeed(_eARM.左臂, zDistanceFetchTip,100);
+            MoveController.Instance.Move2Z(_eARM.左臂, zMax);
             return MoveController.Instance.IsTipMounted;
         }
 
         public void DropTip(ref ITrackInfo ditiTrackInfo)
         {
+            if (!MoveController.Instance.IsTipMounted)
+            {
+                log.Info("No tip mounted!");
+                return;
+            }
+
             string sCommandDesc = "Drop tip";
             log.Info(sCommandDesc);
             var position = layout.GetWastePosition();
             xyz.X = position.X;
             xyz.Y = position.Y;
             Move2XYZ(xyz);
-            
             while (true)
             {
                 var res = MoveController.Instance.DropDiti();
@@ -386,6 +391,8 @@ namespace SKHardwareController
             var res = MoveController.Instance.MoveHome(_eARM.两个,MoveController.defaultTimeOut);
             if (res != e_RSPErrorCode.RSP_ERROR_NONE)
                 throw new CriticalException(res.ToString());
+            ITrackInfo ditiTrackInfo = null;
+            DropTip(ref ditiTrackInfo);
             res = MoveController.Instance.InitCarvo();
             ThrowCriticalException(res);
         }
