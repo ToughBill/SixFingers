@@ -198,7 +198,7 @@ namespace WTPipetting.Hardware
         {
             try
             {
-               this.hardwareController = new HardwareController(layout);
+               this.hardwareController = GlobalVars.Instance.HardwareController;  //new HardwareController(layout);
                RunImpl();
             }
             catch(CriticalException ex)

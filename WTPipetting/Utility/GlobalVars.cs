@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using WTPipetting.Data;
 using WorkstationController.Core.Data;
+using WTPipetting.Hardware;
 
 namespace WTPipetting.Utility
 {
@@ -12,12 +13,24 @@ namespace WTPipetting.Utility
         private static GlobalVars _instance;
         private int _sampleCnt = 16;
         private string protocolName = "";
-        
+        HardwareController hardwareController;
         public GlobalVars()
         {
            
         }
-        
+        public HardwareController HardwareController
+        {
+            get
+            {
+                return hardwareController;
+            }
+            set
+            {
+                hardwareController = value;
+            }
+        }
+
+        public List<ITrackInfo> TrackInfos { get; set; }
         static public GlobalVars Instance
         {
             get

@@ -94,6 +94,7 @@ namespace WTPipetting.StageControls
             {
                 log.Info("Layout ok pressed.");
                 CheckSettings();
+                GlobalVars.Instance.HardwareController = new Hardware.HardwareController(GlobalVars.Instance.selectedLayout);
             }    
             catch(Exception ex)
             {

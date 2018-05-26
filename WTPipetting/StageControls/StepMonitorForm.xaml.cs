@@ -147,37 +147,26 @@ namespace WTPipetting.StageControls
             wkList.OnCriticalErrorHappened += wkList_OnCriticalErrorHappened;
             wkList.OnStepChanged += wkList_OnStepChanged;
             wkList.OnCommandInfo += wkList_OnCommandInfo;
-            //this.IsEnabled = false;
             await Task.Run(() =>
             {
                 wkList.Execute(GlobalVars.Instance.selectedLayout);
             });
-            //this.IsEnabled = true;
-           
         }
 
         private void wkList_OnCommandInfo(object sender, List<ITrackInfo> e)
         {
            string  s ="";
+           GlobalVars.Instance.TrackInfos.AddRange(e);
            foreach(var baseTrackInfo in e)
            {
                if(baseTrackInfo is PipettingTrackInfo)
                {
                    s = ((PipettingTrackInfo)baseTrackInfo).Stringfy();
+                   log.Info(s);
                    logForm.AddLog(s);
                }
            }
         }
-
-        //void wkList_OnCommandInfo(object sender, string e)
-        //{
-        //    this.Dispatcher.Invoke(() =>
-        //    {
-        //        txtLog.Text += e;
-        //        txtLog.Text += "\r\n";
-        //    });
-        //}
-
 
         #region event handler
         void wkList_OnStepChanged(int currentStep, bool isStart)
@@ -220,6 +209,7 @@ namespace WTPipetting.StageControls
             {
                 try
                 {
+                    GlobalVars.Instance.TrackInfos.Clear();
                     usedSeconds = 0;
                     actualUsedTime = 0;
                     timer.Start();
@@ -228,6 +218,8 @@ namespace WTPipetting.StageControls
                 catch(Exception ex)
                 {
                     SetErrorInfo(ex.Message);
+                    ChangeRunState(RunState.Start);
+                    return;
                 }
              
                 ChangeRunState(RunState.Pause);
@@ -264,6 +256,7 @@ namespace WTPipetting.StageControls
         private void btnStop_Click(object sender, RoutedEventArgs e)
         {
             wkList.Stop();
+            ChangeRunState(RunState.Start);
         }
 
         private void btnInit_Click(object sender, RoutedEventArgs e)

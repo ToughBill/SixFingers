@@ -58,7 +58,7 @@ namespace SKHardwareController
             Stopwatch stopWatcher = new Stopwatch();
             stopWatcher.Start();
             var res = MoveController.Instance.MoveXYZ(_eARM.左臂, (int)x, (int)y, (int)z, timeOutSeconds * 1000);
-            ThrowCriticalException(res);
+            ThrowCriticalException(res,"移动Liha");
             log.InfoFormat("used ms:{0}", stopWatcher.ElapsedMilliseconds);
         }
 
@@ -110,7 +110,6 @@ namespace SKHardwareController
             log.Info(sCommandDesc);
             if (tipIDs.Count != 1)
                 throw new Exception("只支持单针！");
-            double zDistanceFetchTip = 0; //取枪头移动距离
             var tuple = Move2NextTipPosition();
             var ditiBox = tuple.Item1;
             //zDistanceFetchTip = ditiBox.ZValues.ZMax - ditiBox.ZValues.ZStart;
@@ -182,12 +181,6 @@ namespace SKHardwareController
 
         public void DropTip(ref ITrackInfo ditiTrackInfo)
         {
-            if (!MoveController.Instance.IsTipMounted)
-            {
-                log.Info("No tip mounted!");
-                return;
-            }
-
             string sCommandDesc = "Drop tip";
             log.Info(sCommandDesc);
             var position = layout.GetWastePosition();
@@ -234,7 +227,7 @@ namespace SKHardwareController
             Move2Position(labwareLabel, wellID, "ZStart");
             //aspirate air gap
             var res = MoveController.Instance.Aspirate(leadingAirGap, maxSpeedV, startSpeedV, endSpeedV);
-            ThrowCriticalException(res);
+            ThrowCriticalException(res,"吸液");
 
 
             //检测不到或液体不够，循环询问，
@@ -283,7 +276,7 @@ namespace SKHardwareController
             DoTracking(labware,volume,liquidClass);
             int excessVolume = 10;
             res = MoveController.Instance.Aspirate(volume + excessVolume, liquidClass.AspirationSinglePipetting.AspirationSpeed, startSpeedV, endSpeedV);
-            ThrowCriticalException(res);
+            ThrowCriticalException(res,"吸液");
 
             res = MoveController.Instance.Dispense(excessVolume, liquidClass.AspirationSinglePipetting.AspirationSpeed, startSpeedV, endSpeedV);
             
@@ -310,10 +303,14 @@ namespace SKHardwareController
             MoveController.Instance.MoveZAtSpeed(_eARM.左臂, distance2Go,goDownSpeed);
         }
 
-        private void ThrowCriticalException(e_RSPErrorCode res)
+        private void ThrowCriticalException(e_RSPErrorCode res,string actionDesc = "")
         {
             if (res != e_RSPErrorCode.RSP_ERROR_NONE)
-                throw new CriticalException(res.ToString());
+            {
+                string addtionalInfo = actionDesc == "" ? "" : string.Format("在{0}中发生错误：", actionDesc);
+                throw new CriticalException(addtionalInfo + res.ToString());
+            }
+          
         }
 
         private bool IsEnoughLiquid(Labware labware,double volume,int subMergeMM)
@@ -380,21 +377,20 @@ namespace SKHardwareController
             PipettingResult pipettingResult = res == e_RSPErrorCode.RSP_ERROR_NONE ? PipettingResult.ok : PipettingResult.abort;
             PipettingTrackInfo pipettingTrackInfo = new PipettingTrackInfo(labwareLabel, sWellID, volume, pipettingResult);
             trackInfos.Add(pipettingTrackInfo);
-            ThrowCriticalException(res);
+            ThrowCriticalException(res,"喷液");
             Move2Position(labwareLabel, wellID);
         }
 
         public void Init()
         {
             MoveController.Instance.Init(portNum);
-            
             var res = MoveController.Instance.MoveHome(_eARM.两个,MoveController.defaultTimeOut);
-            if (res != e_RSPErrorCode.RSP_ERROR_NONE)
-                throw new CriticalException(res.ToString());
+            ThrowCriticalException(res, "归零");
             ITrackInfo ditiTrackInfo = null;
             DropTip(ref ditiTrackInfo);
             res = MoveController.Instance.InitCarvo();
-            ThrowCriticalException(res);
+            ThrowCriticalException(res,"初始化气泵");
+
         }
 
         void Instance_onStepLost(object sender, string e)
