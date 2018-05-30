@@ -181,7 +181,7 @@ namespace WTPipetting.StageControls
         {
             this.Dispatcher.Invoke(() =>
             {
-                btnStop.IsEnabled = true;
+                btnStop.IsEnabled = false;
                 SetErrorInfo(e);
             });
         }
@@ -200,7 +200,7 @@ namespace WTPipetting.StageControls
             txtInfo.Foreground = Brushes.Black;
         }
 
-        private void btnRunPause_Click(object sender, RoutedEventArgs e)
+        private async Task<int> btnRunPause_Click(object sender, RoutedEventArgs e)
         {
             
             if(runState == RunState.Start)
@@ -211,16 +211,15 @@ namespace WTPipetting.StageControls
                     usedSeconds = 0;
                     actualUsedTime = 0;
                     timer.Start();
-                    RunProtocol();
+                    ChangeRunState(RunState.Pause);
+                    btnStop.IsEnabled = true;
+                    await RunProtocol();
                 }
                 catch(Exception ex)
                 {
                     SetErrorInfo(ex.Message);
                     ChangeRunState(RunState.Start);
-                    return;
                 }
-             
-                ChangeRunState(RunState.Pause);
             }
             else if(runState == RunState.Pause)
             {
@@ -232,6 +231,8 @@ namespace WTPipetting.StageControls
                 ChangeRunState(RunState.Pause);
                 wkList.PauseResume();
             }
+            btnStop.IsEnabled = false; 
+            return 0;
         }
 
         private void ChangeRunState(RunState nextState)
