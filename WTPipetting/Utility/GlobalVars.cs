@@ -18,6 +18,12 @@ namespace WTPipetting.Utility
         {
            
         }
+
+        public Dictionary<int, string> Tube_Barcode
+        {
+            get;
+            set;
+        }
         public HardwareController HardwareController
         {
             get

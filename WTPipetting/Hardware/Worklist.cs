@@ -34,7 +34,7 @@ namespace WTPipetting.Hardware
         public event OnStepChangedDelegate OnStepChanged;
 
         public event EventHandler<string> OnCriticalErrorHappened;
-        public event EventHandler<List<ITrackInfo>> OnCommandInfo;
+        public event EventHandler<ITrackInfo> OnCommandInfo;
       
         void NotifyStepStarted(int currentStep)
         {
@@ -98,7 +98,7 @@ namespace WTPipetting.Hardware
             //OnCommandInfo(this,string.Format("Move to source plate:{0}",srcLabware.Label));
             if(needBreak)
             {
-                OnCommandExecuted( new List<ITrackInfo>() { romaTrackInfo });
+                OnCommandExecuted(romaTrackInfo);
                 return true;
             }
                 
@@ -106,7 +106,7 @@ namespace WTPipetting.Hardware
             needBreak = RunPlateVector(dstLabware.PlateVector);
             ((RomaTrackInfo)romaTrackInfo).AllFinished = true;
             //OnCommandInfo(this,string.Format("Move to dst plate:{0}",dstLabware.Label));
-            OnCommandExecuted(new List<ITrackInfo>() { romaTrackInfo });
+            OnCommandExecuted(romaTrackInfo );
             return needBreak;
 
         }
@@ -146,24 +146,26 @@ namespace WTPipetting.Hardware
             
             if(hardwareController.Liha.IsTipMounted)
             {
-                ITrackInfo trackInfo = null;
-                hardwareController.Liha.DropTip(ref trackInfo);
+                DitiTrackInfo trackInfo = null;
+                hardwareController.Liha.DropTip(out trackInfo);
             }
             
             
-            List<ITrackInfo> ditiTrackInfos = null;
-            hardwareController.Liha.GetTip(new List<int>() { 1 }, ref ditiTrackInfos);
+            DitiTrackInfo ditiTrackInfos = null;
+            hardwareController.Liha.GetTip(new List<int>() { 1 }, out ditiTrackInfos);
             LihaCommand lihaCommand = machineCommand as LihaCommand;
             OnCommandExecuted(ditiTrackInfos);
             if (NeedPauseOrStop())
                 return true;
             var liquidClass = PipettorElementManager.Instance.LiquidClasses.First(x => x.SaveName == lihaCommand.liquidClass);
+            
             bool needSkipDispense = false;
             try
             {
-                var TrackInfos = new List<ITrackInfo>();
-                hardwareController.Liha.Aspirate(lihaCommand.srcLabware, new List<int>() { lihaCommand.srcWellID }, new List<double>() { lihaCommand.volume }, liquidClass, ref TrackInfos);
-                OnCommandExecuted(TrackInfos);
+                PipettingResult pipettingResult = PipettingResult.ok;
+                hardwareController.Liha.Aspirate(lihaCommand.srcLabware, new List<int>() { lihaCommand.srcWellID }, new List<double>() { lihaCommand.volume }, liquidClass, out pipettingResult);
+                PipettingTrackInfo trackInfo = new PipettingTrackInfo(lihaCommand.srcLabware, LihaCommand.GetWellDesc(lihaCommand.srcWellID),lihaCommand.volume, pipettingResult, lihaCommand.barcode);
+                OnCommandExecuted(trackInfo);
             }
             catch(SkipException ex)
             {
@@ -173,25 +175,26 @@ namespace WTPipetting.Hardware
             
             if (NeedPauseOrStop())
                 return true;
-            if(!needSkipDispense) //if need skip,skip
+            if(!needSkipDispense) //if need skip
             {
-                var TrackInfos = new List<ITrackInfo>();
-                hardwareController.Liha.Dispense(lihaCommand.dstLabware, new List<int>() { lihaCommand.dstWellID }, new List<double>() { lihaCommand.volume }, liquidClass, ref TrackInfos);
-                OnCommandExecuted(TrackInfos);
+                PipettingResult pipettingResult = PipettingResult.ok;
+                hardwareController.Liha.Dispense(lihaCommand.dstLabware, new List<int>() { lihaCommand.dstWellID }, new List<double>() { lihaCommand.volume }, liquidClass, out pipettingResult);
+                PipettingTrackInfo trackInfo = new PipettingTrackInfo(lihaCommand.dstLabware,LihaCommand.GetWellDesc(lihaCommand.dstWellID), lihaCommand.volume, pipettingResult, lihaCommand.barcode);
+                OnCommandExecuted(trackInfo);
             }
             
             if (NeedPauseOrStop())
                 return true;
-            ITrackInfo ditiTrackInfo = null;
-            hardwareController.Liha.DropTip(ref ditiTrackInfo);
-            OnCommandExecuted(new List<ITrackInfo>(){ditiTrackInfo});
+            DitiTrackInfo ditiTrackInfo = null;
+            hardwareController.Liha.DropTip(out ditiTrackInfo);
+            OnCommandExecuted(ditiTrackInfo);
             return false;
         }
 
-        private void OnCommandExecuted(List<ITrackInfo> trackInfos)
+        private void OnCommandExecuted(ITrackInfo trackInfo)
         {
             if (OnCommandInfo != null)
-                OnCommandInfo(this, trackInfos);
+                OnCommandInfo(this, trackInfo);
         }
 
         public void Run()
@@ -283,7 +286,7 @@ namespace WTPipetting.Hardware
             for (int i = 0; i < smpCnt; i++ )
             {
                 int srcWell = i + 1;
-                string srcLabware = stepDef.SourceLabware;
+                string srcLabware = FindSourceLabware(ref srcWell,stepDef.SourceLabware);
                 string destLabware = stepDef.DestLabware;
                 List<int> sourceWellIDs = new List<int>(){i+1};
                 List<int> dstWellIDs = sourceWellIDs;
@@ -291,6 +294,16 @@ namespace WTPipetting.Hardware
                 pipettingInfos.AddRange(lihaCommands);
             }
             return pipettingInfos;
+        }
+
+        private string FindSourceLabware(ref int srcWell, string firstSrcLabware)
+        {
+            if (srcWell <= 16)
+                return firstSrcLabware;
+            string commonPart = firstSrcLabware.Substring(0, firstSrcLabware.Length - 1);
+            int gridID = (srcWell - 1) / 16 + 1;
+            srcWell = srcWell - (gridID - 1) * 16;
+            return commonPart + gridID.ToString();
         }
 
        
@@ -319,7 +332,8 @@ namespace WTPipetting.Hardware
                 finishedVolume += volumeThisTime;
                 for (int j = 0; j < sourceWellIDs.Count; j++)
                 {
-                    lihaCommands.Add(new LihaCommand(stepDef.SourceLabware,
+                    string sBarcode = GlobalVars.Instance.Tube_Barcode[j];
+                    lihaCommands.Add(new LihaCommand(sBarcode,stepDef.SourceLabware,
                         sourceWellIDs[j],
                         volumeThisTime,
                         stepDef.DestLabware,
@@ -417,20 +431,29 @@ namespace WTPipetting.Hardware
 
     public class LihaCommand:ILiquidHandlerCommand
     {
+        public string barcode;
         public string srcLabware;
         public int srcWellID;
         public double volume;
         public string dstLabware;
         public int dstWellID;
         public string liquidClass;
-        public LihaCommand(string srcLabware, int srcWellID, double volume, string dstLabware, int dstWellID, string liquidClass)
+        public LihaCommand(string barcode,string srcLabware, int srcWellID, double volume, string dstLabware, int dstWellID, string liquidClass)
         {
+            this.barcode = barcode;
             this.srcLabware = srcLabware;
             this.srcWellID = srcWellID;
             this.volume = volume;
             this.dstLabware = dstLabware;
             this.dstWellID = dstWellID;
             this.liquidClass = liquidClass;
+        }
+
+        public static string GetWellDesc(int wellID)
+        {
+            int colIndex = (wellID - 1) / 8;
+            int rowIndex = wellID - colIndex * 8 - 1;
+            return string.Format("{0}{1}", (char)('A' + rowIndex), colIndex + 1);
         }
 
 

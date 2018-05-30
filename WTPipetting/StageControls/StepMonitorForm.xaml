@@ -29,13 +29,11 @@
             <StackPanel Orientation="Horizontal">
                 <TextBlock Name="runPause" Margin="14,0,0,0">运行</TextBlock>
                 <TextBlock Margin="28,0,0,0">停止</TextBlock>
-                <TextBlock Margin="18,0,0,0">初始化</TextBlock>
                 <TextBlock Margin="18,0,0,0">日志</TextBlock>
             </StackPanel>
             <StackPanel Orientation="Horizontal">
                 <Button Content="{StaticResource StartIcon}"  Name="btnStartPause"  HorizontalAlignment="Left" VerticalAlignment="Top"  Click="btnRunPause_Click"/>
                 <Button Content="{StaticResource StopIcon}"  Name="btnStop"  HorizontalAlignment="Left"  VerticalAlignment="Top"  Click="btnStop_Click"/>
-                <Button Content="{StaticResource ResetIcon}"  Name="btnInit"  HorizontalAlignment="Left"  VerticalAlignment="Top"  Click="btnInit_Click"/>
                 <Button Content="{StaticResource LogIcon}"  Name="btnLog"  HorizontalAlignment="Left"  VerticalAlignment="Top"  Click="btnLog_Click"/>
             </StackPanel>
         </StackPanel>

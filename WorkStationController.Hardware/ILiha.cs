@@ -21,11 +21,11 @@ namespace WorkstationController.Hardware
 
         void SetTipsDistance(float distance);
 
-        void GetTip(List<int> tipIDs, ref List<ITrackInfo> trackInfos);
-        void DropTip(ref ITrackInfo trackInfo);
-        void Aspirate(string labwareLabel, List<int> wellIDs, List<double> volumes, LiquidClass liquidClass, ref List<ITrackInfo> trackInfos);
+        void GetTip(List<int> tipIDs, out DitiTrackInfo trackInfos);
+        void DropTip(out DitiTrackInfo trackInfo);
+        void Aspirate(string labwareLabel, List<int> wellIDs, List<double> volumes, LiquidClass liquidClass, out PipettingResult pipettingResult, string barcode = "");
 
-        void Dispense(string labwareLabel, List<int> wellIDs, List<double> volumes, LiquidClass liquidClass, ref List<ITrackInfo> trackInfos);
+        void Dispense(string labwareLabel, List<int> wellIDs, List<double> volumes, LiquidClass liquidClass, out PipettingResult pipettingResult, string barcode = "");
 
         bool IsTipMounted{get;}
 

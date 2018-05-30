@@ -24,6 +24,7 @@ namespace SKHardwareController
         const int maxSpeedV = 200;
         const int startSpeedV = 10;
         const int endSpeedV = 10;
+        const int excessVolume = 10;
         public Liha(Layout layout, string portNum)
         {
             this.layout = layout;
@@ -100,10 +101,8 @@ namespace SKHardwareController
             throw new NotImplementedException();
         }
 
-        public void GetTip(List<int> tipIDs,ref List<ITrackInfo> trackInfos)
+        public void GetTip(List<int> tipIDs, out DitiTrackInfo trackInfo)
         {
-            trackInfos = new List<ITrackInfo>();
-
             string sCommandDesc = string.Format("Get tip from ditibox:{0} remain:{1}", 
                 tipManagement.CurrentLabware, 
                 tipManagement.CurrentDitiID);
@@ -117,7 +116,7 @@ namespace SKHardwareController
             while(true)
             {
                 bool bok = TryGetTip(ditiBox.ZValues.ZMax);
-                trackInfos.Add(new DitiTrackInfo(tipManagement.CurrentLabware.Label, tipManagement.CurrentDitiID, bok));
+                trackInfo = new DitiTrackInfo(tipManagement.CurrentLabware.Label, tipManagement.CurrentDitiID, bok);
                 if (bok)
                     break;
                 TipNotFetched tipNotFetched = new TipNotFetched();
@@ -179,7 +178,7 @@ namespace SKHardwareController
             return MoveController.Instance.IsTipMounted;
         }
 
-        public void DropTip(ref ITrackInfo ditiTrackInfo)
+        public void DropTip(out DitiTrackInfo ditiTrackInfo)
         {
             string sCommandDesc = "Drop tip";
             log.Info(sCommandDesc);
@@ -214,9 +213,9 @@ namespace SKHardwareController
             log.Info("Drop tip finished");
         }
 
-        public void Aspirate(string labwareLabel, List<int> wellIDs, List<double> volumes, LiquidClass liquidClass,ref List<ITrackInfo> trackInfos)
+        public void Aspirate(string labwareLabel, List<int> wellIDs, List<double> volumes, LiquidClass liquidClass, out PipettingResult pipettingResult, string barcode = "")
         {
-            trackInfos = new List<ITrackInfo>();
+            pipettingResult = PipettingResult.ok;
             int wellID = wellIDs.First();
             double volume = volumes.First();
             double leadingAirGap = liquidClass.AspirationSinglePipetting.LeadingAirgap;
@@ -227,6 +226,8 @@ namespace SKHardwareController
             Move2Position(labwareLabel, wellID, "ZStart");
             //aspirate air gap
             var res = MoveController.Instance.Aspirate(leadingAirGap, maxSpeedV, startSpeedV, endSpeedV);
+           
+
             ThrowCriticalException(res,"吸液");
 
 
@@ -250,48 +251,96 @@ namespace SKHardwareController
                     switch(userSelection)
                     {
                         case NextActionOfNoLiquid.abort:
-                            trackInfos.Add(new PipettingTrackInfo(labwareLabel, wellID.ToString(), volume, PipettingResult.abort));        
+                            pipettingResult = PipettingResult.abort;
                             throw new CriticalException("无法检测到液体，放弃运行程序！");
                         case NextActionOfNoLiquid.aspirateAir:
+                            pipettingResult = PipettingResult.air;
                             Move2Position(labwareLabel, wellID);
                             MoveController.Instance.Aspirate(volumes.First(), maxSpeedV,startSpeedV, endSpeedV);
-                            trackInfos.Add(new PipettingTrackInfo(labwareLabel, wellID.ToString(), volume, PipettingResult.air));
                             break;
                         case NextActionOfNoLiquid.gotoZMax:
                             Move2Position(labwareLabel, wellID, "ZMax");
+                            pipettingResult = PipettingResult.zmax;
                             MoveController.Instance.Aspirate(volumes.First(), maxSpeedV,startSpeedV, endSpeedV);
-                            trackInfos.Add(new PipettingTrackInfo(labwareLabel, wellID.ToString(), volume, PipettingResult.zmax));
                             break;
                         case NextActionOfNoLiquid.retry:
                             break;
                         case NextActionOfNoLiquid.skip:
-                            trackInfos.Add(new PipettingTrackInfo(labwareLabel, wellID.ToString(), volume, PipettingResult.nothing));
+                            pipettingResult = PipettingResult.nothing;
                             throw new SkipException();
                     }
                 }
-                    
             }
 
             //tracking 吸液
             DoTracking(labware,volume,liquidClass);
-            int excessVolume = 10;
-            res = MoveController.Instance.Aspirate(volume + excessVolume, liquidClass.AspirationSinglePipetting.AspirationSpeed, startSpeedV, endSpeedV);
-            ThrowCriticalException(res,"吸液");
-
-            res = MoveController.Instance.Dispense(excessVolume, liquidClass.AspirationSinglePipetting.AspirationSpeed, startSpeedV, endSpeedV);
             
-            //到zStart吸 trailing airGap
-            Move2Position(labwareLabel, wellID, "ZStart");
-            double trailingAirGap = liquidClass.AspirationSinglePipetting.TrailingAirgap;
-            MoveController.Instance.Aspirate(trailingAirGap, liquidClass.AspirationSinglePipetting.AspirationSpeed, startSpeedV, endSpeedV);
-
-            //delay
-            int delayMS = liquidClass.AspirationSinglePipetting.Delay;
-            Thread.Sleep(delayMS);
+            res = MoveController.Instance.Aspirate(volume + excessVolume, liquidClass.AspirationSinglePipetting.AspirationSpeed, startSpeedV, endSpeedV);
+            if(res == e_RSPErrorCode.RSP_ERROR_NONE)
+            {
+                pipettingResult = PipettingResult.ok;
+            }
+            else if (res == e_RSPErrorCode.凝块)
+            {
+                ProcessClot(labware, wellID, volume, liquidClass, out pipettingResult, barcode);
+            }
+            else if(res == e_RSPErrorCode.泡沫)
+            {
+                //currently ignore, just mark the result
+                pipettingResult = PipettingResult.bubble;
+            }
+            else
+            {
+                ThrowCriticalException(res, "吸液");
+                res = MoveController.Instance.Dispense(excessVolume, liquidClass.AspirationSinglePipetting.AspirationSpeed, startSpeedV, endSpeedV);
+                ThrowCriticalException(res, "喷液");
+                //到zStart吸 trailing airGap
+                Move2Position(labwareLabel, wellID, "ZStart");
+                double trailingAirGap = liquidClass.AspirationSinglePipetting.TrailingAirgap;
+                MoveController.Instance.Aspirate(trailingAirGap, liquidClass.AspirationSinglePipetting.AspirationSpeed, startSpeedV, endSpeedV);
+                //delay
+                int delayMS = liquidClass.AspirationSinglePipetting.Delay;
+                Thread.Sleep(delayMS);
+            }
+          
 
             //Move 2 ZTravel
             Move2Position(labwareLabel, wellID);
 
+        }
+
+        //–  Dispense back into vessel and then pipette nothing 
+        //–  Ignore clot error and continue 
+        //–  Discard the DITI and pipette nothing 
+
+        private void ProcessClot(Labware labware, int wellID, double volume, LiquidClass liquidClass, out PipettingResult pipettingResult, string barcode = "")
+        {
+            string labwareLabel = labware.Label;
+            ClotDetectedForm clotForm = new ClotDetectedForm();
+            clotForm.ShowDialog();
+            e_RSPErrorCode res = e_RSPErrorCode.RSP_ERROR_NONE;
+            var userSelection = clotForm.UserSelection;
+            pipettingResult = PipettingResult.ok;
+            DitiTrackInfo trackInfo = new DitiTrackInfo(Labware.WasteLabel,1, true, false);
+            switch (userSelection)
+            {
+                case ClotDetectedAction.dispenseBackThenDropDiti:
+                    pipettingResult = PipettingResult.clotDispenseBack;
+                    res = MoveController.Instance.Move2Z(_eARM.左臂, labware.ZValues.ZDispense);
+                    ThrowCriticalException(res, "遇到凝块，移动到ZDispense");
+                    res = MoveController.Instance.Dispense(volume + excessVolume, liquidClass.AspirationSinglePipetting.AspirationSpeed, startSpeedV, endSpeedV);
+                    ThrowCriticalException(res, "遇到凝块，打回容器");
+                    DropTip(out trackInfo);
+                    break;
+                case ClotDetectedAction.dropDiti:
+                    pipettingResult = PipettingResult.clotDropDiti;
+                    DropTip(out trackInfo);
+                    break;
+                case ClotDetectedAction.ignore:
+                    pipettingResult = PipettingResult.clotIgnore;
+                    break;
+
+            }
         }
 
         private void DoTracking(Labware labware, double volume, LiquidClass liquidClass)
@@ -358,7 +407,7 @@ namespace SKHardwareController
             Move2XYZ(xyz);
         }
 
-        public void Dispense(string labwareLabel, List<int> wellIDs, List<double> volumes, LiquidClass liquidClass, ref List<ITrackInfo> trackInfos)
+        public void Dispense(string labwareLabel, List<int> wellIDs, List<double> volumes, LiquidClass liquidClass, out PipettingResult pipettingResult, string barcode = "")
         {
             int wellID = wellIDs.First();
             double volume = Math.Round(volumes.First(), 1);
@@ -374,9 +423,8 @@ namespace SKHardwareController
             Move2Position(labwareLabel, wellID, "ZDispense");
             var res = MoveController.Instance.Dispense(volume, maxSpeedV, startSpeedV, endSpeedV);
             
-            PipettingResult pipettingResult = res == e_RSPErrorCode.RSP_ERROR_NONE ? PipettingResult.ok : PipettingResult.abort;
-            PipettingTrackInfo pipettingTrackInfo = new PipettingTrackInfo(labwareLabel, sWellID, volume, pipettingResult);
-            trackInfos.Add(pipettingTrackInfo);
+            pipettingResult = res == e_RSPErrorCode.RSP_ERROR_NONE ? PipettingResult.ok : PipettingResult.abort;
+            PipettingTrackInfo pipettingTrackInfo = new PipettingTrackInfo(labwareLabel, sWellID, volume, pipettingResult, barcode,false);
             ThrowCriticalException(res,"喷液");
             Move2Position(labwareLabel, wellID);
         }
@@ -386,8 +434,8 @@ namespace SKHardwareController
             MoveController.Instance.Init(portNum);
             var res = MoveController.Instance.MoveHome(_eARM.两个,MoveController.defaultTimeOut);
             ThrowCriticalException(res, "归零");
-            ITrackInfo ditiTrackInfo = null;
-            DropTip(ref ditiTrackInfo);
+            DitiTrackInfo ditiTrackInfo;
+            DropTip(out ditiTrackInfo);
             res = MoveController.Instance.InitCarvo();
             ThrowCriticalException(res,"初始化气泵");
 

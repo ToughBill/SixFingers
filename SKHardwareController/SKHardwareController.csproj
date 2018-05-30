@@ -50,6 +50,12 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="ArmBase.cs" />
+    <Compile Include="ErrorForms\ClotDetectedForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="ErrorForms\ClotDetectedForm.Designer.cs">
+      <DependentUpon>ClotDetectedForm.cs</DependentUpon>
+    </Compile>
     <Compile Include="ErrorForms\DitiNotDropped.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -90,6 +96,9 @@
     </Content>
   </ItemGroup>
   <ItemGroup>
+    <EmbeddedResource Include="ErrorForms\ClotDetectedForm.resx">
+      <DependentUpon>ClotDetectedForm.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="ErrorForms\DitiNotDropped.resx">
       <DependentUpon>DitiNotDropped.cs</DependentUpon>
     </EmbeddedResource>

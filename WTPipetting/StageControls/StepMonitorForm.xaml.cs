@@ -153,15 +153,15 @@ namespace WTPipetting.StageControls
             });
         }
 
-        private void wkList_OnCommandInfo(object sender, List<ITrackInfo> e)
+        private void wkList_OnCommandInfo(object sender, ITrackInfo e)
         {
            string  s ="";
-           GlobalVars.Instance.TrackInfos.AddRange(e);
-           foreach(var baseTrackInfo in e)
+           GlobalVars.Instance.TrackInfos.Add(e);
+           //foreach(var baseTrackInfo in e)
            {
-               if(baseTrackInfo is PipettingTrackInfo)
+               if (e is PipettingTrackInfo)
                {
-                   s = ((PipettingTrackInfo)baseTrackInfo).Stringfy();
+                   s = ((PipettingTrackInfo)e).Stringfy();
                    log.Info(s);
                    logForm.AddLog(s);
                }
@@ -181,8 +181,6 @@ namespace WTPipetting.StageControls
         {
             this.Dispatcher.Invoke(() =>
             {
-                this.IsEnabled = false;
-                btnInit.IsEnabled = true;
                 btnStop.IsEnabled = true;
                 SetErrorInfo(e);
             });
@@ -196,7 +194,7 @@ namespace WTPipetting.StageControls
             txtInfo.Foreground = Brushes.Red;
         }
 
-        void UpdateInfo(string info)
+        void SetInfo(string info)
         {
             txtInfo.Text = info;
             txtInfo.Foreground = Brushes.Black;
@@ -255,14 +253,14 @@ namespace WTPipetting.StageControls
 
         private void btnStop_Click(object sender, RoutedEventArgs e)
         {
+            SetInfo("终止运行！");
             wkList.Stop();
             ChangeRunState(RunState.Start);
         }
 
         private void btnInit_Click(object sender, RoutedEventArgs e)
         {
-            this.IsEnabled = true;
-            UpdateInfo(""); //clear errors;
+            SetInfo(""); //clear errors;
             wkList.HardwareController.Liha.Init();
         }
 

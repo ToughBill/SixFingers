@@ -8,21 +8,30 @@ namespace WorkstationController.Core.Data
 {
     public class PipettingTrackInfo : ITrackInfo
     {
+        private string barcode;
         private string labware;
         private string wellID;
         private double volume;
         private PipettingResult result;
         bool isAsp;
         public PipettingTrackInfo(string labware, string wellID,
-            double volume ,PipettingResult result, bool isAsp = true)
+            double volume ,PipettingResult result,string barcode = "", bool isAsp = true)
         {
             this.labware = labware;
             this.wellID = wellID;
             this.volume = volume;
             this.result = result;
             this.isAsp = isAsp;
+            this.barcode = barcode;
         }
 
+        public string Barcode
+        {
+            get
+            {
+                return barcode;
+            }
+        }
         public string Name
         {
             get
@@ -215,6 +224,10 @@ namespace WorkstationController.Core.Data
     {
         ok,
         air,
+        clotIgnore,
+        clotDropDiti,
+        clotDispenseBack,
+        bubble,
         nothing,
         zmax,
         abort
