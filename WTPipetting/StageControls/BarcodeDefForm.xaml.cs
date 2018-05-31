@@ -55,14 +55,18 @@ namespace WTPipetting.StageControls
           
             tubeID = 1;
             ID_Barcode = new Dictionary<int, string>();
+           
             try
             {
-                if(!serialPort.IsOpen)
+                if (serialPort == null)
                 {
                     string barcodePort = ConfigurationManager.AppSettings["BarcodePortName"];
-                    serialPort = new SerialPort(barcodePort);
-                    serialPort.DataReceived += serialPort_DataReceived;
-                    serialPort.Open();
+                    if(barcodePort != "")
+                    {
+                        serialPort = new SerialPort(barcodePort);
+                        serialPort.DataReceived += serialPort_DataReceived;
+                        serialPort.Open();
+                    }
                 }
                 
             }
@@ -160,9 +164,31 @@ namespace WTPipetting.StageControls
         private void btnConfirm_Click(object sender, RoutedEventArgs e)
         {
             log.Info("Barcode confirmed");
+            if(serialPort == null) //auto fill barcode
+            {
+                AutoGenerate();
+            }
             CheckAllBarcodeDefined();
             GlobalVars.Instance.Tube_Barcode = ID_Barcode;
             NotifyFinished();
+        }
+
+        private void AutoGenerate()
+        {
+            string sData = DateTime.Now.ToString("yyMMddHHmm");
+            dataGridView.EndEdit();
+            
+            for (int i = 0; i < GlobalVars.Instance.SampleCount; i++ )
+            {
+                
+                int col = i / 16;
+                int row = i - col * 16;
+                string sBarcode = string.Format("{0}_{1}", sData, i+1);
+                ID_Barcode.Add(i + 1, sBarcode);
+                if (dataGridView[col, row].Value == null || dataGridView[col, row].Value.ToString() == string.Empty)
+                    dataGridView[col, row].Value = sBarcode;
+            }
+              
         }
 
         private void CheckAllBarcodeDefined()

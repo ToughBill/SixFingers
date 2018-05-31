@@ -172,14 +172,13 @@ namespace WTPipetting.Hardware
                 needSkipDispense = true;
             }
             
-            
             if (NeedPauseOrStop())
                 return true;
             if(!needSkipDispense) //if need skip
             {
                 PipettingResult pipettingResult = PipettingResult.ok;
                 hardwareController.Liha.Dispense(lihaCommand.dstLabware, new List<int>() { lihaCommand.dstWellID }, new List<double>() { lihaCommand.volume }, liquidClass, out pipettingResult);
-                PipettingTrackInfo trackInfo = new PipettingTrackInfo(lihaCommand.dstLabware,LihaCommand.GetWellDesc(lihaCommand.dstWellID), lihaCommand.volume, pipettingResult, lihaCommand.barcode);
+                PipettingTrackInfo trackInfo = new PipettingTrackInfo(lihaCommand.dstLabware,LihaCommand.GetWellDesc(lihaCommand.dstWellID), lihaCommand.volume, pipettingResult, lihaCommand.barcode,false);
                 OnCommandExecuted(trackInfo);
             }
             
@@ -332,7 +331,7 @@ namespace WTPipetting.Hardware
                 finishedVolume += volumeThisTime;
                 for (int j = 0; j < sourceWellIDs.Count; j++)
                 {
-                    string sBarcode = GlobalVars.Instance.Tube_Barcode[j];
+                    string sBarcode = GlobalVars.Instance.Tube_Barcode[j+1];
                     lihaCommands.Add(new LihaCommand(sBarcode,stepDef.SourceLabware,
                         sourceWellIDs[j],
                         volumeThisTime,

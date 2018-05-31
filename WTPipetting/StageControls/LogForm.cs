@@ -17,6 +17,18 @@ namespace WTPipetting.StageControls
             InitializeComponent();
         }
 
+
+        protected override void WndProc(ref Message m)
+        {
+            const int WM_SYSCOMMAND = 0x112;
+            const int SC_CLOSE = 0xf060;
+            if(m.Msg == WM_SYSCOMMAND && (int)m.WParam == SC_CLOSE)
+            {
+                this.Visible = false;
+                return;
+            }
+            base.WndProc(ref m);
+        }
         public void AddLog(string txt)
         {
             txtLog.Text += txt;

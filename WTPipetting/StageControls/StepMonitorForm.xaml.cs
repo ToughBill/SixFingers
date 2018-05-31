@@ -157,15 +157,17 @@ namespace WTPipetting.StageControls
         {
            string  s ="";
            GlobalVars.Instance.TrackInfos.Add(e);
-           //foreach(var baseTrackInfo in e)
-           {
-               if (e is PipettingTrackInfo)
-               {
-                   s = ((PipettingTrackInfo)e).Stringfy();
-                   log.Info(s);
-                   logForm.AddLog(s);
-               }
-           }
+           this.Dispatcher.Invoke(() =>
+            {
+                if (e is PipettingTrackInfo)
+                {
+                    s = ((PipettingTrackInfo)e).Stringfy();
+                    log.Info(s);
+                    logForm.AddLog(s);
+                }
+            });
+         
+          
         }
 
         #region event handler
@@ -207,7 +209,7 @@ namespace WTPipetting.StageControls
             {
                 try
                 {
-                    GlobalVars.Instance.TrackInfos.Clear();
+                    GlobalVars.Instance.TrackInfos = new List<ITrackInfo>();
                     usedSeconds = 0;
                     actualUsedTime = 0;
                     timer.Start();
