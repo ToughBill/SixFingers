@@ -33,7 +33,7 @@ namespace SKHardwareController
             enumMapper.Add(ArmType.Liha, _eARM.左臂);
             enumMapper.Add(ArmType.Roma, _eARM.右臂);
             MoveController.Instance.Init(sPort);
-            if(!MoveController.Instance.ArmInitialized)
+            if (!MoveController.Instance.Initialized)
             {
                 var res = MoveController.Instance.MoveHome(_eARM.两个, MoveController.defaultTimeOut);
                 ThrowIfErrorHappened(res);

@@ -34,9 +34,13 @@ namespace SKHardwareController
         private int getValue = 0;
 
         private SerialPort serialPort = new SerialPort();
+        
         public bool Listening { get; set; }
+        
         bool isErrorState = false;
         public bool bOpen = false;
+        
+        
         public bool bHome = false;
         private bool bClipperInit = false;
         private bool bADPInited = false;
@@ -53,8 +57,8 @@ namespace SKHardwareController
         e_RSPErrorCode[] _errorCode = new e_RSPErrorCode[(int)_eARM.两个 - 1];
         public const int defaultTimeOut = 5000;
         private static MoveController instance;
-
         public event EventHandler<string> onStepLost;
+   
         static public MoveController Instance
         {
             get
@@ -65,23 +69,7 @@ namespace SKHardwareController
             }
         }
 
-
-        public bool ArmInitialized
-        {
-            get
-            {
-                return bHome;
-            }
-        }
-
-        public bool ClipperInitialized
-        {
-            get
-            {
-                return bClipperInit;
-            }
-        }
-
+      
 
         /// <summary>
         ///Init ARM
@@ -111,6 +99,34 @@ namespace SKHardwareController
                 }
             }
         }
+
+        public bool ClipperInitialized
+        {
+            get
+            {
+                return bClipperInit;
+            }
+        }
+
+
+        public bool ADPInitialized
+        {
+            get
+            {
+                return bADPInited;
+            }
+        }
+
+
+        public bool Initialized
+        {
+            get
+            {
+                return bHome;
+            }
+        }
+
+
         /// <summary>
         /// 张开夹爪
         /// </summary>
@@ -153,7 +169,7 @@ namespace SKHardwareController
         /// </summary>
         /// <param name="timeout"></param>
         /// <returns></returns>
-        public e_RSPErrorCode InitCarvo(int timeout = 10000)
+        public e_RSPErrorCode InitADP(int timeout = 10000)
         {
             _eARM armid = _eARM.左臂;
 
@@ -357,13 +373,6 @@ namespace SKHardwareController
 
             return _errorCode[(int)armid - 1];
         }
-
-
-        void NotifyStepLost()
-        {
-            if (onStepLost != null)
-                onStepLost(this, "");
-        }
         /// <summary>
         /// 吐液
         /// </summary>
@@ -422,7 +431,6 @@ namespace SKHardwareController
 
             if (!bHome)
             {
-                NotifyStepLost();
                 return e_RSPErrorCode.未初始化;
             }
 
@@ -696,9 +704,7 @@ namespace SKHardwareController
         /// <returns></returns>
         public e_RSPErrorCode MoveHome(_eARM armid, int timeout)
         {
-            if (bHome)
-                return e_RSPErrorCode.RSP_ERROR_NONE;
-
+            //Move2Z
             if (armid == _eARM.左臂 || armid == _eARM.两个)
             {
                 for (int i = 0; i < 3; i++)
@@ -1537,12 +1543,16 @@ namespace SKHardwareController
         /// <param name="absZ"></param>
         /// <param name="timeout"></param>
         /// <returns></returns>
-        public e_RSPErrorCode Move2Z(_eARM armid, double absZ, int timeout = 10000)
+        public e_RSPErrorCode Move2Z(_eARM armid, double absZ, int timeout = 10000, bool isInitializingClipper = false)
         {
-            if (!bHome)
+            if (!isInitializingClipper) //we need to move clipper up before move home
             {
-                return e_RSPErrorCode.未初始化;
+                if (!bHome)
+                {
+                    return e_RSPErrorCode.未初始化;
+                }
             }
+            
 
             if (armid >= _eARM.两个)
             {
@@ -1853,7 +1863,7 @@ namespace SKHardwareController
 
             return _errorCode[(int)armid - 1];
         }
-
+    
         private void ReceiveMessage()
         {
             if (!bOpen)
@@ -1900,7 +1910,6 @@ namespace SKHardwareController
                             if (hasError)
                             {
                                 bHome = false;
-                                NotifyStepLost();
                                 bActiondone[RxBuffer[2] - 0x31] = true;
                                 e_RSPErrorCode errorCode = (e_RSPErrorCode)(RxBuffer[1] - 0x40);
                                 _errorCode[RxBuffer[2] - 0x31] = (e_RSPErrorCode)(RxBuffer[1] - 0x40);
@@ -2061,11 +2070,15 @@ namespace SKHardwareController
                 serialPort.Close();
                 //log.Info("Port closed.");
             }
+
+            
             bOpen = false;
             bHome = false;
         }
 
 
+
+        
     }
     public enum _eARM
     {

@@ -13,6 +13,7 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 using WorkstationController.Core.Utility;
+using WorkstationController.Hardware;
 using WTPipetting.Navigation;
 
 namespace WTPipetting
@@ -29,11 +30,15 @@ namespace WTPipetting
             InitializeComponent();
             log.Info("Main window created.");
             this.Loaded += MainWindow_Loaded;
+            this.Closing += MainWindow_Closing;
             lstSteps.DataContext = stepViewModel.StepsModel;
         }
 
+        void MainWindow_Closing(object sender, System.ComponentModel.CancelEventArgs e)
+        {
+            BarcodeScanner.Instance.Close();
+        }
 
-        
 
         #region event
         void MainWindow_Loaded(object sender, RoutedEventArgs e)

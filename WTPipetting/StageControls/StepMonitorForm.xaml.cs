@@ -202,7 +202,12 @@ namespace WTPipetting.StageControls
             txtInfo.Foreground = Brushes.Black;
         }
 
-        private async Task<int> btnRunPause_Click(object sender, RoutedEventArgs e)
+        private void btnRunPause_Click(object sender, RoutedEventArgs e)
+        {
+            RunPause();
+        }
+
+        private async Task<int> RunPause()
         {
             
             if(runState == RunState.Start)
@@ -271,6 +276,8 @@ namespace WTPipetting.StageControls
         {
             logForm.Visible = !logForm.Visible;            
         }
+
+   
 
         
     }

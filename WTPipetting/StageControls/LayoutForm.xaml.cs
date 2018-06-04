@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Configuration;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -15,6 +16,7 @@ using System.Windows.Shapes;
 using WorkstationController.Control;
 using WorkstationController.Core.Data;
 using WorkstationController.Core.Utility;
+using WorkstationController.Hardware;
 using WTPipetting.Data;
 using WTPipetting.Navigation;
 using WTPipetting.Utility;
@@ -57,6 +59,20 @@ namespace WTPipetting.StageControls
             this.DataContext = this;
             lb_layouts.SelectedIndex = 0;
             lstProtocols.SelectedIndex = 0;
+            string sPort = ConfigurationManager.AppSettings["BarcodePortName"];
+            if(sPort != "")
+            {
+                try
+                {
+                    BarcodeScanner.Instance.Open(sPort);
+                }
+                catch(Exception ex)
+                {
+                    SetInfo("打开串口失败！",true);
+                }
+                
+            }
+            //
    
         }
 

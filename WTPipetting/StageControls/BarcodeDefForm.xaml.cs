@@ -1,4 +1,5 @@
-﻿using System;
+﻿using SKHardwareController;
+using System;
 using System.Collections.Generic;
 using System.Configuration;
 using System.IO.Ports;
@@ -15,6 +16,7 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
+using WorkstationController.Hardware;
 using WTPipetting.Navigation;
 using WTPipetting.Utility;
 
@@ -25,9 +27,10 @@ namespace WTPipetting.StageControls
     /// </summary>
     public partial class BarcodeDefForm :  BaseUserControl
     {
-        SerialPort serialPort = null;
+       
         int tubeID = 0;
         Dictionary<int, string> ID_Barcode;
+        bool validPosition = false;
         public BarcodeDefForm(Stage stage, BaseHost host)
             : base(stage, host)
         {
@@ -37,6 +40,18 @@ namespace WTPipetting.StageControls
             this.Loaded += BarcodeDefForm_Loaded;
         }
 
+
+        protected override void onStageChanged(object sender, EventArgs e)
+        {
+            base.onStageChanged(sender, e);
+            if(GlobalVars.Instance.FarthestStage == Stage.BarcodeDef)
+            {
+                if (BarcodeScanner.Instance.IsOpen)
+                {
+                    BarcodeScanner.Instance.onNewBarcode += Instance_onNewBarcode;
+                }
+            }
+        }
         void dataGridView_CellValueChanged(object sender, DataGridViewCellEventArgs e)
         {
             int grid = e.ColumnIndex + 1;
@@ -52,28 +67,16 @@ namespace WTPipetting.StageControls
 
         void BarcodeDefForm_Loaded(object sender, RoutedEventArgs e)
         {
-          
             tubeID = 1;
             ID_Barcode = new Dictionary<int, string>();
-           
-            try
+        }
+
+        void Instance_onNewBarcode(object sender, string e)
+        {
+            this.Dispatcher.Invoke(()=>
             {
-                if (serialPort == null)
-                {
-                    string barcodePort = ConfigurationManager.AppSettings["BarcodePortName"];
-                    if(barcodePort != "")
-                    {
-                        serialPort = new SerialPort(barcodePort);
-                        serialPort.DataReceived += serialPort_DataReceived;
-                        serialPort.Open();
-                    }
-                }
-                
-            }
-            catch(Exception ex)
-            {
-                SetInfo("无法打开串口，原因是：" + ex.Message,true);
-            }
+                UpdateDatagridView(e);
+            });
             
         }
 
@@ -83,17 +86,14 @@ namespace WTPipetting.StageControls
             txtInfo.Foreground = isError ? Brushes.Red : Brushes.Black;
         }
 
-        void serialPort_DataReceived(object sender, SerialDataReceivedEventArgs e)
-        {
-            string s = serialPort.ReadLine();
-            UpdateDatagridView(s);
-        }
+        
 
         private void UpdateDatagridView(string s)
         {
             //A001=>P001 is position
             if(IsPosition(s))
             {
+                validPosition = true;
                 int positionID = ParsePositionID(s);
                 if (tubeID != positionID)
                     tubeID = positionID;
@@ -101,10 +101,16 @@ namespace WTPipetting.StageControls
             }
             else //assign barcode to current position
             {
+                if(!validPosition)
+                {
+                    SetInfo(string.Format("找不到位置信息，忽略条码：{0}", s), true);
+                    return;
+                }
                 if (ID_Barcode.ContainsKey(tubeID))
                     ID_Barcode[tubeID] = s;
                 UpdateGridCell(tubeID, s);
                 tubeID++;
+                validPosition = false;
             }
         }
 
@@ -141,6 +147,10 @@ namespace WTPipetting.StageControls
         private void UpdateGridCell(int tubeID, string barcode)
         {
             int gridID = (tubeID - 1) /16 +1;
+            int neededGridCnt = (GlobalVars.Instance.SampleCount  + 15)/16;
+            if (gridID > neededGridCnt)
+                return;
+
             int rowIndex = (tubeID - 1) % 16;
             dataGridView.Rows[rowIndex].Cells[gridID - 1].Value = barcode;
         }
@@ -155,7 +165,8 @@ namespace WTPipetting.StageControls
         private bool IsPosition(string s)
         {
             char ch = s.First();
-            bool isA2P = ch - 'A' < 16; //a,b,c=>p
+            int distance = ch - 'A';
+            bool isA2P = distance < 16 && distance >= 0; //a,b,c=>p
             int val = 0;
             bool isInt = int.TryParse(s.Substring(1), out val);
             return isA2P && isInt;
@@ -164,7 +175,7 @@ namespace WTPipetting.StageControls
         private void btnConfirm_Click(object sender, RoutedEventArgs e)
         {
             log.Info("Barcode confirmed");
-            if(serialPort == null) //auto fill barcode
+            if(!BarcodeScanner.Instance.IsOpen) //auto fill barcode
             {
                 AutoGenerate();
             }

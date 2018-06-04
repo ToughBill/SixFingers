@@ -67,6 +67,7 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="Hardware\BarcodeScanner.cs" />
     <Compile Include="Data\PanelViewModel.cs" />
     <Compile Include="Data\SampleInfo.cs" />
     <Compile Include="Hardware\HardwareController.cs" />

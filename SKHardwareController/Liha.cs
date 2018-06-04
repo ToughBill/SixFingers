@@ -432,11 +432,14 @@ namespace SKHardwareController
         public void Init()
         {
             MoveController.Instance.Init(portNum);
-            var res = MoveController.Instance.MoveHome(_eARM.两个,MoveController.defaultTimeOut);
+            var res = MoveController.Instance.Move2Z(_eARM.右臂, 10, 10000, true);
+            ThrowCriticalException(res, "夹爪回高位");
+            //MoveController.Instance.RoateClipper()
+            res = MoveController.Instance.MoveHome(_eARM.两个,MoveController.defaultTimeOut);
             ThrowCriticalException(res, "归零");
             DitiTrackInfo ditiTrackInfo;
             DropTip(out ditiTrackInfo);
-            res = MoveController.Instance.InitCarvo();
+            res = MoveController.Instance.InitADP();
             ThrowCriticalException(res,"初始化气泵");
 
         }
