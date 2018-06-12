@@ -37,6 +37,18 @@ namespace WorkstationController.Core.Data
             }
         }
 
+        static Layout selectedLayout;
+        public static Layout SelectedLayout
+        {
+            get
+            {
+                return selectedLayout;
+            }
+            set
+            {
+                selectedLayout = value;
+            }
+        }
 
         /// <summary>
         /// tips info

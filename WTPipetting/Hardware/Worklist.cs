@@ -60,7 +60,10 @@ namespace WTPipetting.Hardware
         {
             
             int currentStep = 1;
+            if (!hardwareController.Liha.IsInitialized)
+                hardwareController.Liha.Init();
 
+            if(!hardwareController.Roma.IsInitialized)
             foreach (var machineCommand in liquidHandlerCommands)
             {
                 NotifyStepStarted(currentStep);
@@ -159,27 +162,25 @@ namespace WTPipetting.Hardware
                 return true;
             var liquidClass = PipettorElementManager.Instance.LiquidClasses.First(x => x.SaveName == lihaCommand.liquidClass);
             
-            bool needSkipDispense = false;
-            try
-            {
-                PipettingResult pipettingResult = PipettingResult.ok;
-                hardwareController.Liha.Aspirate(lihaCommand.srcLabware, new List<int>() { lihaCommand.srcWellID }, new List<double>() { lihaCommand.volume }, liquidClass, out pipettingResult);
-                PipettingTrackInfo trackInfo = new PipettingTrackInfo(lihaCommand.srcLabware, LihaCommand.GetWellDesc(lihaCommand.srcWellID),lihaCommand.volume, pipettingResult, lihaCommand.barcode);
-                OnCommandExecuted(trackInfo);
-            }
-            catch(SkipException ex)
-            {
-                needSkipDispense = true;
-            }
+ 
+            
+            PipettingResult pipettingResult = PipettingResult.ok;
+            hardwareController.Liha.Aspirate(lihaCommand.srcLabware, new List<int>() { lihaCommand.srcWellID }, new List<double>() { lihaCommand.volume }, liquidClass, out pipettingResult);
+            PipettingTrackInfo aspTrackInfo = new PipettingTrackInfo(lihaCommand.srcLabware, LihaCommand.GetWellDesc(lihaCommand.srcWellID), lihaCommand.volume, pipettingResult, lihaCommand.barcode);
+            OnCommandExecuted(aspTrackInfo);
+            
             
             if (NeedPauseOrStop())
                 return true;
-            if(!needSkipDispense) //if need skip
+            if (pipettingResult == PipettingResult.ok
+                || pipettingResult == PipettingResult.air
+                || pipettingResult == PipettingResult.clotIgnore
+                || pipettingResult == PipettingResult.zmax) 
             {
-                PipettingResult pipettingResult = PipettingResult.ok;
+                pipettingResult = PipettingResult.ok;
                 hardwareController.Liha.Dispense(lihaCommand.dstLabware, new List<int>() { lihaCommand.dstWellID }, new List<double>() { lihaCommand.volume }, liquidClass, out pipettingResult);
-                PipettingTrackInfo trackInfo = new PipettingTrackInfo(lihaCommand.dstLabware,LihaCommand.GetWellDesc(lihaCommand.dstWellID), lihaCommand.volume, pipettingResult, lihaCommand.barcode,false);
-                OnCommandExecuted(trackInfo);
+                var dispTrackInfo = new PipettingTrackInfo(lihaCommand.dstLabware,LihaCommand.GetWellDesc(lihaCommand.dstWellID), lihaCommand.volume, pipettingResult, lihaCommand.barcode,false);
+                OnCommandExecuted(dispTrackInfo);
             }
             
             if (NeedPauseOrStop())

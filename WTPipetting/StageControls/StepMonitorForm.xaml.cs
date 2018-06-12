@@ -19,6 +19,7 @@ using WTPipetting.Utility;
 using WTPipetting.Hardware;
 using WorkstationController.Core.Data;
 using System.Timers;
+using WorkstationController.Hardware;
 
 namespace WTPipetting.StageControls
 {
@@ -86,6 +87,7 @@ namespace WTPipetting.StageControls
             this.Dispatcher.Invoke(() =>
             {
                 txtTimeUsed.Text = TimeSpan.FromSeconds(usedSeconds).ToString();
+                usedSeconds++;
                 if (runState == RunState.Pause)
                     return;
                 actualUsedTime++;
@@ -183,7 +185,7 @@ namespace WTPipetting.StageControls
         {
             this.Dispatcher.Invoke(() =>
             {
-                btnStop.IsEnabled = false;
+                //btnStop.IsEnabled = false;
                 SetErrorInfo(e);
             });
         }
@@ -207,6 +209,18 @@ namespace WTPipetting.StageControls
             RunPause();
         }
 
+        protected override void onStageChanged(object sender, EventArgs e)
+        {
+            base.onStageChanged(sender, e);
+            if (GlobalVars.Instance.FarthestStage == Stage.StepMonitor)
+            {
+                if (BarcodeScanner.Instance.IsOpen)
+                {
+                    BarcodeScanner.Instance.Close();
+                }
+            }
+        }
+
         private async Task<int> RunPause()
         {
             
@@ -219,7 +233,7 @@ namespace WTPipetting.StageControls
                     actualUsedTime = 0;
                     timer.Start();
                     ChangeRunState(RunState.Pause);
-                    btnStop.IsEnabled = true;
+                    //btnStop.IsEnabled = true;
                     await RunProtocol();
                 }
                 catch(Exception ex)
@@ -238,7 +252,7 @@ namespace WTPipetting.StageControls
                 ChangeRunState(RunState.Pause);
                 wkList.PauseResume();
             }
-            btnStop.IsEnabled = false; 
+            //btnStop.IsEnabled = false; 
             return 0;
         }
 
@@ -257,8 +271,6 @@ namespace WTPipetting.StageControls
             runState = nextState;
         }
      
-
-
         private void btnStop_Click(object sender, RoutedEventArgs e)
         {
             SetInfo("终止运行！");
@@ -276,10 +288,6 @@ namespace WTPipetting.StageControls
         {
             logForm.Visible = !logForm.Visible;            
         }
-
-   
-
-        
     }
 
     enum RunState

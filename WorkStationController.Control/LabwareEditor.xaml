@@ -116,6 +116,11 @@
         <Button Name="btnMove2CurrentPositionZDispense"  Grid.Row="10" Grid.Column="6" Content="移动到" Click="btnMove2CurrentPositionZDispense_Click"/>
         <Button Name="btnUseCurrentValZMax" Grid.Row="11" Grid.Column="5" Content="使用当前值" Click="btnUseCurrentValZMax_Click"/>
         <Button Name="btnMove2CurrentPositionZMax" Grid.Row="11" Grid.Column="6" Content="移动到" Click="btnMove2CurrentPositionZMax_Click"/>
+        <StackPanel Grid.Row="14" Grid.Column="5" Orientation="Horizontal">
+            <Button Name="btnGetTip"  Content="取枪头" Height="30" Width="60" Click="btnGetTip_Click"></Button>
+            <Button Name="btnDropTip" Content="丢枪头" Height="30" Width="60" Click="btnDropTip_Click"></Button>
+        </StackPanel>
+      
         <Label Grid.Row="13" Grid.Column="5" HorizontalAlignment="Right" Content="孔半径:" />
         <TextBox Grid.Row="13" Grid.Column="6" Text="{Binding Path=WellsInfo.WellRadius}"/>
         <Label Grid.Row="12" Grid.Column="6" Content="(单位:mm)" HorizontalAlignment="Right" />
@@ -148,8 +153,8 @@
             </StackPanel>
             <Label>mm/s</Label>
         </StackPanel>
-        <StackPanel  Grid.Row="14" Grid.Column="6"  HorizontalAlignment="Right" Margin="0,2,0,0" Orientation="Horizontal">
-            <Button   Width="60" Height="30" Content="夹手位置" Click="OnSetROMAVectorClick" Margin="3,4,3,0" VerticalAlignment="Top"/>
+        <StackPanel  Grid.Row="14" Grid.Column="6"  HorizontalAlignment="Right" Margin="0,0,0,0" Orientation="Horizontal">
+            <Button   Width="60" Height="30" Content="夹手位置" Click="OnSetROMAVectorClick" />
             <Button   Width="60" Height="30" Content="保存" Click="OnSaveButtonClick"/>
         </StackPanel>
     </Grid>

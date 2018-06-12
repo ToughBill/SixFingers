@@ -43,7 +43,7 @@ namespace WorkstationController.Control
             _layout = layout;
             if (_layout == null)
                 _layout = new Layout();
-           
+            Layout.SelectedLayout = _layout;
             _worktable.SizeChanged += uiContainer_SizeChanged;
             _uiController = new UIMovementsController(_worktable, _layout);
             _uiController.onLabelPreviewChanged += uiController_onLabelPreviewChanged;

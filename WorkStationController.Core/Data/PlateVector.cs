@@ -21,8 +21,8 @@ namespace WorkstationController.Core.Data
         }
         public PlateVector(bool createDefault)
         {
-            ROMAPosition safePosition = new ROMAPosition(Safe, 100, 100, 100, 0);
-            ROMAPosition endPosition = new ROMAPosition(End, 100, 100, 100, 0);
+            ROMAPosition safePosition = new ROMAPosition(Safe, 100, 100, 100, 0,20);
+            ROMAPosition endPosition = new ROMAPosition(End, 100, 100, 100, 0,20);
             positions.Add(safePosition);
             positions.Add(endPosition);
         }
@@ -141,7 +141,7 @@ namespace WorkstationController.Core.Data
             }
 
             int nextID = vals.Count > 0 ? vals.Max() +1 : 1;
-            var newPosition = new ROMAPosition(nextID.ToString(), 0, 0, 10, 0);
+            var newPosition = new ROMAPosition(nextID.ToString(), 0, 0, 10, 0,20);
             //positions.Add(newPosition);
             Positions.Add(newPosition);
             CurrentPosition = newPosition;

@@ -24,15 +24,17 @@ namespace SKHardwareController
             Exit(NextActionOfNoLiquid.retry);
         }
 
-        private void btnAspirateAir_Click(object sender, EventArgs e)
-        {
-            Exit(NextActionOfNoLiquid.aspirateAir);
-        }
-
         private void btnAbort_Click(object sender, EventArgs e)
         {
             Exit(NextActionOfNoLiquid.abort);
         }
+
+        private void btnAspAir_Click(object sender, EventArgs e)
+        {
+            Exit(NextActionOfNoLiquid.aspirateAir);
+        }
+
+
         private void btnSkipThisPipetting_Click(object sender, EventArgs e)
         {
             Exit(NextActionOfNoLiquid.skip);
@@ -44,6 +46,9 @@ namespace SKHardwareController
         }
 
         public NextActionOfNoLiquid UserSelection { get; set; }
+
+     
+       
 
        
     }

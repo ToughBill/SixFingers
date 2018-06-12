@@ -26,9 +26,9 @@ namespace SKHardwareController
         protected byte[] globalBuffer = new byte[1024];
         #endregion
 
-        private const double MAX_X_DISTANCE = 700.0;//70cm
-        private const double MAX_Y_DISTANCE = 400.0;//40cm
-        private const double MAX_Z_DISTANCE = 300.0;//30cm
+        public const double MAX_X_DISTANCE = 700.0;//70cm
+        public const double MAX_Y_DISTANCE = 350.0;//40cm
+        public const double MAX_Z_DISTANCE = 250.0;//30cm
         private const double DegreePerStep = 360 / 200;
 
         private int getValue = 0;
@@ -36,8 +36,6 @@ namespace SKHardwareController
         private SerialPort serialPort = new SerialPort();
         
         public bool Listening { get; set; }
-        
-        bool isErrorState = false;
         public bool bOpen = false;
         
         
@@ -55,9 +53,9 @@ namespace SKHardwareController
         double mmPerStepClipper = 0.1;//mm
         double ulPerStepADP = 0.025;//ul/step
         e_RSPErrorCode[] _errorCode = new e_RSPErrorCode[(int)_eARM.两个 - 1];
-        public const int defaultTimeOut = 5000;
+        public const int defaultTimeOut = 10000;
         private static MoveController instance;
-        public event EventHandler<string> onStepLost;
+        public event EventHandler<string> onCriticalErrorHappened;
    
         static public MoveController Instance
         {
@@ -118,7 +116,7 @@ namespace SKHardwareController
         }
 
 
-        public bool Initialized
+        public bool XYZInitialized
         {
             get
             {
@@ -296,11 +294,7 @@ namespace SKHardwareController
             if (ret != e_RSPErrorCode.RSP_ERROR_NONE)
                 return ret;
 
-            //异步移动到zMax
-            ret = MoveZAtSpeed(armid, zMax - zStart, speedMMPerSecond, 0);
-            if (ret != e_RSPErrorCode.RSP_ERROR_NONE)
-                return ret;
-
+            //开启液位探测功能
             for (int i = 0; i < 3; i++)
             {
                 SendCommand(string.Format("{0}8AL", (int)armid), i != 0);
@@ -327,8 +321,49 @@ namespace SKHardwareController
                 return e_RSPErrorCode.超时错误;
             }
 
+            //探测直到zMax
+            ret = MoveZAtSpeed(armid, zMax - zStart, speedMMPerSecond, 15000);
+            return ret;
+        }
+
+        /// <summary>
+        /// 停止ADP
+        /// </summary>
+        /// <returns></returns>
+        public e_RSPErrorCode StopLiquidDetection()
+        {
+            _eARM armid = _eARM.左臂;
+            int timeout = 1000;
+
+            for (int i = 0; i < 3; i++)
+            {
+                SendCommand(string.Format("{0}8PS", (int)armid));
+                cmdACK.WaitOne(100);
+                if (bACK[(int)armid - 1]) break;
+            }
+
+            if (!bACK[(int)armid - 1])
+            {
+                return e_RSPErrorCode.Send_fail;
+            }
+
+            if (timeout > 0)
+            {
+                while (!bActiondone[(int)armid - 1] && timeout > 0)
+                {
+                    Thread.Sleep(10);
+                    timeout -= 10;
+                }
+            }
+
+            if (timeout <= 0)
+            {
+                return e_RSPErrorCode.超时错误;
+            }
+
             return _errorCode[(int)armid - 1];
         }
+
         /// <summary>
         /// 吸液
         /// </summary>
@@ -1096,11 +1131,6 @@ namespace SKHardwareController
         {
             int QueryNum = 31;//查询TIP状态
             int timeout = 500;
-
-            if (!bADPInited)
-            {
-                return e_RSPErrorCode.未初始化;
-            }
 
             if (armid >= _eARM.两个)
             {
@@ -1914,14 +1944,7 @@ namespace SKHardwareController
                                 e_RSPErrorCode errorCode = (e_RSPErrorCode)(RxBuffer[1] - 0x40);
                                 _errorCode[RxBuffer[2] - 0x31] = (e_RSPErrorCode)(RxBuffer[1] - 0x40);
                                 string errDesc = errorCode.ToString();
-                                if (IsCriticalError(errorCode))
-                                {
-                                    isErrorState = true;
-                                    //throw new CriticalException(errDesc);
-                                }
-                                //log.Error(errDesc);
-                                //cmdFinished.Set();
-                                //throw new Exception(errDesc);
+                                NotifyStepLost(errDesc);
                             }
                             else
                             {
@@ -1939,14 +1962,20 @@ namespace SKHardwareController
             Listening = false;
         }
 
+        private void NotifyStepLost(string errMsg)
+        {
+            if (onCriticalErrorHappened != null)
+                onCriticalErrorHappened(this, errMsg);
+        }
+
         public void GetCurrentPosition(_eARM armID, ref double x, ref  double y, ref  double z)
         {
             x = -1;
             y = -1;
             z = -1;
-            x = GetXPos(armID);
-            y = GetYPos(armID);
-            z = GetZPos(armID);
+            x = Math.Round(GetXPos(armID),1);
+            y = Math.Round(GetYPos(armID),1);
+            z = Math.Round(GetZPos(armID),1);
         }
 
         private bool IsCriticalError(e_RSPErrorCode errorCode)
@@ -2078,7 +2107,7 @@ namespace SKHardwareController
 
 
 
-        
+
     }
     public enum _eARM
     {

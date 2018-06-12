@@ -46,5 +46,11 @@ namespace WorkstationController.Hardware.Simulator
         }
 
         public event EventHandler<string> onCriticalErrorHappened;
+
+
+        public bool IsInitialized
+        {
+            get { return true; }
+        }
     }
 }

@@ -16,7 +16,7 @@ namespace WorkstationController.Control
     {
         Labware labware;
         #region teaching related
-        XYZ xyzr = new XYZ(0, 0, 0);
+        XYZ xyz = new XYZ(0, 0, 0);
         RomaTeachingForm romaTeachingForm;
         InputChecker inputChecker = new InputChecker();
         DateTime lastUpdateTime = DateTime.Now;
@@ -34,7 +34,7 @@ namespace WorkstationController.Control
             InitializeComponent();
             inputChecker.OnStartMove += inputChecker_OnStartMove;
             inputChecker.OnStopMove += inputChecker_OnStopMove;
-            TeachingControllerDelegate.Instance.RegisterController(new SKHardwareController.TeachingImplement());
+            TeachingControllerDelegate.Instance.RegisterController(new TeachingControllerSimulator());
             this.Loaded += LabwareEditor_Loaded;
             this.Unloaded += LabwareEditor_Unloaded;
             parent.Closing += parent_Closing;
@@ -68,15 +68,15 @@ namespace WorkstationController.Control
             {
                 TeachingControllerDelegate.Instance.Controller.GetClipperInfo(ref degree, ref clipWidth); 
                 if (onPositionChanged != null)
-                    onPositionChanged(this, new ROMAPosition("x",xyzr.X,xyzr.Y,xyzr.Z,degree));
+                    onPositionChanged(this, new ROMAPosition("x", position.X, position.Y, position.Z, degree, clipWidth));
                 return;
             }
             
 
             Debug.WriteLine("Current Position is: xyz {0}{1}{2}", position.X, position.Y, position.Z);
-            xyzr.X = position.X;
-            xyzr.Y = position.Y;
-            xyzr.Z = position.Z;
+            xyz.X = position.X;
+            xyz.Y = position.Y;
+            xyz.Z = position.Z;
          
         }
 
@@ -147,7 +147,7 @@ namespace WorkstationController.Control
             }
             labware.CalculatePositionInLayout();
             GetCurrentPositon();
-            curPositionPanel.DataContext = xyzr;
+            curPositionPanel.DataContext = xyz;
             StartCheckingInput();
         }
 
@@ -156,9 +156,12 @@ namespace WorkstationController.Control
             // The DataContext must be labware
             if (labware == null)
                 throw new InvalidOperationException("DataContext of LabwareEditor must be an instance of Labware");
+
+            
             labware.UpdateWellInfos();
             try
             {
+                CheckValidZValues();
                 PipettorElementManager.Instance.SavePipettorElement(labware);
             }
             catch(Exception ex)
@@ -166,6 +169,25 @@ namespace WorkstationController.Control
                 if (newInfoHandler != null)
                     newInfoHandler(ex.Message, true);
             }
+        }
+
+        private void CheckValidZValues()
+        {
+            CheckZValue(labware.ZValues.ZTravel, "ZTravel");
+            CheckZValue(labware.ZValues.ZStart, "ZStart");
+            CheckZValue(labware.ZValues.ZDispense, "ZDispense");
+            CheckZValue(labware.ZValues.ZMax, "ZMax");
+            
+        }
+
+        private void CheckZValue(float value, string description)
+        {
+            if (value > TeachingControllerDelegate.Instance.Controller.ZMax)
+                throw new Exception(string.Format("{0}不得大于{1}", description, TeachingControllerDelegate.Instance.Controller.ZMax));
+
+            if (value < 0)
+                throw new Exception(string.Format("{0}不得小于0", description));
+            
         }
 
         #region 使用当前位置，移动到设置位置
@@ -214,7 +236,7 @@ namespace WorkstationController.Control
             var xyzr = TeachingControllerDelegate.Instance.Controller.GetPosition(ArmType.Liha);
             xyzr.X = labware.TopLeftWellX;
             xyzr.Y = labware.TopLeftWellY;
-            TeachingControllerDelegate.Instance.Controller.Move2XYZR(ArmType.Liha, xyzr);
+            TeachingControllerDelegate.Instance.Controller.Move2XYZ(ArmType.Liha, xyzr);
         }
 
         private void btnMove2CurrentPositionLastWell_Click(object sender, RoutedEventArgs e)
@@ -222,35 +244,35 @@ namespace WorkstationController.Control
             var xyzr = TeachingControllerDelegate.Instance.Controller.GetPosition(ArmType.Liha);
             xyzr.X = labware.BottomRightWellX;
             xyzr.Y = labware.BottomRightWellY;
-            TeachingControllerDelegate.Instance.Controller.Move2XYZR(ArmType.Liha, xyzr);
+            TeachingControllerDelegate.Instance.Controller.Move2XYZ(ArmType.Liha, xyzr);
         }
 
         private void btnMove2CurrentPositionZTravel_Click(object sender, RoutedEventArgs e)
         {
             var xyzr = TeachingControllerDelegate.Instance.Controller.GetPosition(ArmType.Liha);
             xyzr.Z = labware.ZValues.ZTravel;
-            TeachingControllerDelegate.Instance.Controller.Move2XYZR(ArmType.Liha, xyzr);
+            TeachingControllerDelegate.Instance.Controller.Move2XYZ(ArmType.Liha, xyzr);
         }
 
         private void btnMove2CurrentPositionZMax_Click(object sender, RoutedEventArgs e)
         {
             var xyzr = TeachingControllerDelegate.Instance.Controller.GetPosition(ArmType.Liha);
             xyzr.Z = labware.ZValues.ZMax;
-            TeachingControllerDelegate.Instance.Controller.Move2XYZR(ArmType.Liha, xyzr);
+            TeachingControllerDelegate.Instance.Controller.Move2XYZ(ArmType.Liha, xyzr);
         }
 
         private void btnMove2CurrentPositionZDispense_Click(object sender, RoutedEventArgs e)
         {
             var xyzr = TeachingControllerDelegate.Instance.Controller.GetPosition(ArmType.Liha);
             xyzr.Z = labware.ZValues.ZDispense;
-            TeachingControllerDelegate.Instance.Controller.Move2XYZR(ArmType.Liha, xyzr);
+            TeachingControllerDelegate.Instance.Controller.Move2XYZ(ArmType.Liha, xyzr);
         }
 
         private void btnMove2CurrentPositionZStart_Click(object sender, RoutedEventArgs e)
         {
             var xyzr = TeachingControllerDelegate.Instance.Controller.GetPosition(ArmType.Liha);
             xyzr.Z = labware.ZValues.ZStart;
-            TeachingControllerDelegate.Instance.Controller.Move2XYZR(ArmType.Liha, xyzr);
+            TeachingControllerDelegate.Instance.Controller.Move2XYZ(ArmType.Liha, xyzr);
         }
         #endregion
 
@@ -277,6 +299,16 @@ namespace WorkstationController.Control
                 speed = 10;
             else
                 speed = 50;
+        }
+
+        private void btnGetTip_Click(object sender, RoutedEventArgs e)
+        {
+            TeachingControllerDelegate.Instance.Controller.GetTip();
+        }
+
+        private void btnDropTip_Click(object sender, RoutedEventArgs e)
+        {
+            TeachingControllerDelegate.Instance.Controller.DropTip();
         }
     }
 }

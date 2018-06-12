@@ -31,14 +31,14 @@
             this.btnRetry = new System.Windows.Forms.Button();
             this.btnSkipThisPipetting = new System.Windows.Forms.Button();
             this.btnAbort = new System.Windows.Forms.Button();
-            this.button1 = new System.Windows.Forms.Button();
+            this.btnAspAir = new System.Windows.Forms.Button();
             this.SuspendLayout();
             // 
             // btnRetry
             // 
-            this.btnRetry.Location = new System.Drawing.Point(12, 12);
+            this.btnRetry.Location = new System.Drawing.Point(12, 13);
             this.btnRetry.Name = "btnRetry";
-            this.btnRetry.Size = new System.Drawing.Size(165, 31);
+            this.btnRetry.Size = new System.Drawing.Size(165, 34);
             this.btnRetry.TabIndex = 1;
             this.btnRetry.Text = "重试";
             this.btnRetry.UseVisualStyleBackColor = true;
@@ -46,9 +46,9 @@
             // 
             // btnSkipThisPipetting
             // 
-            this.btnSkipThisPipetting.Location = new System.Drawing.Point(12, 49);
+            this.btnSkipThisPipetting.Location = new System.Drawing.Point(12, 53);
             this.btnSkipThisPipetting.Name = "btnSkipThisPipetting";
-            this.btnSkipThisPipetting.Size = new System.Drawing.Size(165, 31);
+            this.btnSkipThisPipetting.Size = new System.Drawing.Size(165, 34);
             this.btnSkipThisPipetting.TabIndex = 2;
             this.btnSkipThisPipetting.Text = "跳过此次加样";
             this.btnSkipThisPipetting.UseVisualStyleBackColor = true;
@@ -56,30 +56,31 @@
             // 
             // btnAbort
             // 
-            this.btnAbort.Location = new System.Drawing.Point(12, 123);
+            this.btnAbort.Location = new System.Drawing.Point(12, 133);
             this.btnAbort.Name = "btnAbort";
-            this.btnAbort.Size = new System.Drawing.Size(165, 31);
+            this.btnAbort.Size = new System.Drawing.Size(165, 34);
             this.btnAbort.TabIndex = 3;
             this.btnAbort.Text = "终止";
             this.btnAbort.UseVisualStyleBackColor = true;
             this.btnAbort.Click += new System.EventHandler(this.btnAbort_Click);
             // 
-            // button1
+            // btnAspAir
             // 
-            this.button1.Location = new System.Drawing.Point(12, 86);
-            this.button1.Name = "button1";
-            this.button1.Size = new System.Drawing.Size(165, 31);
-            this.button1.TabIndex = 4;
-            this.button1.Text = "吸空气";
-            this.button1.UseVisualStyleBackColor = true;
+            this.btnAspAir.Location = new System.Drawing.Point(12, 93);
+            this.btnAspAir.Name = "btnAspAir";
+            this.btnAspAir.Size = new System.Drawing.Size(165, 34);
+            this.btnAspAir.TabIndex = 4;
+            this.btnAspAir.Text = "吸空气";
+            this.btnAspAir.UseVisualStyleBackColor = true;
+            this.btnAspAir.Click += new System.EventHandler(this.btnAspAir_Click);
             // 
             // LiquidNotDetected
             // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
+            this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(189, 167);
+            this.ClientSize = new System.Drawing.Size(189, 181);
             this.ControlBox = false;
-            this.Controls.Add(this.button1);
+            this.Controls.Add(this.btnAspAir);
             this.Controls.Add(this.btnAbort);
             this.Controls.Add(this.btnSkipThisPipetting);
             this.Controls.Add(this.btnRetry);
@@ -94,6 +95,6 @@
         private System.Windows.Forms.Button btnRetry;
         private System.Windows.Forms.Button btnSkipThisPipetting;
         private System.Windows.Forms.Button btnAbort;
-        private System.Windows.Forms.Button button1;
+        private System.Windows.Forms.Button btnAspAir;
     }
 }

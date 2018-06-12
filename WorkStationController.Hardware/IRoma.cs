@@ -16,5 +16,7 @@ namespace WorkstationController.Hardware
         XYZ GetCurrentPosition();
 
         event EventHandler<string> onCriticalErrorHappened;
+
+        bool IsInitialized { get; }
     }
 }

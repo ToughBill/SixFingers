@@ -10,12 +10,19 @@ namespace SKHardwareController
 {
     public class Roma:ArmBase,IRoma
     {
+        public Roma()
+        {
+            MoveController.Instance.onCriticalErrorHappened += Instance_onCriticalErrorHappened;
+        }
         public void Init()
         {
-            MoveController.Instance.onStepLost += Instance_onStepLost;
+            if (!MoveController.Instance.ClipperInitialized)
+                MoveController.Instance.InitClipper();
+            
+
         }
 
-        void Instance_onStepLost(object sender, string e)
+        void Instance_onCriticalErrorHappened(object sender, string e)
         {
             if (onCriticalErrorHappened != null)
                 onCriticalErrorHappened(this,e);
@@ -68,5 +75,11 @@ namespace SKHardwareController
 
 
         public event EventHandler<string> onCriticalErrorHappened;
+
+
+        public bool IsInitialized
+        {
+            get { return MoveController.Instance.ClipperInitialized && MoveController.Instance.XYZInitialized; }
+        }
     }
 }

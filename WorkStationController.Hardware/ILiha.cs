@@ -15,10 +15,10 @@ namespace WorkstationController.Hardware
         void MoveFirstTipYAbs(float y);
         void MoveFirstTipZAbs(float z);
 
-        void MoveFirstTipRelativeX(float x, float speed);
-        void MoveFirstTipRelativeY(float y, float speed);
-        void MoveFirstTipRelativeZ(float z, float speed);
-
+        int MaxPipettingSpeed
+        {
+            get;
+        }
         void SetTipsDistance(float distance);
 
         void GetTip(List<int> tipIDs, out DitiTrackInfo trackInfos);
@@ -29,6 +29,7 @@ namespace WorkstationController.Hardware
 
         bool IsTipMounted{get;}
 
-        event EventHandler<string> onCriticalErrorHappened;
+        bool IsInitialized { get; }
+
     }
 }

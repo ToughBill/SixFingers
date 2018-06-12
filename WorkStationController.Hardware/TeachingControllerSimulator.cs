@@ -15,11 +15,12 @@ namespace WorkstationController.Hardware
         Stopwatch stopWatch = new Stopwatch();
         int speed_mmPerSecond = 0;
         Direction dir;
+        double degree;
+        double clipperWidth;
         System.Timers.Timer updatePositionTimer = new System.Timers.Timer(200);
         public void Init(string sPort)
         {
             Debug.WriteLine("Init");
-         
         }
         public TeachingControllerSimulator()
         {
@@ -50,19 +51,37 @@ namespace WorkstationController.Hardware
                 case Direction.ZDown:
                     currentPosition.Z -= distance;
                     break;
+                case Direction.RotateCCW:
+                    degree -= distance;
+                    break;
+                case Direction.RotateCW:
+                    degree += distance;
+                    break;
+                case Direction.ClampOn:
+                    clipperWidth -= distance;
+                    break;
+                case Direction.ClampOff:
+                    clipperWidth += distance;
+                    break;
             }
+            currentPosition.X = Math.Max(0, currentPosition.X);
+            currentPosition.Y = Math.Max(0, currentPosition.Y);
+            currentPosition.Z = Math.Max(0, currentPosition.Z);
+            degree = Math.Max(0, degree);
+            clipperWidth = Math.Max(0, clipperWidth);
+
         }
 
-        public void Move2XYZR(ArmType armType, Core.Data.XYZ xyzr)
+        public void Move2XYZ(ArmType armType, Core.Data.XYZ xyz)
         {
             Random rnd = new Random((int)DateTime.Now.Ticks);
-            double xDiff = xyzr.X - currentPosition.X;
-            double yDiff = xyzr.Y - currentPosition.Y;
-            double zDiff = xyzr.Z - currentPosition.Z;
+            double xDiff = xyz.X - currentPosition.X;
+            double yDiff = xyz.Y - currentPosition.Y;
+            double zDiff = xyz.Z - currentPosition.Z;
             double maxDis = Math.Max(Math.Max(xDiff, yDiff), zDiff);
             int milliSeconds = (int)(maxDis / 0.8);
             Thread.Sleep(milliSeconds);
-            currentPosition = xyzr;
+            currentPosition = xyz;
         }
 
   
@@ -71,14 +90,40 @@ namespace WorkstationController.Hardware
             return currentPosition;
         }
 
+        public int ZMax
+        {
+            get { return 250; }
+        }
 
+
+
+        public int YMax
+        {
+            get { return 350; }
+        }
+
+
+        public int GetXMax(ArmType armType)
+        {
+            int maxValue = 700;
+            switch (armType)
+            {
+                case ArmType.Liha:
+                    maxValue = 700;
+                    break;
+                case ArmType.Roma:
+                    maxValue = 800;
+                    break;
+            }
+            return maxValue;
+        }
 
         public void StopMove()
         {
             Debug.WriteLine("stop move");
             double seconds = stopWatch.ElapsedMilliseconds < 100 ? 0.1f :  stopWatch.ElapsedMilliseconds / 1000.0f;
             seconds = Math.Round(seconds,1);
-            double distance = speed_mmPerSecond * seconds;
+            double distance = Math.Round(speed_mmPerSecond * seconds,1);
             Debug.WriteLine(string.Format("moved: {0} mm",distance));
             updatePositionTimer.Stop();
             switch (dir)
@@ -101,7 +146,25 @@ namespace WorkstationController.Hardware
                 case Direction.ZDown:
                     currentPosition.Z -= distance;
                     break;
+                case Direction.RotateCCW:
+                    degree -= distance;
+                    break;
+                case Direction.RotateCW:
+                    degree += distance;
+                    break;
+                case Direction.ClampOn:
+                    clipperWidth -= distance;
+                    break;
+                case Direction.ClampOff:
+                    clipperWidth += distance;
+                    break;
+
             }
+            currentPosition.X = Math.Max(0, currentPosition.X);
+            currentPosition.Y = Math.Max(0, currentPosition.Y);
+            currentPosition.Z = Math.Max(0, currentPosition.Z);
+            degree = Math.Max(0, degree);
+            clipperWidth = Math.Max(0, clipperWidth);
 
         }
 
@@ -121,17 +184,36 @@ namespace WorkstationController.Hardware
 
         public void MoveClipper(double degree, double clipWidth)
         {
-            throw new NotImplementedException();
+            this.degree = degree;
+            this.clipperWidth = clipWidth;
         }
 
         public void GetClipperInfo(ref double degree, ref double clipWidth)
         {
-            throw new NotImplementedException();
+            degree = this.degree;
+            clipWidth = this.clipperWidth;
         }
 
         public void Init()
         {
+            Debug.WriteLine("Init");
+        }
+
+
+        public void GetTip()
+        {
+            
+        }
+
+        public void DropTip()
+        {
             throw new NotImplementedException();
+        }
+
+
+        public int MaxPipettingSpeed
+        {
+            get { return 200; }
         }
     }
 }

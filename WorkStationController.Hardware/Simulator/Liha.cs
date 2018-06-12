@@ -46,20 +46,7 @@ namespace WorkstationController.Hardware.Simulator
             Debug.WriteLine("MoveFirstTipZAbs: y{0}", z);
         }
 
-        public void MoveFirstTipRelativeX(float x, float speed)
-        {
-            Debug.WriteLine("MoveFirstTipRelativeX: x{0} speed", x, speed);
-        }
-
-        public void MoveFirstTipRelativeY(float y, float speed)
-        {
-            Debug.WriteLine("MoveFirstTipRelativeY: x{0} speed", y, speed);
-        }
-
-        public void MoveFirstTipRelativeZ(float z, float speed)
-        {
-            Debug.WriteLine("MoveFirstTipRelativeY: z {0} speed", z, speed);
-        }
+   
 
         public void SetTipsDistance(float distance)
         {
@@ -106,6 +93,15 @@ namespace WorkstationController.Hardware.Simulator
             get { return isTipMounted; }
         }
 
-        public event EventHandler<string> onCriticalErrorHappened;
+        public bool IsInitialized
+        {
+            get { return true; }
+        }
+
+
+        public int MaxPipettingSpeed
+        {
+            get { return 200; }
+        }
     }
 }

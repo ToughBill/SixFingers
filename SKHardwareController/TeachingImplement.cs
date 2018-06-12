@@ -13,6 +13,8 @@ namespace SKHardwareController
 {
     public class TeachingImplement : ITeachingController
     {
+        Liha liha;
+        Roma roma;
         Dictionary<ArmType, _eARM> enumMapper = new Dictionary<ArmType, _eARM>();
         XYZ startPosition;
         double clipWidth;
@@ -20,51 +22,66 @@ namespace SKHardwareController
         WorkstationController.Hardware.Direction dir;
         int speedMMPerSecond;
         ArmType armType;
-        
-
-        public TeachingImplement()
+        public TeachingImplement(Layout layout)
         {
-            
-        }
-        public void Init()
-        {
+            string portNum = ConfigurationManager.AppSettings["PortName"];
+            liha = new Liha(layout, portNum);
+            roma = new Roma();
             enumMapper.Clear();
-            string sPort = ConfigurationManager.AppSettings["PortName"];
             enumMapper.Add(ArmType.Liha, _eARM.左臂);
             enumMapper.Add(ArmType.Roma, _eARM.右臂);
-            MoveController.Instance.Init(sPort);
-            if (!MoveController.Instance.Initialized)
-            {
-                var res = MoveController.Instance.MoveHome(_eARM.两个, MoveController.defaultTimeOut);
-                ThrowIfErrorHappened(res);
-            }
-            if (!MoveController.Instance.ClipperInitialized)
-            {
-                var res = MoveController.Instance.InitClipper();
-                ThrowIfErrorHappened(res);
-            }
-            
         }
 
-        public void Move2XYZR(ArmType armType, XYZ xyzr)
+        public void Init()
         {
-            //need consider ztravel
-            var err = MoveController.Instance.MoveXYZ(enumMapper[armType], xyzr.X, xyzr.Y, xyzr.Z, MoveController.defaultTimeOut);
+            liha.Init();
+            roma.Init();
+        }
+
+        public void Move2XYZ(ArmType armType, XYZ xyz)
+        {
+            //    //need consider ztravel
+
+            var err = MoveController.Instance.MoveXYZ(enumMapper[armType], xyz.X, xyz.Y, xyz.Z, MoveController.defaultTimeOut);
             if (err != e_RSPErrorCode.RSP_ERROR_NONE)
                 throw new CriticalException(err.ToString());
+
+        }
+
+        public void GetTip()
+        {
+            DitiTrackInfo ditiTrackInfo;
+            liha.GetTip(new List<int>() { 1 }, out ditiTrackInfo);
+        }
+
+        public void DropTip()
+        {
+            DitiTrackInfo ditiTrackInfo;
+            liha.DropTip(out ditiTrackInfo);
+        }
+
+        public void MoveClipper(double degree, double clipWidth)
+        {
+            roma.MoveClipper(degree, clipWidth);
+        }
+
+        public void GetClipperInfo(ref double degree, ref double clipWidth)
+        {
+            roma.GetClipperInfo(ref degree, ref clipWidth);
         }
 
         public XYZ GetPosition(ArmType armType)
         {
-            double x, y, z,r;
-            x = y = z = r = 0;
+            double x ,y ,z;
+            x = y = z = 0;
             MoveController.Instance.GetCurrentPosition(enumMapper[armType], ref x, ref y, ref z);
             return new XYZ(x, y, z);
         }
 
+
   
-        //when stop move triggers, we check whether we have moved the minium distance, 
-        //if not, we move the remaining distance
+        ////when stop move triggers, we check whether we have moved the minium distance, 
+        ////if not, we move the remaining distance
         public void StopMove()
         {
             Axis axis = ConvertDir2Axis(dir);
@@ -74,7 +91,7 @@ namespace SKHardwareController
 
         private Axis ConvertDir2Axis(Direction dir)
         {
-            switch(dir)
+            switch (dir)
             {
                 case Direction.Left:
                 case Direction.Right:
@@ -112,7 +129,7 @@ namespace SKHardwareController
             this.dir = dir;
             this.armType = armType;
             this.speedMMPerSecond = speedMMPerSecond;
-            if(armType == ArmType.Roma)
+            if (armType == ArmType.Roma)
             {
                 GetClipperInfo(ref degree, ref clipWidth);
             }
@@ -122,14 +139,14 @@ namespace SKHardwareController
             e_RSPErrorCode res = e_RSPErrorCode.RSP_ERROR_NONE;
             e_CanMotorID motorID = e_CanMotorID.CanMotorID_Max;
             double absPosition = 0;
-            switch(dir)
+            switch (dir)
             {
                 case Direction.Left:
                 case Direction.Right:
                     motorID = armType == ArmType.Liha ? e_CanMotorID.CanMotorID_Left_x : e_CanMotorID.CanMotorID_Right_x;
-                    absPosition =  dir == Direction.Left ? 0 : 700;
-                    res = MoveController.Instance.StartMove(eArmType,Axis.X, speedMMPerSecond,absPosition,0);
-                    Debug.WriteLine(string.Format("movex result:{0}",res.ToString()));
+                    absPosition = dir == Direction.Left ? 0 : 700;
+                    res = MoveController.Instance.StartMove(eArmType, Axis.X, speedMMPerSecond, absPosition, 0);
+                    Debug.WriteLine(string.Format("movex result:{0}", res.ToString()));
                     break;
                 case Direction.Up:
                 case Direction.Down:
@@ -140,14 +157,14 @@ namespace SKHardwareController
                 case Direction.ZDown:
                 case Direction.ZUp:
                     motorID = armType == ArmType.Liha ? e_CanMotorID.CanMotorID_Left_z : e_CanMotorID.CanMotorID_Right_z;
-                    absPosition =  dir == Direction.ZUp ? 0 : 300;
+                    absPosition = dir == Direction.ZUp ? 0 : 300;
                     res = MoveController.Instance.StartMove(eArmType, Axis.Z, speedMMPerSecond, absPosition, 0);
                     break;
                 case Direction.RotateCCW:
                 case Direction.RotateCW:
                     this.armType = ArmType.Roma;
                     motorID = e_CanMotorID.CanMotorID_Rotate;
-                    absPosition =  dir == Direction.RotateCCW ? 360 : 720;
+                    absPosition = dir == Direction.RotateCCW ? 360 : 720;
                     res = MoveController.Instance.StartMove(_eARM.右臂, Axis.R, speedMMPerSecond, absPosition, 0);
                     break;
                 case Direction.ClampOff:
@@ -167,18 +184,45 @@ namespace SKHardwareController
                 throw new CriticalException(res.ToString());
         }
 
-        public void MoveClipper(double degree, double clipWidth)
+
+
+
+
+        public int MaxPipettingSpeed
         {
-            var res = MoveController.Instance.MoveClipper(clipWidth);
-            ThrowIfErrorHappened(res);
-            res = MoveController.Instance.RoateClipper(degree);
-            ThrowIfErrorHappened(res);
+            get
+            {
+                return 200;
+            }
         }
 
-        public void GetClipperInfo(ref double degree, ref double clipWidth)
+
+        public int ZMax
         {
-            var res = MoveController.Instance.GetClipperInfo(ref degree, ref clipWidth);
-            ThrowIfErrorHappened(res);
+            get { return (int)MoveController.MAX_Z_DISTANCE; }
+        }
+
+      
+
+        public int YMax
+        {
+            get { return (int)MoveController.MAX_Y_DISTANCE; }
+        }
+
+
+        public int GetXMax(ArmType armType)
+        {
+            int maxValue = 700;
+            switch(armType)
+            {
+                case ArmType.Liha:
+                    maxValue = 700;
+                    break;
+                case ArmType.Roma:
+                    maxValue = 800;
+                    break;
+            }
+            return maxValue;
         }
     }
 }

@@ -94,13 +94,14 @@ namespace WorkstationController.Core.Data
 
         }
 
-        public ROMAPosition(string id, double x, double y, double z, double r)
+        public ROMAPosition(string id, double x, double y, double z, double r,double clipDistance)
         {
             this.id = id;
             this.x = x;
             this.y = y;
             this.z = z;
             this.r = r;
+            this.clipDistance = clipDistance;
         }
     }
 }

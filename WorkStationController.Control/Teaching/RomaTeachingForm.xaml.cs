@@ -43,11 +43,11 @@ namespace WorkstationController.Control
 
         void labwareEditor_onPositionChanged(object sender, ROMAPosition e)
         {
-            plateVector.CurrentPosition.X = e.X;
-            plateVector.CurrentPosition.Y = e.Y;
-            plateVector.CurrentPosition.Z = e.Z;
-            plateVector.CurrentPosition.R = e.R;
-            plateVector.CurrentPosition.ClipDistance = e.ClipDistance;
+            plateVector.CurrentPosition.X = Math.Round(e.X,1);
+            plateVector.CurrentPosition.Y = Math.Round(e.Y,1);
+            plateVector.CurrentPosition.Z = Math.Round(e.Z,1);
+            plateVector.CurrentPosition.R = Math.Round(e.R, 1);
+            plateVector.CurrentPosition.ClipDistance = Math.Round(e.ClipDistance,1);
         }
 
      

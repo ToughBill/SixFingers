@@ -25,13 +25,15 @@ namespace SKHardwareController
         const int startSpeedV = 10;
         const int endSpeedV = 10;
         const int excessVolume = 10;
+        const string success = "成功";
+        const string fail = "失败";
         public Liha(Layout layout, string portNum)
         {
             this.layout = layout;
             xyz = new XYZ(50, 0, 10);
             this.portNum = portNum;
             tipManagement = new TipManagement(layout);
-            MoveController.Instance.onStepLost += Instance_onStepLost;
+            MoveController.Instance.onCriticalErrorHappened += Instance_onStepLost;
             Init();
         }
 
@@ -58,7 +60,7 @@ namespace SKHardwareController
         {
             Stopwatch stopWatcher = new Stopwatch();
             stopWatcher.Start();
-            var res = MoveController.Instance.MoveXYZ(_eARM.左臂, (int)x, (int)y, (int)z, timeOutSeconds * 1000);
+            var res = MoveController.Instance.MoveXYZ(_eARM.左臂, (int)x, (int)y, (int)z, MoveController.defaultTimeOut);
             ThrowCriticalException(res,"移动Liha");
             log.InfoFormat("used ms:{0}", stopWatcher.ElapsedMilliseconds);
         }
@@ -81,20 +83,7 @@ namespace SKHardwareController
             Move2XYZ(xyz);
         }
 
-        public void MoveFirstTipRelativeX(float x, float speed)
-        {
-            throw new NotImplementedException();
-        }
-
-        public void MoveFirstTipRelativeY(float y, float speed)
-        {
-            throw new NotImplementedException();
-        }
-
-        public void MoveFirstTipRelativeZ(float z, float speed)
-        {
-            throw new NotImplementedException();
-        }
+     
 
         public void SetTipsDistance(float distance)
         {
@@ -107,22 +96,35 @@ namespace SKHardwareController
                 tipManagement.CurrentLabware, 
                 tipManagement.CurrentDitiID);
             log.Info(sCommandDesc);
+            string errDes = "只支持单针！";
             if (tipIDs.Count != 1)
-                throw new Exception("只支持单针！");
+            {
+                log.Error(errDes);
+                throw new Exception(errDes);
+            }
+                
             var tuple = Move2NextTipPosition();
             var ditiBox = tuple.Item1;
+            
             //zDistanceFetchTip = ditiBox.ZValues.ZMax - ditiBox.ZValues.ZStart;
             //get tip
             while(true)
             {
                 bool bok = TryGetTip(ditiBox.ZValues.ZMax);
+                
+                log.InfoFormat("获取枪头：{0}",bok ? success:fail);
                 trackInfo = new DitiTrackInfo(tipManagement.CurrentLabware.Label, tipManagement.CurrentDitiID, bok);
                 if (bok)
                     break;
                 TipNotFetched tipNotFetched = new TipNotFetched();
                 tipNotFetched.ShowDialog();
                 if (tipNotFetched.UserSelection == NextActionOfNoTip.abort)
-                    throw new CriticalException("取不到枪头，放弃运行程序！");
+                {
+                    errDes = "取不到枪头，放弃运行程序！";
+                    log.Info(errDes);
+                    throw new CriticalException(errDes);
+                }
+                    
                 else if (tipNotFetched.UserSelection == NextActionOfNoTip.retryNextPosition)
                     tuple = Move2NextTipPosition();
                 else
@@ -152,6 +154,7 @@ namespace SKHardwareController
             }
             catch (NoTipException notipException)
             {
+                log.Info("枪头用完！");
                 MessageBox.Show("请更换枪头！", "枪头已用完", MessageBoxButtons.OK);
                 //here we replace all ditis
                 tipManagement.ReplaceTips();
@@ -160,6 +163,7 @@ namespace SKHardwareController
 
             if (needRetry)
             {
+                log.Info("更换枪头后第一次取枪头。");
                 ditiPair = tipManagement.GetTip(1).First();
             }
 
@@ -180,16 +184,18 @@ namespace SKHardwareController
 
         public void DropTip(out DitiTrackInfo ditiTrackInfo)
         {
-            string sCommandDesc = "Drop tip";
+            string sCommandDesc = "丢弃枪头";
             log.Info(sCommandDesc);
             var position = layout.GetWastePosition();
             xyz.X = position.X;
             xyz.Y = position.Y;
             Move2XYZ(xyz);
+            string errMsg = "";
             while (true)
             {
                 var res = MoveController.Instance.DropDiti();
                 bool bok = res == e_RSPErrorCode.RSP_ERROR_NONE;
+                log.InfoFormat("丢弃枪头：{0}",bok ? success:fail);
                 ditiTrackInfo = new DitiTrackInfo(Labware.WasteLabel,1, bok, false);
                 if(bok)
                 {
@@ -205,16 +211,18 @@ namespace SKHardwareController
                 switch(userSelection)
                 {
                     case DitiNotDroppedAction.abort:
-                        throw new CriticalException("无法丢弃枪头，放弃运行程序！");
+                        errMsg = "无法丢弃枪头，放弃运行程序！";
+                        throw new CriticalException(errMsg);
                     default:
                         break;
                 }
             }
-            log.Info("Drop tip finished");
+            
         }
 
         public void Aspirate(string labwareLabel, List<int> wellIDs, List<double> volumes, LiquidClass liquidClass, out PipettingResult pipettingResult, string barcode = "")
         {
+            string errMsg = "";
             pipettingResult = PipettingResult.ok;
             int wellID = wellIDs.First();
             double volume = volumes.First();
@@ -226,54 +234,62 @@ namespace SKHardwareController
             Move2Position(labwareLabel, wellID, "ZStart");
             //aspirate air gap
             var res = MoveController.Instance.Aspirate(leadingAirGap, maxSpeedV, startSpeedV, endSpeedV);
-           
 
             ThrowCriticalException(res,"吸液");
 
-
+            int speedMMPerSecond = 30;
+            res = MoveController.Instance.DetectLiquid(labware.ZValues.ZStart, labware.ZValues.ZMax, speedMMPerSecond);
+            ThrowCriticalException(res, "液面检测移动");
+            MoveController.Instance.StopLiquidDetection();
             //检测不到或液体不够，循环询问，
-            while (true)
+            double z = MoveController.Instance.GetZPos(_eARM.左臂);
+            bool bok = z < labware.ZValues.ZMax;
+            bool hasEnoughLiquid = false;
+            if(bok)
             {
-                bool bok = TryDetectLiquid(labware);
-                bool hasEnoughLiquid = IsEnoughLiquid(labware, volume,liquidClass.AspirationSinglePipetting.SubMergeMM);
+                hasEnoughLiquid = IsEnoughLiquid(labware, volume, liquidClass.AspirationSinglePipetting.SubMergeMM);
                 if (!hasEnoughLiquid)
                     bok = false;
-                if (bok)
-                    break;
-                else
-                {
-                    string title = !hasEnoughLiquid ? "液体不足" : "";
-                    LiquidNotDetected liquidNotDetectForm = new LiquidNotDetected(title);
-                    liquidNotDetectForm.ShowDialog();
-                    var userSelection = liquidNotDetectForm.UserSelection;
-                    
-                    
-                    switch(userSelection)
-                    {
-                        case NextActionOfNoLiquid.abort:
-                            pipettingResult = PipettingResult.abort;
-                            throw new CriticalException("无法检测到液体，放弃运行程序！");
-                        case NextActionOfNoLiquid.aspirateAir:
-                            pipettingResult = PipettingResult.air;
-                            Move2Position(labwareLabel, wellID);
-                            MoveController.Instance.Aspirate(volumes.First(), maxSpeedV,startSpeedV, endSpeedV);
-                            break;
-                        case NextActionOfNoLiquid.gotoZMax:
-                            Move2Position(labwareLabel, wellID, "ZMax");
-                            pipettingResult = PipettingResult.zmax;
-                            MoveController.Instance.Aspirate(volumes.First(), maxSpeedV,startSpeedV, endSpeedV);
-                            break;
-                        case NextActionOfNoLiquid.retry:
-                            break;
-                        case NextActionOfNoLiquid.skip:
-                            pipettingResult = PipettingResult.nothing;
-                            throw new SkipException();
-                    }
-                }
             }
 
-            //tracking 吸液
-            DoTracking(labware,volume,liquidClass);
+            if(!bok)
+            {
+                string title = !hasEnoughLiquid ? "液体不足" : "";
+                LiquidNotDetected liquidNotDetectForm = new LiquidNotDetected(title);
+                liquidNotDetectForm.ShowDialog();
+                var userSelection = liquidNotDetectForm.UserSelection;
+
+
+                switch (userSelection)
+                {
+                    case NextActionOfNoLiquid.abort:
+                        pipettingResult = PipettingResult.abort;
+                        errMsg = "无法检测到液体，放弃运行程序！";
+                        log.Info(errMsg);
+                        throw new CriticalException(errMsg);
+                    case NextActionOfNoLiquid.aspirateAir:
+                        pipettingResult = PipettingResult.air;
+                        Move2Position(labwareLabel, wellID);
+                        res = MoveController.Instance.Aspirate(volumes.First(), maxSpeedV, startSpeedV, endSpeedV);
+                        ThrowCriticalException(res, "吸空气");
+                        break;
+                    case NextActionOfNoLiquid.gotoZMax:
+                        Move2Position(labwareLabel, wellID, "ZMax");
+                        pipettingResult = PipettingResult.zmax;
+                        res = MoveController.Instance.Aspirate(volumes.First(), maxSpeedV, startSpeedV, endSpeedV);
+                        ThrowCriticalException(res, "ZMax吸液体");
+                        break;
+                    case NextActionOfNoLiquid.retry:
+                        break;
+                    case NextActionOfNoLiquid.skip:
+                        pipettingResult = PipettingResult.nothing;
+                        return;
+                }
+            }
+            else //tracking 吸液
+            {
+                DoTracking(labware, volume, liquidClass);
+            }
             
             res = MoveController.Instance.Aspirate(volume + excessVolume, liquidClass.AspirationSinglePipetting.AspirationSpeed, startSpeedV, endSpeedV);
             if(res == e_RSPErrorCode.RSP_ERROR_NONE)
@@ -349,7 +365,8 @@ namespace SKHardwareController
             double distance2Go = volume / crossSectionArea;
             double seconds = volume / liquidClass.AspirationSinglePipetting.AspirationSpeed;
             double goDownSpeed = distance2Go / seconds;
-            MoveController.Instance.MoveZAtSpeed(_eARM.左臂, distance2Go,goDownSpeed);
+            var res = MoveController.Instance.MoveZAtSpeed(_eARM.左臂, distance2Go,goDownSpeed);
+            ThrowCriticalException(res, "液面跟随！");
         }
 
         private void ThrowCriticalException(e_RSPErrorCode res,string actionDesc = "")
@@ -357,7 +374,9 @@ namespace SKHardwareController
             if (res != e_RSPErrorCode.RSP_ERROR_NONE)
             {
                 string addtionalInfo = actionDesc == "" ? "" : string.Format("在{0}中发生错误：", actionDesc);
-                throw new CriticalException(addtionalInfo + res.ToString());
+                addtionalInfo += res.ToString();
+                log.Info(addtionalInfo);
+                throw new CriticalException(addtionalInfo);
             }
           
         }
@@ -432,16 +451,37 @@ namespace SKHardwareController
         public void Init()
         {
             MoveController.Instance.Init(portNum);
-            var res = MoveController.Instance.Move2Z(_eARM.右臂, 10, 10000, true);
-            ThrowCriticalException(res, "夹爪回高位");
-            //MoveController.Instance.RoateClipper()
-            res = MoveController.Instance.MoveHome(_eARM.两个,MoveController.defaultTimeOut);
-            ThrowCriticalException(res, "归零");
-            DitiTrackInfo ditiTrackInfo;
-            DropTip(out ditiTrackInfo);
-            res = MoveController.Instance.InitADP();
-            ThrowCriticalException(res,"初始化气泵");
+            double xSpeed = MoveController.Instance.GetSpeed(_eARM.左臂, e_CanMotorID.CanMotorID_Left_x);
 
+            double xAccSpeed = MoveController.Instance.GetAccSpeed(_eARM.左臂, e_CanMotorID.CanMotorID_Left_x);
+            double ySpeed = MoveController.Instance.GetSpeed(_eARM.左臂, e_CanMotorID.CanMotorID_Left_y);
+
+            double yAccSpeed = MoveController.Instance.GetAccSpeed(_eARM.左臂, e_CanMotorID.CanMotorID_Left_y);
+            MoveController.Instance.SetAccSpeed(_eARM.左臂, e_CanMotorID.CanMotorID_Left_y, 1000);
+            MoveController.Instance.SetAccSpeed(_eARM.左臂, e_CanMotorID.CanMotorID_Left_z, 1000);
+
+            double zSpeed = MoveController.Instance.GetSpeed(_eARM.左臂, e_CanMotorID.CanMotorID_Left_z);
+            var res  =MoveController.Instance.SetSpeed(_eARM.左臂, e_CanMotorID.CanMotorID_Left_x, 700);
+            ThrowCriticalException(res, "最大速度");
+            
+            res = MoveController.Instance.SetSpeed(_eARM.左臂, e_CanMotorID.CanMotorID_Left_y, 500);
+            ThrowCriticalException(res, "最大速度");
+            
+            res = MoveController.Instance.SetSpeed(_eARM.左臂, e_CanMotorID.CanMotorID_Left_z, 800);
+            ThrowCriticalException(res, "最大速度");
+
+            res = MoveController.Instance.MoveHome(_eARM.两个,MoveController.defaultTimeOut * 2);
+            ThrowCriticalException(res, "归零");
+
+            if (MoveController.Instance.IsTipMounted)
+            {
+                DitiTrackInfo ditiTrackInfo;
+                DropTip(out ditiTrackInfo);
+            }
+            
+
+            res = MoveController.Instance.InitADP();
+            ThrowCriticalException(res, "初始化气泵");
         }
 
         void Instance_onStepLost(object sender, string e)
@@ -459,5 +499,17 @@ namespace SKHardwareController
 
 
         public event EventHandler<string> onCriticalErrorHappened;
+
+
+        public bool IsInitialized
+        {
+            get { return MoveController.Instance.XYZInitialized && MoveController.Instance.ADPInitialized; }
+        }
+
+
+        public int MaxPipettingSpeed
+        {
+            get { return 200; }
+        }
     }
 }
