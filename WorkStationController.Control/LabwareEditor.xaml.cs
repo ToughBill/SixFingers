@@ -24,7 +24,7 @@ namespace WorkstationController.Control
         public event EventHandler<ROMAPosition> onPositionChanged;
         int speed = 1;
         #endregion
-
+        Carrier tmpParentCarrier;
         /// <summary>
         /// ctor
         /// </summary>
@@ -38,6 +38,16 @@ namespace WorkstationController.Control
             this.Loaded += LabwareEditor_Loaded;
             this.Unloaded += LabwareEditor_Unloaded;
             parent.Closing += parent_Closing;
+            cmbCalibCarrier.SelectionChanged += cmbCalibCarrier_SelectionChanged;
+        }
+
+        void cmbCalibCarrier_SelectionChanged(object sender, System.Windows.Controls.SelectionChangedEventArgs e)
+        {
+            if (cmbCalibCarrier.SelectedIndex == -1)
+                return;
+            if (labware.ParentCarrier == null)
+                labware.TempParentCarrier = cmbCalibCarrier.SelectedItem as Carrier;
+            labware.CalculatePositionInLayout();
         }
 
        
@@ -116,7 +126,6 @@ namespace WorkstationController.Control
 
         void LabwareEditor_Loaded(object sender, RoutedEventArgs e)
         {
-            //改成循环测试，直到连接上，或者放弃StartCheckingInput
             try
             {
                 TeachingControllerDelegate.Instance.Controller.Init();
@@ -128,7 +137,7 @@ namespace WorkstationController.Control
                     MessageBox.Show("初始化失败，可能是机器未通电");
                 }
             }
-
+            
             labware = this.DataContext as Labware;
             int index = -1;
             if(labware.ParentCarrier != null)

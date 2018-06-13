@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 using WorkstationController.Core.Data;
 using WorkstationController.Core.Managements;
 using WorkstationController.Hardware;
-//using WorkstationController.Hardware.Simulator;
+//using WorkstationController.Hardware.Simulator; //use this for simulation
 
 namespace WTPipetting.Hardware
 {

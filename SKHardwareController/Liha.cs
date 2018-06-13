@@ -22,8 +22,8 @@ namespace SKHardwareController
         Layout layout;
         string portNum;
         const int maxSpeedV = 200;
-        const int startSpeedV = 10;
-        const int endSpeedV = 10;
+        const int startSpeedV = 50;
+        const int endSpeedV = 50;
         const int excessVolume = 10;
         const string success = "成功";
         const string fail = "失败";
@@ -52,7 +52,7 @@ namespace SKHardwareController
             {
                 throw new Exception(string.Format("z:{0}超出范围！", xyz.Z));
             }
-            log.InfoFormat("Move to: {0}_{1}_{2}", xyz.X, xyz.Y, xyz.Z);
+            log.InfoFormat("Move to: x:{0} , y:{1} , z:{2}", xyz.X, xyz.Y, xyz.Z);
             MoveFirstTip2AbsolutePosition((float)xyz.X, (float)xyz.Y, (float)xyz.Z);
         }
 
@@ -62,7 +62,7 @@ namespace SKHardwareController
             stopWatcher.Start();
             var res = MoveController.Instance.MoveXYZ(_eARM.左臂, (int)x, (int)y, (int)z, MoveController.defaultTimeOut);
             ThrowCriticalException(res,"移动Liha");
-            log.InfoFormat("used ms:{0}", stopWatcher.ElapsedMilliseconds);
+            log.DebugFormat("使用ms:{0}", stopWatcher.ElapsedMilliseconds);
         }
 
         public void MoveFirstTipXAbs(float x)
@@ -92,10 +92,10 @@ namespace SKHardwareController
 
         public void GetTip(List<int> tipIDs, out DitiTrackInfo trackInfo)
         {
-            string sCommandDesc = string.Format("Get tip from ditibox:{0} remain:{1}", 
+            string sCommandDesc = string.Format("从ditibox:{0}中取枪头，还剩:{1}", 
                 tipManagement.CurrentLabware, 
                 tipManagement.CurrentDitiID);
-            log.Info(sCommandDesc);
+            log.Debug(sCommandDesc);
             string errDes = "只支持单针！";
             if (tipIDs.Count != 1)
             {
@@ -112,7 +112,7 @@ namespace SKHardwareController
             {
                 bool bok = TryGetTip(ditiBox.ZValues.ZMax);
                 
-                log.InfoFormat("获取枪头：{0}",bok ? success:fail);
+                log.DebugFormat("获取枪头：{0}",bok ? success:fail);
                 trackInfo = new DitiTrackInfo(tipManagement.CurrentLabware.Label, tipManagement.CurrentDitiID, bok);
                 if (bok)
                     break;
@@ -121,7 +121,7 @@ namespace SKHardwareController
                 if (tipNotFetched.UserSelection == NextActionOfNoTip.abort)
                 {
                     errDes = "取不到枪头，放弃运行程序！";
-                    log.Info(errDes);
+                    log.Error(errDes);
                     throw new CriticalException(errDes);
                 }
                     
@@ -154,7 +154,7 @@ namespace SKHardwareController
             }
             catch (NoTipException notipException)
             {
-                log.Info("枪头用完！");
+                log.Warn("枪头用完！");
                 MessageBox.Show("请更换枪头！", "枪头已用完", MessageBoxButtons.OK);
                 //here we replace all ditis
                 tipManagement.ReplaceTips();
@@ -163,7 +163,7 @@ namespace SKHardwareController
 
             if (needRetry)
             {
-                log.Info("更换枪头后第一次取枪头。");
+                log.Debug("更换枪头后第一次取枪头。");
                 ditiPair = tipManagement.GetTip(1).First();
             }
 
@@ -185,7 +185,7 @@ namespace SKHardwareController
         public void DropTip(out DitiTrackInfo ditiTrackInfo)
         {
             string sCommandDesc = "丢弃枪头";
-            log.Info(sCommandDesc);
+            log.Debug(sCommandDesc);
             var position = layout.GetWastePosition();
             xyz.X = position.X;
             xyz.Y = position.Y;
@@ -195,7 +195,7 @@ namespace SKHardwareController
             {
                 var res = MoveController.Instance.DropDiti();
                 bool bok = res == e_RSPErrorCode.RSP_ERROR_NONE;
-                log.InfoFormat("丢弃枪头：{0}",bok ? success:fail);
+                log.DebugFormat("丢弃枪头：{0}", bok ? success : fail);
                 ditiTrackInfo = new DitiTrackInfo(Labware.WasteLabel,1, bok, false);
                 if(bok)
                 {
@@ -212,6 +212,7 @@ namespace SKHardwareController
                 {
                     case DitiNotDroppedAction.abort:
                         errMsg = "无法丢弃枪头，放弃运行程序！";
+                        log.Error(errMsg);
                         throw new CriticalException(errMsg);
                     default:
                         break;
@@ -227,8 +228,8 @@ namespace SKHardwareController
             int wellID = wellIDs.First();
             double volume = volumes.First();
             double leadingAirGap = liquidClass.AspirationSinglePipetting.LeadingAirgap;
-            string sCommandDesc = string.Format("Aspirate from:{0} at:{1} volume:{2},{3}", labwareLabel, wellID, volume, liquidClass.SaveName);
-            log.InfoFormat(sCommandDesc);
+            string sCommandDesc = string.Format("Aspirate volume:{0} from:{1} in:{2},lc:{3}",volume, wellID,labwareLabel, liquidClass.SaveName);
+            log.Info(sCommandDesc);
             Move2Position(labwareLabel, wellID);
             var labware = layout.FindLabware(labwareLabel);
             Move2Position(labwareLabel, wellID, "ZStart");
@@ -265,7 +266,7 @@ namespace SKHardwareController
                     case NextActionOfNoLiquid.abort:
                         pipettingResult = PipettingResult.abort;
                         errMsg = "无法检测到液体，放弃运行程序！";
-                        log.Info(errMsg);
+                        log.Error(errMsg);
                         throw new CriticalException(errMsg);
                     case NextActionOfNoLiquid.aspirateAir:
                         pipettingResult = PipettingResult.air;
@@ -280,8 +281,10 @@ namespace SKHardwareController
                         ThrowCriticalException(res, "ZMax吸液体");
                         break;
                     case NextActionOfNoLiquid.retry:
+                        log.Debug("retry liquid detection");
                         break;
                     case NextActionOfNoLiquid.skip:
+                        log.Info("Skipped the pipetting");
                         pipettingResult = PipettingResult.nothing;
                         return;
                 }
@@ -375,7 +378,7 @@ namespace SKHardwareController
             {
                 string addtionalInfo = actionDesc == "" ? "" : string.Format("在{0}中发生错误：", actionDesc);
                 addtionalInfo += res.ToString();
-                log.Info(addtionalInfo);
+                log.Error(addtionalInfo);
                 throw new CriticalException(addtionalInfo);
             }
           

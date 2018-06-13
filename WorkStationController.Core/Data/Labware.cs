@@ -128,6 +128,13 @@ namespace WorkstationController.Core.Data
             }
         }
 
+        [XmlIgnore]
+        public Carrier TempParentCarrier //for labware with no real parent carrier, but need a carrier for teaching.
+        {
+            get;
+            set;
+        }
+
 
         public bool IsDitiBox
         {
@@ -275,11 +282,14 @@ namespace WorkstationController.Core.Data
         private Vector GetTopLeftSiteVector()
         {
             var referenceCarrier = _parentCarrier;
+            if (referenceCarrier == null)
+                referenceCarrier = TempParentCarrier;
+
             Worktable worktable = Configurations.Instance.Worktable;
             int needGridCnt = 0;
             if (referenceCarrier != null)
                 needGridCnt =  referenceCarrier.GridID - 1;
-
+            
             double pinPos = needGridCnt * Worktable.DistanceBetweenAdjacentPins + (int)worktable.TopLeftPinPosition.X;
             double xPos = pinPos;
             double yPos = worktable.TopLeftPinPosition.Y;
