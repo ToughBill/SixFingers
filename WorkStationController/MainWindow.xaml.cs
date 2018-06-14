@@ -124,7 +124,15 @@ namespace WorkstationController
             Layout layout = layoutEditor.Layout;
             DitiInfo ditiInfo = layout.DitiInfo;
             Labware labware = e.Parameter as Labware;
-            ditiInfo.CurrentDitiLabware = labware.Label;
+            var ditiType = (DitiType)Enum.Parse(typeof(DitiType), labware.TypeName);
+            if( ditiInfo.DitiBoxInfos.Find(x=>x.type == ditiType) != null)
+            {
+                ditiInfo.DitiBoxInfos.Add(new DitiBoxInfo(ditiType, labware.Label,96));
+            }
+            else
+            {
+                ditiInfo.SetUsingDitiBox(ditiType, labware.Label);
+            }
             this.InvalidateVisual();
         }
 
@@ -141,7 +149,7 @@ namespace WorkstationController
             ditiEditor.ShowDialog();
             if(!ditiEditor.SetOk)
                 return;
-            var ditibox = layoutEditor.Layout.DitiInfo.DitiInfoItems.Find(x => x.label == labware.Label);
+            var ditibox = layoutEditor.Layout.DitiInfo.DitiBoxInfos.Find(x => x.label == labware.Label);
             ditibox.count = ditiEditor.RemainTipCount;
         }
      

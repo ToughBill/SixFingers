@@ -82,6 +82,7 @@ namespace WTPipetting.Data
         Volume = 2,
         DestLabware = 3,
         LiquidClass = 4,
+        DitiType = 5
         //TipType = 4,
         //DeadVolume = 5,
         //AspiratePosition = 8,
@@ -104,6 +105,7 @@ namespace WTPipetting.Data
         //public string DispenseConstrain { get; set; }
         public string LiquidClass { get; set; }
         public int LineNumber { get; set; }
+        public DitiType DitiType {get;set;}
         //public int DeadVolume { get; set; }
         //public string PreAction { get; set; }
         //public string PostAction { get; set; }
@@ -131,6 +133,7 @@ namespace WTPipetting.Data
             DestLabware = lines[(int)StepDefCol.DestLabware];
             //TipType = lines[(int)StepDefCol.TipType];
             LiquidClass = lines[(int)StepDefCol.LiquidClass];
+            DitiType =(DitiType) Enum.Parse(typeof(DitiType),lines[(int)StepDefCol.DitiType]);
         }
 
         public const string MovePlate = "MovePlate";

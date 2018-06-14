@@ -45,7 +45,7 @@ namespace WorkstationController.Control
             this.Width = 600;
             this.Height = 550;
             labwareUIElement = new LabwareUIElementFixedSize(_labware, new Size(container.ActualWidth, container.ActualHeight));
-            var ditiInfo = _layout.DitiInfo.DitiInfoItems.Find(x=>x.label == _labware.Label) ;
+            var ditiInfo = _layout.DitiInfo.DitiBoxInfos.Find(x=>x.label == _labware.Label) ;
             if (ditiInfo != null)
                 labwareUIElement.SelectedWellIDs = new List<int>(){96 - ditiInfo.count + 1};
             container.Children.Add(labwareUIElement);

@@ -51,7 +51,7 @@ namespace SKHardwareController
         public void GetTip()
         {
             DitiTrackInfo ditiTrackInfo;
-            liha.GetTip(new List<int>() { 1 }, out ditiTrackInfo);
+            liha.GetTip(new List<int>() { 1 }, DitiType.OneK, out ditiTrackInfo);
         }
 
         public void DropTip()

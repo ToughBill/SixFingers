@@ -18,8 +18,10 @@ namespace WorkstationController.Core.Data
     {
         Tubes16Pos13_100MM = 0,
         Plate96_05ML = 1,
-        Diti1000 = 2,
-        Plate24_2ML  = 3
+        Plate24_2ML  = 2,
+        Diti1000 = 3,
+        Diti200 = 4
+        
     }
 
     /// <summary>

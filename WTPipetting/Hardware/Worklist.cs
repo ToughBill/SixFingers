@@ -152,11 +152,12 @@ namespace WTPipetting.Hardware
                 DitiTrackInfo trackInfo = null;
                 hardwareController.Liha.DropTip(out trackInfo);
             }
+
             
-            
-            DitiTrackInfo ditiTrackInfos = null;
-            hardwareController.Liha.GetTip(new List<int>() { 1 }, out ditiTrackInfos);
             LihaCommand lihaCommand = machineCommand as LihaCommand;
+            DitiTrackInfo ditiTrackInfos = null;
+            hardwareController.Liha.GetTip(new List<int>() { 1 },DitiType.OneK, out ditiTrackInfos);
+     
             OnCommandExecuted(ditiTrackInfos);
             if (NeedPauseOrStop())
                 return true;
@@ -337,7 +338,8 @@ namespace WTPipetting.Hardware
                         sourceWellIDs[j],
                         volumeThisTime,
                         stepDef.DestLabware,
-                        dstWellIDs[j],"water"));
+                        dstWellIDs[j],
+                        stepDef.DitiType,"water"));
                 }
             }
             return lihaCommands;
@@ -438,7 +440,8 @@ namespace WTPipetting.Hardware
         public string dstLabware;
         public int dstWellID;
         public string liquidClass;
-        public LihaCommand(string barcode,string srcLabware, int srcWellID, double volume, string dstLabware, int dstWellID, string liquidClass)
+        public DitiType ditiType;
+        public LihaCommand(string barcode,string srcLabware, int srcWellID, double volume, string dstLabware, int dstWellID,DitiType ditiType, string liquidClass)
         {
             this.barcode = barcode;
             this.srcLabware = srcLabware;
@@ -447,6 +450,7 @@ namespace WTPipetting.Hardware
             this.dstLabware = dstLabware;
             this.dstWellID = dstWellID;
             this.liquidClass = liquidClass;
+            this.ditiType = ditiType;
         }
 
         public static string GetWellDesc(int wellID)

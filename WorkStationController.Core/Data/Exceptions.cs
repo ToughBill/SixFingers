@@ -6,17 +6,30 @@ using System.Threading.Tasks;
 
 namespace WorkstationController.Core.Data
 {
-    public class NoTipException : Exception
+    public class NoEngouhDitiException : Exception
     {
         public LabwareTrait LabwareTrait { get; set; }
         public int NeedTipCount { get; set; }
-        public NoTipException(LabwareTrait labwareTrait, int needTipCnt)
+        public NoEngouhDitiException(LabwareTrait labwareTrait, int needTipCnt)
         {
             LabwareTrait = labwareTrait;
             NeedTipCount = needTipCnt;
         }
 
     }
+
+    public class NoDitiBoxException : Exception
+    {
+        public DitiType DitiType { get; set; }
+
+        public NoDitiBoxException(DitiType ditiType)
+        {
+            this.DitiType = ditiType;
+        }
+
+    }
+
+
     public class SkipException : Exception
     {
     }

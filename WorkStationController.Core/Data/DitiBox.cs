@@ -5,18 +5,17 @@ using System.Text;
 
 namespace WorkstationController.Core.Data
 {
-    public class DitiBox : Labware
+    public class DitiBox
     {
-        public const string typeName = "DitiBox";
-        /// <summary> 
-        /// if there are several tips on the Liha, for example 4 tips,  we
-        /// will fetch tips from front to rear, unless we are going to fetch only one
-        /// then, we fetch the tip from rear to front.
-        /// </summary>
-        public int FrontStartPosition { get; set; }
-        public int RearStartPosition { get; set; }
-        public new string TypeName { get { return typeName; } }
-        public DitiType DitiType { get; set; }
+        public static DitiType Parse(string sTypeName)
+        {
+            Dictionary<string, DitiType> typeName_DitiType = new Dictionary<string, DitiType>();
+            typeName_DitiType.Add("Diti1000", DitiType.OneK);
+            typeName_DitiType.Add("Diti200", DitiType.TwoHundred);
+            typeName_DitiType.Add("Diti50", DitiType.Fifty);
+            typeName_DitiType.Add("Diti10", DitiType.Ten);
+            return typeName_DitiType[sTypeName];
+        }
     }
     
     /// <summary>

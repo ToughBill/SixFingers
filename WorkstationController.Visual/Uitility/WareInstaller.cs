@@ -54,10 +54,11 @@ namespace WorkstationController.VisualElement.Uitility
                     labware.SiteID = siteID;
                     if(labware.IsDitiBox)
                     {
-                        var ditiInfo = workingLayout.DitiInfo.DitiInfoItems.Find(x => x.label == labware.Label);
+                        var ditiInfo = workingLayout.DitiInfo.DitiBoxInfos.Find(x => x.label == labware.Label);
                         if(ditiInfo == null)
                         {
-                            workingLayout.DitiInfo.DitiInfoItems.Add(new DitiInfoItem(labware.Label, 96));
+                            DitiType ditiType = (DitiType)Enum.Parse(typeof(DitiType), labware.TypeName);
+                            workingLayout.DitiInfo.DitiBoxInfos.Add(new DitiBoxInfo(ditiType, labware.Label, 96));
                         }
                     }
                 }

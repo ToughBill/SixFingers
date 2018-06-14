@@ -90,11 +90,11 @@ namespace SKHardwareController
             throw new NotImplementedException();
         }
 
-        public void GetTip(List<int> tipIDs, out DitiTrackInfo trackInfo)
+        public void GetTip(List<int> tipIDs,DitiType ditiType, out DitiTrackInfo trackInfo)
         {
             string sCommandDesc = string.Format("从ditibox:{0}中取枪头，还剩:{1}", 
-                tipManagement.CurrentLabware, 
-                tipManagement.CurrentDitiID);
+                tipManagement.GetCurrentDitiBox(ditiType), 
+                tipManagement.GetCurrentDitiID(ditiType));
             log.Debug(sCommandDesc);
             string errDes = "只支持单针！";
             if (tipIDs.Count != 1)
@@ -103,7 +103,7 @@ namespace SKHardwareController
                 throw new Exception(errDes);
             }
                 
-            var tuple = Move2NextTipPosition();
+            var tuple = Move2NextTipPosition(DitiType.OneK);
             var ditiBox = tuple.Item1;
             
             //zDistanceFetchTip = ditiBox.ZValues.ZMax - ditiBox.ZValues.ZStart;
@@ -113,7 +113,7 @@ namespace SKHardwareController
                 bool bok = TryGetTip(ditiBox.ZValues.ZMax);
                 
                 log.DebugFormat("获取枪头：{0}",bok ? success:fail);
-                trackInfo = new DitiTrackInfo(tipManagement.CurrentLabware.Label, tipManagement.CurrentDitiID, bok);
+                trackInfo = new DitiTrackInfo(tipManagement.GetCurrentDitiBox(ditiType).Label, tipManagement.GetCurrentDitiID(ditiType), bok);
                 if (bok)
                     break;
                 TipNotFetched tipNotFetched = new TipNotFetched();
@@ -126,7 +126,7 @@ namespace SKHardwareController
                 }
                     
                 else if (tipNotFetched.UserSelection == NextActionOfNoTip.retryNextPosition)
-                    tuple = Move2NextTipPosition();
+                    tuple = Move2NextTipPosition(DitiType.OneK);
                 else
                 {
                     Move2SearchTipPosition(tuple);
@@ -144,15 +144,15 @@ namespace SKHardwareController
             Move2XYZ(xyz);
         }
 
-        private Tuple<Labware,System.Windows.Point> Move2NextTipPosition()
+        private Tuple<Labware,System.Windows.Point> Move2NextTipPosition(DitiType ditiType)
         {
             KeyValuePair<LabwareTrait, List<int>> ditiPair = new KeyValuePair<LabwareTrait, List<int>>();
             bool needRetry = false;
             try
             {
-                ditiPair = tipManagement.GetTip(1).First();
+                ditiPair = tipManagement.GetTip(ditiType,1).First();
             }
-            catch (NoTipException notipException)
+            catch (NoEngouhDitiException notipException)
             {
                 log.Warn("枪头用完！");
                 MessageBox.Show("请更换枪头！", "枪头已用完", MessageBoxButtons.OK);
@@ -164,7 +164,7 @@ namespace SKHardwareController
             if (needRetry)
             {
                 log.Debug("更换枪头后第一次取枪头。");
-                ditiPair = tipManagement.GetTip(1).First();
+                ditiPair = tipManagement.GetTip(ditiType,1).First();
             }
 
             var labware = layout.FindLabware(ditiPair.Key.Label);

@@ -78,18 +78,23 @@ namespace WTPipetting.StageControls
 
         private void CheckDitiBox(Layout layout)
         {
-            string sCurrentDitiLabware = layout.DitiInfo.CurrentDitiLabware;
-            var labware = layout.FindLabware(sCurrentDitiLabware);
-            if(labware == null)
+            var ditiBoxInfos = layout.DitiInfo.DitiBoxInfos;
+            foreach(var ditiBoxInfo in ditiBoxInfos)
             {
-                SetInfo(string.Format("找不到标签号为:{0}的一次性枪头盒！", sCurrentDitiLabware));
-                return;
+                string label = ditiBoxInfo.label;
+                var labware = layout.FindLabware(label);
+                if (labware == null)
+                {
+                    SetInfo(string.Format("找不到标签号为:{0}的一次性枪头盒！", label));
+                    return;
+                }
+                if (!labware.IsDitiBox)
+                {
+                    SetInfo(string.Format("标签号为:{0}的器件不是枪头盒！", label));
+                    return;
+                }
             }
-            if(!labware.IsDitiBox)
-            {
-                SetInfo(string.Format("标签号为:{0}的器件不是枪头盒！", sCurrentDitiLabware));
-                return;
-            }
+            
         }
 
         private void lb_layouts_SelectionChanged(object sender, SelectionChangedEventArgs e)

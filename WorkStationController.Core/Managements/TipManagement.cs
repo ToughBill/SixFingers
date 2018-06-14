@@ -15,92 +15,89 @@ namespace WorkstationController.Core.Managements
             _layout = layout;
         }
 
-        public LabwareTrait CurrentLabware
+        public LabwareTrait GetCurrentDitiBox(DitiType ditiType)
         {
-            get
-            {
-                var ditiInfo = _layout.DitiInfo;
-                var labware = _layout.LabwareTraits.Find(x => x.Label == ditiInfo.CurrentDitiLabware);
-                return labware;
-            }
-            set
-            {
-                var ditiInfo = _layout.DitiInfo;
-                if (!_layout.LabwareTraits.Contains(value))
-                    throw new Exception(string.Format(strings.DitiCannotFind, value.Label));
-                ditiInfo.CurrentDitiLabware = value.Label;
-            }
+            var ditiInfo = _layout.DitiInfo;
+            var labware = _layout.LabwareTraits.Find(x => x.Label == ditiInfo.GetCurrentLabel(ditiType)); //.CurrentDitiLabwares[ditiType]);
+            return labware;
         }
 
-        public int CurrentDitiID
+        //public void SetCurrentDitiBox(LabwareTrait labwareTrait)
+        //{
+        //    var ditiInfo = _layout.DitiInfo;
+        //    if (!_layout.LabwareTraits.Contains(labwareTrait))
+        //        throw new Exception(string.Format(strings.DitiCannotFind, labwareTrait.Label));
+        //    DitiType ditiType = DitiBox.Parse(labwareTrait.TypeName);
+        //    ditiInfo.ChangeCurrentLabel(ditiType, labwareTrait.Label);
+        //}
+
+
+ 
+        public int GetCurrentDitiID(DitiType ditiType)
         {
-            get
-            {
+            
                 var ditiInfo = _layout.DitiInfo;
-                DitiInfoItem ditiInfoItem = ditiInfo.DitiInfoItems.Find(x => x.label == ditiInfo.CurrentDitiLabware);
+                DitiBoxInfo ditiInfoItem = ditiInfo.DitiBoxInfos.Find(x => x.label == ditiInfo.GetCurrentLabel(ditiType));
                 return ditiInfoItem.count;
-            }
+            
         }
 
         
-        public Dictionary<LabwareTrait,List<int>> GetTip(int cnt)
+        public Dictionary<LabwareTrait,List<int>> GetTip(DitiType ditiType, int cnt)
         {
             Dictionary<LabwareTrait, List<int>> eachLabware_Tips = new Dictionary<LabwareTrait, List<int>>();
 
             var ditiInfo = _layout.DitiInfo;
-            if (ditiInfo.CurrentDitiLabware == null)
-                throw new Exception(strings.NoSpecifiedDiti);
+            var thisTypeDitiBoxInfos = ditiInfo.DitiBoxInfos.Where(x => x.type == ditiType).ToList();
+            if (thisTypeDitiBoxInfos == null || thisTypeDitiBoxInfos.Count == 0)
+                throw new NoDitiBoxException(ditiType);
 
-            if (ditiInfo.DitiInfoItems.Count == 0)
-                throw new Exception(strings.NoDitiAtAll);
 
-            if (!ditiInfo.DitiInfoItems.Exists( x=> x.label == ditiInfo.CurrentDitiLabware))
-                throw new Exception(string.Format(strings.DitiCannotFind, ditiInfo.CurrentDitiLabware));
-            DitiInfoItem ditiInfoItem = ditiInfo.DitiInfoItems.Find(x=> x.label == ditiInfo.CurrentDitiLabware);
-            var labware = _layout.LabwareTraits.Find(x => x.Label == ditiInfo.CurrentDitiLabware);
-            if (ditiInfoItem.count == 0 && ditiInfo.DitiInfoItems.Count == 1)
-            {
-                throw new NoTipException(labware, cnt);
-            }
+            string currentLabwareLable = ditiInfo.GetCurrentLabel(ditiType);
+            if (!thisTypeDitiBoxInfos.Exists(x => x.label == currentLabwareLable))
+                throw new Exception(string.Format(strings.DitiCannotFind, currentLabwareLable));
+
+            DitiBoxInfo ditiBoxInfo = thisTypeDitiBoxInfos.Find(x => x.label == currentLabwareLable);
+            var labware = _layout.LabwareTraits.Find(x => x.Label == currentLabwareLable);
+            
                
-            if (ditiInfoItem.count >= cnt)
+            if (ditiBoxInfo.count >= cnt)
             {
-                eachLabware_Tips.Add(labware,GetToUseTipIDs(ditiInfoItem.count,cnt));
-                ditiInfoItem.count -= cnt;
-                
+                eachLabware_Tips.Add(labware,GetToUseTipIDs(ditiBoxInfo.count,cnt));
+                ditiBoxInfo.count -= cnt;
             }
             else
             {
-                eachLabware_Tips.Add(labware, GetToUseTipIDs(ditiInfoItem.count,ditiInfoItem.count));
-                cnt -= ditiInfoItem.count;
+                eachLabware_Tips.Add(labware, GetToUseTipIDs(ditiBoxInfo.count,ditiBoxInfo.count));
+                cnt -= ditiBoxInfo.count;
                 
-                ditiInfoItem.count = 0;
-                
-                if (ditiInfo.DitiInfoItems.Count == 1)
+                ditiBoxInfo.count = 0;
+                if (thisTypeDitiBoxInfos.Count == 1)
                 {
-                    throw new NoTipException(labware,cnt);
+                    throw new NoEngouhDitiException(labware,cnt);
                 }
                 else //try next one
                 {
-                    List<DitiInfoItem> existingDitiLabwares = ditiInfo.DitiInfoItems.OrderBy(x => GetID(x)).ToList();
-                    int currentIndex = existingDitiLabwares.IndexOf(ditiInfoItem);
+                    List<DitiBoxInfo> existingDitiLabwares = thisTypeDitiBoxInfos.OrderBy(x => GetID(x)).ToList();
+                    int currentIndex = existingDitiLabwares.IndexOf(ditiBoxInfo);
                     currentIndex++;
                     currentIndex = currentIndex % existingDitiLabwares.Count;
-                    ditiInfoItem = existingDitiLabwares[currentIndex];
-                    ditiInfo.CurrentDitiLabware = ditiInfoItem.label;
-                    labware = _layout.LabwareTraits.Find(x => x.Label == ditiInfo.CurrentDitiLabware);
-                    if (ditiInfoItem.count > cnt)
+                    ditiBoxInfo.isUsing = false;
+                    ditiBoxInfo = existingDitiLabwares[currentIndex];
+                    ditiBoxInfo.isUsing = true;
+                    labware = _layout.LabwareTraits.Find(x => x.Label == ditiInfo.GetCurrentLabel(ditiType));
+                    if (ditiBoxInfo.count > cnt)
                     {
-                        eachLabware_Tips.Add(labware,GetToUseTipIDs(ditiInfoItem.count,cnt));
-                        ditiInfoItem.count -= cnt;
+                        eachLabware_Tips.Add(labware,GetToUseTipIDs(ditiBoxInfo.count,cnt));
+                        ditiBoxInfo.count -= cnt;
                     }
                     else
                     {
-                        eachLabware_Tips.Add(labware, GetToUseTipIDs(ditiInfoItem.count, ditiInfoItem.count));
-                        cnt -= ditiInfoItem.count;
-                        ditiInfoItem.count = 0;
-                        labware = _layout.LabwareTraits.Find(x => x.Label == ditiInfo.CurrentDitiLabware);
-                        throw new NoTipException(labware,cnt);
+                        eachLabware_Tips.Add(labware, GetToUseTipIDs(ditiBoxInfo.count, ditiBoxInfo.count));
+                        cnt -= ditiBoxInfo.count;
+                        ditiBoxInfo.count = 0;
+                        labware = _layout.LabwareTraits.Find(x => x.Label == ditiInfo.GetCurrentLabel(ditiType));
+                        throw new NoEngouhDitiException(labware,cnt);
                     }
                 }
             }
@@ -123,7 +120,7 @@ namespace WorkstationController.Core.Managements
             return tipIDs;
         }
 
-        private int GetID(DitiInfoItem item)
+        private int GetID(DitiBoxInfo item)
         {
  	         var labware = _layout.LabwareTraits.Find(x => x.Label == item.label);
             if (labware == null)
@@ -136,9 +133,9 @@ namespace WorkstationController.Core.Managements
         public void ReplaceTips()
         {
             var ditiInfo = _layout.DitiInfo;
-            for(int i = 0; i < ditiInfo.DitiInfoItems.Count;i++)
+            for(int i = 0; i < ditiInfo.DitiBoxInfos.Count;i++)
             {
-                ditiInfo.DitiInfoItems[i].count = 96;
+                ditiInfo.DitiBoxInfos[i].count = 96;
             }
         }
     }

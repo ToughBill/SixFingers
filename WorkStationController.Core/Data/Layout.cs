@@ -158,64 +158,64 @@ namespace WorkstationController.Core.Data
         }
         internal static void ConstrainTipInfo(Layout layout)
         {
-            if (layout.DitiInfo != null && layout.DitiInfo.CurrentDitiLabware != "" && layout.DitiInfo.DitiInfoItems != null)
+            if (layout.DitiInfo != null 
+                && layout.DitiInfo.DitiBoxInfos != null
+                && layout.DitiInfo.DitiBoxInfos.Count != 0)
                 return;
 
-            List<DitiInfoItem> ditiInfoItems = new List<DitiInfoItem>();
-            DitiInfo ditiInfo = null;
+            DitiInfo ditiInfo = new DitiInfo();
+            Dictionary<DitiType, string> currentDitis = new Dictionary<DitiType, string>();
             foreach (Carrier carrier in layout.Carriers )
             {
                 if (carrier.TypeName == BuildInCarrierType.Diti.ToString())
                 {
 
-                    string currentDiti = "";
-                    if (carrier.Labwares.Count > 0)
-                        currentDiti = carrier.Labwares[0].Label;
                     foreach (Labware labware in carrier.Labwares)
                     {
                         //LabwareTraits.Add(new LabwareTrait(labware));
-                        DitiInfoItem ditiItem = new DitiInfoItem(labware.Label, 96);
-                        ditiInfoItems.Add(ditiItem);
+                        DitiType ditiType = DitiBox.Parse(labware.TypeName); 
+                        DitiBoxInfo ditiBoxInfo = new DitiBoxInfo(ditiType, labware.Label,96);
+                        if (ditiInfo.GetCurrentLabel(ditiType) == "")
+                        {
+                            ditiBoxInfo.isUsing = true;
+                        }
+                        ditiInfo.DitiBoxInfos.Add(ditiBoxInfo);
                     }
-                    if (ditiInfo == null)
-                        ditiInfo = new DitiInfo(currentDiti, ditiInfoItems);
-                    //continue;
                 }
             }
             layout.DitiInfo = ditiInfo;
         }
         internal static void ConstrainTipInfo_back(Layout layout)
         {
-            var tipsInfo = layout.DitiInfo.DitiInfoItems;
-            List<DitiInfoItem> constrainedTipsInfo = new List<DitiInfoItem>();
-            if (tipsInfo == null)
+            var ditiInfos = layout.DitiInfo.DitiBoxInfos;
+            List<DitiBoxInfo> constrainedDitiInfos = new List<DitiBoxInfo>();
+            if (ditiInfos == null)
                 return;
             //add value for the diti labware without this information
-            foreach (var labaretraits in layout._labwareTraits)
+            foreach (var labwareTrait in layout._labwareTraits)
             {
-                if (!tipsInfo.Exists( x=>x.label ==  labaretraits.Label))
+                if (!ditiInfos.Exists( x=>x.label ==  labwareTrait.Label))
                 {
-                    constrainedTipsInfo.Add( new DitiInfoItem(labaretraits.Label, 96));
+                    DitiType ditiType = DitiBox.Parse(labwareTrait.TypeName);
+                    constrainedDitiInfos.Add(new DitiBoxInfo(ditiType,labwareTrait.Label, 96));
                 }
             }
-            foreach (var tipInfo in tipsInfo)
+            foreach (var tipInfo in ditiInfos)
             {
                 LabwareTrait labwareTrait = layout._labwareTraits.Find(x => x.Label == tipInfo.label);
                 if (Labware.IsDiti(labwareTrait.TypeName))
                 {
-                    constrainedTipsInfo.Add(tipInfo);
+                    constrainedDitiInfos.Add(tipInfo);
                 }
             }
 
-            layout.DitiInfo.DitiInfoItems = constrainedTipsInfo;
-            if (layout.DitiInfo.CurrentDitiLabware == "")
+            layout.DitiInfo.DitiBoxInfos = constrainedDitiInfos;
+            if (layout.DitiInfo.DitiBoxInfos.Count == 0)
             {
-                if (constrainedTipsInfo.Count == 0)
-                    return;
-                foreach(var tipInfo in constrainedTipsInfo)
+                foreach(var ditiInfo in constrainedDitiInfos)
                 {
-                    layout.DitiInfo.CurrentDitiLabware = tipInfo.label;
-                    break;
+                    if (layout.DitiInfo.GetCurrentLabel(ditiInfo.type) != "")
+                        layout.DitiInfo.DitiBoxInfos.Add(new DitiBoxInfo(ditiInfo.type, ditiInfo.label,96));
                 }
             }
 

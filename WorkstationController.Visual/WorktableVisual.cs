@@ -42,11 +42,10 @@ namespace WorkstationController.VisualElement
             DrawBorder(worktable.Size,drawingContext);
 
             //if(layout.DitiInfo.DitiInfoItems.Count !=)
-            string currentDitiLabel = layout.DitiInfo.CurrentDitiLabware;
-            if(currentDitiLabel != "")
+            foreach(var ditiBoxInfo in layout.DitiInfo.DitiBoxInfos)
             {
-                Labware labware = layout.FindLabware(currentDitiLabel);
-                if(labware != null)
+                Labware labware = layout.FindLabware(ditiBoxInfo.label);
+                if (labware != null)
                 {
                     labware.CalculatePositionInLayout();
                     var position = labware.GetAbsPosition(96);
@@ -54,6 +53,7 @@ namespace WorkstationController.VisualElement
                     VisualCommon.DrawCircle(position, 6, drawingContext, Colors.Red, true);
                 }
             }
+                
             
         }
 

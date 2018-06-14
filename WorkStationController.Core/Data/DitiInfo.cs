@@ -3,50 +3,92 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Xml.Serialization;
 
 namespace WorkstationController.Core.Data
 {
+ 
+
     [Serializable]
     public class DitiInfo
     {
         
-        public List<DitiInfoItem> DitiInfoItems { get; set; }
-        public string CurrentDitiLabware { get; set; }
+        public List<DitiBoxInfo> DitiBoxInfos { get; set; }
 
+
+        //[XmlIgnore]
+        //public Dictionary<DitiType,string>  CurrentDitiLabwares { get; set; }
+
+
+     
+       
         public DitiInfo()
         {
-            DitiInfoItems = new List<DitiInfoItem>();
-            CurrentDitiLabware = "";
+            DitiBoxInfos = new List<DitiBoxInfo>();
+
+                
         }
-        public DitiInfo(string currentDiti,List<DitiInfoItem> ditiInfoItems)
+        public DitiInfo(List<DitiBoxInfo> ditiInfoItems)
         {
-           
-            CurrentDitiLabware = currentDiti;
-            DitiInfoItems = ditiInfoItems;
+            DitiBoxInfos = ditiInfoItems;
+        }
+
+        internal string GetCurrentLabel(DitiType ditiType)
+        {
+            var info = DitiBoxInfos.Find(x => IsUsing(x, ditiType));
+            if(info == null)
+            {
+                return "";
+            }
+            else
+            {
+                return info.label;
+            }
+        }
+
+        private bool IsUsing(DitiBoxInfo x, DitiType ditiType)
+        {
+            return x.type == ditiType && x.isUsing;
+        }
+
+
+        public void SetUsingDitiBox(DitiType ditiType, string label)
+        {
+            var thisTypeDitiBoxes = DitiBoxInfos.Where(x => x.type == ditiType).ToList();
+            for(int i = 0; i< thisTypeDitiBoxes.Count; i++)
+            {
+                thisTypeDitiBoxes[i].isUsing = thisTypeDitiBoxes[i].label == label;
+            }
         }
     }
 
     [Serializable]
-    public class DitiInfoItem
+    public class DitiBoxInfo
     {
         public string label;
         public int count;
-        public DitiInfoItem()
+        public DitiType type;
+        public bool isUsing;
+        public DitiBoxInfo()
         {
 
         }
-        public DitiInfoItem(KeyValuePair<string, int> labware_cnt)
+        public DitiBoxInfo(KeyValuePair<string, int> labware_cnt)
         {
             // TODO: Complete member initialization
             label = labware_cnt.Key;
             count = labware_cnt.Value;
+            isUsing = false;
+             
         }
 
-        public DitiInfoItem(string newLabel, int newCnt)
+        public DitiBoxInfo(DitiType ditiType, string newLabel, int newCnt)
         {
             // TODO: Complete member initialization
             label = newLabel;
             count = newCnt;
+            this.type = ditiType;
+            isUsing = false;
         }
     }
 }

@@ -53,10 +53,11 @@ namespace WorkstationController.Hardware.Simulator
             Debug.WriteLine("Set tip distance:{0}", distance);
         }
 
-        public void GetTip(List<int> tipIDs, out Core.Data.DitiTrackInfo trackInfos)
+        public void GetTip(List<int> tipIDs, DitiType ditiType, out DitiTrackInfo trackInfos)
         {
+            //throw new NotImplementedException();
             Debug.WriteLine("Get tip:{0}", tipIDs.First());
-            trackInfos = new Core.Data.DitiTrackInfo("diti1", tipID++,true);
+            trackInfos = new Core.Data.DitiTrackInfo("diti1", tipID++, true);
             isTipMounted = true;
             Delay();
         }
@@ -103,5 +104,8 @@ namespace WorkstationController.Hardware.Simulator
         {
             get { return 200; }
         }
+
+
+       
     }
 }
