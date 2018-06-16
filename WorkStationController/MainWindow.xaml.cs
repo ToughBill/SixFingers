@@ -124,7 +124,7 @@ namespace WorkstationController
             Layout layout = layoutEditor.Layout;
             DitiInfo ditiInfo = layout.DitiInfo;
             Labware labware = e.Parameter as Labware;
-            var ditiType = (DitiType)Enum.Parse(typeof(DitiType), labware.TypeName);
+            var ditiType = DitiBox.Parse(labware.TypeName);
             if( ditiInfo.DitiBoxInfos.Find(x=>x.type == ditiType) != null)
             {
                 ditiInfo.DitiBoxInfos.Add(new DitiBoxInfo(ditiType, labware.Label,96));

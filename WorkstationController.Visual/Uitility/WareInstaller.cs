@@ -57,7 +57,7 @@ namespace WorkstationController.VisualElement.Uitility
                         var ditiInfo = workingLayout.DitiInfo.DitiBoxInfos.Find(x => x.label == labware.Label);
                         if(ditiInfo == null)
                         {
-                            DitiType ditiType = (DitiType)Enum.Parse(typeof(DitiType), labware.TypeName);
+                            DitiType ditiType = DitiBox.Parse(labware.TypeName);
                             workingLayout.DitiInfo.DitiBoxInfos.Add(new DitiBoxInfo(ditiType, labware.Label, 96));
                         }
                     }

@@ -16,9 +16,15 @@ namespace WTPipetting.Utility
         HardwareController hardwareController;
         public GlobalVars()
         {
-           
+            
         }
 
+
+        public List<ITrackInfo> TrackInfos
+        {
+            get;
+            set;
+        }
         public Dictionary<int, string> Tube_Barcode
         {
             get;
@@ -36,7 +42,7 @@ namespace WTPipetting.Utility
             }
         }
 
-        public List<ITrackInfo> TrackInfos { get; set; }
+
         static public GlobalVars Instance
         {
             get

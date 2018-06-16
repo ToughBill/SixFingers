@@ -119,13 +119,15 @@ namespace WTPipetting.Hardware
  	        var safeVector = plateVector.Positions.First(x=>x.ID == PlateVector.Safe);
             var endVector = plateVector.Positions.First(x=>x.ID == PlateVector.End);
             List<ROMAPosition> romaPositions = new List<ROMAPosition>();
+            romaPositions.Add(safeVector);
             foreach(var position in plateVector.Positions)
             {
                 if(position.ID == PlateVector.Safe || position.ID == PlateVector.End)
                     continue;
                 romaPositions.Add(position);
             }
-            
+            romaPositions.Add(endVector);
+
             foreach(var position in romaPositions)
             {
                 if (NeedPauseOrStop())
@@ -156,20 +158,17 @@ namespace WTPipetting.Hardware
             
             LihaCommand lihaCommand = machineCommand as LihaCommand;
             DitiTrackInfo ditiTrackInfos = null;
-            hardwareController.Liha.GetTip(new List<int>() { 1 },DitiType.OneK, out ditiTrackInfos);
+            hardwareController.Liha.GetTip(new List<int>() { 1 }, lihaCommand.ditiType, out ditiTrackInfos);
      
             OnCommandExecuted(ditiTrackInfos);
             if (NeedPauseOrStop())
                 return true;
             var liquidClass = PipettorElementManager.Instance.LiquidClasses.First(x => x.SaveName == lihaCommand.liquidClass);
             
- 
-            
             PipettingResult pipettingResult = PipettingResult.ok;
             hardwareController.Liha.Aspirate(lihaCommand.srcLabware, new List<int>() { lihaCommand.srcWellID }, new List<double>() { lihaCommand.volume }, liquidClass, out pipettingResult);
             PipettingTrackInfo aspTrackInfo = new PipettingTrackInfo(lihaCommand.srcLabware, LihaCommand.GetWellDesc(lihaCommand.srcWellID), lihaCommand.volume, pipettingResult, lihaCommand.barcode);
             OnCommandExecuted(aspTrackInfo);
-            
             
             if (NeedPauseOrStop())
                 return true;

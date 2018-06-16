@@ -301,6 +301,8 @@ namespace WorkstationController.Core.Data
                 yPos -= referenceCarrier.YOffset;
                 int siteIndex = _siteID - 1;
                 var site = referenceCarrier.Sites[siteIndex];
+                _dimension.XLength = site.XSize;
+                _dimension.YLength = site.YSize;
                 xPos += (int)site.XOffset;          //get site x start pos
                 yPos += (int)site.YOffset;
             }

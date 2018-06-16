@@ -116,24 +116,24 @@ namespace WTPipetting.Data
 
         }
 
-        public StepDefinition(string[] lines,int no)
+        public StepDefinition(string[] strs,int no)
         {
             LineNumber = no;
             Volume = 0;
             //DeadVolume = 0;
-            Description = lines[(int)StepDefCol.Description];
+            Description = strs[(int)StepDefCol.Description];
             //RepeatTimes = lines[(int)StepDefCol.RepeatTimes];
-            string sVolume = lines[(int)StepDefCol.Volume];
+            string sVolume = strs[(int)StepDefCol.Volume];
             if (sVolume == "")
                 return;
             Volume = int.Parse(sVolume);
             //string sDeadVolume = lines[(int)StepDefCol.DeadVolume];
             //DeadVolume = int.Parse(sDeadVolume);
-            SourceLabware = lines[(int)StepDefCol.SourceLabware];
-            DestLabware = lines[(int)StepDefCol.DestLabware];
+            SourceLabware = strs[(int)StepDefCol.SourceLabware];
+            DestLabware = strs[(int)StepDefCol.DestLabware];
             //TipType = lines[(int)StepDefCol.TipType];
-            LiquidClass = lines[(int)StepDefCol.LiquidClass];
-            DitiType =(DitiType) Enum.Parse(typeof(DitiType),lines[(int)StepDefCol.DitiType]);
+            LiquidClass = strs[(int)StepDefCol.LiquidClass];
+            DitiType = DitiBox.Parse(strs[(int)StepDefCol.DitiType]);
         }
 
         public const string MovePlate = "MovePlate";
