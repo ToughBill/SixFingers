@@ -1,6 +1,4 @@
-﻿using SKHardwareController;
-//using SKHardwareController;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Configuration;
 using System.Linq;
@@ -9,7 +7,8 @@ using System.Threading.Tasks;
 using WorkstationController.Core.Data;
 using WorkstationController.Core.Managements;
 using WorkstationController.Hardware;
-//using WorkstationController.Hardware.Simulator; //use this for simulation
+using WorkstationController.Hardware.Simulator; //use this for simulation
+//using SKHardwareController;
 
 namespace WTPipetting.Hardware
 {

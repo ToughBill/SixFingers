@@ -28,7 +28,7 @@
     <PlatformTarget>AnyCPU</PlatformTarget>
     <DebugType>pdbonly</DebugType>
     <Optimize>true</Optimize>
-    <OutputPath>bin\Release\</OutputPath>
+    <OutputPath>..\bin\Release\</OutputPath>
     <DefineConstants>TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
@@ -68,7 +68,6 @@
       <SubType>Designer</SubType>
     </ApplicationDefinition>
     <Compile Include="Hardware\BarcodeScanner.cs" />
-    <Compile Include="Data\PanelViewModel.cs" />
     <Compile Include="Data\SampleInfo.cs" />
     <Compile Include="Hardware\HardwareController.cs" />
     <Compile Include="StageControls\BarcodeDefForm.xaml.cs">
@@ -202,6 +201,9 @@
   </ItemGroup>
   <ItemGroup>
     <Resource Include="Resources\reset.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Images\sampleDef.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

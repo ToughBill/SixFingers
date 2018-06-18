@@ -29,7 +29,7 @@ namespace WTPipetting.Data
         }
         static public Protocol  CreateFromCSVFile(string csvFile)
         {
-            int commaCnt = 4;
+            int commaCnt = 5;
             FileInfo fileInfo = new FileInfo(csvFile);
             string name = fileInfo.Name;
             string[] strLines = File.ReadAllLines(csvFile,Encoding.Default);

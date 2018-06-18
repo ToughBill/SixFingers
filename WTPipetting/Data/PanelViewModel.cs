@@ -36,6 +36,11 @@ namespace WTPipetting.Data
         PanelViewModel(string name)
         {
             this.Name = name;
+
+
+
+
+
             this.Children = new List<PanelViewModel>();
         }
 

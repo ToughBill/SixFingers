@@ -64,6 +64,7 @@ namespace WTPipetting.Hardware
                 hardwareController.Liha.Init();
 
             if(!hardwareController.Roma.IsInitialized)
+                hardwareController.Roma.Init();
             foreach (var machineCommand in liquidHandlerCommands)
             {
                 NotifyStepStarted(currentStep);
@@ -237,9 +238,6 @@ namespace WTPipetting.Hardware
             liquidHandlerCommands = GenerateCommands();
             Run();
         }
-
-      
-
 
         private List<ILiquidHandlerCommand> GenerateCommands()
         {
